@@ -1,3 +1,4 @@
+import { match } from "assert";
 import fs from "fs";
 
 const mainFile = `./src/main.tfs`;
@@ -19,7 +20,7 @@ export default function Interpreter() {
   template = template.replace("#SECTIONS#", presentation);
   fs.rmSync("./dist", { recursive: true, force: true });
   fs.mkdirSync("./dist");
-  fs.writeFileSync("./dist/index.html", template);
+  fs.writeFileSync("./dist/index.html", this.formatting(template));
 }
 
 Interpreter.prototype.includes = function (file) {
@@ -58,4 +59,23 @@ Interpreter.prototype.sliceSlides = function (presentation) {
     )
     .map((slide) => `<section class="slide">${slide}</section>`)
     .join("");
+};
+
+Interpreter.prototype.formatting = function (html) {
+  [
+    ["_", "i"],
+    ["\\*", "b"],
+  ].forEach((couple) => {
+    [
+      ...html.matchAll(
+        new RegExp(
+          `${couple[0]}${couple[0]}([^\\${couple[0]}]+)${couple[0]}${couple[0]}`,
+          "gm"
+        )
+      ),
+    ].map((match) => {
+      html = html.replace(match[0], `<${couple[1]}>${match[1]}</${couple[1]}>`);
+    });
+  });
+  return html;
 };
