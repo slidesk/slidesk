@@ -1,15 +1,21 @@
-import { match } from "assert";
-import fs from "fs";
+const fs = require("fs");
+const { minify } = require("html-minifier-terser");
 
-const mainFile = `./src/main.tfs`;
-
-export default function Interpreter() {
+function Interpreter(mainFile) {
   if (!fs.existsSync(mainFile)) {
     console.error("🤔 main.tfs was not found");
     return;
   }
   console.log("🎉 main.tfs found, now convert");
-  let template = fs.readFileSync("./core/templates/index.html", "utf-8");
+  let template = `<!DOCTYPE html>
+  <html>
+    <head>
+      <title>#TITLE#</title>
+    </head>
+    <body>
+      <main>#SECTIONS#</main>
+    </body>
+  </html>`;
   const presentation = this.sliceSlides(this.includes(mainFile));
   presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
     template = template.replace(
@@ -20,7 +26,12 @@ export default function Interpreter() {
   template = template.replace("#SECTIONS#", presentation);
   fs.rmSync("./dist", { recursive: true, force: true });
   fs.mkdirSync("./dist");
-  fs.writeFileSync("./dist/index.html", this.formatting(template));
+  minify(this.formatting(template), {
+    collapseWhitespace: true,
+    removeEmptyElements: true,
+  }).then((html) => {
+    fs.writeFileSync("./dist/index.html", html);
+  });
 }
 
 Interpreter.prototype.includes = function (file) {
@@ -79,3 +90,5 @@ Interpreter.prototype.formatting = function (html) {
   });
   return html;
 };
+
+module.exports = Interpreter;

@@ -1,5 +1,12 @@
-import Interpreter from "./core/Interpreter.mjs";
+#!/usr/bin/env node
+const { program } = require("commander");
+const Interpreter = require("./core/Interpreter");
 
-const babelfish = new Interpreter();
+program
+  .command("convert <talk>")
+  .description("Convert & present a talk")
+  .action((talk) => {
+    const babelfish = new Interpreter(`./${talk}/main.tfs`);
+  });
 
-// Server.start();
+program.parse();
