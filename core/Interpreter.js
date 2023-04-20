@@ -54,6 +54,10 @@ section {
   transition: all 300ms ease;
 }
 
+section.no-transition {
+  transition-duration: 0ms;
+}
+
 section.current {
   transform: translateX(0);
 }
@@ -72,11 +76,14 @@ const js = `
 </script>
 <script>
 window.talkflow = {
-  currentSlide: 0
+  currentSlide: 0,
+  slides: []
 };
 
 window.onload = () => {
-  document.querySelectorAll('.slide')[window.talkflow.currentSlide].classList.add('current');
+  window.talkflow.slides = document.querySelectorAll('.slide');
+  window.talkflow.slides[window.talkflow.currentSlide].classList.add('current', 'no-transition');
+  
 };
 </script>
 `;

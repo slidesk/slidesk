@@ -9,9 +9,6 @@ export default class Server {
       res.end();
     });
     this.io = new WSServer(httpServer);
-    this.io.on("connection", () => {
-      console.log("🤝 new client");
-    });
     httpServer.listen(port, () => console.log(`🎉 http://localhost:${port}`));
   }
 
