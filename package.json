@@ -29,7 +29,7 @@
     "open": "^9.1.0"
   },
   "imports": {
-    "#interpreter": "./core/interpreter.js",
-    "#server": "./core/server.js"
+    "#interpreter": "./core/Interpreter.js",
+    "#server": "./core/Server.js"
   }
 }
