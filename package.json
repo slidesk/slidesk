@@ -11,9 +11,7 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^4.2.1",
     "html-minifier-terser": "^7.2.0",
-    "lightningcss": "^1.19.0",
-    "prettier": "^2.8.4",
-    "tailwindcss": "^3.3.1"
+    "prettier": "^2.8.4"
   },
   "bin": {
     "talkflow": "./index.js"
