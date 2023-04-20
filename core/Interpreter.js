@@ -2,35 +2,35 @@ const fs = require("fs");
 const { minify } = require("html-minifier-terser");
 
 function Interpreter(mainFile) {
-  if (!fs.existsSync(mainFile)) {
-    console.error("🤔 main.tfs was not found");
-    return;
-  }
-  console.log("🎉 main.tfs found, now convert");
-  let template = `<!DOCTYPE html>
-  <html>
-    <head>
-      <title>#TITLE#</title>
-    </head>
-    <body>
-      <main>#SECTIONS#</main>
-    </body>
-  </html>`;
-  const presentation = this.sliceSlides(this.includes(mainFile));
-  presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
-    template = template.replace(
-      "#TITLE#",
-      title.replace("<h1>", "").replace("</h1>", "")
-    );
-  });
-  template = template.replace("#SECTIONS#", presentation);
-  fs.rmSync("./dist", { recursive: true, force: true });
-  fs.mkdirSync("./dist");
-  minify(this.formatting(template), {
-    collapseWhitespace: true,
-    removeEmptyElements: true,
-  }).then((html) => {
-    fs.writeFileSync("./dist/index.html", html);
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(mainFile)) {
+      reject("🤔 main.tfs was not found");
+    }
+    let template = `<!DOCTYPE html>
+    <html>
+      <head>
+        <title>#TITLE#</title>
+      </head>
+      <body>
+        <main>#SECTIONS#</main>
+      </body>
+    </html>`;
+    const presentation = this.sliceSlides(this.includes(mainFile));
+    presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
+      template = template.replace(
+        "#TITLE#",
+        title.replace("<h1>", "").replace("</h1>", "")
+      );
+    });
+    template = template.replace("#SECTIONS#", presentation);
+    fs.rmSync("./dist", { recursive: true, force: true });
+    fs.mkdirSync("./dist");
+    minify(this.formatting(template), {
+      collapseWhitespace: true,
+      removeEmptyElements: true,
+    }).then((html) => {
+      resolve(html);
+    });
   });
 }
 
