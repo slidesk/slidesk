@@ -5,15 +5,16 @@ import Server from "#server";
 import open from "open";
 import fs from "fs";
 
-let serve;
+let server;
+
 const flow = (talk, init = false, options = {}) => {
   new Interpreter(`./${talk}/main.tfs`)
     .then(async (html) => {
       if (init) {
-        serve = new Server(html, options.port);
+        server = new Server(html, options.port);
         await open(`http://localhost:${options.port}`);
       } else {
-        serve.setHTML(html);
+        server.setHTML(html);
       }
     })
     .catch((err) => console.error(err));

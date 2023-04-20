@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "commander": "^10.0.1",
-    "open": "^9.1.0"
+    "open": "^9.1.0",
+    "socket.io": "^4.6.1"
   },
   "imports": {
     "#interpreter": "./core/Interpreter.js",

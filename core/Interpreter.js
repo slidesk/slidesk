@@ -9,7 +9,7 @@ const html = `<!DOCTYPE html>
   </head>
   <body>
     <main>#SECTIONS#</main>
-    <script>#SCRIPT#</script>
+    #SCRIPT#
   </body>
 </html>`;
 
@@ -63,6 +63,14 @@ section.past {
 }
 `;
 const js = `
+<script type="module">
+  import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+  const socket = io();
+  socket.on("reload", () => {
+    location.reload();
+  });
+</script>
+<script>
 window.talkflow = {
   currentSlide: 0
 };
@@ -70,6 +78,7 @@ window.talkflow = {
 window.onload = () => {
   document.querySelectorAll('.slide')[window.talkflow.currentSlide].classList.add('current');
 };
+</script>
 `;
 
 export default class Interpreter {
