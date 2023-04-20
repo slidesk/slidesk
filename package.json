@@ -4,6 +4,7 @@
   "license": "MIT",
   "version": "0.1.0",
   "main": "index.js",
+  "type": "module",
   "devDependencies": {
     "eslint": "^8.35.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -24,6 +25,11 @@
     "url": "git+https://github.com/gouz/talkflow.git"
   },
   "dependencies": {
-    "commander": "^10.0.1"
+    "commander": "^10.0.1",
+    "open": "^9.1.0"
+  },
+  "imports": {
+    "#interpreter": "./core/interpreter.js",
+    "#server": "./core/server.js"
   }
 }

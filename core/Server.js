@@ -1,8 +1,6 @@
-const http = require("http");
+import http from "http";
 
-const port = 1337;
-
-function Server(html) {
+export default function Server(html, port) {
   var server = http.createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     res.write(html, "utf-8");
@@ -10,5 +8,3 @@ function Server(html) {
   });
   server.listen(port, () => console.log(`🎉 http://localhost:${port}`));
 }
-
-module.exports = Server;
