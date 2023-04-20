@@ -50,9 +50,27 @@ section {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transform: translateX(100%);
+  transition: all 300ms ease;
+}
+
+section.current {
+  transform: translateX(0);
+}
+
+section.past {
+  transform: translateX(-100%);
 }
 `;
-const js = ``;
+const js = `
+window.talkflow = {
+  currentSlide: 0
+};
+
+window.onload = () => {
+  document.querySelectorAll('.slide')[window.talkflow.currentSlide].classList.add('current');
+};
+`;
 
 export default class Interpreter {
   constructor(mainFile) {
