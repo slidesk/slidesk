@@ -37,5 +37,12 @@ _italic_
 *bold*
 
 !image(path or url | html attributes)
+
+- list
+-- sublist
+-- sub
+- end of a list
+
+
 ```
 
