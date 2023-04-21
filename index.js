@@ -16,7 +16,7 @@ const flow = (talk, init = false, options = {}) => {
           options.port,
           `${process.env.PWD}/${talk}/assets`
         );
-        await open(`http://localhost:${options.port}`);
+        if (options.open) await open(`http://localhost:${options.port}`);
       } else {
         server.setHTML(html);
       }
@@ -27,6 +27,7 @@ const flow = (talk, init = false, options = {}) => {
 program
   .argument("<talk>")
   .option("-p, --port <int>", "port", 1337)
+  .option("--open", "open the default browser")
   .description("Convert & present a talk")
   .action((talk, options) => {
     flow(talk, true, options);

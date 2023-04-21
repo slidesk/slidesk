@@ -140,7 +140,6 @@ export default class Interpreter {
           title.replace("<h1>", "").replace("</h1>", "")
         );
       });
-      presentation = this.#image(presentation);
       template = template.replace("#SECTIONS#", presentation);
       template = template.replace("#STYLE#", css);
       template = template.replace("#SCRIPT#", js);
@@ -159,7 +158,7 @@ export default class Interpreter {
       (match) =>
         (data = data.replace(
           match[0],
-          this.includes(
+          this.#includes(
             `${file.substring(0, file.lastIndexOf("/"))}/${match[1]}`
           )
         ))
@@ -168,23 +167,26 @@ export default class Interpreter {
   }
 
   #sliceSlides(presentation) {
-    return presentation
-      .split("## ")
+    return [...presentation.split("## ")]
       .map((slide) =>
         slide
+          .replace(/\\r/g, "")
           .split("\n\n")
           .map((paragraph, i) => {
-            let data = paragraph.replace("\n", "<br />");
-            if (data.startsWith("# "))
-              return `<h1>${data.replace("# ", "")}</h1>`;
-            if (i == 0)
-              return `<h2 data-slug="${data
+            if (paragraph.startsWith("# "))
+              return `<h1>${paragraph.replace("# ", "")}</h1>`;
+            else if (paragraph.startsWith("!image"))
+              return this.#image(paragraph);
+            else if (paragraph.startsWith("- ") || paragraph.startsWith("\n- "))
+              return this.#list(paragraph);
+            else if (i == 0)
+              return `<h2 data-slug="${paragraph
                 .toLowerCase()
                 .trim()
                 .replace(/[^\w\s-]/g, "")
                 .replace(/[\s_-]+/g, "-")
-                .replace(/^-+|-+$/g, "")}">${data}</h2>`;
-            if (data.length) return `<p>${data}</p>`;
+                .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
+            else if (paragraph.length) return `<p>${paragraph}</p>`;
             return "";
           })
           .join("")
@@ -212,16 +214,33 @@ export default class Interpreter {
     return html;
   }
 
-  #image(html) {
-    [...html.matchAll(/!image\(([^\()]+)\)/g)].map((match) => {
+  #image(data) {
+    [...data.matchAll(/!image\(([^\()]+)\)/g)].map((match) => {
       const opts = [...match[1].split("|")];
-      html = html.replace(
+      data = data.replace(
         match[0],
         `<img data-src="${opts[0].trim()}" ${
           opts.length > 1 && opts[1].trim()
         } />`
       );
     });
-    return html;
+    return data;
+  }
+
+  #list(data, sub = 0) {
+    const list = [];
+    let subs = [];
+    [...data.split("\n")].forEach((line) => {
+      if (line.substring(sub).startsWith("- ")) {
+        if (subs.length) {
+          line = `${line}${this.#list(subs.join("\n"), sub + 1)}`;
+          subs = [];
+        }
+        list.push(`${line.substring(sub + 2)}`);
+      } else if (line.length) {
+        subs.push(line);
+      }
+    });
+    return `<ul><li>${list.join(`</li><li>`)}</li></ul>`;
   }
 }
