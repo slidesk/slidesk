@@ -36,6 +36,6 @@ _italic_
 
 *bold*
 
-!image(path or url)
+!image(path or url | html attributes)
 ```
 
