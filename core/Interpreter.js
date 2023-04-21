@@ -220,7 +220,7 @@ export default class Interpreter {
       data = data.replace(
         match[0],
         `<img data-src="${opts[0].trim()}" ${
-          opts.length > 1 && opts[1].trim()
+          opts.length > 1 ? opts[1].trim() : ""
         } />`
       );
     });
