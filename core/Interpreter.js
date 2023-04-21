@@ -70,13 +70,19 @@ section.past {
   transform: translateX(-100%);
 }
 `;
-const js = `
-<script type="module">
+
+const socketio = `
   import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
   const socket = io();
   socket.on("reload", () => {
     location.reload();
   });
+`;
+
+const js = `
+<script type="module">
+  #SOCKETIO#
+
   window.talkflow = {
     currentSlide: 0,
     slides: []
@@ -127,7 +133,7 @@ const js = `
 `;
 
 export default class Interpreter {
-  constructor(mainFile) {
+  constructor(mainFile, options) {
     return new Promise((resolve, reject) => {
       if (!existsSync(mainFile)) {
         reject("🤔 main.tfs was not found");
@@ -142,7 +148,10 @@ export default class Interpreter {
       });
       template = template.replace("#SECTIONS#", presentation);
       template = template.replace("#STYLE#", css);
-      template = template.replace("#SCRIPT#", js);
+      template = template.replace(
+        "#SCRIPT#",
+        js.replace("#SOCKETIO#", !options.save ? socketio : "")
+      );
       minify(this.#formatting(template), {
         collapseWhitespace: true,
         removeEmptyElements: true,
@@ -179,7 +188,7 @@ export default class Interpreter {
               return this.#image(paragraph);
             else if (paragraph.startsWith("- ") || paragraph.startsWith("\n- "))
               return this.#list(paragraph);
-            else if (i == 0)
+            else if (i == 0 && paragraph.length)
               return `<h2 data-slug="${paragraph
                 .toLowerCase()
                 .trim()
