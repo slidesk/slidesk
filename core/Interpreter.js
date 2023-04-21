@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync, readFileSync } from "fs";
 import { minify } from "html-minifier-terser";
 
 const animationTimer = 300;
@@ -6,6 +6,7 @@ const animationTimer = 300;
 const html = `<!DOCTYPE html>
 <html>
   <head>
+    <link rel="icon" href="/favicon.svg">
     <title>#TITLE#</title>
     <style>#STYLE#</style>
   </head>
@@ -128,7 +129,7 @@ const js = `
 export default class Interpreter {
   constructor(mainFile) {
     return new Promise((resolve, reject) => {
-      if (!fs.existsSync(mainFile)) {
+      if (!existsSync(mainFile)) {
         reject("🤔 main.tfs was not found");
       }
       let template = html;
@@ -153,7 +154,7 @@ export default class Interpreter {
   }
 
   #includes(file) {
-    let data = fs.readFileSync(file, "utf8");
+    let data = readFileSync(file, "utf8");
     [...data.matchAll(/!include\(([^\()]+)\)/g)].map(
       (match) =>
         (data = data.replace(
@@ -213,10 +214,12 @@ export default class Interpreter {
 
   #image(html) {
     [...html.matchAll(/!image\(([^\()]+)\)/g)].map((match) => {
-      const opts = [...match[1].split(",")];
+      const opts = [...match[1].split("|")];
       html = html.replace(
         match[0],
-        `<img data-src="${opts[0]}" ${opts.length > 1 && opts[1].trim()} />`
+        `<img data-src="${opts[0].trim()}" ${
+          opts.length > 1 && opts[1].trim()
+        } />`
       );
     });
     return html;
