@@ -11,7 +11,11 @@ const flow = (talk, init = false, options = {}) => {
   new Interpreter(`./${talk}/main.tfs`)
     .then(async (html) => {
       if (init) {
-        server = new Server(html, options.port);
+        server = new Server(
+          html,
+          options.port,
+          `${process.env.PWD}/${talk}/assets`
+        );
         await open(`http://localhost:${options.port}`);
       } else {
         server.setHTML(html);
