@@ -1,6 +1,8 @@
 import fs from "fs";
 import { minify } from "html-minifier-terser";
 
+const animationTimer = 300;
+
 const html = `<!DOCTYPE html>
 <html>
   <head>
@@ -52,7 +54,7 @@ section {
   align-items: center;
   justify-content: center;
   transform: translateX(100%);
-  transition: all 300ms ease;
+  transition: all ${animationTimer}ms ease;
 }
 
 section.no-transition {
@@ -79,10 +81,24 @@ const js = `
     slides: []
   };
 
+  const cleanOldSlide = (id) => {
+    window.talkflow.slides[id].classList.remove('current', 'no-transition');
+    setTimeout(() => {
+      window.talkflow.slides[id].querySelectorAll('img').forEach((img) => {
+        img.setAttribute('data-src', img.getAttribute('src'));
+        img.removeAttribute('src');
+      })
+    }, ${animationTimer});
+  }
+
   const changeSlide = () => {
     window.talkflow.slides[window.talkflow.currentSlide].classList.remove('past');
     window.talkflow.slides[window.talkflow.currentSlide].classList.add('current');
     window.location.hash = "/" + window.talkflow.slides[window.talkflow.currentSlide].querySelector('h2').getAttribute('data-slug');
+    window.talkflow.slides[window.talkflow.currentSlide].querySelectorAll('img').forEach((img) => {
+      img.setAttribute('src', img.getAttribute('data-src'));
+      img.removeAttribute('data-src');
+    });
   }
 
   window.onload = () => {
@@ -91,14 +107,14 @@ const js = `
     document.addEventListener("keydown", (e) => {
       if (e.key == "ArrowLeft") {
         if (window.talkflow.currentSlide != 0) {
-          window.talkflow.slides[window.talkflow.currentSlide].classList.remove('current');
+          cleanOldSlide(window.talkflow.currentSlide);
           window.talkflow.currentSlide--;
           changeSlide();
         }
       }
       else if (e.key == "ArrowRight" || e.key == " ") {
         if (window.talkflow.currentSlide != window.talkflow.slides.length - 1) {
-            window.talkflow.slides[window.talkflow.currentSlide].classList.remove('current', 'no-transition');
+            cleanOldSlide(window.talkflow.currentSlide)
             window.talkflow.slides[window.talkflow.currentSlide].classList.add('past');
             window.talkflow.currentSlide++;
             changeSlide();
@@ -116,13 +132,14 @@ export default class Interpreter {
         reject("🤔 main.tfs was not found");
       }
       let template = html;
-      const presentation = this.#sliceSlides(this.#includes(mainFile));
+      let presentation = this.#sliceSlides(this.#includes(mainFile));
       presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
         template = template.replace(
           "#TITLE#",
           title.replace("<h1>", "").replace("</h1>", "")
         );
       });
+      presentation = this.#image(presentation);
       template = template.replace("#SECTIONS#", presentation);
       template = template.replace("#STYLE#", css);
       template = template.replace("#SCRIPT#", js);
@@ -182,10 +199,7 @@ export default class Interpreter {
     ].forEach((couple) => {
       [
         ...html.matchAll(
-          new RegExp(
-            `${couple[0]}${couple[0]}([^\\${couple[0]}]+)${couple[0]}${couple[0]}`,
-            "gm"
-          )
+          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm")
         ),
       ].map((match) => {
         html = html.replace(
@@ -193,6 +207,17 @@ export default class Interpreter {
           `<${couple[1]}>${match[1]}</${couple[1]}>`
         );
       });
+    });
+    return html;
+  }
+
+  #image(html) {
+    [...html.matchAll(/!image\(([^\()]+)\)/g)].map((match) => {
+      const opts = [...match[1].split(",")];
+      html = html.replace(
+        match[0],
+        `<img data-src="${opts[0]}" ${opts.length > 1 && opts[1].trim()} />`
+      );
     });
     return html;
   }

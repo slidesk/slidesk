@@ -32,8 +32,10 @@ A livereload is activated per default.
 
 !include(another_file)
 
-__italic__
+_italic_
 
-**bold**
+*bold*
+
+!image(path or url)
 ```
 
