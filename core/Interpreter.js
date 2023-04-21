@@ -1,75 +1,10 @@
 import { existsSync, readFileSync } from "fs";
 import { minify } from "html-minifier-terser";
+import { html } from "#assets_html";
+import { css } from "#assets_css";
+import { js } from "#assets_js";
 
 const animationTimer = 300;
-
-const html = `<!DOCTYPE html>
-<html>
-  <head>
-    <link rel="icon" href="/favicon.svg">
-    <title>#TITLE#</title>
-    <style>#STYLE#</style>
-  </head>
-  <body>
-    <main>#SECTIONS#</main>
-    #SCRIPT#
-  </body>
-</html>`;
-
-const css = `
-:root {
-  font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-html, body, main {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-main {
-  position: relative;
-  overflow: hidden;
-}
-
-section {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transform: translateX(100%);
-  transition: all ${animationTimer}ms ease;
-}
-
-section.no-transition {
-  transition-duration: 0ms;
-}
-
-section.current {
-  transform: translateX(0);
-}
-
-section.past {
-  transform: translateX(-100%);
-}
-`;
 
 const socketio = `
   import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
@@ -77,59 +12,6 @@ const socketio = `
   socket.on("reload", () => {
     location.reload();
   });
-`;
-
-const js = `
-<script type="module">
-  #SOCKETIO#
-
-  window.talkflow = {
-    currentSlide: 0,
-    slides: []
-  };
-
-  const cleanOldSlide = (id) => {
-    window.talkflow.slides[id].classList.remove('current', 'no-transition');
-    setTimeout(() => {
-      window.talkflow.slides[id].querySelectorAll('img').forEach((img) => {
-        img.setAttribute('data-src', img.getAttribute('src'));
-        img.removeAttribute('src');
-      })
-    }, ${animationTimer});
-  }
-
-  const changeSlide = () => {
-    window.talkflow.slides[window.talkflow.currentSlide].classList.remove('past');
-    window.talkflow.slides[window.talkflow.currentSlide].classList.add('current');
-    window.location.hash = "/" + window.talkflow.slides[window.talkflow.currentSlide].querySelector('h2').getAttribute('data-slug');
-    window.talkflow.slides[window.talkflow.currentSlide].querySelectorAll('img').forEach((img) => {
-      img.setAttribute('src', img.getAttribute('data-src'));
-      img.removeAttribute('data-src');
-    });
-  }
-
-  window.onload = () => {
-    window.talkflow.slides = document.querySelectorAll('.slide');
-    window.talkflow.slides[window.talkflow.currentSlide].classList.add('current', 'no-transition');
-    document.addEventListener("keydown", (e) => {
-      if (e.key == "ArrowLeft") {
-        if (window.talkflow.currentSlide != 0) {
-          cleanOldSlide(window.talkflow.currentSlide);
-          window.talkflow.currentSlide--;
-          changeSlide();
-        }
-      }
-      else if (e.key == "ArrowRight" || e.key == " ") {
-        if (window.talkflow.currentSlide != window.talkflow.slides.length - 1) {
-            cleanOldSlide(window.talkflow.currentSlide)
-            window.talkflow.slides[window.talkflow.currentSlide].classList.add('past');
-            window.talkflow.currentSlide++;
-            changeSlide();
-        }
-      }
-    })
-  };
-</script>
 `;
 
 export default class Interpreter {
@@ -147,10 +29,25 @@ export default class Interpreter {
         );
       });
       template = template.replace("#SECTIONS#", presentation);
-      template = template.replace("#STYLE#", css);
+      template = template.replace(
+        "#STYLE#",
+        `:root { --animationTimer: ${animationTimer}ms; }${css}`
+      );
       template = template.replace(
         "#SCRIPT#",
-        js.replace("#SOCKETIO#", !options.save ? socketio : "")
+        `
+<script type="module">
+  #SOCKETIO#
+  window.talkflow = {
+    currentSlide: 0,
+    slides: [],
+    animationTimer: ${animationTimer}
+  };
+  #CONTROLS#
+</script>
+`
+          .replace("#SOCKETIO#", !options.save ? socketio : "")
+          .replace("#CONTROLS#", js)
       );
       minify(this.#formatting(template), {
         collapseWhitespace: true,

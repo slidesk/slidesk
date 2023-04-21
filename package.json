@@ -2,7 +2,7 @@
   "name": "talkflow",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "index.js",
   "type": "module",
   "devDependencies": {
@@ -32,6 +32,9 @@
   },
   "imports": {
     "#interpreter": "./core/Interpreter.js",
-    "#server": "./core/Server.js"
+    "#server": "./core/Server.js",
+    "#assets_html": "./templates/layout.html.js",
+    "#assets_css": "./templates/theme.css.js",
+    "#assets_js": "./templates/main.js.js"
   }
 }

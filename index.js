@@ -14,7 +14,7 @@ const flow = (talk, init = false, options = {}) => {
         writeFileSync(`./${talk}/index.html`, html);
       } else {
         if (init) {
-          server = new Server(html, options.port, `${process.env.PWD}/${talk}`);
+          server = new Server(html, options.port, `${process.cwd()}/${talk}`);
           if (options.open) await open(`http://localhost:${options.port}`);
         } else {
           server.setHTML(html);
