@@ -6,12 +6,11 @@ import { js } from "#assets_js";
 
 const animationTimer = 300;
 
-const socketio = `
-  import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
-  const socket = io();
-  socket.on("reload", () => {
-    location.reload();
-  });
+const socket = `
+const io = new WebSocket("ws://localhost:#PORT#");
+io.onmessage = (event) => {
+  if (event.data === 'reload') location.reload();
+};
 `;
 
 export default class Interpreter {
@@ -21,14 +20,6 @@ export default class Interpreter {
         reject("🤔 main.tfs was not found");
       }
       let template = html;
-      let presentation = this.#sliceSlides(this.#includes(mainFile));
-      presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
-        template = template.replace(
-          "#TITLE#",
-          title.replace("<h1>", "").replace("</h1>", "")
-        );
-      });
-      template = template.replace("#SECTIONS#", presentation);
       template = template.replace(
         "#STYLE#",
         `:root { --animationTimer: ${animationTimer}ms; }${css}`
@@ -46,10 +37,22 @@ export default class Interpreter {
   #CONTROLS#
 </script>
 `
-          .replace("#SOCKETIO#", !options.save ? socketio : "")
+          .replace(
+            "#SOCKETIO#",
+            !options.save ? socket.replace("#PORT#", options.port) : ""
+          )
           .replace("#CONTROLS#", js)
       );
-      minify(this.#formatting(template), {
+      let presentation = this.#sliceSlides(this.#includes(mainFile));
+      presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
+        template = template.replace(
+          "#TITLE#",
+          title.replace("<h1>", "").replace("</h1>", "")
+        );
+      });
+      template = template.replace("#SECTIONS#", this.#formatting(presentation));
+
+      minify(template, {
         collapseWhitespace: true,
         removeEmptyElements: true,
       }).then((html) => {

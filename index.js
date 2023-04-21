@@ -7,7 +7,7 @@ import { watch, writeFileSync } from "fs";
 
 let server;
 
-const flow = (talk, init = false, options = {}) => {
+const flow = (talk, options = {}, init = false) => {
   new Interpreter(`./${talk}/main.tfs`, options)
     .then(async (html) => {
       if (options.save) {
@@ -31,11 +31,11 @@ program
   .option("--save", "save the html file")
   .description("Convert & present a talk")
   .action((talk, options) => {
-    flow(talk, true, options);
+    flow(talk, options, true);
     if (!options.save) {
       watch(talk, { recursive: true }, (eventType, filename) => {
         console.log(`♻️  ${filename} is ${eventType}`);
-        flow(talk, false);
+        flow(talk, options);
       });
     }
   });

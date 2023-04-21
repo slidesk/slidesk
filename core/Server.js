@@ -1,11 +1,12 @@
 import { createServer } from "http";
-import { Server as WSServer } from "socket.io";
+import { WebSocketServer } from "ws";
 import { readFile } from "fs";
 import mime from "mime";
 export default class Server {
   constructor(html, port, path) {
     this.html = html;
     this.path = path;
+    this.io = [];
     const httpServer = createServer((req, res) => {
       if (req.url === "/") {
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
@@ -34,12 +35,20 @@ export default class Server {
         });
       }
     });
-    this.io = new WSServer(httpServer);
+    const wss = new WebSocketServer({
+      server: httpServer,
+      perMessageDeflate: false,
+    });
+    wss.on("connection", (ws) => {
+      this.io.push(ws);
+    });
     httpServer.listen(port, () => console.log(`🎉 http://localhost:${port}`));
   }
 
   setHTML(html) {
     this.html = html;
-    this.io.emit("reload");
+    this.io.forEach((io) => {
+      io.send("reload");
+    });
   }
 }
