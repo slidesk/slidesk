@@ -98,14 +98,20 @@ export default class Interpreter {
               return this.#image(paragraph);
             else if (paragraph.startsWith("- ") || paragraph.startsWith("\n- "))
               return this.#list(paragraph);
-            else if (i == 0 && paragraph.length)
-              return `<h2 data-slug="${paragraph
+            else if (i == 0 && paragraph.length) {
+              const spl = [...paragraph.split(".[")];
+              let cl = "";
+              if (spl.length != 1) {
+                cl = `class = "${spl[1].replace("]", "")}" `;
+                paragraph = spl[0];
+              }
+              return `<h2 ${cl}data-slug="${paragraph
                 .toLowerCase()
                 .trim()
                 .replace(/[^\w\s-]/g, "")
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
-            else if (paragraph.length) return `<p>${paragraph}</p>`;
+            } else if (paragraph.length) return `<p>${paragraph}</p>`;
             return "";
           })
           .join("")

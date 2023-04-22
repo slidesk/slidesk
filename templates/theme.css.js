@@ -21,7 +21,7 @@ export const css = `
   --tf-text-size: 40px;
   --tf-text-line-height: 1.2;
 
-  --tf-background-color: #242424;;
+  --tf-background-color: #242424;
   --tf-heading-color: rgba(255, 255, 255, 0.97);
   --tf-text-color: rgba(255, 255, 255, 0.87);
 }

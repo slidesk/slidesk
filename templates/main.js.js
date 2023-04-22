@@ -29,6 +29,7 @@ export const js = `
         slugs.push(h ? h.getAttribute('data-slug') : '' + (i ? i : ''));
     });
     window.talkflow.currentSlide = slugs.indexOf(loadingHash);
+    if (window.talkflow.currentSlide < 0) window.talkflow.currentSlide = 0;
     if (window.talkflow.currentSlide) {
         for (let i = 0 ; i < window.talkflow.currentSlide; i++) {
             window.talkflow.slides[i].classList.add('past', 'no-transition');
