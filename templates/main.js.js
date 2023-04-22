@@ -1,5 +1,5 @@
 export const js = `
-  const cleanOldSlide = (id) => {
+  window.talkflow.cleanOldSlide = (id) => {
     window.talkflow.slides[id].classList.remove('current', 'no-transition');
     setTimeout(() => {
       window.talkflow.slides[id].querySelectorAll('img').forEach((img) => {
@@ -9,7 +9,7 @@ export const js = `
     }, window.talkflow.animationTimer);
   }
 
-  const changeSlide = () => {
+  window.talkflow.changeSlide = () => {
     window.talkflow.slides[window.talkflow.currentSlide].classList.remove('past');
     window.talkflow.slides[window.talkflow.currentSlide].classList.add('current');
     const h = window.talkflow.slides[window.talkflow.currentSlide].querySelector('h2');
@@ -35,21 +35,21 @@ export const js = `
         }
     }
     window.talkflow.slides[window.talkflow.currentSlide].classList.add('current', 'no-transition');
-    changeSlide();
+    window.talkflow.changeSlide();
     document.addEventListener("keydown", (e) => {
       if (e.key == "ArrowLeft") {
         if (window.talkflow.currentSlide != 0) {
-          cleanOldSlide(window.talkflow.currentSlide);
+          window.talkflow.cleanOldSlide(window.talkflow.currentSlide);
           window.talkflow.currentSlide--;
-          changeSlide();
+          window.talkflow.changeSlide();
         }
       }
       else if (e.key == "ArrowRight" || e.key == " ") {
         if (window.talkflow.currentSlide != window.talkflow.slides.length - 1) {
-            cleanOldSlide(window.talkflow.currentSlide)
+            window.talkflow.cleanOldSlide(window.talkflow.currentSlide)
             window.talkflow.slides[window.talkflow.currentSlide].classList.add('past');
             window.talkflow.currentSlide++;
-            changeSlide();
+            window.talkflow.changeSlide();
         }
       }
     })
