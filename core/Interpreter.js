@@ -7,11 +7,13 @@ import { js } from "#assets_js";
 const animationTimer = 300;
 
 const socket = `
-const io = new WebSocket("ws://localhost:#PORT#");
-io.onmessage = (event) => {
+window.talkflow.io = new WebSocket("ws://localhost:#PORT#");
+window.talkflow.io.onmessage = (event) => {
   if (event.data === 'reload') location.reload();
 };
 `;
+
+let customCSS = "";
 
 export default class Interpreter {
   constructor(mainFile, options) {
@@ -19,21 +21,26 @@ export default class Interpreter {
       if (!existsSync(mainFile)) {
         reject("🤔 main.tfs was not found");
       }
+      let presentation = this.#sliceSlides(this.#includes(mainFile));
       let template = html;
       template = template.replace(
         "#STYLE#",
-        `:root { --animationTimer: ${animationTimer}ms; }${css}`
+        `:root { --animationTimer: ${animationTimer}ms; }${css}${
+          customCSS.length
+            ? `</style><link rel="stylesheet" href="${customCSS}"><style>`
+            : ""
+        }`
       );
       template = template.replace(
         "#SCRIPT#",
         `
 <script type="module">
-  #SOCKETIO#
   window.talkflow = {
     currentSlide: 0,
     slides: [],
     animationTimer: ${animationTimer}
   };
+  #SOCKETIO#
   #CONTROLS#
 </script>
 `
@@ -43,7 +50,6 @@ export default class Interpreter {
           )
           .replace("#CONTROLS#", js)
       );
-      let presentation = this.#sliceSlides(this.#includes(mainFile));
       presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
         template = template.replace(
           "#TITLE#",
@@ -82,6 +88,10 @@ export default class Interpreter {
           .replace(/\\r/g, "")
           .split("\n\n")
           .map((paragraph, i) => {
+            if (paragraph.startsWith(":custom_css:")) {
+              customCSS = paragraph.replace(":custom_css:", "").trim();
+              return "";
+            }
             if (paragraph.startsWith("# "))
               return `<h1>${paragraph.replace("# ", "")}</h1>`;
             else if (paragraph.startsWith("!image"))

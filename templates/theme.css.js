@@ -5,9 +5,7 @@ export const css = `
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,6 +21,9 @@ export const css = `
   --tf-text-size: 40px;
   --tf-text-line-height: 1.2;
 
+  --tf-background-color: #242424;;
+  --tf-heading-color: rgba(255, 255, 255, 0.97);
+  --tf-text-color: rgba(255, 255, 255, 0.87);
 }
 
 html, body, main {
@@ -34,6 +35,10 @@ html, body, main {
 main {
   position: relative;
   overflow: hidden;
+  background-color: var(--tf-background-color);
+  color: var(--tf-text-color);
+  font-size: var(--tf-text-size);
+  line-height: var(--tf-text-line-height);
 }
 
 section {
@@ -48,13 +53,12 @@ section {
   justify-content: center;
   transform: translateX(100%);
   transition: all var(--animationTimer) ease;
-  font-size: var(--tf-text-size);
-  line-height: var(--tf-text-line-height);
 }
 
 section h1, h2, h3 {
     margin: 0;
     text-align: center;
+    color: var(--tf-heading-color);
 }
 
 section h1 {
