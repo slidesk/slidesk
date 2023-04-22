@@ -13,6 +13,16 @@ export const css = `
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --tf-heading1-size: 3.75em;
+  --tf-heading1-line-height: 1;
+  --tf-heading2-size: 2.25em;
+  --tf-heading2-line-height: 1;
+  --tf-heading3-size: 1.75em;
+  --tf-heading3-line-height: 1;
+  --tf-text-size: 40px;
+  --tf-text-line-height: 1.2;
+
 }
 
 html, body, main {
@@ -38,6 +48,28 @@ section {
   justify-content: center;
   transform: translateX(100%);
   transition: all var(--animationTimer) ease;
+  font-size: var(--tf-text-size);
+  line-height: var(--tf-text-line-height);
+}
+
+section h1, h2, h3 {
+    margin: 0;
+    text-align: center;
+}
+
+section h1 {
+    font-size: var(--tf-heading1-size);
+    line-height: var(--tf-heading1-line-height);
+}
+
+section h2 {
+    font-size: var(--tf-heading2-size);
+    line-height: var(--tf-heading2-line-height);
+}
+
+section h3 {
+    font-size: var(--tf-heading3-size);
+    line-height: var(--tf-heading3-line-height);
 }
 
 section.no-transition {
