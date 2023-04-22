@@ -72,3 +72,9 @@ Then, in your `main.tfs` file you have to prepend this line:
 ```
 :custom_css: location/of/your/custom.css
 ```
+
+## Custom class on slides
+
+```
+## My title .[my-class my-other-class]
+```
