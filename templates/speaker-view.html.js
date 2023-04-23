@@ -10,6 +10,7 @@ export const speaker_view = `
       ${css}
 
       :root {
+        --tf-sv-timer-size: 80px;
         --tf-sv-text-size: 40px;
         --tf-sv-text-line-height: 1.2;
         --tf-sv-background-color: #242424;
@@ -54,6 +55,17 @@ export const speaker_view = `
         flex-direction: column;
       }
 
+      #tf-sd-timer {
+        background-color: var(--tf-sv-background-color);
+        color: var(--tf-sv-text-color);
+        font-size: var(--tf-sv-timer-size);
+        line-height: var(--tf-sv-text-line-height);
+        padding: 10px;
+        border-bottom: 1px solid white;
+        text-align: right;
+        cursor: pointer;
+      }
+
       #tf-sv-notes {
         flex-grow: 1;
         background-color: var(--tf-sv-background-color);
@@ -71,34 +83,61 @@ export const speaker_view = `
       <main id="tf-sv-future" class="📽️"></main>
     </div>
     <div id="tf-sv-right">
+      <div id="tf-sd-timer">Click to (re)start</div>
       <aside id="tf-sv-notes"></aside>
     </div>
     <script>
-      window.talkflow = { io : {} };
+      window.talkflow = { io: {}, timer: document.querySelector("#tf-sd-timer") };
       #SOCKETIO#
       const makeSlide = (slide) => {
-        return '<section class="🎞️">' + slide.replace("data-src", "src") + '</section>'
+        return (
+          '<section class="🎞️">' + slide.replace("data-src", "src") + "</section>"
+        );
       };
       window.talkflow.io.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.action === 'current') {
-          const current = document.querySelector('#tf-sv-current');
+        if (data.action === "current") {
+          const current = document.querySelector("#tf-sv-current");
           current.innerHTML = makeSlide(data.payload);
-          document.querySelector('#tf-sv-notes').innerHTML = [...current.querySelectorAll('aside.📝')].map((a) => a.innerHTML).join("");
+          document.querySelector("#tf-sv-notes").innerHTML = [
+            ...current.querySelectorAll("aside.📝"),
+          ]
+            .map((a) => a.innerHTML)
+            .join("");
         }
-        if (data.action === 'future') {
-          document.querySelector('#tf-sv-future').innerHTML = makeSlide(data.payload);
+        if (data.action === "future") {
+          document.querySelector("#tf-sv-future").innerHTML = makeSlide(data.payload);
         }
-        if (data.action === 'customcss') {
-          document.querySelector('head').innerHTML += '<link rel="stylesheet" href="' + data.payload + '">';
+        if (data.action === "customcss") {
+          document.querySelector("head").innerHTML +=
+            '<link rel="stylesheet" href="' + data.payload + '">';
         }
-      }
+      };
       document.addEventListener("keydown", (e) => {
         if (e.key == "ArrowLeft") {
-          window.talkflow.io.send(JSON.stringify({ action: 'previous' }));
+          window.talkflow.io.send(JSON.stringify({ action: "previous" }));
         } else if (e.key == "ArrowRight" || e.key == " ") {
-          window.talkflow.io.send(JSON.stringify({ action: 'next' }));
+          window.talkflow.io.send(JSON.stringify({ action: "next" }));
         }
+      });
+      let startTime = null;
+      const toHHMMSS = (secs) => {
+        var sec_num = parseInt(secs, 10)
+        var hours   = Math.floor(sec_num / 3600)
+        var minutes = Math.floor(sec_num / 60) % 60
+        var seconds = sec_num % 60
+    
+        return [hours,minutes,seconds]
+            .map(v => v < 10 ? "0" + v : v)
+            .filter((v,i) => v !== "00" || i > 0)
+            .join(":")
+      }
+      setInterval(() => {
+        if (startTime)
+          window.talkflow.timer.innerText = toHHMMSS((Date.now() - startTime) / 1000);
+      }, 1000);
+      window.talkflow.timer.addEventListener("click", () => {
+        startTime = Date.now();
       });
     </script>
   </body>
