@@ -64,6 +64,14 @@ In your `custom.css` file, you can override this variables:
   --tf-background-color: #242424;;
   --tf-heading-color: rgba(255, 255, 255, 0.97);
   --tf-text-color: rgba(255, 255, 255, 0.87);
+
+
+  /* SpeakerView */
+  --tf-sv-timer-size: 80px;
+  --tf-sv-text-size: 40px;
+  --tf-sv-text-line-height: 1.2;
+  --tf-sv-background-color: #242424;
+  --tf-sv-text-color: rgba(255, 255, 255, 0.87);
 }
 ```
 
@@ -77,4 +85,13 @@ Then, in your `main.tfs` file you have to prepend this line:
 
 ```
 ## My title .[my-class my-other-class]
+```
+
+
+## Speakers Notes
+
+```
+/*
+A comment in a page correspond to the notes for the speaker.
+*/
 ```

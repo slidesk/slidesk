@@ -15,7 +15,10 @@ const flow = (talk, options = {}, init = false) => {
       } else {
         if (init) {
           server = new Server(html, options.port, `${process.cwd()}/${talk}`);
-          if (options.open) await open(`http://localhost:${options.port}`);
+          if (options.open) {
+            await open(`http://localhost:${options.port}/notes`);
+            await open(`http://localhost:${options.port}`);
+          }
         } else {
           server.setHTML(html);
         }
