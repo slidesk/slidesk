@@ -89,11 +89,7 @@ export const speaker_view = `
     <script>
       window.talkflow = { io: {}, timer: document.querySelector("#tf-sd-timer") };
       #SOCKETIO#
-      const makeSlide = (slide) => {
-        return (
-          '<section class="🎞️">' + slide.replace("data-src", "src") + "</section>"
-        );
-      };
+      const makeSlide = (slide) => slide.replace("data-src", "src");
       window.talkflow.io.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.action === "current") {
