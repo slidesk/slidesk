@@ -9,6 +9,7 @@ const animationTimer = 300;
 const socket = `window.talkflow.io = new WebSocket("ws://localhost:#PORT#");`;
 
 let customCSS = "";
+let customJS = "";
 
 export default class Interpreter {
   constructor(mainFile, options) {
@@ -37,7 +38,7 @@ export default class Interpreter {
   };
   #SOCKETIO#
   #CONTROLS#
-</script>
+</script>${customJS}
 `
           .replace(
             "#SOCKETIO#",
@@ -51,7 +52,7 @@ export default class Interpreter {
           title.replace("<h1>", "").replace("</h1>", "")
         );
       });
-      template = template.replace("#SECTIONS#", this.#formatting(presentation));
+      template = template.replace("#SECTIONS#", presentation);
 
       minify(template, {
         collapseWhitespace: true,
@@ -77,12 +78,13 @@ export default class Interpreter {
   }
 
   #sliceSlides(presentation) {
+    const ccl = {};
     return [...presentation.split("## ")]
-      .map((slide) => {
+      .map((slide, s) => {
         return slide
           .replace(/\\r/g, "")
           .split("\n\n")
-          .map((paragraph, i) => {
+          .map((paragraph, p) => {
             if (paragraph.startsWith("/*")) {
               return `<aside class="📝">${paragraph
                 .replace("/*", "")
@@ -93,33 +95,40 @@ export default class Interpreter {
             } else if (paragraph.startsWith(":custom_css:")) {
               customCSS = paragraph.replace(":custom_css:", "").trim();
               return "";
+            } else if (paragraph.startsWith(":custom_js:")) {
+              customJS = `<script src="${paragraph
+                .replace(":custom_js:", "")
+                .trim()}"></script>`;
+              return "";
             } else if (paragraph.startsWith("# "))
               return `<h1>${paragraph.replace("# ", "")}</h1>`;
             else if (paragraph.startsWith("!image"))
               return this.#image(paragraph);
             else if (paragraph.startsWith("- ") || paragraph.startsWith("\n- "))
               return this.#list(paragraph);
-            else if (i == 0 && paragraph.length) {
+            else if (p == 0 && paragraph.length) {
               const spl = [...paragraph.split(".[")];
-              let cl = "";
               if (spl.length != 1) {
-                cl = `class = "${spl[1].replace("]", "")}" `;
+                ccl[`s_${s}`] = spl[1].replace("]", "");
                 paragraph = spl[0];
               }
-              return `<h2 ${cl}data-slug="${paragraph
+              return `<h2 data-slug="${paragraph
                 .toLowerCase()
                 .trim()
                 .replace(/[^\w\s-]/g, "")
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
             } else if (paragraph.length) {
-              return `<p>${paragraph}</p>`;
+              return `<p>${this.#formatting(paragraph)}</p>`;
             }
             return "";
           })
           .join("");
       })
-      .map((slide) => `<section class="🎞️">${slide}</section>`)
+      .map(
+        (slide, s) =>
+          `<section class="🎞️ ${ccl[`s_${s}`] ?? ""}">${slide}</section>`
+      )
       .join("");
   }
 
