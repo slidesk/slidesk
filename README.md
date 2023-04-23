@@ -78,3 +78,12 @@ Then, in your `main.tfs` file you have to prepend this line:
 ```
 ## My title .[my-class my-other-class]
 ```
+
+
+## Speakers Notes
+
+```
+/*
+A comment in a page correspond to the notes for the speaker.
+*/
+```

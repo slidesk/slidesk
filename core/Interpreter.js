@@ -6,12 +6,7 @@ import { js } from "#assets_js";
 
 const animationTimer = 300;
 
-const socket = `
-window.talkflow.io = new WebSocket("ws://localhost:#PORT#");
-window.talkflow.io.onmessage = (event) => {
-  if (event.data === 'reload') location.reload();
-};
-`;
+const socket = `window.talkflow.io = new WebSocket("ws://localhost:#PORT#");`;
 
 let customCSS = "";
 
@@ -27,7 +22,7 @@ export default class Interpreter {
         "#STYLE#",
         `:root { --animationTimer: ${animationTimer}ms; }${css}${
           customCSS.length
-            ? `</style><link rel="stylesheet" href="${customCSS}"><style>`
+            ? `</style><link id="tf-customcss" rel="stylesheet" href="${customCSS}"><style>`
             : ""
         }`
       );
@@ -83,16 +78,22 @@ export default class Interpreter {
 
   #sliceSlides(presentation) {
     return [...presentation.split("## ")]
-      .map((slide) =>
-        slide
+      .map((slide) => {
+        return slide
           .replace(/\\r/g, "")
           .split("\n\n")
           .map((paragraph, i) => {
-            if (paragraph.startsWith(":custom_css:")) {
+            if (paragraph.startsWith("/*")) {
+              return `<aside class="📝">${paragraph
+                .replace("/*", "")
+                .replace("*/", "")
+                .split("\n")
+                .slice(1)
+                .join("<br/>")}</aside>`;
+            } else if (paragraph.startsWith(":custom_css:")) {
               customCSS = paragraph.replace(":custom_css:", "").trim();
               return "";
-            }
-            if (paragraph.startsWith("# "))
+            } else if (paragraph.startsWith("# "))
               return `<h1>${paragraph.replace("# ", "")}</h1>`;
             else if (paragraph.startsWith("!image"))
               return this.#image(paragraph);
@@ -111,12 +112,14 @@ export default class Interpreter {
                 .replace(/[^\w\s-]/g, "")
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
-            } else if (paragraph.length) return `<p>${paragraph}</p>`;
+            } else if (paragraph.length) {
+              return `<p>${paragraph}</p>`;
+            }
             return "";
           })
-          .join("")
-      )
-      .map((slide) => `<section class="slide">${slide}</section>`)
+          .join("");
+      })
+      .map((slide) => `<section class="🎞️">${slide}</section>`)
       .join("");
   }
 

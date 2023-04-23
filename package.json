@@ -2,7 +2,7 @@
   "name": "talkflow",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "index.js",
   "type": "module",
   "devDependencies": {
@@ -31,10 +31,11 @@
     "ws": "^8.13.0"
   },
   "imports": {
-    "#interpreter": "./core/Interpreter.js",
-    "#server": "./core/Server.js",
     "#assets_html": "./templates/layout.html.js",
     "#assets_css": "./templates/theme.css.js",
-    "#assets_js": "./templates/main.js.js"
+    "#assets_js": "./templates/main.js.js",
+    "#interpreter": "./core/Interpreter.js",
+    "#server": "./core/Server.js",
+    "#speaker_view": "./templates/speaker-view.html.js"
   }
 }

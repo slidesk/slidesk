@@ -9,7 +9,7 @@ export const html = `
     </style>
   </head>
   <body>
-    <main>#SECTIONS#</main>
+    <main class="📽️">#SECTIONS#</main>
     #SCRIPT#
   </body>
 </html>

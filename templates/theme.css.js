@@ -26,13 +26,13 @@ export const css = `
   --tf-text-color: rgba(255, 255, 255, 0.87);
 }
 
-html, body, main {
+html, body, .📽️ {
   width: 100%;
   height: 100%;
   margin: 0;
 }
 
-main {
+.📽️ {
   position: relative;
   overflow: hidden;
   background-color: var(--tf-background-color);
@@ -41,7 +41,7 @@ main {
   line-height: var(--tf-text-line-height);
 }
 
-section {
+.🎞️ {
   position: absolute;
   top: 0;
   left: 0;
@@ -55,36 +55,40 @@ section {
   transition: all var(--animationTimer) ease;
 }
 
-section h1, h2, h3 {
+.🎞️ h1, h2, h3 {
     margin: 0;
     text-align: center;
     color: var(--tf-heading-color);
 }
 
-section h1 {
+.🎞️ h1 {
     font-size: var(--tf-heading1-size);
     line-height: var(--tf-heading1-line-height);
 }
 
-section h2 {
+.🎞️ h2 {
     font-size: var(--tf-heading2-size);
     line-height: var(--tf-heading2-line-height);
 }
 
-section h3 {
+.🎞️ h3 {
     font-size: var(--tf-heading3-size);
     line-height: var(--tf-heading3-line-height);
 }
 
-section.no-transition {
+.🎞️.no-🏄 {
   transition-duration: 0ms;
 }
 
-section.current {
+.🎞️.👆 {
   transform: translateX(0);
 }
 
-section.past {
+.🎞️.👈 {
   transform: translateX(-100%);
+}
+
+.🎞️ .📝 {
+  display: none;
 }
 `;
