@@ -53,6 +53,7 @@ html, body, .📽️ {
   justify-content: center;
   transform: translateX(100%);
   transition: all var(--animationTimer) ease;
+  padding: 30px;
 }
 
 .🎞️ h1, h2, h3 {
@@ -64,16 +65,19 @@ html, body, .📽️ {
 .🎞️ h1 {
     font-size: var(--tf-heading1-size);
     line-height: var(--tf-heading1-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️ h2 {
     font-size: var(--tf-heading2-size);
     line-height: var(--tf-heading2-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️ h3 {
     font-size: var(--tf-heading3-size);
     line-height: var(--tf-heading3-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️.no-🏄 {
@@ -90,5 +94,9 @@ html, body, .📽️ {
 
 .🎞️ .📝 {
   display: none;
+}
+
+.🎞️ img {
+  max-height: 90%;
 }
 `;
