@@ -48,8 +48,9 @@ window.talkflow.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
-  if (window.talkflow.slides.length !== 1)
-    document.querySelector('#tf-progress').style.width = (100 * window.talkflow.currentSlide / (window.talkflow.slides.length - 1)) + "%";
+  const $progress = document.querySelector('#tf-progress');
+  $progress.innerText = (window.talkflow.currentSlide + 1) + "/" + window.talkflow.slides.length;
+  $progress.style.width = (100 * (window.talkflow.currentSlide + 1) / window.talkflow.slides.length) + "%";
 };
 
 window.talkflow.next = () => {

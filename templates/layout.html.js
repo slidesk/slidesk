@@ -9,9 +9,9 @@ export const html = `
     </style>
   </head>
   <body>
-    <div id="tf-progress"></div>
     <main class="📽️">
       #SECTIONS#
+      <div id="tf-progress">X/X</div>
     </main>
     #SCRIPT#
   </body>
