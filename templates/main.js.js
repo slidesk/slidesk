@@ -30,7 +30,7 @@ window.talkflow.changeSlide = () => {
   window.talkflow.io.send(
     JSON.stringify({
       action: "current",
-      payload: window.talkflow.slides[window.talkflow.currentSlide].innerHTML,
+      payload: window.talkflow.slides[window.talkflow.currentSlide].outerHTML,
     })
   );
   window.talkflow.io.send(
@@ -38,7 +38,7 @@ window.talkflow.changeSlide = () => {
       action: "future",
       payload:
         window.talkflow.currentSlide !== window.talkflow.slides.length -1
-          ? window.talkflow.slides[window.talkflow.currentSlide + 1].innerHTML
+          ? window.talkflow.slides[window.talkflow.currentSlide + 1].outerHTML
           : "",
     })
   );
@@ -48,6 +48,8 @@ window.talkflow.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
+  if (window.talkflow.slides.length !== 1)
+    document.querySelector('#tf-progress').style.width = (100 * window.talkflow.currentSlide / (window.talkflow.slides.length - 1)) + "%";
 };
 
 window.talkflow.next = () => {

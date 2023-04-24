@@ -9,7 +9,10 @@ export const html = `
     </style>
   </head>
   <body>
-    <main class="📽️">#SECTIONS#</main>
+    <div id="tf-progress"></div>
+    <main class="📽️">
+      #SECTIONS#
+    </main>
     #SCRIPT#
   </body>
 </html>

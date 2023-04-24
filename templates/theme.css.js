@@ -24,12 +24,26 @@ export const css = `
   --tf-background-color: #242424;
   --tf-heading-color: rgba(255, 255, 255, 0.97);
   --tf-text-color: rgba(255, 255, 255, 0.87);
+  --tf-primary-color: rgb(37, 186, 146);
 }
 
 html, body, .📽️ {
   width: 100%;
   height: 100%;
   margin: 0;
+}
+
+b, a {
+  color: var(--tf-primary-color);
+}
+
+#tf-progress {
+  background-color: var(--tf-primary-color);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0.25rem;
+  z-index: 1;
 }
 
 .📽️ {
@@ -53,6 +67,7 @@ html, body, .📽️ {
   justify-content: center;
   transform: translateX(100%);
   transition: all var(--animationTimer) ease;
+  padding: 30px;
 }
 
 .🎞️ h1, h2, h3 {
@@ -64,16 +79,19 @@ html, body, .📽️ {
 .🎞️ h1 {
     font-size: var(--tf-heading1-size);
     line-height: var(--tf-heading1-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️ h2 {
     font-size: var(--tf-heading2-size);
     line-height: var(--tf-heading2-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️ h3 {
     font-size: var(--tf-heading3-size);
     line-height: var(--tf-heading3-line-height);
+    margin-bottom: 20px;
 }
 
 .🎞️.no-🏄 {
@@ -90,5 +108,9 @@ html, body, .📽️ {
 
 .🎞️ .📝 {
   display: none;
+}
+
+.🎞️ img {
+  max-height: 90%;
 }
 `;
