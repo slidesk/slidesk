@@ -64,6 +64,7 @@ In your `custom.css` file, you can override this variables:
   --tf-background-color: #242424;;
   --tf-heading-color: rgba(255, 255, 255, 0.97);
   --tf-text-color: rgba(255, 255, 255, 0.87);
+  --tf-primary-color: rgb(37, 186, 146);
 
 
   /* SpeakerView */

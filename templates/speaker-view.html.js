@@ -108,6 +108,11 @@ export const speaker_view = `
           document.querySelector("head").innerHTML +=
             '<link rel="stylesheet" href="' + data.payload + '">';
         }
+        if (data.action === "customsvjs") {
+          const s = document.createElement("script");
+          s.src = data.payload;
+          document.querySelector("body").append(s)
+        }
       };
       document.addEventListener("keydown", (e) => {
         if (e.key == "ArrowLeft") {

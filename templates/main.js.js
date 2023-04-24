@@ -81,6 +81,14 @@ window.onload = () => {
         payload: customcss.getAttribute('href'),
       })
     );
+  const customsvjs = document.querySelector('#tf-scripts').getAttribute('data-sv');
+  if (customsvjs)
+      window.talkflow.io.send(
+        JSON.stringify({
+          action: "customsvjs",
+          payload: customsvjs
+        })
+      );
   window.talkflow.slides = document.querySelectorAll(".🎞️");
   const loadingHash = window.location.hash.replace("#/", "");
   const slugs = [];
