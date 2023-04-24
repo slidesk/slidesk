@@ -48,6 +48,8 @@ window.talkflow.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
+  if (window.talkflow.slides.length !== 1)
+    document.querySelector('#tf-progress').style.width = (100 * window.talkflow.currentSlide / (window.talkflow.slides.length - 1)) + "%";
 };
 
 window.talkflow.next = () => {

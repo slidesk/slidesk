@@ -56,7 +56,7 @@ export default class Interpreter {
 
       minify(template, {
         collapseWhitespace: true,
-        removeEmptyElements: true,
+        removeEmptyElements: false,
       }).then((html) => {
         resolve(html);
       });
@@ -133,6 +133,7 @@ export default class Interpreter {
   }
 
   #formatting(html) {
+    // italic, bold
     [
       ["_", "i"],
       ["\\*", "b"],
@@ -147,6 +148,17 @@ export default class Interpreter {
           `<${couple[1]}>${match[1]}</${couple[1]}>`
         );
       });
+    });
+    // links
+    [
+      ...html.matchAll(
+        /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim
+      ),
+    ].map((match) => {
+      html = html.replace(
+        match[0],
+        `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`
+      );
     });
     return html;
   }

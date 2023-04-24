@@ -24,12 +24,26 @@ export const css = `
   --tf-background-color: #242424;
   --tf-heading-color: rgba(255, 255, 255, 0.97);
   --tf-text-color: rgba(255, 255, 255, 0.87);
+  --tf-primary-color: rgb(37, 186, 146);
 }
 
 html, body, .📽️ {
   width: 100%;
   height: 100%;
   margin: 0;
+}
+
+b, a {
+  color: var(--tf-primary-color);
+}
+
+#tf-progress {
+  background-color: var(--tf-primary-color);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0.25rem;
+  z-index: 1;
 }
 
 .📽️ {
