@@ -2,7 +2,7 @@
   "name": "talkflow",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "index.js",
   "type": "module",
   "devDependencies": {

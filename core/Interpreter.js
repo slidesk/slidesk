@@ -10,6 +10,7 @@ const socket = `window.talkflow.io = new WebSocket("ws://localhost:#PORT#");`;
 
 let customCSS = "";
 let customJS = "";
+let customSVJS = "";
 
 export default class Interpreter {
   constructor(mainFile, options) {
@@ -30,7 +31,7 @@ export default class Interpreter {
       template = template.replace(
         "#SCRIPT#",
         `
-<script type="module">
+<script type="module" id="tf-scripts" data-sv="${customSVJS}">
   window.talkflow = {
     currentSlide: 0,
     slides: [],
@@ -99,6 +100,9 @@ export default class Interpreter {
               customJS = `<script src="${paragraph
                 .replace(":custom_js:", "")
                 .trim()}"></script>`;
+              return "";
+            } else if (paragraph.startsWith(":custom_sv_js:")) {
+              customSVJS = paragraph.replace(":custom_sv_js:", "").trim();
               return "";
             } else if (paragraph.startsWith("# "))
               return `<h1>${paragraph.replace("# ", "")}</h1>`;

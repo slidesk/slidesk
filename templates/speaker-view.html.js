@@ -64,6 +64,7 @@ export const speaker_view = `
         border-bottom: 1px solid white;
         text-align: right;
         cursor: pointer;
+        font-family: monospace;
       }
 
       #tf-sv-notes {
@@ -107,6 +108,11 @@ export const speaker_view = `
         if (data.action === "customcss") {
           document.querySelector("head").innerHTML +=
             '<link rel="stylesheet" href="' + data.payload + '">';
+        }
+        if (data.action === "customsvjs") {
+          const s = document.createElement("script");
+          s.src = data.payload;
+          document.querySelector("body").append(s)
         }
       };
       document.addEventListener("keydown", (e) => {
