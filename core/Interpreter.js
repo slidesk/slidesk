@@ -57,7 +57,7 @@ export default class Interpreter {
 
       minify(template, {
         collapseWhitespace: true,
-        removeEmptyElements: true,
+        removeEmptyElements: false,
       }).then((html) => {
         resolve(html);
       });
