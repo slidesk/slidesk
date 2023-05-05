@@ -64,6 +64,7 @@ export const speaker_view = `
         border-bottom: 1px solid white;
         text-align: right;
         cursor: pointer;
+        font-family: monospace;
       }
 
       #tf-sv-notes {
