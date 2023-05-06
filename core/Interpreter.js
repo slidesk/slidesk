@@ -66,7 +66,7 @@ export default class Interpreter {
 
   #includes(file) {
     let data = readFileSync(file, "utf8");
-    [...data.matchAll(/!include\(([^\()]+)\)/g)].map(
+    [...data.matchAll(/\n!include\(([^\()]+)\)/g)].map(
       (match) =>
         (data = data.replace(
           match[0],
@@ -80,7 +80,7 @@ export default class Interpreter {
 
   #sliceSlides(presentation) {
     const ccl = {};
-    return [...presentation.split("## ")]
+    return [...presentation.split("\n## ")]
       .map((slide, s) => {
         return slide
           .replace(/\\r/g, "")
@@ -141,6 +141,9 @@ export default class Interpreter {
     [
       ["_", "i"],
       ["\\*", "b"],
+      ["`", "pre"],
+      ["˜", "u"],
+      ["=", "s"],
     ].forEach((couple) => {
       [
         ...html.matchAll(
@@ -164,7 +167,17 @@ export default class Interpreter {
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`
       );
     });
-    return html;
+    return html
+      .replace("<i>", '<span class="i">')
+      .replace("<b>", '<span class="b">')
+      .replace("<pre>", '<span class="pre">')
+      .replace("<u>", '<span class="u">')
+      .replace("<s>", '<span class="s">')
+      .replace("</i>", "</span>")
+      .replace("</b>", "</span>")
+      .replace("</u>", "</span>")
+      .replace("</s>", "</span>")
+      .replace("</pre>", "</span>");
   }
 
   #image(data) {
