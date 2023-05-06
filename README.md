@@ -43,6 +43,11 @@ _italic_
 -- sub
 - end of a list
 
+See the example directory to understand how it works or run 
+
+```
+node index.js example
+```
 
 ```
 
