@@ -27,14 +27,58 @@ export const css = `
   --tf-primary-color: rgb(37, 186, 146);
 }
 
-html, body, .📽️ {
-  width: 100%;
-  height: 100%;
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
   margin: 0;
 }
 
-b, a {
+html, body {
+  height: 100%;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+p, img {
+  margin: 0.5rem auto;
+}
+
+a, .b {
   color: var(--tf-primary-color);
+}
+
+.b {
+  font-weight: bold;
+}
+
+.i {
+  font-style: italic;
+}
+
+.pre {
+  font-family: monospace;
+  white-space: pre;
+}
+
+.s {
+  text-decoration-line: line-through;
+}
+
+.u {
+  text-decoration-line: underline;
 }
 
 #tf-progress {
@@ -47,6 +91,8 @@ b, a {
 }
 
 .📽️ {
+  width: 100%;
+  height: 100%;
   position: relative;
   overflow: hidden;
   background-color: var(--tf-background-color);
