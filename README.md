@@ -101,3 +101,27 @@ Then, in your `main.tfs` file you have to prepend this line:
 A comment in a page correspond to the notes for the speaker.
 */
 ```
+
+## Add JS on your slides & Speakers Notes
+
+With a custom header in the `main.tfs` file, you can add a script file for the slide part, or the speaker notes part:
+
+```
+:custom_css: assets/custom.css
+
+:custom_js: assets/custom.js
+
+:custom_sv_js: assets/customsv.js
+
+```
+
+Warning, it's very important to space this lines with a new line
+
+## Why a new tool ???
+
+I decided to create my own tool for my talks, because:
+
+- It's fun to create something
+- I want to have a tool which do only the minimum
+- I want a very tiny light tool
+- I want it to be permissive a lot (you can add html tags in without any problem)
