@@ -1,5 +1,5 @@
 {
-  "name": "talkflow",
+  "name": "diapo",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
   "version": "0.1.7",
@@ -15,7 +15,7 @@
     "prettier": "^2.8.4"
   },
   "bin": {
-    "talkflow": "./index.js"
+    "diapo": "./index.js"
   },
   "engines": {
     "node": ">=12"
