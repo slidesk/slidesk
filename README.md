@@ -1,4 +1,4 @@
-# TalkFlow
+# Slidesk
 
 A new talk engine like RevealJS.
 
@@ -8,7 +8,7 @@ I want to use a simplified language like MarkDown or AsciiDoc to generate the pr
 ## Installation
 
 ```
-npm i -g talkflow
+npm i -g slidesk
 ```
 
 ## How to create a presentation
@@ -16,7 +16,7 @@ npm i -g talkflow
 In a directory, create a `main.tfs` file which is the entry point of your presentation.
 
 ```
-talkflow <yourdirectory>
+slidesk <yourdirectory>
 ```
 
 will convert the `main.tfs` into an html file and serve it, it will open the default browser too.
