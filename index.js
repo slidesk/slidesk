@@ -8,7 +8,7 @@ import { watch, writeFileSync } from "fs";
 let server;
 
 const flow = (talk, options = {}, init = false) => {
-  new Interpreter(`./${talk}/main.tfs`, options)
+  new Interpreter(`./${talk}/main.sdf`, options)
     .then(async (html) => {
       if (options.save) {
         writeFileSync(`./${talk}/index.html`, html);

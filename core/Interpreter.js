@@ -6,7 +6,7 @@ import { js } from "#assets_js";
 
 const animationTimer = 300;
 
-const socket = `window.talkflow.io = new WebSocket("ws://localhost:#PORT#");`;
+const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#");`;
 
 let customCSS = "";
 let customJS = "";
@@ -32,7 +32,7 @@ export default class Interpreter {
         "#SCRIPT#",
         `
 <script type="module" id="tf-scripts" data-sv="${customSVJS}">
-  window.talkflow = {
+  window.slidesk = {
     currentSlide: 0,
     slides: [],
     animationTimer: ${animationTimer}

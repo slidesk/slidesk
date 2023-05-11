@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gouz/talkflow.git"
+    "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
     "commander": "^10.0.1",

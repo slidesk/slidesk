@@ -1,81 +1,81 @@
 export const js = `
-window.talkflow.io.onmessage = (event) => {
+window.slidesk.io.onmessage = (event) => {
   const action = JSON.parse(event.data).action;
   if (action === "reload") location.reload();
-  else if (action === "next") window.talkflow.next();
-  else if (action === "previous") window.talkflow.previous();
+  else if (action === "next") window.slidesk.next();
+  else if (action === "previous") window.slidesk.previous();
 };
 
-window.talkflow.cleanOldSlide = (id) => {
-  window.talkflow.slides[id].classList.remove("👆", "no-🏄");
+window.slidesk.cleanOldSlide = (id) => {
+  window.slidesk.slides[id].classList.remove("👆", "no-🏄");
   setTimeout(() => {
-    window.talkflow.slides[id].querySelectorAll("img").forEach((img) => {
+    window.slidesk.slides[id].querySelectorAll("img").forEach((img) => {
       img.setAttribute("data-src", img.getAttribute("src"));
       img.removeAttribute("src");
     });
-  }, window.talkflow.animationTimer);
+  }, window.slidesk.animationTimer);
 };
 
-window.talkflow.changeSlide = () => {
-  window.talkflow.slides[window.talkflow.currentSlide].classList.remove("👈");
-  window.talkflow.slides[window.talkflow.currentSlide].classList.add("👆");
+window.slidesk.changeSlide = () => {
+  window.slidesk.slides[window.slidesk.currentSlide].classList.remove("👈");
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
   const h =
-    window.talkflow.slides[window.talkflow.currentSlide].querySelector("h2");
+    window.slidesk.slides[window.slidesk.currentSlide].querySelector("h2");
   window.location.hash =
     "/" +
     (h
       ? h.getAttribute("data-slug")
       : "" +
-        (window.talkflow.currentSlide ? window.talkflow.currentSlide : ""));
-  window.talkflow.io.send(
+        (window.slidesk.currentSlide ? window.slidesk.currentSlide : ""));
+  window.slidesk.io.send(
     JSON.stringify({
       action: "current",
-      payload: window.talkflow.slides[window.talkflow.currentSlide].outerHTML,
+      payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
     })
   );
-  window.talkflow.io.send(
+  window.slidesk.io.send(
     JSON.stringify({
       action: "future",
       payload:
-        window.talkflow.currentSlide !== window.talkflow.slides.length -1
-          ? window.talkflow.slides[window.talkflow.currentSlide + 1].outerHTML
+        window.slidesk.currentSlide !== window.slidesk.slides.length -1
+          ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
           : "",
     })
   );
-  window.talkflow.slides[window.talkflow.currentSlide]
+  window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll("img")
     .forEach((img) => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
   const $progress = document.querySelector('#tf-progress');
-  $progress.innerText = (window.talkflow.currentSlide + 1) + "/" + window.talkflow.slides.length;
-  $progress.style.width = (100 * (window.talkflow.currentSlide + 1) / window.talkflow.slides.length) + "%";
+  $progress.innerText = (window.slidesk.currentSlide + 1) + "/" + window.slidesk.slides.length;
+  $progress.style.width = (100 * (window.slidesk.currentSlide + 1) / window.slidesk.slides.length) + "%";
 };
 
-window.talkflow.next = () => {
-  if (window.talkflow.currentSlide != window.talkflow.slides.length - 1) {
-    window.talkflow.cleanOldSlide(window.talkflow.currentSlide);
-    window.talkflow.slides[window.talkflow.currentSlide].classList.add(
+window.slidesk.next = () => {
+  if (window.slidesk.currentSlide != window.slidesk.slides.length - 1) {
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add(
       "👈"
     );
-    window.talkflow.currentSlide++;
-    window.talkflow.changeSlide();
+    window.slidesk.currentSlide++;
+    window.slidesk.changeSlide();
   }
 };
 
-window.talkflow.previous = () => {
-  if (window.talkflow.currentSlide != 0) {
-    window.talkflow.cleanOldSlide(window.talkflow.currentSlide);
-    window.talkflow.currentSlide--;
-    window.talkflow.changeSlide();
+window.slidesk.previous = () => {
+  if (window.slidesk.currentSlide != 0) {
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.currentSlide--;
+    window.slidesk.changeSlide();
   }
 };
 
 window.onload = () => {
   const customcss = document.querySelector('#tf-customcss');
   if (customcss)
-    window.talkflow.io.send(
+    window.slidesk.io.send(
       JSON.stringify({
         action: "customcss",
         payload: customcss.getAttribute('href'),
@@ -83,41 +83,41 @@ window.onload = () => {
     );
   const customsvjs = document.querySelector('#tf-scripts').getAttribute('data-sv');
   if (customsvjs)
-      window.talkflow.io.send(
+      window.slidesk.io.send(
         JSON.stringify({
           action: "customsvjs",
           payload: customsvjs
         })
       );
-  window.talkflow.slides = document.querySelectorAll(".🎞️");
+  window.slidesk.slides = document.querySelectorAll(".🎞️");
   const loadingHash = window.location.hash.replace("#/", "");
   const slugs = [];
-  window.talkflow.slides.forEach((slide, i) => {
+  window.slidesk.slides.forEach((slide, i) => {
     const h = slide.querySelector("h2");
     slugs.push(h ? h.getAttribute("data-slug") : "" + (i ? i : ""));
   });
-  window.talkflow.currentSlide = slugs.indexOf(loadingHash);
-  if (window.talkflow.currentSlide < 0) window.talkflow.currentSlide = 0;
-  if (window.talkflow.currentSlide) {
-    for (let i = 0; i < window.talkflow.currentSlide; i++) {
-      window.talkflow.slides[i].classList.add("👈", "no-🏄");
+  window.slidesk.currentSlide = slugs.indexOf(loadingHash);
+  if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
+  if (window.slidesk.currentSlide) {
+    for (let i = 0; i < window.slidesk.currentSlide; i++) {
+      window.slidesk.slides[i].classList.add("👈", "no-🏄");
     }
     setTimeout(() => {
-      for (let i = 0; i < window.talkflow.currentSlide; i++) {
-        window.talkflow.slides[i].classList.remove("no-🏄");
+      for (let i = 0; i < window.slidesk.currentSlide; i++) {
+        window.slidesk.slides[i].classList.remove("no-🏄");
       }
-    }, window.talkflow.animationTimer);
+    }, window.slidesk.animationTimer);
   }
-  window.talkflow.slides[window.talkflow.currentSlide].classList.add(
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "👆",
     "no-🏄"
   );
-  window.talkflow.changeSlide();
+  window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
-      window.talkflow.previous();
+      window.slidesk.previous();
     } else if (e.key == "ArrowRight" || e.key == " ") {
-      window.talkflow.next();
+      window.slidesk.next();
     }
   });
 };  

@@ -88,10 +88,10 @@ export const speaker_view = `
       <aside id="tf-sv-notes"></aside>
     </div>
     <script>
-      window.talkflow = { io: {}, timer: document.querySelector("#tf-sd-timer") };
+      window.slidesk = { io: {}, timer: document.querySelector("#tf-sd-timer") };
       #SOCKETIO#
       const makeSlide = (slide) => slide.replace("data-src", "src");
-      window.talkflow.io.onmessage = (event) => {
+      window.slidesk.io.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.action === "current") {
           const current = document.querySelector("#tf-sv-current");
@@ -117,9 +117,9 @@ export const speaker_view = `
       };
       document.addEventListener("keydown", (e) => {
         if (e.key == "ArrowLeft") {
-          window.talkflow.io.send(JSON.stringify({ action: "previous" }));
+          window.slidesk.io.send(JSON.stringify({ action: "previous" }));
         } else if (e.key == "ArrowRight" || e.key == " ") {
-          window.talkflow.io.send(JSON.stringify({ action: "next" }));
+          window.slidesk.io.send(JSON.stringify({ action: "next" }));
         }
       });
       let startTime = null;
@@ -136,9 +136,9 @@ export const speaker_view = `
       }
       setInterval(() => {
         if (startTime)
-          window.talkflow.timer.innerText = toHHMMSS((Date.now() - startTime) / 1000);
+          window.slidesk.timer.innerText = toHHMMSS((Date.now() - startTime) / 1000);
       }, 1000);
-      window.talkflow.timer.addEventListener("click", () => {
+      window.slidesk.timer.addEventListener("click", () => {
         startTime = Date.now();
       });
     </script>

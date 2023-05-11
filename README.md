@@ -13,17 +13,17 @@ npm i -g slidesk
 
 ## How to create a presentation
 
-In a directory, create a `main.tfs` file which is the entry point of your presentation.
+In a directory, create a `main.sdf` file which is the entry point of your presentation.
 
 ```
 slidesk <yourdirectory>
 ```
 
-will convert the `main.tfs` into an html file and serve it, it will open the default browser too.
+will convert the `main.sdf` into an html file and serve it, it will open the default browser too.
 
 A livereload is activated per default.
 
-## TFS Syntax
+## sdf Syntax
 
 ```
 # Main title
@@ -81,7 +81,7 @@ In your `custom.css` file, you can override this variables:
 }
 ```
 
-Then, in your `main.tfs` file you have to prepend this line:
+Then, in your `main.sdf` file you have to prepend this line:
 
 ```
 :custom_css: location/of/your/custom.css
@@ -104,7 +104,7 @@ A comment in a page correspond to the notes for the speaker.
 
 ## Add JS on your slides & Speakers Notes
 
-With a custom header in the `main.tfs` file, you can add a script file for the slide part, or the speaker notes part:
+With a custom header in the `main.sdf` file, you can add a script file for the slide part, or the speaker notes part:
 
 ```
 :custom_css: assets/custom.css
