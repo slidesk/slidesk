@@ -122,6 +122,8 @@ export default class Interpreter {
                 .replace(/[^\w\s-]/g, "")
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
+            } else if (paragraph.startsWith("<")) {
+              return paragraph;
             } else if (paragraph.length) {
               return `<p>${this.#formatting(paragraph)}</p>`;
             }
