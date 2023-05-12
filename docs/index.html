@@ -1,0 +1,290 @@
+<!DOCTYPE html><html><head><link rel="icon" href="/favicon.svg"><title>Example's talk</title><style>:root { --animationTimer: 300ms; }
+:root {
+  font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --tf-heading1-size: 3.75em;
+  --tf-heading1-line-height: 1;
+  --tf-heading2-size: 2.25em;
+  --tf-heading2-line-height: 1;
+  --tf-heading3-size: 1.75em;
+  --tf-heading3-line-height: 1;
+  --tf-text-size: 40px;
+  --tf-text-line-height: 1.2;
+
+  --tf-background-color: #242424;
+  --tf-heading-color: rgba(255, 255, 255, 0.97);
+  --tf-text-color: rgba(255, 255, 255, 0.87);
+  --tf-primary-color: rgb(37, 186, 146);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+p, img {
+  margin: 0.5rem auto;
+}
+
+a, .b {
+  color: var(--tf-primary-color);
+}
+
+.b {
+  font-weight: bold;
+}
+
+.i {
+  font-style: italic;
+}
+
+.pre {
+  font-family: monospace;
+  white-space: pre;
+}
+
+.s {
+  text-decoration-line: line-through;
+}
+
+.u {
+  text-decoration-line: underline;
+}
+
+#tf-progress {
+  background-color: var(--tf-primary-color);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0.25rem;
+  z-index: 1;
+}
+
+.📽️ {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--tf-background-color);
+  color: var(--tf-text-color);
+  font-size: var(--tf-text-size);
+  line-height: var(--tf-text-line-height);
+}
+
+.🎞️ {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(100%);
+  transition: all var(--animationTimer) ease;
+  padding: 30px;
+}
+
+.🎞️ h1, h2, h3 {
+    margin: 0;
+    text-align: center;
+    color: var(--tf-heading-color);
+}
+
+.🎞️ h1 {
+    font-size: var(--tf-heading1-size);
+    line-height: var(--tf-heading1-line-height);
+    margin-bottom: 20px;
+}
+
+.🎞️ h2 {
+    font-size: var(--tf-heading2-size);
+    line-height: var(--tf-heading2-line-height);
+    margin-bottom: 20px;
+}
+
+.🎞️ h3 {
+    font-size: var(--tf-heading3-size);
+    line-height: var(--tf-heading3-line-height);
+    margin-bottom: 20px;
+}
+
+.🎞️.no-🏄 {
+  transition-duration: 0ms;
+}
+
+.🎞️.👆 {
+  transform: translateX(0);
+}
+
+.🎞️.👈 {
+  transform: translateX(-100%);
+}
+
+.🎞️ .📝 {
+  display: none;
+}
+
+.🎞️ img {
+  max-height: 90%;
+}
+;</style></head><body><main class="📽️"><section class="🎞️"><h1>Example's talk</h1><p>How to create a talk with slidesk</p></section><section class="🎞️"><h2 data-slug="slide-1">Slide 1</h2><p>A Slide is define by a line which starts with 2 '#' and a space after</p></section><section class="🎞️"><h2 data-slug="inclusion-of-file-to-structurate-your-file-like-your-talk">Inclusion of file to structurate your file like your talk</h2><p>A line which begins with this below syntax</p><p><span class="pre">!include(./another_file.tfs)</span></p><p>will include the content of the file</p><p>It works with other file types.</p></section><section class="🎞️"><h2 data-slug="syntaxic-words">Syntaxic words</h2><p>The TFS, for slidesk Syntax, allows to change the font style</p></section><section class="🎞️"><p>A word/phrase wrapped by "_" will display in italic.</p><p>An <span class="i">italic</span> word can be in a phrase</p></section><section class="🎞️"><p>Wrapped with a "*" will display in bold</p><p><span class="b">bold</span></p></section><section class="🎞️"><p>Wrapped with a "`" will display as code</p><p><span class="pre">console.log("test")</span></p></section><section class="🎞️"><p>Wrapped with a "˜" will display as underlined</p><p><span class="u">underline</span></p></section><section class="🎞️"><p>Wrapped with a "=" will display as line through</p><p><span class="s">line through</span></p></section><section class="🎞️"><h2 data-slug="image">Image</h2><p>With a <span class="pre">!image(path of your image)</span> at the beginning of a line will display</p><img data-src="SD.png"></section><section class="🎞️"><h2 data-slug="list">List</h2><ul><li>list</li><li>end of a list<ul><li>sublist</li><li>sub</li></ul></li></ul></section><div id="tf-progress">X/X</div></main><script type="module" id="tf-scripts" data-sv="">window.slidesk = {
+    currentSlide: 0,
+    slides: [],
+    animationTimer: 300
+  };
+  
+  
+window.slidesk.io.onmessage = (event) => {
+  const action = JSON.parse(event.data).action;
+  if (action === "reload") location.reload();
+  else if (action === "next") window.slidesk.next();
+  else if (action === "previous") window.slidesk.previous();
+};
+
+window.slidesk.cleanOldSlide = (id) => {
+  window.slidesk.slides[id].classList.remove("👆", "no-🏄");
+  setTimeout(() => {
+    window.slidesk.slides[id].querySelectorAll("img").forEach((img) => {
+      img.setAttribute("data-src", img.getAttribute("src"));
+      img.removeAttribute("src");
+    });
+  }, window.slidesk.animationTimer);
+};
+
+window.slidesk.changeSlide = () => {
+  window.slidesk.slides[window.slidesk.currentSlide].classList.remove("👈");
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
+  const h =
+    window.slidesk.slides[window.slidesk.currentSlide].querySelector("h2");
+  window.location.hash =
+    "/" +
+    (h
+      ? h.getAttribute("data-slug")
+      : "" +
+        (window.slidesk.currentSlide ? window.slidesk.currentSlide : ""));
+  window.slidesk.io.send(
+    JSON.stringify({
+      action: "current",
+      payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
+    })
+  );
+  window.slidesk.io.send(
+    JSON.stringify({
+      action: "future",
+      payload:
+        window.slidesk.currentSlide !== window.slidesk.slides.length -1
+          ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
+          : "",
+    })
+  );
+  window.slidesk.slides[window.slidesk.currentSlide]
+    .querySelectorAll("img")
+    .forEach((img) => {
+      img.setAttribute("src", img.getAttribute("data-src"));
+      img.removeAttribute("data-src");
+    });
+  const $progress = document.querySelector('#tf-progress');
+  $progress.innerText = (window.slidesk.currentSlide + 1) + "/" + window.slidesk.slides.length;
+  $progress.style.width = (100 * (window.slidesk.currentSlide + 1) / window.slidesk.slides.length) + "%";
+};
+
+window.slidesk.next = () => {
+  if (window.slidesk.currentSlide != window.slidesk.slides.length - 1) {
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+      "👈"
+    );
+    window.slidesk.currentSlide++;
+    window.slidesk.changeSlide();
+  }
+};
+
+window.slidesk.previous = () => {
+  if (window.slidesk.currentSlide != 0) {
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.currentSlide--;
+    window.slidesk.changeSlide();
+  }
+};
+
+window.onload = () => {
+  const customcss = document.querySelector('#tf-customcss');
+  if (customcss)
+    window.slidesk.io.send(
+      JSON.stringify({
+        action: "customcss",
+        payload: customcss.getAttribute('href'),
+      })
+    );
+  const customsvjs = document.querySelector('#tf-scripts').getAttribute('data-sv');
+  if (customsvjs)
+      window.slidesk.io.send(
+        JSON.stringify({
+          action: "customsvjs",
+          payload: customsvjs
+        })
+      );
+  window.slidesk.slides = document.querySelectorAll(".🎞️");
+  const loadingHash = window.location.hash.replace("#/", "");
+  const slugs = [];
+  window.slidesk.slides.forEach((slide, i) => {
+    const h = slide.querySelector("h2");
+    slugs.push(h ? h.getAttribute("data-slug") : "" + (i ? i : ""));
+  });
+  window.slidesk.currentSlide = slugs.indexOf(loadingHash);
+  if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
+  if (window.slidesk.currentSlide) {
+    for (let i = 0; i < window.slidesk.currentSlide; i++) {
+      window.slidesk.slides[i].classList.add("👈", "no-🏄");
+    }
+    setTimeout(() => {
+      for (let i = 0; i < window.slidesk.currentSlide; i++) {
+        window.slidesk.slides[i].classList.remove("no-🏄");
+      }
+    }, window.slidesk.animationTimer);
+  }
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+    "👆",
+    "no-🏄"
+  );
+  window.slidesk.changeSlide();
+  document.addEventListener("keydown", (e) => {
+    if (e.key == "ArrowLeft") {
+      window.slidesk.previous();
+    } else if (e.key == "ArrowRight" || e.key == " ") {
+      window.slidesk.next();
+    }
+  });
+};</script></body></html>
