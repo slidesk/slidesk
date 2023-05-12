@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "main": "index.js",
   "type": "module",
   "devDependencies": {
@@ -15,7 +15,7 @@
     "prettier": "^2.8.4"
   },
   "bin": {
-    "slidesk": "./index.js"
+    "slidesk": "./bin/index.js"
   },
   "engines": {
     "node": ">=12"
@@ -26,16 +26,17 @@
   },
   "dependencies": {
     "commander": "^10.0.1",
+    "html-minifier-terser": "^7.2.0",
     "mime": "^3.0.0",
     "open": "^9.1.0",
     "ws": "^8.13.0"
   },
   "imports": {
-    "#assets_html": "./templates/layout.html.js",
-    "#assets_css": "./templates/theme.css.js",
-    "#assets_js": "./templates/main.js.js",
-    "#interpreter": "./core/Interpreter.js",
-    "#server": "./core/Server.js",
-    "#speaker_view": "./templates/speaker-view.html.js"
+    "#assets_html": "./src/templates/layout.html.js",
+    "#assets_css": "./src/templates/theme.css.js",
+    "#assets_js": "./src/templates/main.js.js",
+    "#interpreter": "./src/core/Interpreter.js",
+    "#server": "./src/core/Server.js",
+    "#speaker_view": "./src/templates/speaker-view.html.js"
   }
 }
