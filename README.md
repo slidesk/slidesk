@@ -12,6 +12,20 @@ The `example` rendering is visible on https://gouz.github.io/slidesk/
 npm i -g slidesk
 ```
 
+## Usage
+
+```sh
+Usage: slidesk [options] <talk>
+
+Convert & present a talk
+
+Options:
+  -p, --port <int>  port (default: 1337)
+  --open            open the default browser
+  --save            save the html file
+  -h, --help        display help for command
+```
+
 ## How to create a presentation
 
 In a directory, create a `main.sdf` file which is the entry point of your presentation.
