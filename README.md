@@ -4,6 +4,7 @@ A new talk engine like RevealJS.
 
 I want to use a simplified language like MarkDown or AsciiDoc to generate the presentation.
 
+The `example` rendering is visible on https://gouz.github.io/slidesk/
 
 ## Installation
 
