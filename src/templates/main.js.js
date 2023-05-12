@@ -1,10 +1,12 @@
 export const js = `
-window.slidesk.io.onmessage = (event) => {
-  const action = JSON.parse(event.data).action;
-  if (action === "reload") location.reload();
-  else if (action === "next") window.slidesk.next();
-  else if (action === "previous") window.slidesk.previous();
-};
+if (window.slidesk.io) {
+  window.slidesk.io.onmessage = (event) => {
+    const action = JSON.parse(event.data).action;
+    if (action === "reload") location.reload();
+    else if (action === "next") window.slidesk.next();
+    else if (action === "previous") window.slidesk.previous();
+  };
+}
 
 window.slidesk.cleanOldSlide = (id) => {
   window.slidesk.slides[id].classList.remove("👆", "no-🏄");
@@ -25,40 +27,42 @@ window.slidesk.changeSlide = () => {
     "/" +
     (h
       ? h.getAttribute("data-slug")
-      : "" +
-        (window.slidesk.currentSlide ? window.slidesk.currentSlide : ""));
-  window.slidesk.io.send(
-    JSON.stringify({
-      action: "current",
-      payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
-    })
-  );
-  window.slidesk.io.send(
-    JSON.stringify({
-      action: "future",
-      payload:
-        window.slidesk.currentSlide !== window.slidesk.slides.length -1
-          ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
-          : "",
-    })
-  );
+      : "" + (window.slidesk.currentSlide ? window.slidesk.currentSlide : ""));
+  if (window.slidesk.io) {
+    window.slidesk.io.send(
+      JSON.stringify({
+        action: "current",
+        payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
+      })
+    );
+    window.slidesk.io.send(
+      JSON.stringify({
+        action: "future",
+        payload:
+          window.slidesk.currentSlide !== window.slidesk.slides.length - 1
+            ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
+            : "",
+      })
+    );
+  }
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll("img")
     .forEach((img) => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
-  const $progress = document.querySelector('#tf-progress');
-  $progress.innerText = (window.slidesk.currentSlide + 1) + "/" + window.slidesk.slides.length;
-  $progress.style.width = (100 * (window.slidesk.currentSlide + 1) / window.slidesk.slides.length) + "%";
+  const $progress = document.querySelector("#tf-progress");
+  $progress.innerText =
+    window.slidesk.currentSlide + 1 + "/" + window.slidesk.slides.length;
+  $progress.style.width =
+    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
+    "%";
 };
 
 window.slidesk.next = () => {
   if (window.slidesk.currentSlide != window.slidesk.slides.length - 1) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
-    window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-      "👈"
-    );
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add("👈");
     window.slidesk.currentSlide++;
     window.slidesk.changeSlide();
   }
@@ -73,22 +77,24 @@ window.slidesk.previous = () => {
 };
 
 window.onload = () => {
-  const customcss = document.querySelector('#tf-customcss');
+  const customcss = document.querySelector("#tf-customcss");
   if (customcss)
     window.slidesk.io.send(
       JSON.stringify({
         action: "customcss",
-        payload: customcss.getAttribute('href'),
+        payload: customcss.getAttribute("href"),
       })
     );
-  const customsvjs = document.querySelector('#tf-scripts').getAttribute('data-sv');
+  const customsvjs = document
+    .querySelector("#tf-scripts")
+    .getAttribute("data-sv");
   if (customsvjs)
-      window.slidesk.io.send(
-        JSON.stringify({
-          action: "customsvjs",
-          payload: customsvjs
-        })
-      );
+    window.slidesk.io.send(
+      JSON.stringify({
+        action: "customsvjs",
+        payload: customsvjs,
+      })
+    );
   window.slidesk.slides = document.querySelectorAll(".🎞️");
   const loadingHash = window.location.hash.replace("#/", "");
   const slugs = [];
@@ -120,5 +126,5 @@ window.onload = () => {
       window.slidesk.next();
     }
   });
-};  
+};
 `;
