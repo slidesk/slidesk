@@ -31,14 +31,14 @@ export default class Interpreter {
       template = template.replace(
         "#SCRIPT#",
         `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
-  window.slidesk = {
-    currentSlide: 0,
-    slides: [],
-    animationTimer: ${animationTimer}
-  };
-  #SOCKETS#
-  #CONTROLS#
-</script>${customJS}`
+          window.slidesk = {
+            currentSlide: 0,
+            slides: [],
+            animationTimer: ${animationTimer}
+          };
+          #SOCKETS#
+          #CONTROLS#
+        </script>${customJS}`
           .replace(
             "#SOCKETS#",
             !options.save ? socket.replace("#PORT#", options.port) : ""
