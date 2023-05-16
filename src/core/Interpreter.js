@@ -24,25 +24,23 @@ export default class Interpreter {
         "#STYLE#",
         `:root { --animationTimer: ${animationTimer}ms; }${css}${
           customCSS.length
-            ? `</style><link id="tf-customcss" rel="stylesheet" href="${customCSS}"><style>`
+            ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
             : ""
         }`
       );
       template = template.replace(
         "#SCRIPT#",
-        `
-<script type="module" id="tf-scripts" data-sv="${customSVJS}">
+        `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
   window.slidesk = {
     currentSlide: 0,
     slides: [],
     animationTimer: ${animationTimer}
   };
-  #SOCKETIO#
+  #SOCKETS#
   #CONTROLS#
-</script>${customJS}
-`
+</script>${customJS}`
           .replace(
-            "#SOCKETIO#",
+            "#SOCKETS#",
             !options.save ? socket.replace("#PORT#", options.port) : ""
           )
           .replace("#CONTROLS#", js)
@@ -57,7 +55,9 @@ export default class Interpreter {
 
       minify(template, {
         collapseWhitespace: true,
-        removeEmptyElements: false,
+        removeEmptyElements: true,
+        minifyCSS: true,
+        minifyJS: true,
       }).then((html) => {
         resolve(html);
       });
@@ -93,18 +93,9 @@ export default class Interpreter {
                 .split("\n")
                 .slice(1)
                 .join("<br/>")}</aside>`;
-            } else if (paragraph.startsWith(":custom_css:")) {
-              customCSS = paragraph.replace(":custom_css:", "").trim();
-              return "";
-            } else if (paragraph.startsWith(":custom_js:")) {
-              customJS = `<script src="${paragraph
-                .replace(":custom_js:", "")
-                .trim()}"></script>`;
-              return "";
-            } else if (paragraph.startsWith(":custom_sv_js:")) {
-              customSVJS = paragraph.replace(":custom_sv_js:", "").trim();
-              return "";
-            } else if (paragraph.startsWith("# "))
+            } else if (paragraph.startsWith("/::"))
+              return this.#config(paragraph);
+            else if (paragraph.startsWith("# "))
               return `<h1>${paragraph.replace("# ", "")}</h1>`;
             else if (paragraph.startsWith("!image"))
               return this.#image(paragraph);
@@ -138,12 +129,26 @@ export default class Interpreter {
       .join("");
   }
 
+  #config(data) {
+    [...data.split("\n")].forEach((line) => {
+      if (line.startsWith("custom_css:"))
+        customCSS = line.replace("custom_css:", "").trim();
+      else if (line.startsWith("custom_js:"))
+        customJS = `<script src="${line
+          .replace("custom_js:", "")
+          .trim()}"></script>`;
+      else if (line.startsWith("custom_sv_js"))
+        customSVJS = line.replace("custom_sv_js:", "").trim();
+    });
+    return "";
+  }
+
   #formatting(html) {
     // italic, bold
     [
       ["_", "i"],
       ["\\*", "b"],
-      ["`", "pre"],
+      ["`", "code"],
       ["˜", "u"],
       ["=", "s"],
     ].forEach((couple) => {
@@ -161,7 +166,7 @@ export default class Interpreter {
     // links
     [
       ...html.matchAll(
-        /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g
       ),
     ].map((match) => {
       html = html.replace(
@@ -170,16 +175,8 @@ export default class Interpreter {
       );
     });
     return html
-      .replace("<i>", '<span class="i">')
-      .replace("<b>", '<span class="b">')
-      .replace("<pre>", '<span class="pre">')
-      .replace("<u>", '<span class="u">')
-      .replace("<s>", '<span class="s">')
-      .replace("</i>", "</span>")
-      .replace("</b>", "</span>")
-      .replace("</u>", "</span>")
-      .replace("</s>", "</span>")
-      .replace("</pre>", "</span>");
+      .replace(/<(i|b|u|s|code)>/g, '<span class="$1">')
+      .replace(/<\/(i|b|u|s|code)>/g, "</span>");
   }
 
   #image(data) {

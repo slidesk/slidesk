@@ -51,7 +51,7 @@ window.slidesk.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
-  const $progress = document.querySelector("#tf-progress");
+  const $progress = document.querySelector("#sd-progress");
   $progress.innerText =
     window.slidesk.currentSlide + 1 + "/" + window.slidesk.slides.length;
   $progress.style.width =
@@ -77,7 +77,7 @@ window.slidesk.previous = () => {
 };
 
 window.onload = () => {
-  const customcss = document.querySelector("#tf-customcss");
+  const customcss = document.querySelector("#sd-customcss");
   if (customcss)
     window.slidesk.io.send(
       JSON.stringify({
@@ -86,7 +86,7 @@ window.onload = () => {
       })
     );
   const customsvjs = document
-    .querySelector("#tf-scripts")
+    .querySelector("#sd-scripts")
     .getAttribute("data-sv");
   if (customsvjs)
     window.slidesk.io.send(

@@ -24,7 +24,7 @@ export default class Server {
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.write(
           speaker_view.replace(
-            "#SOCKETIO#",
+            "#SOCKETS#",
             `window.slidesk.io = new WebSocket("ws://localhost:${port}");`
           ),
           "utf-8"

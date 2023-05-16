@@ -11,7 +11,7 @@ export const html = `
   <body>
     <main class="📽️">
       #SECTIONS#
-      <div id="tf-progress">X/X</div>
+      <div id="sd-progress">X/X</div>
     </main>
     #SCRIPT#
   </body>

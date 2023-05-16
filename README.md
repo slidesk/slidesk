@@ -60,7 +60,7 @@ _italic_
 
 ```
 
-See the example directory to understand how it works or run 
+See the example directory to understand how it works or run
 
 ```
 node index.js example
@@ -72,27 +72,27 @@ In your `custom.css` file, you can override this variables:
 
 ```
 :root {
-  --tf-heading1-size: 3.75em;
-  --tf-heading1-line-height: 1;
-  --tf-heading2-size: 2.25em;
-  --tf-heading2-line-height: 1;
-  --tf-heading3-size: 1.75em;
-  --tf-heading3-line-height: 1;
-  --tf-text-size: 40px;
-  --tf-text-line-height: 1.2;
+  --sd-heading1-size: 3.75em;
+  --sd-heading1-line-height: 1;
+  --sd-heading2-size: 2.25em;
+  --sd-heading2-line-height: 1;
+  --sd-heading3-size: 1.75em;
+  --sd-heading3-line-height: 1;
+  --sd-text-size: 40px;
+  --sd-text-line-height: 1.2;
 
-  --tf-background-color: #242424;;
-  --tf-heading-color: rgba(255, 255, 255, 0.97);
-  --tf-text-color: rgba(255, 255, 255, 0.87);
-  --tf-primary-color: rgb(37, 186, 146);
+  --sd-background-color: #242424;;
+  --sd-heading-color: rgba(255, 255, 255, 0.97);
+  --sd-text-color: rgba(255, 255, 255, 0.87);
+  --sd-primary-color: rgb(37, 186, 146);
 
 
   /* SpeakerView */
-  --tf-sv-timer-size: 80px;
-  --tf-sv-text-size: 40px;
-  --tf-sv-text-line-height: 1.2;
-  --tf-sv-background-color: #242424;
-  --tf-sv-text-color: rgba(255, 255, 255, 0.87);
+  --sd-sv-timer-size: 80px;
+  --sd-sv-text-size: 40px;
+  --sd-sv-text-line-height: 1.2;
+  --sd-sv-background-color: #242424;
+  --sd-sv-text-color: rgba(255, 255, 255, 0.87);
 }
 ```
 
@@ -108,7 +108,6 @@ Then, in your `main.sdf` file you have to prepend this line:
 ## My title .[my-class my-other-class]
 ```
 
-
 ## Speakers Notes
 
 ```
@@ -122,12 +121,11 @@ A comment in a page correspond to the notes for the speaker.
 With a custom header in the `main.sdf` file, you can add a script file for the slide part, or the speaker notes part:
 
 ```
-:custom_css: assets/custom.css
-
-:custom_js: assets/custom.js
-
-:custom_sv_js: assets/customsv.js
-
+/::
+custom_css: assets/custom.css
+custom_js: assets/custom.js
+custom_sv_js: assets/customsv.js
+::/
 ```
 
 Warning, it's very important to space this lines with a new line

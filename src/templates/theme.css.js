@@ -12,19 +12,19 @@ export const css = `
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --tf-heading1-size: 3.75em;
-  --tf-heading1-line-height: 1;
-  --tf-heading2-size: 2.25em;
-  --tf-heading2-line-height: 1;
-  --tf-heading3-size: 1.75em;
-  --tf-heading3-line-height: 1;
-  --tf-text-size: 40px;
-  --tf-text-line-height: 1.2;
+  --sd-heading1-size: 3.75em;
+  --sd-heading1-line-height: 1;
+  --sd-heading2-size: 2.25em;
+  --sd-heading2-line-height: 1;
+  --sd-heading3-size: 1.75em;
+  --sd-heading3-line-height: 1;
+  --sd-text-size: 40px;
+  --sd-text-line-height: 1.2;
 
-  --tf-background-color: #242424;
-  --tf-heading-color: rgba(255, 255, 255, 0.97);
-  --tf-text-color: rgba(255, 255, 255, 0.87);
-  --tf-primary-color: rgb(37, 186, 146);
+  --sd-background-color: #242424;
+  --sd-heading-color: rgba(255, 255, 255, 0.97);
+  --sd-text-color: rgba(255, 255, 255, 0.87);
+  --sd-primary-color: rgb(37, 186, 146);
 }
 
 *, *::before, *::after {
@@ -57,7 +57,7 @@ p, img {
 }
 
 a, .b {
-  color: var(--tf-primary-color);
+  color: var(--sd-primary-color);
 }
 
 .b {
@@ -68,7 +68,7 @@ a, .b {
   font-style: italic;
 }
 
-.pre {
+.code, pre {
   font-family: monospace;
   white-space: pre;
 }
@@ -81,8 +81,8 @@ a, .b {
   text-decoration-line: underline;
 }
 
-#tf-progress {
-  background-color: var(--tf-primary-color);
+#sd-progress {
+  background-color: var(--sd-primary-color);
   position: absolute;
   left: 0;
   bottom: 0;
@@ -95,10 +95,10 @@ a, .b {
   height: 100%;
   position: relative;
   overflow: hidden;
-  background-color: var(--tf-background-color);
-  color: var(--tf-text-color);
-  font-size: var(--tf-text-size);
-  line-height: var(--tf-text-line-height);
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+  font-size: var(--sd-text-size);
+  line-height: var(--sd-text-line-height);
 }
 
 .🎞️ {
@@ -119,24 +119,24 @@ a, .b {
 .🎞️ h1, h2, h3 {
     margin: 0;
     text-align: center;
-    color: var(--tf-heading-color);
+    color: var(--sd-heading-color);
 }
 
 .🎞️ h1 {
-    font-size: var(--tf-heading1-size);
-    line-height: var(--tf-heading1-line-height);
+    font-size: var(--sd-heading1-size);
+    line-height: var(--sd-heading1-line-height);
     margin-bottom: 20px;
 }
 
 .🎞️ h2 {
-    font-size: var(--tf-heading2-size);
-    line-height: var(--tf-heading2-line-height);
+    font-size: var(--sd-heading2-size);
+    line-height: var(--sd-heading2-line-height);
     margin-bottom: 20px;
 }
 
 .🎞️ h3 {
-    font-size: var(--tf-heading3-size);
-    line-height: var(--tf-heading3-line-height);
+    font-size: var(--sd-heading3-size);
+    line-height: var(--sd-heading3-line-height);
     margin-bottom: 20px;
 }
 

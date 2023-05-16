@@ -38,5 +38,9 @@
     "#interpreter": "./src/core/Interpreter.js",
     "#server": "./src/core/Server.js",
     "#speaker_view": "./src/templates/speaker-view.html.js"
+  },
+  "scripts": {
+    "demo": "node bin/index.js example",
+    "demo-open": "node bin/index.js example --open"
   }
 }
