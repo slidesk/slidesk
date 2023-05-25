@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
+/* eslint-disable import/no-unresolved */
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import { readFile } from "fs";
 import mime from "mime";
-import { speaker_view } from "#speaker_view";
+import { speakerView } from "#speaker_view";
 
 export default class Server {
-  constructor(html, port, path) {
+  constructor(html, options, path) {
     this.html = html;
     this.path = path;
     this.io = [];
@@ -23,20 +25,21 @@ export default class Server {
       } else if (req.url === "/notes") {
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.write(
-          speaker_view.replace(
+          speakerView.replace(
             "#SOCKETS#",
-            `window.slidesk.io = new WebSocket("ws://localhost:${port}");`
+            `window.slidesk.io = new WebSocket("ws://localhost:${options.port}");`
           ),
           "utf-8"
         );
         res.end();
       } else {
         const file = req.url.match(
-          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
         )
           ? req.url
           : `${this.path}${req.url}`;
-        readFile(file, function (err, data) {
+        // eslint-disable-next-line consistent-return
+        readFile(file, (err, data) => {
           if (err) {
             res.writeHead(404);
             return res.end("File not found.");
@@ -60,12 +63,11 @@ export default class Server {
         });
       });
     });
-    httpServer.listen(port, () =>
-      console.log(`
-📽️\thttp://localhost:${port}
-📝\thttp://localhost:${port}/notes
-`)
-    );
+    httpServer.listen(options.port, () => {
+      console.log(`📽️\thttp://localhost:${options.port}`);
+      if (options.notes)
+        console.log(`📝\thttp://localhost:${options.port}/notes`);
+    });
   }
 
   setHTML(html) {

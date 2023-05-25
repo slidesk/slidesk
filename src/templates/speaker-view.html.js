@@ -1,6 +1,6 @@
 import { css } from "#assets_css";
 
-export const speaker_view = `
+export const speakerView = `
 <!DOCTYPE html>
 <html>
   <head>

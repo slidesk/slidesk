@@ -21,13 +21,7 @@ window.slidesk.cleanOldSlide = (id) => {
 window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove("👈");
   window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
-  const h =
-    window.slidesk.slides[window.slidesk.currentSlide].querySelector("h2");
-  window.location.hash =
-    "/" +
-    (h
-      ? h.getAttribute("data-slug")
-      : "" + (window.slidesk.currentSlide ? window.slidesk.currentSlide : ""));
+  window.location.hash = "/" + window.slidesk.slides[window.slidesk.currentSlide].getAttribute("data-slug");
   if (window.slidesk.io) {
     window.slidesk.io.send(
       JSON.stringify({

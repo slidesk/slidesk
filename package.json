@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "index.js",
   "type": "module",
   "devDependencies": {
@@ -41,6 +41,8 @@
   },
   "scripts": {
     "demo": "node bin/index.js example",
-    "demo-open": "node bin/index.js example --open"
+    "demo-open": "node bin/index.js example --open",
+    "lint": "eslint --fix bin/index.js src/core/Interpreter.js src/core/Server.js",
+    "format": "prettier -w ."
   }
 }

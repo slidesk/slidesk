@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { existsSync, readFileSync } from "fs";
 import { minify } from "html-minifier-terser";
 import { html } from "#assets_html";
@@ -13,12 +14,13 @@ let customJS = "";
 let customSVJS = "";
 
 export default class Interpreter {
-  constructor(mainFile, options) {
-    return new Promise((resolve, reject) => {
+  static convert = (mainFile, options) =>
+    // eslint-disable-next-line no-constructor-return
+    new Promise((resolve, reject) => {
       if (!existsSync(mainFile)) {
-        reject("🤔 main.tfs was not found");
+        reject(new Error("🤔 main.tfs was not found"));
       }
-      let presentation = this.#sliceSlides(this.#includes(mainFile));
+      const presentation = this.#sliceSlides(this.#includes(mainFile));
       let template = html;
       template = template.replace(
         "#STYLE#",
@@ -45,11 +47,9 @@ export default class Interpreter {
           )
           .replace("#CONTROLS#", js)
       );
-      presentation.match(/<h1>(.)*<\/h1>/g).map((title) => {
-        template = template.replace(
-          "#TITLE#",
-          title.replace("<h1>", "").replace("</h1>", "")
-        );
+      // eslint-disable-next-line array-callback-return
+      [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
+        template = template.replace("#TITLE#", title[1]);
       });
       template = template.replace("#SECTIONS#", presentation);
 
@@ -58,15 +58,15 @@ export default class Interpreter {
         removeEmptyElements: true,
         minifyCSS: true,
         minifyJS: true,
-      }).then((html) => {
-        resolve(html);
+      }).then((minified) => {
+        resolve(minified);
       });
     });
-  }
 
-  #includes(file) {
+  static #includes = (file) => {
     let data = readFileSync(file, "utf8");
-    [...data.matchAll(/\n!include\(([^\()]+)\)/g)].map(
+    [...data.matchAll(/\n!include\(([^()]+)\)/g)].forEach(
+      // eslint-disable-next-line no-return-assign
       (match) =>
         (data = data.replace(
           match[0],
@@ -76,60 +76,54 @@ export default class Interpreter {
         ))
     );
     return data;
-  }
+  };
 
-  #sliceSlides(presentation) {
-    const ccl = {};
-    return [...presentation.split("\n## ")]
-      .map((slide, s) => {
-        return slide
-          .replace(/\\r/g, "")
-          .split("\n\n")
-          .map((paragraph, p) => {
-            if (paragraph.startsWith("/*")) {
-              return `<aside class="📝">${paragraph
-                .replace("/*", "")
-                .replace("*/", "")
-                .split("\n")
-                .slice(1)
-                .join("<br/>")}</aside>`;
-            } else if (paragraph.startsWith("/::"))
-              return this.#config(paragraph);
-            else if (paragraph.startsWith("# "))
-              return `<h1>${paragraph.replace("# ", "")}</h1>`;
-            else if (paragraph.startsWith("!image"))
-              return this.#image(paragraph);
-            else if (paragraph.startsWith("- ") || paragraph.startsWith("\n- "))
-              return this.#list(paragraph);
-            else if (p == 0 && paragraph.length) {
-              const spl = [...paragraph.split(".[")];
-              if (spl.length != 1) {
-                ccl[`s_${s}`] = spl[1].replace("]", "");
-                paragraph = spl[0];
-              }
-              return `<h2 data-slug="${paragraph
-                .toLowerCase()
-                .trim()
-                .replace(/[^\w\s-]/g, "")
-                .replace(/[\s_-]+/g, "-")
-                .replace(/^-+|-+$/g, "")}">${paragraph}</h2>`;
-            } else if (paragraph.startsWith("<")) {
-              return paragraph;
-            } else if (paragraph.length) {
-              return `<p>${this.#formatting(paragraph)}</p>`;
-            }
-            return "";
-          })
-          .join("");
-      })
-      .map(
-        (slide, s) =>
-          `<section class="🎞️ ${ccl[`s_${s}`] ?? ""}">${slide}</section>`
-      )
+  static #sliceSlides = (presentation) =>
+    [...presentation.split("\n## ")]
+      .map((slide, s) => this.#transform(slide, s))
       .join("");
-  }
 
-  #config(data) {
+  static #transform = (slide, s) => {
+    let classes = "";
+    let slug = null;
+    const content = slide
+      .replace(/\\r/g, "")
+      .split("\n\n")
+      .map((paragraph, p) => {
+        if (paragraph.startsWith("/::")) return this.#config(paragraph);
+        if (paragraph.startsWith("# ")) return this.#mainTitle(paragraph);
+        if (paragraph.startsWith("/*")) return this.#comments(paragraph);
+        if (paragraph.startsWith("!image")) return this.#image(paragraph);
+        if (paragraph.startsWith("- ")) return this.#list(paragraph);
+        if (paragraph.startsWith("<")) return paragraph;
+        if (p === 0) {
+          const spl = [...paragraph.split(".[")];
+          if (spl.length !== 1) {
+            classes = spl[1].replace("]", "");
+          }
+          if (paragraph !== "") {
+            slug = this.#slugify(paragraph);
+            return this.#formatting(spl[0], "h2");
+          }
+        }
+        if (paragraph.length) return this.#formatting(paragraph, "p");
+        return "";
+      })
+      .join("");
+    return `<section class="🎞️ ${classes}" data-slug="${
+      slug ?? `${s ? `!slide-${s}` : ""}`
+    }">${content}</section>`;
+  };
+
+  static #comments = (data) =>
+    `<aside class="📝">${data
+      .replace("/*", "")
+      .replace("*/", "")
+      .split("\n")
+      .slice(1)
+      .join("<br/>")}</aside>`;
+
+  static #config = (data) => {
     [...data.split("\n")].forEach((line) => {
       if (line.startsWith("custom_css:"))
         customCSS = line.replace("custom_css:", "").trim();
@@ -141,9 +135,10 @@ export default class Interpreter {
         customSVJS = line.replace("custom_sv_js:", "").trim();
     });
     return "";
-  }
+  };
 
-  #formatting(html) {
+  static #formatting = (data, element) => {
+    let htmlData = data;
     // italic, bold
     [
       ["_", "i"],
@@ -153,11 +148,11 @@ export default class Interpreter {
       ["=", "s"],
     ].forEach((couple) => {
       [
-        ...html.matchAll(
+        ...htmlData.matchAll(
           new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm")
         ),
-      ].map((match) => {
-        html = html.replace(
+      ].forEach((match) => {
+        htmlData = htmlData.replace(
           match[0],
           `<${couple[1]}>${match[1]}</${couple[1]}>`
         );
@@ -165,47 +160,59 @@ export default class Interpreter {
     });
     // links
     [
-      ...html.matchAll(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g
+      ...htmlData.matchAll(
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
       ),
-    ].map((match) => {
-      html = html.replace(
+    ].forEach((match) => {
+      htmlData = htmlData.replace(
         match[0],
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`
       );
     });
-    return html
+    return `<${element}>${htmlData
       .replace(/<(i|b|u|s|code)>/g, '<span class="$1">')
-      .replace(/<\/(i|b|u|s|code)>/g, "</span>");
-  }
+      .replace(/<\/(i|b|u|s|code)>/g, "</span>")}</${element}>`;
+  };
 
-  #image(data) {
-    [...data.matchAll(/!image\(([^\()]+)\)/g)].map((match) => {
+  static #image = (data) => {
+    let newData = data;
+    [...newData.matchAll(/!image\(([^()]+)\)/g)].forEach((match) => {
       const opts = [...match[1].split("|")];
-      data = data.replace(
+      newData = newData.replace(
         match[0],
         `<img data-src="${opts[0].trim()}" ${
           opts.length > 1 ? opts[1].trim() : ""
         } />`
       );
     });
-    return data;
-  }
+    return newData;
+  };
 
-  #list(data, sub = 0) {
+  static #list = (data, sub = 0) => {
     const list = [];
     let subs = [];
     [...data.split("\n")].forEach((line) => {
-      if (line.substring(sub).startsWith("- ")) {
+      let newLine = line;
+      if (newLine.substring(sub).startsWith("- ")) {
         if (subs.length) {
-          line = `${line}${this.#list(subs.join("\n"), sub + 1)}`;
+          newLine = `${newLine}${this.#list(subs.join("\n"), sub + 1)}`;
           subs = [];
         }
-        list.push(`${line.substring(sub + 2)}`);
-      } else if (line.length) {
-        subs.push(line);
+        list.push(`${newLine.substring(sub + 2)}`);
+      } else if (newLine.length) {
+        subs.push(newLine);
       }
     });
     return `<ul><li>${list.join(`</li><li>`)}</li></ul>`;
-  }
+  };
+
+  static #mainTitle = (data) => `<h1>${data.replace("# ", "")}</h1>`;
+
+  static #slugify = (data) =>
+    data
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 }
