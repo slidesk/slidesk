@@ -23,6 +23,7 @@ Options:
   -p, --port <int>  port (default: 1337)
   --open            open the default browser
   --save            save the html file
+  --notes           open with speakers notes
   -h, --help        display help for command
 ```
 
