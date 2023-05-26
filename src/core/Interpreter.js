@@ -43,7 +43,7 @@ export default class Interpreter {
         </script>${customJS}`
           .replace(
             "#SOCKETS#",
-            !options.save && options.notes
+            !options.save && !!options.notes
               ? socket.replace("#PORT#", options.port)
               : ""
           )

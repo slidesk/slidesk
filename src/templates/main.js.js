@@ -71,24 +71,26 @@ window.slidesk.previous = () => {
 };
 
 window.onload = () => {
-  const customcss = document.querySelector("#sd-customcss");
-  if (customcss)
-    window.slidesk.io.send(
-      JSON.stringify({
-        action: "customcss",
-        payload: customcss.getAttribute("href"),
-      })
-    );
-  const customsvjs = document
-    .querySelector("#sd-scripts")
-    .getAttribute("data-sv");
-  if (customsvjs)
-    window.slidesk.io.send(
-      JSON.stringify({
-        action: "customsvjs",
-        payload: customsvjs,
-      })
-    );
+  if (window.slidesk.io) {
+    const customcss = document.querySelector("#sd-customcss");
+    if (customcss)
+      window.slidesk.io.send(
+        JSON.stringify({
+          action: "customcss",
+          payload: customcss.getAttribute("href"),
+        })
+      );
+    const customsvjs = document
+      .querySelector("#sd-scripts")
+      .getAttribute("data-sv");
+    if (customsvjs)
+      window.slidesk.io.send(
+        JSON.stringify({
+          action: "customsvjs",
+          payload: customsvjs,
+        })
+      );
+  }
   window.slidesk.slides = document.querySelectorAll(".🎞️");
   const loadingHash = window.location.hash.replace("#/", "");
   const slugs = [];
