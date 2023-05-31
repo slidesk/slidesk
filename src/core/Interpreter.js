@@ -43,9 +43,7 @@ export default class Interpreter {
         </script>${customJS}`
           .replace(
             "#SOCKETS#",
-            !options.save && !!options.notes
-              ? socket.replace("#PORT#", options.port)
-              : ""
+            !options.save ? socket.replace("#PORT#", options.port) : ""
           )
           .replace("#CONTROLS#", js)
       );
@@ -190,22 +188,23 @@ export default class Interpreter {
     return newData;
   };
 
-  static #list = (data, sub = 0) => {
+  static #list = (data, level = 1) => {
     const list = [];
-    let subs = [];
+    const subs = [];
     [...data.split("\n")].forEach((line) => {
-      let newLine = line;
-      if (newLine.substring(sub).startsWith("- ")) {
+      const reg = new RegExp(`^[-]{${level}} `, "m");
+      if (line.match(reg)) {
         if (subs.length) {
-          newLine = `${newLine}${this.#list(subs.join("\n"), sub + 1)}`;
-          subs = [];
+          list.push(this.#list(subs.join("\n"), level + 1));
+          subs.splice(0, subs.length);
         }
-        list.push(`${newLine.substring(sub + 2)}`);
-      } else if (newLine.length) {
-        subs.push(newLine);
-      }
+        list.push(`<li>${line.replace(reg, "")}</li>`);
+      } else if (line !== "") subs.push(line);
     });
-    return `<ul><li>${list.join(`</li><li>`)}</li></ul>`;
+    if (subs.length) {
+      list.push(this.#list(subs.join("\n"), level + 1));
+    }
+    return `<ul>${list.join("")}</ul>`;
   };
 
   static #mainTitle = (data) => `<h1>${data.replace("# ", "")}</h1>`;

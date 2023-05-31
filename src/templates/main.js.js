@@ -1,4 +1,16 @@
 export const js = `
+
+window.slidesk.sendMessage = payload => {
+  window.slidesk.waitForSocketConnection(payload)
+}
+
+window.slidesk.waitForSocketConnection = payload => {
+  setTimeout(() => {
+    if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
+    else window.slidesk.waitForSocketConnection(payload);
+  }, 5);
+}
+
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
     const action = JSON.parse(event.data).action;
@@ -23,13 +35,13 @@ window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
   window.location.hash = "/" + window.slidesk.slides[window.slidesk.currentSlide].getAttribute("data-slug");
   if (window.slidesk.io) {
-    window.slidesk.io.send(
+    window.slidesk.sendMessage(
       JSON.stringify({
         action: "current",
         payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
       })
     );
-    window.slidesk.io.send(
+    window.slidesk.sendMessage(
       JSON.stringify({
         action: "future",
         payload:
@@ -74,7 +86,7 @@ window.onload = () => {
   if (window.slidesk.io) {
     const customcss = document.querySelector("#sd-customcss");
     if (customcss)
-      window.slidesk.io.send(
+      window.slidesk.sendMessage(
         JSON.stringify({
           action: "customcss",
           payload: customcss.getAttribute("href"),
@@ -84,7 +96,7 @@ window.onload = () => {
       .querySelector("#sd-scripts")
       .getAttribute("data-sv");
     if (customsvjs)
-      window.slidesk.io.send(
+      window.slidesk.sendMessage(
         JSON.stringify({
           action: "customsvjs",
           payload: customsvjs,

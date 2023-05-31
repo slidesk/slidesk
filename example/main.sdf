@@ -22,14 +22,7 @@ With a `!image(path of your image)` at the beginning of a line will display
 -- sublist
 -- sub
 - end of a List
-
-## Subslides
-
-With 3 # you can define sub slides
-
-### SubSlide 1
-
-### SubSlide 2
+-- an other sublist
 
 ## Final
 
