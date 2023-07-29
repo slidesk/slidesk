@@ -143,6 +143,7 @@ export default class Interpreter {
     [
       ["_", "i"],
       ["\\*", "b"],
+      ["```", "pre"],
       ["`", "code"],
       ["˜", "u"],
       ["=", "s"],
