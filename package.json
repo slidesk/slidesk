@@ -2,47 +2,18 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "0.4.0",
-  "main": "index.js",
+  "version": "1.0.0",
+  "main": "bin/index.js",
   "type": "module",
-  "devDependencies": {
-    "eslint": "^8.44.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "html-minifier-terser": "^7.2.0",
-    "prettier": "^3.0.0"
-  },
   "bin": {
     "slidesk": "./bin/index.js"
-  },
-  "engines": {
-    "node": ">=12"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gouz/slidesk.git"
   },
-  "dependencies": {
-    "commander": "^10.0.1",
-    "html-minifier-terser": "^7.2.0",
-    "mime": "^3.0.0",
-    "open": "^9.1.0",
-    "ws": "^8.13.0"
-  },
-  "imports": {
-    "#assets_html": "./src/templates/layout.html.js",
-    "#assets_css": "./src/templates/theme.css.js",
-    "#assets_js": "./src/templates/main.js.js",
-    "#interpreter": "./src/core/Interpreter.js",
-    "#server": "./src/core/Server.js",
-    "#speaker_view": "./src/templates/speaker-view.html.js"
-  },
   "scripts": {
-    "demo": "node bin/index.js example",
-    "demo-open": "node bin/index.js example --open",
-    "lint": "eslint --fix bin/index.js src/core/Interpreter.js src/core/Server.js",
-    "format": "prettier -w ."
+    "demo": "bun bin/index.js example",
+    "demo-open": "bun bin/index.js example --open"
   }
 }

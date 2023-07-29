@@ -1,15 +1,13 @@
-export const js = `
+window.slidesk.sendMessage = (payload) => {
+  window.slidesk.waitForSocketConnection(payload);
+};
 
-window.slidesk.sendMessage = payload => {
-  window.slidesk.waitForSocketConnection(payload)
-}
-
-window.slidesk.waitForSocketConnection = payload => {
+window.slidesk.waitForSocketConnection = (payload) => {
   setTimeout(() => {
     if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
     else window.slidesk.waitForSocketConnection(payload);
   }, 5);
-}
+};
 
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
@@ -33,13 +31,17 @@ window.slidesk.cleanOldSlide = (id) => {
 window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove("👈");
   window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
-  window.location.hash = "/" + window.slidesk.slides[window.slidesk.currentSlide].getAttribute("data-slug");
+  window.location.hash =
+    "/" +
+    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+      "data-slug",
+    );
   if (window.slidesk.io) {
     window.slidesk.sendMessage(
       JSON.stringify({
         action: "current",
         payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
-      })
+      }),
     );
     window.slidesk.sendMessage(
       JSON.stringify({
@@ -48,7 +50,7 @@ window.slidesk.changeSlide = () => {
           window.slidesk.currentSlide !== window.slidesk.slides.length - 1
             ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
             : "",
-      })
+      }),
     );
   }
   window.slidesk.slides[window.slidesk.currentSlide]
@@ -90,7 +92,7 @@ window.onload = () => {
         JSON.stringify({
           action: "customcss",
           payload: customcss.getAttribute("href"),
-        })
+        }),
       );
     const customsvjs = document
       .querySelector("#sd-scripts")
@@ -100,7 +102,7 @@ window.onload = () => {
         JSON.stringify({
           action: "customsvjs",
           payload: customsvjs,
-        })
+        }),
       );
   }
   window.slidesk.slides = document.querySelectorAll(".🎞️");
@@ -124,7 +126,7 @@ window.onload = () => {
   }
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "👆",
-    "no-🏄"
+    "no-🏄",
   );
   window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {
@@ -135,4 +137,3 @@ window.onload = () => {
     }
   });
 };
-`;

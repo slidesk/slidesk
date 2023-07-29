@@ -1,9 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { existsSync, readFileSync } from "fs";
 import { minify } from "html-minifier-terser";
-import { html } from "#assets_html";
-import { css } from "#assets_css";
-import { js } from "#assets_js";
 
 const animationTimer = 300;
 
@@ -13,18 +9,24 @@ let customCSS = "";
 let customJS = "";
 let customSVJS = "";
 
+const layoutHTML = import.meta.resolveSync("../templates/layout.html");
+const themeCSS = import.meta.resolveSync("../templates/theme.css");
+const mainJS = import.meta.resolveSync("../templates/main.js");
+
 export default class Interpreter {
   static convert = (mainFile, options) =>
-    // eslint-disable-next-line no-constructor-return
-    new Promise((resolve, reject) => {
-      if (!existsSync(mainFile)) {
-        reject(new Error("🤔 main.tfs was not found"));
+    new Promise(async (resolve, reject) => {
+      const sdfMainFile = Bun.file(mainFile);
+      if (sdfMainFile.size === 0) {
+        reject(new Error("🤔 main.sdf was not found"));
       }
-      const presentation = this.#sliceSlides(this.#includes(mainFile));
-      let template = html;
+      const presentation = this.#sliceSlides(await this.#includes(mainFile));
+      let template = await Bun.file(layoutHTML).text();
       template = template.replace(
-        "#STYLE#",
-        `:root { --animationTimer: ${animationTimer}ms; }${css}${
+        "/* #STYLES# */",
+        `:root { --animationTimer: ${animationTimer}ms; }${await Bun.file(
+          themeCSS
+        ).text()}${
           customCSS.length
             ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
             : ""
@@ -45,7 +47,7 @@ export default class Interpreter {
             "#SOCKETS#",
             !options.save ? socket.replace("#PORT#", options.port) : ""
           )
-          .replace("#CONTROLS#", js)
+          .replace("#CONTROLS#", await Bun.file(mainJS).text())
       );
       // eslint-disable-next-line array-callback-return
       [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
@@ -63,19 +65,21 @@ export default class Interpreter {
       });
     });
 
-  static #includes = (file) => {
-    let data = readFileSync(file, "utf8");
-    [...data.matchAll(/\n!include\(([^()]+)\)/g)].forEach(
-      // eslint-disable-next-line no-return-assign
-      (match) =>
-        (data = data.replace(
-          match[0],
-          this.#includes(
-            `${file.substring(0, file.lastIndexOf("/"))}/${match[1]}`
-          )
-        ))
+  static #replaceAsync = async (str, regex, asyncFn) => {
+    const promises = [];
+    str.replace(regex, (match, ...args) => {
+      const promise = asyncFn(match, ...args);
+      promises.push(promise);
+    });
+    const data = await Promise.all(promises);
+    return str.replace(regex, () => data.shift());
+  };
+
+  static #includes = async (file) => {
+    let data = await Bun.file(file).text();
+    return this.#replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) =>
+      this.#includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`)
     );
-    return data;
   };
 
   static #sliceSlides = (presentation) =>

@@ -1,13 +1,10 @@
-import { css } from "#assets_css";
-
-export const speakerView = `
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <link rel="icon" href="/favicon.svg" />
     <title>Speaker View</title>
     <style>
-      ${css}
+      /* #STYLES# */
 
       :root {
         --sd-sv-timer-size: 80px;
@@ -22,7 +19,8 @@ export const speakerView = `
         flex-direction: row;
       }
 
-      #sd-sv-left, #sd-sv-right {
+      #sd-sv-left,
+      #sd-sv-right {
         width: 50%;
         height: 100%;
         margin: 0;
@@ -88,9 +86,9 @@ export const speakerView = `
       <aside id="sd-sv-notes"></aside>
     </div>
     <script>
-      window.slidesk = { 
-        io: {}, 
-        timer: document.querySelector("#sd-sv-timer") 
+      window.slidesk = {
+        io: {},
+        timer: document.querySelector("#sd-sv-timer")
       };
       #SOCKETS#
       const makeSlide = (slide) => slide.replace("data-src", "src");
@@ -131,7 +129,7 @@ export const speakerView = `
         var hours   = Math.floor(sec_num / 3600)
         var minutes = Math.floor(sec_num / 60) % 60
         var seconds = sec_num % 60
-    
+
         return [hours,minutes,seconds]
             .map(v => v < 10 ? "0" + v : v)
             .filter((v,i) => v !== "00" || i > 0)

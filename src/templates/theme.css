@@ -1,11 +1,10 @@
-export const css = `
 :root {
   font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +26,9 @@ export const css = `
   --sd-primary-color: rgb(37, 186, 146);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -35,28 +36,44 @@ export const css = `
   margin: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
-p, img {
+p,
+img {
   margin: 0.5rem auto;
 }
 
-a, .b {
+a,
+.b {
   color: var(--sd-primary-color);
 }
 
@@ -68,7 +85,8 @@ a, .b {
   font-style: italic;
 }
 
-.code, pre {
+.code,
+pre {
   font-family: monospace;
   white-space: pre;
 }
@@ -116,28 +134,30 @@ a, .b {
   padding: 30px;
 }
 
-.🎞️ h1, h2, h3 {
-    margin: 0;
-    text-align: center;
-    color: var(--sd-heading-color);
+.🎞️ h1,
+h2,
+h3 {
+  margin: 0;
+  text-align: center;
+  color: var(--sd-heading-color);
 }
 
 .🎞️ h1 {
-    font-size: var(--sd-heading1-size);
-    line-height: var(--sd-heading1-line-height);
-    margin-bottom: 20px;
+  font-size: var(--sd-heading1-size);
+  line-height: var(--sd-heading1-line-height);
+  margin-bottom: 20px;
 }
 
 .🎞️ h2 {
-    font-size: var(--sd-heading2-size);
-    line-height: var(--sd-heading2-line-height);
-    margin-bottom: 20px;
+  font-size: var(--sd-heading2-size);
+  line-height: var(--sd-heading2-line-height);
+  margin-bottom: 20px;
 }
 
 .🎞️ h3 {
-    font-size: var(--sd-heading3-size);
-    line-height: var(--sd-heading3-line-height);
-    margin-bottom: 20px;
+  font-size: var(--sd-heading3-size);
+  line-height: var(--sd-heading3-line-height);
+  margin-bottom: 20px;
 }
 
 .🎞️.no-🏄 {
@@ -159,4 +179,3 @@ a, .b {
 .🎞️ img {
   max-height: 90%;
 }
-`;
