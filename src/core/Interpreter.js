@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { minify } from "html-minifier-terser";
 
 const animationTimer = 300;
@@ -49,7 +48,6 @@ export default class Interpreter {
           )
           .replace("#CONTROLS#", await Bun.file(mainJS).text())
       );
-      // eslint-disable-next-line array-callback-return
       [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
         template = template.replace("#TITLE#", title[1]);
       });

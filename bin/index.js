@@ -1,6 +1,10 @@
 #!/usr/bin/env bun
 import { program } from "commander";
+import open from "open";
 import Interpreter from "../src/core/Interpreter";
+import Server from "../src/core/Server";
+
+let server;
 
 const flow = (talk, options = {}, init = false) => {
   Interpreter.convert(`./${talk}/main.sdf`, options)
@@ -8,14 +12,14 @@ const flow = (talk, options = {}, init = false) => {
       if (options.save) {
         Bun.write(`./${talk}/index.html`, html);
       } else if (init) {
-        // server = new Server(html, options, `${process.cwd()}/${talk}`);
-        // if (options.open) {
-        //   if (options.notes)
-        //     await open(`http://localhost:${options.port}/notes`);
-        //   await open(`http://localhost:${options.port}`);
-        // }
+        server = new Server(html, options, `${process.cwd()}/${talk}`);
+        if (options.open) {
+          if (options.notes)
+            await open(`http://localhost:${options.port}/notes`);
+          await open(`http://localhost:${options.port}`);
+        }
       } else {
-        // server.setHTML(html);
+        server.setHTML(html);
       }
     })
     .catch((err) => console.error(err));
