@@ -1,4 +1,4 @@
-# Slidesk
+# SliDesk
 
 A new talk engine like RevealJS.
 
@@ -8,8 +8,10 @@ The `example` rendering is visible on https://gouz.github.io/slidesk/
 
 ## Installation
 
+SliDesk is develop with https://bun.sh instead of Node.js
+
 ```
-npm i -g slidesk
+bun add --global slidesk
 ```
 
 ## Usage
