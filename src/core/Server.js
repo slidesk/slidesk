@@ -31,7 +31,7 @@ export default class Server {
             speakerViewHTML
               .replace(
                 "#SOCKETS#",
-                `window.slidesk.io = new WebSocket("ws://localhost:${options.port}");`
+                `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`
               )
               .replace("/* #STYLES# */", themeCSS),
             {
@@ -40,6 +40,10 @@ export default class Server {
               },
             }
           );
+        else if (url.pathname === "/ws")
+          return globalThis.server.upgrade(req)
+            ? undefined
+            : new Response("WebSocket upgrade error", { status: 400 });
         const file = Bun.file(
           req.url.match(
             /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g

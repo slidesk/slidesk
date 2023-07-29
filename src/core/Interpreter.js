@@ -2,7 +2,7 @@ import { minify } from "html-minifier-terser";
 
 const animationTimer = 300;
 
-const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#");`;
+const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
 
 let customCSS = "";
 let customJS = "";
