@@ -1,5 +1,11 @@
 const speakerViewHTML = await Bun.file(
-  import.meta.resolveSync("../templates/speaker-view.html")
+  import.meta.resolveSync("../templates/notes/layout.html")
+).text();
+const speakerViewCSS = await Bun.file(
+  import.meta.resolveSync("../templates/notes/styles.css")
+).text();
+const speakerViewJS = await Bun.file(
+  import.meta.resolveSync("../templates/notes/script.js")
 ).text();
 const themeCSS = await Bun.file(
   import.meta.resolveSync("../templates/theme.css")
@@ -30,10 +36,12 @@ export default class Server {
           return new Response(
             speakerViewHTML
               .replace(
-                "#SOCKETS#",
+                "/* #SOCKETS# */",
                 `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`
               )
-              .replace("/* #STYLES# */", themeCSS),
+              .replace("/* #STYLES# */", themeCSS)
+              .replace("/* #SV_STYLES# */", speakerViewCSS)
+              .replace("/* #SV_SCRIPT# */", speakerViewJS),
             {
               headers: {
                 "Content-Type": "text/html",
@@ -44,12 +52,13 @@ export default class Server {
           return globalThis.server.upgrade(req)
             ? undefined
             : new Response("WebSocket upgrade error", { status: 400 });
+        const fileurl = req.url.replace(`http://localhost:${options.port}`, "");
         const file = Bun.file(
-          req.url.match(
+          fileurl.match(
             /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
           )
-            ? req.url
-            : `${globalThis.path}${req.url}`
+            ? fileurl
+            : `${globalThis.path}${fileurl}`
         );
         if (file.size !== 0)
           return new Response(file, {
@@ -57,7 +66,7 @@ export default class Server {
               "Content-Type": file.type,
             },
           });
-        return new Response(`404!`);
+        return new Response(`${req.url} not found`, { status: 404 });
       },
       websocket: {
         open(ws) {

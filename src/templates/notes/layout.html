@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>Speaker View</title>
+    <style>
+      /* #STYLES# */
+      /* #SV_STYLES# */
+    </style>
+  </head>
+  <body>
+    <div id="sd-sv-left">
+      <main id="sd-sv-current" class="📽️"></main>
+      <main id="sd-sv-future" class="📽️"></main>
+    </div>
+    <div id="sd-sv-right">
+      <div id="sd-sv-timer">Click to (re)start</div>
+      <aside id="sd-sv-notes"></aside>
+    </div>
+    <script>
+      window.slidesk = {
+        io: {},
+        timer: document.querySelector("#sd-sv-timer"),
+      };
+      /* #SOCKETS# */
+      /* #SV_SCRIPT# */
+    </script>
+  </body>
+</html>
+`;
