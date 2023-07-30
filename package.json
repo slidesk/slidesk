@@ -4,7 +4,6 @@
   "license": "MIT",
   "version": "1.0.3",
   "main": "bin/index.js",
-  "type": "module",
   "bin": {
     "slidesk": "./bin/index.js"
   },
@@ -26,6 +25,7 @@
     "prettier": "^3.0.0"
   },
   "scripts": {
-    "build": "bun build src/index.js --outdir bin  --minify --target bun"
+    "make": "bun build src/index.js --outdir bin  --minify --target bun",
+    "lint": "eslint src"
   }
 }
