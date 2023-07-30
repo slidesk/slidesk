@@ -150,7 +150,9 @@ export default class Interpreter {
       ].forEach((match) => {
         htmlData = htmlData.replace(
           match[0],
-          `<span class="${couple[1]}">${match[1]}</span>`,
+          couple[1] === "pre"
+            ? `<pre>${match[1]}</pre>`
+            : `<span class="${couple[1]}">${match[1]}</span>`,
         );
       });
     });
