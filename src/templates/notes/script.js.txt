@@ -5,7 +5,7 @@ window.slidesk.io.onmessage = (event) => {
     const current = document.querySelector("#sd-sv-current");
     current.innerHTML = makeSlide(data.payload);
     document.querySelector("#sd-sv-notes").innerHTML = [
-      ...current.querySelectorAll("aside.📝"),
+      ...current.querySelectorAll("aside.sdf-notes"),
     ]
       .map((a) => a.innerHTML)
       .join("");

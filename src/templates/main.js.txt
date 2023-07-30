@@ -19,7 +19,7 @@ if (window.slidesk.io) {
 }
 
 window.slidesk.cleanOldSlide = (id) => {
-  window.slidesk.slides[id].classList.remove("👆", "no-🏄");
+  window.slidesk.slides[id].classList.remove("sdf-current", "no-sdf-animation");
   setTimeout(() => {
     window.slidesk.slides[id].querySelectorAll("img").forEach((img) => {
       img.setAttribute("data-src", img.getAttribute("src"));
@@ -29,8 +29,8 @@ window.slidesk.cleanOldSlide = (id) => {
 };
 
 window.slidesk.changeSlide = () => {
-  window.slidesk.slides[window.slidesk.currentSlide].classList.remove("👈");
-  window.slidesk.slides[window.slidesk.currentSlide].classList.add("👆");
+  window.slidesk.slides[window.slidesk.currentSlide].classList.remove("sdf-previous");
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add("sdf-current");
   window.location.hash =
     "/" +
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
@@ -70,7 +70,7 @@ window.slidesk.changeSlide = () => {
 window.slidesk.next = () => {
   if (window.slidesk.currentSlide != window.slidesk.slides.length - 1) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
-    window.slidesk.slides[window.slidesk.currentSlide].classList.add("👈");
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add("sdf-previous");
     window.slidesk.currentSlide++;
     window.slidesk.changeSlide();
   }
@@ -105,7 +105,7 @@ window.onload = () => {
         }),
       );
   }
-  window.slidesk.slides = document.querySelectorAll(".🎞️");
+  window.slidesk.slides = document.querySelectorAll(".sdf-slide");
   const loadingHash = window.location.hash.replace("#/", "");
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
@@ -116,17 +116,17 @@ window.onload = () => {
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i++) {
-      window.slidesk.slides[i].classList.add("👈", "no-🏄");
+      window.slidesk.slides[i].classList.add("sdf-previous", "no-sdf-animation");
     }
     setTimeout(() => {
       for (let i = 0; i < window.slidesk.currentSlide; i++) {
-        window.slidesk.slides[i].classList.remove("no-🏄");
+        window.slidesk.slides[i].classList.remove("no-sdf-animation");
       }
     }, window.slidesk.animationTimer);
   }
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-    "👆",
-    "no-🏄",
+    "sdf-current",
+    "no-sdf-animation",
   );
   window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {

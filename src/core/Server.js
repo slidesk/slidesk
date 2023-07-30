@@ -1,18 +1,8 @@
-const speakerViewHTML = await Bun.file(
-  import.meta.resolveSync("../templates/notes/layout.html")
-).text();
-const speakerViewCSS = await Bun.file(
-  import.meta.resolveSync("../templates/notes/styles.css")
-).text();
-const speakerViewJS = await Bun.file(
-  import.meta.resolveSync("../templates/notes/script.js")
-).text();
-const themeCSS = await Bun.file(
-  import.meta.resolveSync("../templates/theme.css")
-).text();
-const faviconSVG = await Bun.file(
-  import.meta.resolveSync("../templates/SD.svg")
-).text();
+import speakerViewHTML from "../templates/notes/layout.html.txt";
+import speakerViewCSS from "../templates/notes/styles.css.txt";
+import speakerViewJS from "../templates/notes/script.js.txt";
+import themeCSS from "../templates/theme.css.txt";
+import faviconSVG from "../templates/SD.svg.txt";
 
 export default class Server {
   constructor(html, options, path) {

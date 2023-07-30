@@ -1,4 +1,7 @@
 import { minify } from "html-minifier-terser";
+import layoutHTML from "../templates/layout.html.txt";
+import themeCSS from "../templates/theme.css.txt";
+import mainJS from "../templates/main.js.txt";
 
 const animationTimer = 300;
 
@@ -8,10 +11,6 @@ let customCSS = "";
 let customJS = "";
 let customSVJS = "";
 
-const layoutHTML = import.meta.resolveSync("../templates/layout.html");
-const themeCSS = import.meta.resolveSync("../templates/theme.css");
-const mainJS = import.meta.resolveSync("../templates/main.js");
-
 export default class Interpreter {
   static convert = (mainFile, options) =>
     new Promise(async (resolve, reject) => {
@@ -20,12 +19,10 @@ export default class Interpreter {
         reject(new Error("🤔 main.sdf was not found"));
       }
       const presentation = this.#sliceSlides(await this.#includes(mainFile));
-      let template = await Bun.file(layoutHTML).text();
+      let template = layoutHTML;
       template = template.replace(
         "/* #STYLES# */",
-        `:root { --animationTimer: ${animationTimer}ms; }${await Bun.file(
-          themeCSS
-        ).text()}${
+        `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${
           customCSS.length
             ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
             : ""
@@ -46,7 +43,7 @@ export default class Interpreter {
             "#SOCKETS#",
             !options.save ? socket.replace("#PORT#", options.port) : ""
           )
-          .replace("#CONTROLS#", await Bun.file(mainJS).text())
+          .replace("#CONTROLS#", mainJS)
       );
       [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
         template = template.replace("#TITLE#", title[1]);
@@ -112,13 +109,13 @@ export default class Interpreter {
         return "";
       })
       .join("");
-    return `<section class="🎞️ ${classes}" data-slug="${
+    return `<section class="sdf-slide ${classes}" data-slug="${
       slug ?? `${s ? `!slide-${s}` : ""}`
     }">${content}</section>`;
   };
 
   static #comments = (data) =>
-    `<aside class="📝">${data
+    `<aside class="sdf-notes">${data
       .replace("/*", "")
       .replace("*/", "")
       .split("\n")

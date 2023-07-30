@@ -9,7 +9,7 @@
     </style>
   </head>
   <body>
-    <main class="📽️">
+    <main class="sdf-app">
       #SECTIONS#
       <div id="sd-progress">X/X</div>
     </main>

@@ -11,8 +11,8 @@
   </head>
   <body>
     <div id="sd-sv-left">
-      <main id="sd-sv-current" class="📽️"></main>
-      <main id="sd-sv-future" class="📽️"></main>
+      <main id="sd-sv-current" class="sdf-app"></main>
+      <main id="sd-sv-future" class="sdf-app"></main>
     </div>
     <div id="sd-sv-right">
       <div id="sd-sv-timer">Click to (re)start</div>

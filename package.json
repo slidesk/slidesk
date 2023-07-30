@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "bin/index.js",
   "type": "module",
   "bin": {
@@ -11,9 +11,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gouz/slidesk.git"
-  },
-  "scripts": {
-    "demo": "bun bin/index.js example",
-    "demo-open": "bun bin/index.js example --open"
   }
 }
