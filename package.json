@@ -26,6 +26,6 @@
     "prettier": "^3.0.0"
   },
   "scripts": {
-    "build": "bun build src/index.js --outdir bin"
+    "build": "bun build src/index.js --outdir bin  --minify --target bun"
   }
 }
