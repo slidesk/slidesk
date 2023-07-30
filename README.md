@@ -11,13 +11,13 @@ The `example` rendering is visible on https://gouz.github.io/slidesk/
 SliDesk is develop with https://bun.sh instead of Node.js
 
 ```
-bun add --global slidesk
+bunx slidesk <talk>
 ```
 
 ## Usage
 
 ```sh
-Usage: slidesk [options] <talk>
+Usage: bunx slidesk [options] <talk>
 
 Convert & present a talk
 
