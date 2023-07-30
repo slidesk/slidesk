@@ -5,9 +5,10 @@ import themeCSS from "../templates/theme.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
 
 export default class Server {
-  constructor(html, options, path) {
+  static create(html, options, path) {
     globalThis.html = html;
     globalThis.path = path;
+    // eslint-disable-next-line no-undef
     globalThis.server = Bun.serve({
       port: options.port,
       fetch(req) {
@@ -18,16 +19,16 @@ export default class Server {
               "Content-Type": "text/html",
             },
           });
-        else if (url.pathname === "/favicon.svg")
+        if (url.pathname === "/favicon.svg")
           return new Response(faviconSVG, {
             headers: { "Content-Type": "image/svg+xml" },
           });
-        else if (url.pathname === "/notes")
+        if (url.pathname === "/notes")
           return new Response(
             speakerViewHTML
               .replace(
                 "/* #SOCKETS# */",
-                `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`
+                `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`,
               )
               .replace("/* #STYLES# */", themeCSS)
               .replace("/* #SV_STYLES# */", speakerViewCSS)
@@ -36,19 +37,20 @@ export default class Server {
               headers: {
                 "Content-Type": "text/html",
               },
-            }
+            },
           );
-        else if (url.pathname === "/ws")
+        if (url.pathname === "/ws")
           return globalThis.server.upgrade(req)
             ? undefined
             : new Response("WebSocket upgrade error", { status: 400 });
         const fileurl = req.url.replace(`http://localhost:${options.port}`, "");
+        // eslint-disable-next-line no-undef
         const file = Bun.file(
           fileurl.match(
-            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
+            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g,
           )
             ? fileurl
-            : `${globalThis.path}${fileurl}`
+            : `${globalThis.path}${fileurl}`,
         );
         if (file.size !== 0)
           return new Response(file, {
@@ -71,12 +73,14 @@ export default class Server {
       },
     });
 
+    // eslint-disable-next-line no-console
     console.log(`📽️\thttp://localhost:${options.port}`);
     if (options.notes)
+      // eslint-disable-next-line no-console
       console.log(`📝\thttp://localhost:${options.port}/notes`);
   }
 
-  setHTML(html) {
+  static setHTML(html) {
     globalThis.html = html;
     globalThis.server.publish("slidesk", { message: "reload" });
   }

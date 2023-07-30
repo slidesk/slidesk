@@ -12,53 +12,48 @@ let customJS = "";
 let customSVJS = "";
 
 export default class Interpreter {
-  static convert = (mainFile, options) =>
-    new Promise(async (resolve, reject) => {
-      const sdfMainFile = Bun.file(mainFile);
-      if (sdfMainFile.size === 0) {
-        reject(new Error("🤔 main.sdf was not found"));
-      }
-      const presentation = this.#sliceSlides(await this.#includes(mainFile));
-      let template = layoutHTML;
-      template = template.replace(
-        "/* #STYLES# */",
-        `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${
-          customCSS.length
-            ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
-            : ""
-        }`
-      );
-      template = template.replace(
-        "#SCRIPT#",
-        `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
+  static convert = async (mainFile, options) => {
+    // eslint-disable-next-line no-undef
+    const sdfMainFile = Bun.file(mainFile);
+    if (sdfMainFile.size === 0) {
+      return new Error("🤔 main.sdf was not found");
+    }
+    const presentation = this.#sliceSlides(await this.#includes(mainFile));
+    let template = layoutHTML;
+    template = template.replace(
+      "/* #STYLES# */",
+      `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${
+        customCSS.length
+          ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
+          : ""
+      }`,
+    );
+    template = template.replace(
+      "#SCRIPT#",
+      `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
           window.slidesk = {
             currentSlide: 0,
             slides: [],
             animationTimer: ${animationTimer}
           };
-          #SOCKETS#
-          #CONTROLS#
-        </script>${customJS}`
-          .replace(
-            "#SOCKETS#",
-            !options.save ? socket.replace("#PORT#", options.port) : ""
-          )
-          .replace("#CONTROLS#", mainJS)
-      );
-      [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
-        template = template.replace("#TITLE#", title[1]);
-      });
-      template = template.replace("#SECTIONS#", presentation);
-
-      minify(template, {
-        collapseWhitespace: true,
-        removeEmptyElements: true,
-        minifyCSS: true,
-        minifyJS: true,
-      }).then((minified) => {
-        resolve(minified);
-      });
+          ${!options.save ? socket.replace("#PORT#", options.port) : ""}
+          ${mainJS}
+        </script>${customJS}`,
+    );
+    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
+      template = template.replace("#TITLE#", title[1]);
     });
+    template = template.replace("#SECTIONS#", presentation);
+
+    const minified = await minify(template, {
+      collapseWhitespace: true,
+      removeEmptyElements: true,
+      minifyCSS: true,
+      minifyJS: true,
+    });
+
+    return minified;
+  };
 
   static #replaceAsync = async (str, regex, asyncFn) => {
     const promises = [];
@@ -71,9 +66,10 @@ export default class Interpreter {
   };
 
   static #includes = async (file) => {
-    let data = await Bun.file(file).text();
+    // eslint-disable-next-line no-undef
+    const data = await Bun.file(file).text();
     return this.#replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) =>
-      this.#includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`)
+      this.#includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`),
     );
   };
 
@@ -149,24 +145,24 @@ export default class Interpreter {
     ].forEach((couple) => {
       [
         ...htmlData.matchAll(
-          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm")
+          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm"),
         ),
       ].forEach((match) => {
         htmlData = htmlData.replace(
           match[0],
-          `<${couple[1]}>${match[1]}</${couple[1]}>`
+          `<${couple[1]}>${match[1]}</${couple[1]}>`,
         );
       });
     });
     // links
     [
       ...htmlData.matchAll(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g,
       ),
     ].forEach((match) => {
       htmlData = htmlData.replace(
         match[0],
-        `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`
+        `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
       );
     });
     return `<${element}>${htmlData
@@ -182,7 +178,7 @@ export default class Interpreter {
         match[0],
         `<img data-src="${opts[0].trim()}" ${
           opts.length > 1 ? opts[1].trim() : ""
-        } />`
+        } />`,
       );
     });
     return newData;

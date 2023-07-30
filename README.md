@@ -34,7 +34,7 @@ Options:
 In a directory, create a `main.sdf` file which is the entry point of your presentation.
 
 ```
-slidesk <yourdirectory>
+bunx slidesk <yourdirectory>
 ```
 
 will convert the `main.sdf` into an html file and serve it, it will open the default browser too.

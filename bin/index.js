@@ -19207,6 +19207,9 @@ var require_source_map_umd = __commonJS((exports, module) => {
   });
 });
 
+// src/index.js
+import {watch} from "node:fs";
+
 // node_modules/commander/esm.mjs
 var import_ = __toESM(require_commander(), 1);
 var {
@@ -49588,10 +49591,10 @@ var customJS = "";
 var customSVJS = "";
 
 class Interpreter {
-  static convert = (mainFile, options) => new Promise(async (resolve, reject) => {
+  static convert = async (mainFile, options) => {
     const sdfMainFile = Bun.file(mainFile);
     if (sdfMainFile.size === 0) {
-      reject(new Error("\uD83E\uDD14 main.sdf was not found"));
+      return new Error("\uD83E\uDD14 main.sdf was not found");
     }
     const presentation = this.#sliceSlides(await this.#includes(mainFile));
     let template = layout_html_default;
@@ -49602,22 +49605,21 @@ class Interpreter {
             slides: [],
             animationTimer: ${animationTimer}
           };
-          #SOCKETS#
-          #CONTROLS#
-        </script>${customJS}`.replace("#SOCKETS#", !options.save ? socket.replace("#PORT#", options.port) : "").replace("#CONTROLS#", main_js_default));
-    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].map((title) => {
+          ${!options.save ? socket.replace("#PORT#", options.port) : ""}
+          ${main_js_default}
+        </script>${customJS}`);
+    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
       template = template.replace("#TITLE#", title[1]);
     });
     template = template.replace("#SECTIONS#", presentation);
-    minify3(template, {
+    const minified = await minify3(template, {
       collapseWhitespace: true,
       removeEmptyElements: true,
       minifyCSS: true,
       minifyJS: true
-    }).then((minified) => {
-      resolve(minified);
     });
-  });
+    return minified;
+  };
   static #replaceAsync = async (str, regex, asyncFn) => {
     const promises2 = [];
     str.replace(regex, (match, ...args) => {
@@ -49628,7 +49630,7 @@ class Interpreter {
     return str.replace(regex, () => data.shift());
   };
   static #includes = async (file) => {
-    let data = await Bun.file(file).text();
+    const data = await Bun.file(file).text();
     return this.#replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) => this.#includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`));
   };
   static #sliceSlides = (presentation) => [...presentation.split("\n## ")].map((slide, s) => this.#transform(slide, s)).join("");
@@ -49918,7 +49920,7 @@ var SD_svg_default = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height
 
 // src/core/Server.js
 class Server {
-  constructor(html, options, path4) {
+  static create(html, options, path4) {
     globalThis.html = html;
     globalThis.path = path4;
     globalThis.server = Bun.serve({
@@ -49931,17 +49933,17 @@ class Server {
               "Content-Type": "text/html"
             }
           });
-        else if (url2.pathname === "/favicon.svg")
+        if (url2.pathname === "/favicon.svg")
           return new Response(SD_svg_default, {
             headers: { "Content-Type": "image/svg+xml" }
           });
-        else if (url2.pathname === "/notes")
+        if (url2.pathname === "/notes")
           return new Response(layout_html_default2.replace("/* #SOCKETS# */", `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`).replace("/* #STYLES# */", theme_css_default).replace("/* #SV_STYLES# */", styles_css_default).replace("/* #SV_SCRIPT# */", script_js_default), {
             headers: {
               "Content-Type": "text/html"
             }
           });
-        else if (url2.pathname === "/ws")
+        if (url2.pathname === "/ws")
           return globalThis.server.upgrade(req) ? undefined : new Response("WebSocket upgrade error", { status: 400 });
         const fileurl = req.url.replace(`http://localhost:${options.port}`, "");
         const file = Bun.file(fileurl.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g) ? fileurl : `${globalThis.path}${fileurl}`);
@@ -49969,31 +49971,36 @@ class Server {
     if (options.notes)
       console.log(`\uD83D\uDCDD	http://localhost:${options.port}/notes`);
   }
-  setHTML(html) {
+  static setHTML(html) {
     globalThis.html = html;
     globalThis.server.publish("slidesk", { message: "reload" });
   }
 }
 
 // src/index.js
-var server;
 var flow = (talk, options = {}, init = false) => {
   Interpreter.convert(`./${talk}/main.sdf`, options).then(async (html) => {
     if (options.save) {
       Bun.write(`./${talk}/index.html`, html);
     } else if (init) {
-      server = new Server(html, options, `${process.cwd()}/${talk}`);
+      Server.create(html, options, `${process.cwd()}/${talk}`);
       if (options.open) {
         if (options.notes)
           await open_default(`http://localhost:${options.port}/notes`);
         await open_default(`http://localhost:${options.port}`);
       }
     } else {
-      server.setHTML(html);
+      Server.setHTML(html);
     }
   }).catch((err) => console.error(err));
 };
 program.argument("<talk>").option("-p, --port <int>", "port", 1337).option("--open", "open the default browser").option("--save", "save the html file").option("--notes", "open with speakers notes").description("Convert & present a talk").action((talk, options) => {
   flow(talk, options, true);
+  if (!options.save) {
+    watch(talk, { recursive: true }, (eventType, filename) => {
+      console.log(`\u267B\uFE0F  ${filename} is ${eventType}`);
+      flow(talk, options);
+    });
+  }
 });
 program.parse();
