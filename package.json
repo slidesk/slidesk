@@ -26,6 +26,7 @@
   },
   "scripts": {
     "make": "bun build src/index.js --outdir bin  --minify --target bun",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "example": "bun src/index.js example --open"
   }
 }

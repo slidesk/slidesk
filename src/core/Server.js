@@ -82,6 +82,6 @@ export default class Server {
 
   static setHTML(html) {
     globalThis.html = html;
-    globalThis.server.publish("slidesk", { message: "reload" });
+    globalThis.server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 }

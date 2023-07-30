@@ -150,7 +150,7 @@ export default class Interpreter {
       ].forEach((match) => {
         htmlData = htmlData.replace(
           match[0],
-          `<${couple[1]}>${match[1]}</${couple[1]}>`,
+          `<span class="${couple[1]}">${match[1]}</span>`,
         );
       });
     });
@@ -165,9 +165,7 @@ export default class Interpreter {
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
       );
     });
-    return `<${element}>${htmlData
-      .replace(/<(i|b|u|s|code)>/g, '<span class="$1">')
-      .replace(/<\/(i|b|u|s|code)>/g, "</span>")}</${element}>`;
+    return `<${element}>${htmlData}</${element}>`;
   };
 
   static #image = (data) => {

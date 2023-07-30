@@ -11,6 +11,7 @@ window.slidesk.waitForSocketConnection = (payload) => {
 
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
+    console.log(event);
     const action = JSON.parse(event.data).action;
     if (action === "reload") location.reload();
     else if (action === "next") window.slidesk.next();
