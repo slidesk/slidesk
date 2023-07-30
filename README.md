@@ -66,7 +66,7 @@ _italic_
 See the example directory to understand how it works or run
 
 ```
-node index.js example
+bun run bin/index.js example
 ```
 
 ## Customize theme
