@@ -1,3 +1,27 @@
+const fromBinary = (encoded) => {
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint16Array(bytes.buffer));
+};
+
+window.slidesk.showSource = () => {
+  const source = fromBinary(
+    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+      "data-source",
+    ),
+  );
+  const $source = document.querySelector("#sdf-source");
+  $source.querySelector("pre").innerText = source;
+  $source.style.display = "block";
+};
+
+window.slidesk.hideSource = () => {
+  document.querySelector("#sdf-source").style.display = "none";
+};
+
 window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
@@ -11,8 +35,7 @@ window.slidesk.waitForSocketConnection = (payload) => {
 
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
-    console.log(event);
-    const action = JSON.parse(event.data).action;
+    const { action } = JSON.parse(event.data);
     if (action === "reload") location.reload();
     else if (action === "next") window.slidesk.next();
     else if (action === "previous") window.slidesk.previous();
@@ -30,13 +53,15 @@ window.slidesk.cleanOldSlide = (id) => {
 };
 
 window.slidesk.changeSlide = () => {
-  window.slidesk.slides[window.slidesk.currentSlide].classList.remove("sdf-previous");
-  window.slidesk.slides[window.slidesk.currentSlide].classList.add("sdf-current");
-  window.location.hash =
-    "/" +
-    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-slug",
-    );
+  window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
+    "sdf-previous",
+  );
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+    "sdf-current",
+  );
+  window.location.hash = `/${window.slidesk.slides[
+    window.slidesk.currentSlide
+  ].getAttribute("data-slug")}`;
   if (window.slidesk.io) {
     window.slidesk.sendMessage(
       JSON.stringify({
@@ -61,26 +86,29 @@ window.slidesk.changeSlide = () => {
       img.removeAttribute("data-src");
     });
   const $progress = document.querySelector("#sd-progress");
-  $progress.innerText =
-    window.slidesk.currentSlide + 1 + "/" + window.slidesk.slides.length;
-  $progress.style.width =
-    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
-    "%";
+  $progress.innerText = `${window.slidesk.currentSlide + 1}/${
+    window.slidesk.slides.length
+  }`;
+  $progress.style.width = `${
+    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length
+  }%`;
 };
 
 window.slidesk.next = () => {
-  if (window.slidesk.currentSlide != window.slidesk.slides.length - 1) {
+  if (window.slidesk.currentSlide !== window.slidesk.slides.length - 1) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
-    window.slidesk.slides[window.slidesk.currentSlide].classList.add("sdf-previous");
-    window.slidesk.currentSlide++;
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+      "sdf-previous",
+    );
+    window.slidesk.currentSlide += 1;
     window.slidesk.changeSlide();
   }
 };
 
 window.slidesk.previous = () => {
-  if (window.slidesk.currentSlide != 0) {
+  if (window.slidesk.currentSlide !== 0) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
-    window.slidesk.currentSlide--;
+    window.slidesk.currentSlide -= 1;
     window.slidesk.changeSlide();
   }
 };
@@ -111,16 +139,19 @@ window.onload = () => {
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
     const h = slide.querySelector("h2");
-    slugs.push(h ? h.getAttribute("data-slug") : "" + (i ? i : ""));
+    slugs.push(h ? h.getAttribute("data-slug") : `${i || ""}`);
   });
   window.slidesk.currentSlide = slugs.indexOf(loadingHash);
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
-    for (let i = 0; i < window.slidesk.currentSlide; i++) {
-      window.slidesk.slides[i].classList.add("sdf-previous", "no-sdf-animation");
+    for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
+      window.slidesk.slides[i].classList.add(
+        "sdf-previous",
+        "no-sdf-animation",
+      );
     }
     setTimeout(() => {
-      for (let i = 0; i < window.slidesk.currentSlide; i++) {
+      for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
         window.slidesk.slides[i].classList.remove("no-sdf-animation");
       }
     }, window.slidesk.animationTimer);
@@ -131,9 +162,9 @@ window.onload = () => {
   );
   window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {
-    if (e.key == "ArrowLeft") {
+    if (e.key === "ArrowLeft") {
       window.slidesk.previous();
-    } else if (e.key == "ArrowRight" || e.key == " ") {
+    } else if (e.key === "ArrowRight" || e.key === " ") {
       window.slidesk.next();
     }
   });
