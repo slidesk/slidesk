@@ -6,10 +6,25 @@ import mainJS from "../templates/main.js.txt";
 const animationTimer = 300;
 
 const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
+const buttonSource = `
+  <button id="sdf-showSource" onclick="window.slidesk.showSource();">&lt;/&gt;</button>
+  <div id="sdf-source">
+    <button onclick="window.slidesk.hideSource();">&times;</button>
+    <pre>x</pre>
+  </div>
+`;
 
 let customCSS = "";
 let customJS = "";
 let customSVJS = "";
+
+const toBinary = (string) => {
+  const codeUnits = new Uint16Array(string.length);
+  for (let i = 0; i < codeUnits.length; i += 1) {
+    codeUnits[i] = string.charCodeAt(i);
+  }
+  return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)));
+};
 
 export default class Interpreter {
   static convert = async (mainFile, options) => {
@@ -18,7 +33,10 @@ export default class Interpreter {
     if (sdfMainFile.size === 0) {
       return new Error("🤔 main.sdf was not found");
     }
-    const presentation = this.#sliceSlides(await this.#includes(mainFile));
+    const presentation = this.#sliceSlides(
+      await this.#includes(mainFile),
+      options,
+    );
     let template = layoutHTML;
     template = template.replace(
       "/* #STYLES# */",
@@ -44,7 +62,9 @@ export default class Interpreter {
       template = template.replace("#TITLE#", title[1]);
     });
     template = template.replace("#SECTIONS#", presentation);
-
+    if (options.source) {
+      template += buttonSource;
+    }
     const minified = await minify(template, {
       collapseWhitespace: true,
       removeEmptyElements: true,
@@ -73,12 +93,12 @@ export default class Interpreter {
     );
   };
 
-  static #sliceSlides = (presentation) =>
+  static #sliceSlides = (presentation, options) =>
     [...presentation.split("\n## ")]
-      .map((slide, s) => this.#transform(slide, s))
+      .map((slide, s) => this.#transform(slide, s, options))
       .join("");
 
-  static #transform = (slide, s) => {
+  static #transform = (slide, s, options) => {
     let classes = "";
     let slug = null;
     const content = slide
@@ -107,6 +127,8 @@ export default class Interpreter {
       .join("");
     return `<section class="sdf-slide ${classes}" data-slug="${
       slug ?? `${s ? `!slide-${s}` : ""}`
+    }" data-source="${
+      options.source ? toBinary(slide) : ""
     }">${content}</section>`;
   };
 
