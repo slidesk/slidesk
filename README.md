@@ -26,6 +26,7 @@ Options:
   --open            open the default browser
   --save            save the html file
   --notes           open with speakers notes
+  --source          add a button on slides to display its SDF code
   -h, --help        display help for command
 ```
 
