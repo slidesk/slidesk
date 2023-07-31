@@ -32,6 +32,7 @@ program
   .option("--open", "open the default browser")
   .option("--save", "save the html file")
   .option("--notes", "open with speakers notes")
+  .option("--source", "add a button on slides to display its SDF code")
   .description("Convert & present a talk")
   .action((talk, options) => {
     flow(talk, options, true);
