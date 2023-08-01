@@ -220,3 +220,15 @@ h3 {
   text-decoration: underline;
   cursor: pointer;
 }
+
+#sdf-qrcode {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 10px;
+  background: white;
+}
+
+#sdf-qrcode img {
+  margin: 0;
+}

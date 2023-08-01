@@ -3,6 +3,7 @@ import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/theme.css.txt";
 import mainJS from "../templates/main.js.txt";
 import gamepadJS from "../templates/gamepad.js.txt";
+import qrcodeLibJS from "../templates/qrcode.lib.js.txt";
 
 const animationTimer = 300;
 
@@ -53,7 +54,8 @@ export default class Interpreter {
           window.slidesk = {
             currentSlide: 0,
             slides: [],
-            animationTimer: ${animationTimer}
+            animationTimer: ${animationTimer},
+            qrcode: ${options.qrcode ? "true" : "false"}
           };
           ${!options.save ? socket.replace("#PORT#", options.port) : ""}
           ${mainJS}
@@ -67,12 +69,22 @@ export default class Interpreter {
     if (options.source) {
       template += buttonSource;
     }
-    const minified = await minify(template, {
+    if (options.qrcode) {
+      template += '<div id="sdf-qrcode">&nbsp;</div>';
+    }
+
+    let minified = await minify(template, {
       collapseWhitespace: true,
       removeEmptyElements: true,
       minifyCSS: true,
       minifyJS: true,
+      removeComments: true,
     });
+
+    minified = minified.replace(
+      '<script type="module" id="sd-scripts"',
+      `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
+    );
 
     return minified;
   };
