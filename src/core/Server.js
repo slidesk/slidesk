@@ -3,6 +3,7 @@ import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
 import themeCSS from "../templates/theme.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
+import gamepadJS from "../templates/gamepad.js.txt";
 
 export default class Server {
   static create(html, options, path) {
@@ -32,7 +33,10 @@ export default class Server {
               )
               .replace("/* #STYLES# */", themeCSS)
               .replace("/* #SV_STYLES# */", speakerViewCSS)
-              .replace("/* #SV_SCRIPT# */", speakerViewJS),
+              .replace(
+                "/* #SV_SCRIPT# */",
+                speakerViewJS + (options.gamepadSv ? gamepadJS : ""),
+              ),
             {
               headers: {
                 "Content-Type": "text/html",

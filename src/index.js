@@ -33,8 +33,17 @@ program
   .option("--save", "save the html file")
   .option("--notes", "open with speakers notes")
   .option("--source", "add a button on slides to display its SDF code")
+  .option(
+    "--gamepad",
+    "control your slide with a gamepad from the presentation",
+  )
+  .option(
+    "--gamepad-sv",
+    "control your slide with a gamepad from the speaker-view",
+  )
   .description("Convert & present a talk")
   .action((talk, options) => {
+    console.log(options);
     flow(talk, options, true);
     if (!options.save) {
       watch(talk, { recursive: true }, (eventType, filename) => {

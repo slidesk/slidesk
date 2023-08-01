@@ -27,6 +27,8 @@ Options:
   --save            save the html file
   --notes           open with speakers notes
   --source          add a button on slides to display its SDF code
+  --gamepad         control your slide with a gamepad from the presentation
+  --gamepad-sv      control your slide with a gamepad from the speaker-view
   -h, --help        display help for command
 ```
 
