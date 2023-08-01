@@ -1,9 +1,9 @@
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
+import gamepadJS from "../templates/notes/gamepad.js.txt";
 import themeCSS from "../templates/theme.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
-import gamepadJS from "../templates/gamepad.js.txt";
 
 export default class Server {
   static create(html, options, path) {
