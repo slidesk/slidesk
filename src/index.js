@@ -43,7 +43,6 @@ program
   )
   .description("Convert & present a talk")
   .action((talk, options) => {
-    console.log(options);
     flow(talk, options, true);
     if (!options.save) {
       watch(talk, { recursive: true }, (eventType, filename) => {
