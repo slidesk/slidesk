@@ -2,6 +2,7 @@ import { minify } from "html-minifier-terser";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/theme.css.txt";
 import mainJS from "../templates/main.js.txt";
+import gamepadJS from "../templates/gamepad.js.txt";
 
 const animationTimer = 300;
 
@@ -56,6 +57,7 @@ export default class Interpreter {
           };
           ${!options.save ? socket.replace("#PORT#", options.port) : ""}
           ${mainJS}
+          ${options.gamepad ? gamepadJS : ""}
         </script>${customJS}`,
     );
     [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
