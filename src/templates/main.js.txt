@@ -13,7 +13,7 @@ window.slidesk.showSource = () => {
       "data-source",
     ),
   );
-  const $source = document.querySelector("#sdf-source");
+  const $source = document.getElementById("sdf-source");
   $source.querySelector("pre").innerText = source;
   $source.style.display = "block";
 };
@@ -85,13 +85,24 @@ window.slidesk.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
-  const $progress = document.querySelector("#sd-progress");
+  const $progress = document.getElementById("sd-progress");
   $progress.innerText = `${window.slidesk.currentSlide + 1}/${
     window.slidesk.slides.length
   }`;
   $progress.style.width = `${
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length
   }%`;
+  if (window.slidesk.qrcode) {
+    document.getElementById("sdf-qrcode").innerHTML = "";
+    new QRCode(document.getElementById("sdf-qrcode"), {
+      text: window.location.href,
+      width: 96,
+      height: 96,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.L,
+    });
+  }
 };
 
 window.slidesk.next = () => {
@@ -115,7 +126,7 @@ window.slidesk.previous = () => {
 
 window.onload = () => {
   if (window.slidesk.io) {
-    const customcss = document.querySelector("#sd-customcss");
+    const customcss = document.getElementById("sd-customcss");
     if (customcss)
       window.slidesk.sendMessage(
         JSON.stringify({
@@ -124,7 +135,7 @@ window.onload = () => {
         }),
       );
     const customsvjs = document
-      .querySelector("#sd-scripts")
+      .getElementById("sd-scripts")
       .getAttribute("data-sv");
     if (customsvjs)
       window.slidesk.sendMessage(

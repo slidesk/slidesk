@@ -41,6 +41,7 @@ program
     "--gamepad-sv",
     "control your slide with a gamepad from the speaker-view",
   )
+  .option("--qrcode", "add a QRCode on each slide")
   .description("Convert & present a talk")
   .action((talk, options) => {
     flow(talk, options, true);

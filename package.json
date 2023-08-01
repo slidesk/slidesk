@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
