@@ -168,25 +168,22 @@ export default class Interpreter {
 
   static #formatting = (data, element) => {
     let htmlData = data;
-    // italic, bold
+    // italic, bold, ...
     [
+      ["=", "s"],
       ["_", "i"],
       ["\\*", "b"],
-      ["```", "pre"],
       ["`", "code"],
       ["˜", "u"],
-      ["=", "s"],
     ].forEach((couple) => {
       [
         ...htmlData.matchAll(
-          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm"),
+          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}(\\s)?`, "g"),
         ),
       ].forEach((match) => {
         htmlData = htmlData.replace(
           match[0],
-          couple[1] === "pre"
-            ? `<pre>${match[1]}</pre>`
-            : `<span class="${couple[1]}">${match[1]}</span>`,
+          `<span class="${couple[1]}">${match[1]}</span>${match[2] ?? ""}`,
         );
       });
     });
