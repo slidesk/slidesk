@@ -31,3 +31,9 @@ Wrapped with a "˜" will display as underlined
 Wrapped with a "=" will display as line through
 
 =line through=
+
+##
+
+Wrapped with a "$" will allow you to internationalize your presentation
+
+$myVar$ is in the language we want
