@@ -9,11 +9,8 @@ const animationTimer = 300;
 
 const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
 const buttonSource = `
-  <button id="sdf-showSource" onclick="window.slidesk.showSource();">&lt;/&gt;</button>
-  <div id="sdf-source">
-    <button onclick="window.slidesk.hideSource();">&times;</button>
-    <pre>x</pre>
-  </div>
+  <button id="sdf-showSource" popovertarget="sdf-source">&lt;/&gt;</button>
+  <div id="sdf-source" popover><pre>x</pre></div>
 `;
 
 let customCSS = "";
@@ -55,7 +52,8 @@ export default class Interpreter {
             currentSlide: 0,
             slides: [],
             animationTimer: ${animationTimer},
-            qrcode: ${options.qrcode ? "true" : "false"}
+            qrcode: ${options.qrcode ? "true" : "false"},
+            source: ${options.source ? "true" : "false"}
           };
           ${!options.save ? socket.replace("#PORT#", options.port) : ""}
           ${mainJS}
