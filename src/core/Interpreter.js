@@ -170,16 +170,16 @@ export default class Interpreter {
     let htmlData = data;
     // italic, bold
     [
+      ["=", "s"],
       ["_", "i"],
       ["\\*", "b"],
       ["```", "pre"],
       ["`", "code"],
       ["˜", "u"],
-      ["=", "s"],
     ].forEach((couple) => {
       [
         ...htmlData.matchAll(
-          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "gm"),
+          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}`, "g"),
         ),
       ].forEach((match) => {
         htmlData = htmlData.replace(
