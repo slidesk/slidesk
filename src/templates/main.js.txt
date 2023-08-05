@@ -7,21 +7,6 @@ const fromBinary = (encoded) => {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 };
 
-window.slidesk.showSource = () => {
-  const source = fromBinary(
-    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-source",
-    ),
-  );
-  const $source = document.getElementById("sdf-source");
-  $source.querySelector("pre").innerText = source;
-  $source.style.display = "block";
-};
-
-window.slidesk.hideSource = () => {
-  document.querySelector("#sdf-source").style.display = "none";
-};
-
 window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
@@ -62,6 +47,15 @@ window.slidesk.changeSlide = () => {
   window.location.hash = `/${window.slidesk.slides[
     window.slidesk.currentSlide
   ].getAttribute("data-slug")}`;
+  if (window.slidesk.source) {
+    const source = fromBinary(
+      window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+        "data-source",
+      ),
+    );
+    const $source = document.getElementById("sdf-source");
+    $source.querySelector("pre").innerText = source;
+  }
   if (window.slidesk.io) {
     window.slidesk.sendMessage(
       JSON.stringify({

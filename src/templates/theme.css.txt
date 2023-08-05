@@ -196,29 +196,10 @@ h3 {
 }
 
 #sdf-source {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
   background-color: var(--sd-background-color);
   color: var(--sd-text-color);
-  border: 1px solid var(--sd-text-color);
   padding: 10px 20px;
-  display: none;
-}
-
-#sdf-source button {
-  position: absolute;
-  right: 5px;
-  font-size: 2rem;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-#sdf-source button:hover {
-  text-decoration: underline;
-  cursor: pointer;
+  margin: auto;
 }
 
 #sdf-qrcode {
