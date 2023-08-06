@@ -15,11 +15,22 @@ export default class Server {
       fetch(req) {
         const url = new URL(req.url);
         if (url.pathname === "/")
-          return new Response(globalThis.html, {
+          return new Response(globalThis.html.index.html, {
             headers: {
               "Content-Type": "text/html",
             },
           });
+        if (url.pathname.match(/^\/--(\w+)--\/$/g))
+          return new Response(
+            globalThis.html[
+              url.pathname.replaceAll("-", "").replaceAll("/", "")
+            ].html,
+            {
+              headers: {
+                "Content-Type": "text/html",
+              },
+            },
+          );
         if (url.pathname === "/favicon.svg")
           return new Response(faviconSVG, {
             headers: { "Content-Type": "image/svg+xml" },

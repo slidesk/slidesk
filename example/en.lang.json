@@ -1,0 +1,6 @@
+{
+  "default": true,
+  "translations": {
+    "myVar": "My variable"
+  }
+}

@@ -9,8 +9,10 @@ const flow = (talk, options = {}, init = false) => {
   Interpreter.convert(`./${talk}/main.sdf`, options)
     .then(async (html) => {
       if (options.save) {
-        // eslint-disable-next-line no-undef
-        Bun.write(`./${talk}/index.html`, html);
+        Object.entries(html).forEach(([key, value]) => {
+          // eslint-disable-next-line no-undef
+          Bun.write(`./${talk}/${key}.html`, value.html);
+        });
       } else if (init) {
         Server.create(html, options, `${process.cwd()}/${talk}`);
         if (options.open) {

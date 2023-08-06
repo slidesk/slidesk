@@ -213,3 +213,16 @@ h3 {
 #sdf-qrcode img {
   margin: 0;
 }
+
+#sdf-langs {
+  position: absolute;
+  background: transparent;
+  color: var(--sd-text-color);
+  border: 0;
+  top: 0.2vw;
+  right: 0.2vw;
+}
+
+#sdf-langs option {
+  color: var(--sd-text-color);
+}

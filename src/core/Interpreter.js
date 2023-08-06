@@ -1,3 +1,4 @@
+import { globSync } from "glob";
 import { minify } from "html-minifier-terser";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/theme.css.txt";
@@ -60,31 +61,54 @@ export default class Interpreter {
           ${options.gamepad ? gamepadJS : ""}
         </script>${customJS}`,
     );
-    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
-      template = template.replace("#TITLE#", title[1]);
-    });
-    template = template.replace("#SECTIONS#", presentation);
-    if (options.source) {
-      template += buttonSource;
+    // translation management
+    const sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
+    const langFiles = globSync(`${sdfPath}/*.lang.json`);
+    const languages = {};
+    if (langFiles.length) {
+      const menuLang = [];
+      await Promise.all(
+        langFiles.map(async (lang) => {
+          const langSlug = lang
+            .replace(`${sdfPath.replace("./", "")}/`, "")
+            .replace(".lang.json", "");
+          // eslint-disable-next-line no-undef
+          const translationJSON = await Bun.readableStreamToJSON(
+            // eslint-disable-next-line no-undef
+            await Bun.file(lang).stream(),
+          );
+          menuLang.push({
+            value: translationJSON.default ? "/" : `/--${langSlug}--/`,
+            label: langSlug,
+          });
+          languages[translationJSON.default ? "index" : langSlug] = {
+            html: await this.#polish(
+              this.#translate(presentation, translationJSON),
+              template,
+              options,
+            ),
+            slug: langSlug,
+          };
+        }),
+      );
+      // add menu lang
+      Object.keys(languages).forEach((key) => {
+        languages[key].html = languages[key].html.replace(
+          "</body>",
+          `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
+            (o) =>
+              `<option value="${o.value}" ${
+                o.label === key ? "selected" : ""
+              }>${o.label}</option>`,
+          )}</select>`,
+        );
+      });
+    } else {
+      languages.index = {
+        html: await this.#polish(presentation, template, options),
+      };
     }
-    if (options.qrcode) {
-      template += '<div id="sdf-qrcode">&nbsp;</div>';
-    }
-
-    let minified = await minify(template, {
-      collapseWhitespace: true,
-      removeEmptyElements: true,
-      minifyCSS: true,
-      minifyJS: true,
-      removeComments: true,
-    });
-
-    minified = minified.replace(
-      '<script type="module" id="sd-scripts"',
-      `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
-    );
-
-    return minified;
+    return languages;
   };
 
   static #replaceAsync = async (str, regex, asyncFn) => {
@@ -243,4 +267,44 @@ export default class Interpreter {
       .replace(/[^\w\s-]/g, "")
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
+
+  static #polish = async (presentation, template, options) => {
+    let tpl = template;
+    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
+      tpl = tpl.replace("#TITLE#", title[1]);
+    });
+    tpl = tpl.replace("#SECTIONS#", presentation);
+    if (options.source) {
+      tpl += buttonSource;
+    }
+    if (options.qrcode) {
+      tpl += '<div id="sdf-qrcode">&nbsp;</div>';
+    }
+
+    let minified = await minify(tpl, {
+      collapseWhitespace: true,
+      removeEmptyElements: true,
+      minifyCSS: true,
+      minifyJS: true,
+      removeComments: true,
+    });
+
+    minified = minified.replace(
+      '<script type="module" id="sd-scripts"',
+      `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
+    );
+
+    return minified;
+  };
+
+  static #translate = (presentation, json) => {
+    let pres = presentation;
+    [...pres.matchAll(/\$([\w]+)\$(\s)?/g)].forEach((match) => {
+      pres = pres.replace(
+        match[0],
+        (json.translations[match[1]] ?? match[0]) + match[2],
+      );
+    });
+    return pres;
+  };
 }
