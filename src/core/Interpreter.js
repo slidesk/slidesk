@@ -77,11 +77,10 @@ export default class Interpreter {
             // eslint-disable-next-line no-undef
             await Bun.file(lang).stream(),
           );
-          menuLang.push(
-            `<option value="${
-              translationJSON.default ? "/" : `--${langSlug}--`
-            }">${langSlug}</option>`,
-          );
+          menuLang.push({
+            value: translationJSON.default ? "/" : `/--${langSlug}--/`,
+            label: langSlug,
+          });
           languages[translationJSON.default ? "index" : langSlug] = {
             html: await this.#polish(
               this.#translate(presentation, translationJSON),
@@ -96,8 +95,11 @@ export default class Interpreter {
       Object.keys(languages).forEach((key) => {
         languages[key].html = languages[key].html.replace(
           "</body>",
-          `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.join(
-            "",
+          `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
+            (o) =>
+              `<option value="${o.value}" ${
+                o.label === key ? "selected" : ""
+              }>${o.label}</option>`,
           )}</select>`,
         );
       });
@@ -269,9 +271,9 @@ export default class Interpreter {
   static #polish = async (presentation, template, options) => {
     let tpl = template;
     [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
-      tpl = template.replace("#TITLE#", title[1]);
+      tpl = tpl.replace("#TITLE#", title[1]);
     });
-    tpl = template.replace("#SECTIONS#", presentation);
+    tpl = tpl.replace("#SECTIONS#", presentation);
     if (options.source) {
       tpl += buttonSource;
     }
@@ -296,12 +298,12 @@ export default class Interpreter {
   };
 
   static #translate = (presentation, json) => {
-    const char = "\\$";
     let pres = presentation;
-    [
-      ...pres.matchAll(new RegExp(`${char}([^\\${char}]+)${char}(\\s)?`, "g")),
-    ].forEach((match) => {
-      pres = pres.replace(match[0], json.translations[match[1]] ?? match[0]);
+    [...pres.matchAll(/\$([\w]+)\$(\s)?/g)].forEach((match) => {
+      pres = pres.replace(
+        match[0],
+        (json.translations[match[1]] ?? match[0]) + match[2],
+      );
     });
     return pres;
   };

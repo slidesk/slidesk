@@ -20,6 +20,17 @@ export default class Server {
               "Content-Type": "text/html",
             },
           });
+        if (url.pathname.match(/^\/--(\w+)--\/$/g))
+          return new Response(
+            globalThis.html[
+              url.pathname.replaceAll("-", "").replaceAll("/", "")
+            ].html,
+            {
+              headers: {
+                "Content-Type": "text/html",
+              },
+            },
+          );
         if (url.pathname === "/favicon.svg")
           return new Response(faviconSVG, {
             headers: { "Content-Type": "image/svg+xml" },
