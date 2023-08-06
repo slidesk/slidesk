@@ -15,7 +15,7 @@ export default class Server {
       fetch(req) {
         const url = new URL(req.url);
         if (url.pathname === "/")
-          return new Response(globalThis.html, {
+          return new Response(globalThis.html.index.html, {
             headers: {
               "Content-Type": "text/html",
             },
