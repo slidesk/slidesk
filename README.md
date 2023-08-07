@@ -54,9 +54,9 @@ A livereload is activated per default.
 
 !include(another_file)
 
-_italic_
+__italic__
 
-*bold*
+**bold**
 
 !image(path or url | html attributes)
 
@@ -70,7 +70,7 @@ _italic_
 See the example directory to understand how it works or run
 
 ```
-bun run bin/index.js example
+bun example
 ```
 
 ## Customize theme
