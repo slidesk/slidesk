@@ -202,7 +202,10 @@ export default class Interpreter {
     ].forEach((couple) => {
       [
         ...htmlData.matchAll(
-          new RegExp(`${couple[0]}([^\\${couple[0]}]+)${couple[0]}(\\s)?`, "g"),
+          new RegExp(
+            `${couple[0]}${couple[0]}([^\\${couple[0]}]+)${couple[0]}${couple[0]}(\\s)?`,
+            "g",
+          ),
         ),
       ].forEach((match) => {
         htmlData = htmlData.replace(
@@ -299,7 +302,7 @@ export default class Interpreter {
 
   static #translate = (presentation, json) => {
     let pres = presentation;
-    [...pres.matchAll(/\$([\w]+)\$(\s)?/g)].forEach((match) => {
+    [...pres.matchAll(/\$\$([\w]+)\$\$(\s)?/g)].forEach((match) => {
       pres = pres.replace(
         match[0],
         (json.translations[match[1]] ?? match[0]) + match[2],

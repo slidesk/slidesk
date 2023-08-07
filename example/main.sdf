@@ -1,3 +1,8 @@
+/::
+custom_css: custom.css
+custom_js: custom.js
+::/
+
 # Example's talk
 
 How to create a talk with slidesk
@@ -24,6 +29,16 @@ With a `!image(path of your image)` at the beginning of a line will display
 - end of a List
 -- an other sublist
 
+## Notes for speakers
+
+With conventional comments "/*" end "*/", you can write your speaker note for each slide
+
+/*
+My notes will be displayed on speaker view only
+*/
+
 ## Final
 
 Thanks
+
+Developed by https://gouz.dev
