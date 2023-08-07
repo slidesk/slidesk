@@ -11,13 +11,13 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --sd-heading1-size: 3.75em;
+  --sd-heading1-size: 8.5vw;
   --sd-heading1-line-height: 1;
-  --sd-heading2-size: 2.25em;
+  --sd-heading2-size: 5vw;
   --sd-heading2-line-height: 1;
-  --sd-heading3-size: 1.75em;
+  --sd-heading3-size: 3vw;
   --sd-heading3-line-height: 1;
-  --sd-text-size: 40px;
+  --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
 
   --sd-background-color: #242424;
@@ -69,7 +69,7 @@ h6 {
 
 p,
 img {
-  margin: 0.5rem auto;
+  margin: 0.7vw auto;
 }
 
 a,
@@ -145,19 +145,19 @@ h3 {
 .sdf-slide h1 {
   font-size: var(--sd-heading1-size);
   line-height: var(--sd-heading1-line-height);
-  margin-bottom: 20px;
+  margin-bottom: 1.1vw;
 }
 
 .sdf-slide h2 {
   font-size: var(--sd-heading2-size);
   line-height: var(--sd-heading2-line-height);
-  margin-bottom: 20px;
+  margin-bottom: 1.1vw;
 }
 
 .sdf-slide h3 {
   font-size: var(--sd-heading3-size);
   line-height: var(--sd-heading3-line-height);
-  margin-bottom: 20px;
+  margin-bottom: 1.1vw;
 }
 
 .sdf-slide.no-sdf-animation {
