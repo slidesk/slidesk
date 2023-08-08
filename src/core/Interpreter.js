@@ -97,7 +97,7 @@ export default class Interpreter {
               `<option value="${o.value}" ${
                 o.label === key ? "selected" : ""
               }>${o.label}</option>`,
-          )}</select>`,
+          )}</select></body>`,
         );
       });
     } else {
