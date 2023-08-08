@@ -289,10 +289,12 @@ export default class Interpreter {
       removeComments: true,
     });
 
-    minified = minified.replace(
-      '<script type="module" id="sd-scripts"',
-      `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
-    );
+    if (options.qrcode) {
+      minified = minified.replace(
+        '<script type="module" id="sd-scripts"',
+        `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
+      );
+    }
 
     return minified;
   };
