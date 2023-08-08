@@ -73,10 +73,7 @@ export default class Interpreter {
             .replace(`${sdfPath.replace("./", "")}/`, "")
             .replace(".lang.json", "");
           // eslint-disable-next-line no-undef
-          const translationJSON = await Bun.readableStreamToJSON(
-            // eslint-disable-next-line no-undef
-            await Bun.file(lang).stream(),
-          );
+          const translationJSON = await Bun.file(lang).json();
           menuLang.push({
             value: translationJSON.default ? "/" : `/--${langSlug}--/`,
             label: langSlug,
