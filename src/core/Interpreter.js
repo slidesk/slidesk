@@ -287,6 +287,7 @@ export default class Interpreter {
       minifyCSS: true,
       minifyJS: true,
       removeComments: true,
+      removeAttributeQuotes: true,
     });
 
     if (options.qrcode) {
