@@ -1,9 +1,12 @@
+import chalk from "chalk";
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
 import gamepadJS from "../templates/notes/gamepad.js.txt";
 import themeCSS from "../templates/theme.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
+
+const { log } = console;
 
 export default class Server {
   static create(html, options, path) {
@@ -88,15 +91,26 @@ export default class Server {
       },
     });
 
-    // eslint-disable-next-line no-console
-    console.log(`📽️\thttp://localhost:${options.port}`);
+    log(
+      `Your presentation is available on: ${chalk.blue.bold(
+        `http://localhost:${options.port}`,
+      )}`,
+    );
     if (options.notes)
-      // eslint-disable-next-line no-console
-      console.log(`📝\thttp://localhost:${options.port}/notes`);
+      log(
+        `Your speaker view is available on: ${chalk.green.bold(
+          `http://localhost:${options.port}/notes`,
+        )}`,
+      );
+    log();
   }
 
   static setHTML(html) {
     globalThis.html = html;
     globalThis.server.publish("slidesk", JSON.stringify({ action: "reload" }));
+  }
+
+  static send(action) {
+    globalThis.server.publish("slidesk", JSON.stringify({ action }));
   }
 }
