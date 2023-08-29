@@ -95,7 +95,7 @@ const getAction = () => {
     if (i === "q") process.exit();
     else if (i === "p") Server.send("previous");
     else Server.send("next");
-    readline.moveCursor(process.stdout, 0, -2);
+    readline.moveCursor(process.stdout, 0, -1);
     readline.clearScreenDown(process.stdout);
     getAction();
   });
