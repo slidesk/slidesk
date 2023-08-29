@@ -25,15 +25,10 @@ const gamepad = () => {
               /* up */
             } else if (index == 13) {
               /* down */
-            } else if (index == 15)
-              window.slidesk.next(); // ->
-            else if (index == 14)
-              window.slidesk.previous();
-            // <-
-            else if (index == 6)
-              window.slidesk.next(); // L2
-            else if (index == 7)
-              window.slidesk.previous(); // R2
+            } else if (index == 15) window.slidesk.next(); // ->
+            else if (index == 14) window.slidesk.previous(); // <-
+            else if (index == 6) window.slidesk.next(); // L2
+            else if (index == 7) window.slidesk.previous(); // R2
           }
         }
       }
