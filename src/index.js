@@ -4,7 +4,6 @@ import readline from "readline";
 import process from "process";
 import chalk from "chalk";
 import { program } from "commander";
-import open from "open";
 import Interpreter from "./core/Interpreter";
 import Server from "./core/Server";
 import packagejson from "../package.json";
@@ -27,11 +26,6 @@ const flow = (talk, options = {}, init = false) => {
         });
       } else if (init) {
         Server.create(html, options, `${process.cwd()}/${talk}`);
-        if (options.open) {
-          if (options.notes)
-            await open(`http://localhost:${options.port}/notes`);
-          await open(`http://localhost:${options.port}`);
-        }
       } else {
         Server.setHTML(html);
       }
@@ -42,7 +36,6 @@ const flow = (talk, options = {}, init = false) => {
 program
   .argument("<talk>")
   .option("-p, --port <int>", "port", 1337)
-  .option("-o, --open", "open the default browser")
   .option("-s, --save", "save the html file")
   .option("-n, --notes", "open with speakers notes")
   .option("-src, --source", "add a button on slides to display its SDF code")
