@@ -8,6 +8,18 @@ The `example` rendering is visible on https://gouz.github.io/slidesk/
 
 ## Installation
 
+On mac you can use **Homebrew**:
+
+```sh
+brew tap gouz/tools && brew install slidesk
+```
+
+or
+
+```sh
+brew install gouz/tools/slidesk
+```
+
 SliDesk is develop with https://bun.sh instead of Node.js
 
 ```
@@ -23,13 +35,13 @@ Convert & present a talk
 
 Options:
   -p, --port <int>  port (default: 1337)
-  --open            open the default browser
-  --save            save the html file
-  --notes           open with speakers notes
-  --source          add a button on slides to display its SDF code
-  --gamepad         control your slide with a gamepad from the presentation
+  -s, --save        save the html file
+  -n, --notes       open with speakers notes
+  -src, --source    add a button on slides to display its SDF code
+  -g, -gamepad      control your slide with a gamepad from the presentation
   --gamepad-sv      control your slide with a gamepad from the speaker-view
-  --qrcode          add a QRCode on each slide
+  -q, --qrcode      add a QRCode on each slide
+  -v, --version     output the version number
   -h, --help        display help for command
 ```
 

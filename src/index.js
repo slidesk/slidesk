@@ -40,14 +40,14 @@ program
   .option("-n, --notes", "open with speakers notes")
   .option("-src, --source", "add a button on slides to display its SDF code")
   .option(
-    "--gamepad, -g",
+    "-g, -gamepad",
     "control your slide with a gamepad from the presentation",
   )
   .option(
     "--gamepad-sv",
     "control your slide with a gamepad from the speaker-view",
   )
-  .option("--qrcode, -q", "add a QRCode on each slide")
+  .option("-q, --qrcode", "add a QRCode on each slide")
   .description("Convert & present a talk")
   .action((talk, options) => {
     log(
