@@ -50,8 +50,6 @@ program
   .option("--qrcode, -q", "add a QRCode on each slide")
   .description("Convert & present a talk")
   .action((talk, options) => {
-    readline.cursorTo(process.stdout, 0, 0);
-    readline.clearScreenDown(process.stdout);
     log(
       joliTitle(`
 ░██████╗██╗░░░░░██╗██████╗░███████╗░██████╗██╗░░██╗
