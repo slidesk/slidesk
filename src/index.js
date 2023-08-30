@@ -83,11 +83,11 @@ program.version(packagejson.version, "-v, --version");
 const getAction = () => {
   rl.question("", (answer) => {
     const i = answer.trim().toLowerCase();
+    readline.moveCursor(process.stdout, 0, -1);
+    readline.clearScreenDown(process.stdout);
     if (i === "q") process.exit();
     else if (i === "p") Server.send("previous");
     else Server.send("next");
-    readline.moveCursor(process.stdout, 0, -1);
-    readline.clearScreenDown(process.stdout);
     getAction();
   });
 };
