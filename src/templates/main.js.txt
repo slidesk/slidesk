@@ -44,9 +44,10 @@ window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "sdf-current",
   );
-  window.location.hash = `/${window.slidesk.slides[
-    window.slidesk.currentSlide
-  ].getAttribute("data-slug")}`;
+  window.location.hash =
+    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+      "data-slug",
+    );
   if (window.slidesk.source) {
     const source = fromBinary(
       window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
@@ -79,13 +80,9 @@ window.slidesk.changeSlide = () => {
       img.setAttribute("src", img.getAttribute("data-src"));
       img.removeAttribute("data-src");
     });
-  const $progress = document.getElementById("sd-progress");
-  $progress.innerText = `${window.slidesk.currentSlide + 1}/${
-    window.slidesk.slides.length
-  }`;
-  $progress.style.width = `${
-    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length
-  }%`;
+  document.getElementById("sd-progress").style.width =
+    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
+    "%";
   if (window.slidesk.qrcode) {
     document.getElementById("sdf-qrcode").innerHTML = "";
     new QRCode(document.getElementById("sdf-qrcode"), {
@@ -144,7 +141,7 @@ window.onload = () => {
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
     const h = slide.querySelector("h2");
-    slugs.push(h ? h.getAttribute("data-slug") : `${i || ""}`);
+    slugs.push(h ? h.getAttribute("data-slug") : i || "");
   });
   window.slidesk.currentSlide = slugs.indexOf(loadingHash);
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
