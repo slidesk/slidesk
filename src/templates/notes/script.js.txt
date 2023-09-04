@@ -14,8 +14,9 @@ window.slidesk.io.onmessage = (event) => {
     document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
   }
   if (data.action === "customcss") {
-    document.querySelector("head").innerHTML +=
-      '<link rel="stylesheet" href="' + data.payload + '">';
+    document.querySelector(
+      "head",
+    ).innerHTML += `<link rel="stylesheet" href="${data.payload}">`;
   }
   if (data.action === "customsvjs") {
     const s = document.createElement("script");
@@ -24,21 +25,21 @@ window.slidesk.io.onmessage = (event) => {
   }
 };
 document.addEventListener("keydown", (e) => {
-  if (e.key == "ArrowLeft") {
+  if (e.key === "ArrowLeft") {
     window.slidesk.io.send(JSON.stringify({ action: "previous" }));
-  } else if (e.key == "ArrowRight" || e.key == " ") {
+  } else if (e.key === "ArrowRight" || e.key === " ") {
     window.slidesk.io.send(JSON.stringify({ action: "next" }));
   }
 });
 let startTime = null;
 const toHHMMSS = (secs) => {
-  var sec_num = parseInt(secs, 10);
-  var hours = Math.floor(sec_num / 3600);
-  var minutes = Math.floor(sec_num / 60) % 60;
-  var seconds = sec_num % 60;
+  const secnum = parseInt(secs, 10);
+  const hours = Math.floor(secnum / 3600);
+  const minutes = Math.floor(secnum / 60) % 60;
+  const seconds = secnum % 60;
 
   return [hours, minutes, seconds]
-    .map((v) => (v < 10 ? "0" + v : v))
+    .map((v) => (v < 10 ? `0${v}` : v))
     .filter((v, i) => v !== "00" || i > 0)
     .join(":");
 };

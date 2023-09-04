@@ -38,9 +38,12 @@ Options:
   -s, --save        save the html file
   -n, --notes       open with speakers notes
   -src, --source    add a button on slides to display its SDF code
-  -g, -gamepad      control your slide with a gamepad from the presentation
-  --gamepad-sv      control your slide with a gamepad from the speaker-view
+  -g, -gamepad      control your slide with a gamepad from the
+                    presentation
+  --gamepad-sv      control your slide with a gamepad from the
+                    speaker-view
   -q, --qrcode      add a QRCode on each slide
+  -t, --timers      add checkpoint and slide's maximum time on notes view
   -v, --version     output the version number
   -h, --help        display help for command
 ```

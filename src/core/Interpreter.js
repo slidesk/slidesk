@@ -133,36 +133,53 @@ export default class Interpreter {
 
   static #transform = (slide, s, options) => {
     let classes = "";
+    let timerSlide = "";
+    let timerCheckpoint = "";
     let slug = null;
     const content = slide
       .replace(/\\r/g, "")
       .split("\n\n")
       .map((paragraph, p) => {
-        if (paragraph.startsWith("/::")) return this.#config(paragraph);
-        if (paragraph.startsWith("# ")) return this.#mainTitle(paragraph);
-        if (paragraph.startsWith("/*")) return this.#comments(paragraph);
-        if (paragraph.startsWith("!image")) return this.#image(paragraph);
-        if (paragraph.startsWith("- ")) return this.#list(paragraph);
-        if (paragraph.startsWith("<")) return paragraph;
+        let par = paragraph;
+        if (par.startsWith("\n")) par = par.substring(1);
+        if (par.startsWith("/::")) return this.#config(par);
+        if (par.startsWith("# ")) return this.#mainTitle(par);
+        if (par.startsWith("/*")) return this.#comments(par);
+        if (par.startsWith("!image")) return this.#image(par);
+        if (par.startsWith("- ")) return this.#list(par);
+        if (par.startsWith("//@")) {
+          // timers
+          const timer = par.replace("//@", "").replaceAll(" ", "");
+          if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
+          if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
+          return "";
+        }
+        if (par.startsWith("<")) return par;
         if (p === 0) {
-          const spl = [...paragraph.split(".[")];
+          const spl = [...par.split(".[")];
           if (spl.length !== 1) {
             classes = spl[1].replace("]", "");
           }
-          if (paragraph !== "") {
-            slug = this.#slugify(paragraph);
+          if (par !== "") {
+            slug = this.#slugify(par);
             return this.#formatting(spl[0], "h2");
           }
         }
-        if (paragraph.length) return this.#formatting(paragraph, "p");
+        if (par.length) return this.#formatting(par, "p");
         return "";
       })
       .join("");
     return `<section class="sdf-slide ${classes}" data-slug="${
       slug ?? `${s ? `!slide-${s}` : ""}`
-    }" data-source="${
-      options.source ? toBinary(slide) : ""
-    }">${content}</section>`;
+    }"${options.source ? ` data-source="${toBinary(slide)}"` : ""}${
+      options.timers && timerSlide !== ""
+        ? ` data-timer-slide="${timerSlide}"`
+        : ""
+    }${
+      options.timers && timerCheckpoint !== ""
+        ? ` data-timer-checkpoint="${timerCheckpoint}"`
+        : ""
+    }>${content}</section>`;
   };
 
   static #comments = (data) =>

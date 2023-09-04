@@ -21,7 +21,7 @@ window.slidesk.waitForSocketConnection = (payload) => {
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
     const { action } = JSON.parse(event.data);
-    if (action === "reload") location.reload();
+    if (action === "reload") window.location.reload();
     else if (action === "next") window.slidesk.next();
     else if (action === "previous") window.slidesk.previous();
   };
@@ -61,7 +61,9 @@ window.slidesk.changeSlide = () => {
     window.slidesk.sendMessage(
       JSON.stringify({
         action: "current",
-        payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
+        payload: window.slidesk.slides[
+          window.slidesk.currentSlide
+        ].outerHTML.replace(/data-source="(^["])"/gi, ""),
       }),
     );
     window.slidesk.sendMessage(
@@ -69,7 +71,9 @@ window.slidesk.changeSlide = () => {
         action: "future",
         payload:
           window.slidesk.currentSlide !== window.slidesk.slides.length - 1
-            ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
+            ? window.slidesk.slides[
+                window.slidesk.currentSlide + 1
+              ].outerHTML.replace(/data-source="(^["])"/gi, "")
             : "",
       }),
     );

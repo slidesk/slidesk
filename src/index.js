@@ -48,6 +48,10 @@ program
     "control your slide with a gamepad from the speaker-view",
   )
   .option("-q, --qrcode", "add a QRCode on each slide")
+  .option(
+    "-t, --timers",
+    "add checkpoint and slide's maximum time on notes view",
+  )
   .description("Convert & present a talk")
   .action((talk, options) => {
     log(
@@ -72,8 +76,14 @@ program
     flow(talk, options, true);
     if (!options.save) {
       watch(talk, { recursive: true }, (eventType, filename) => {
-        log(`♻️  ${filename} is ${eventType}`);
-        flow(talk, options);
+        if (!filename.startsWith(".git")) {
+          log(
+            `♻️  ${chalk.underline(filename)} has "${chalk.italic(
+              eventType,
+            )}" action`,
+          );
+          flow(talk, options);
+        }
       });
     }
   });
