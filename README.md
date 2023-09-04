@@ -138,6 +138,22 @@ A comment in a page correspond to the notes for the speaker.
 */
 ```
 
+## Timers
+
+You can specify checkpoint timers in your slide. They are visibles in Speaker Note View.
+
+This following syntax means that at this slide, if you're under 22 minutes of your presentation, you're good.
+
+```
+//@ < 22:00
+```
+
+This following syntax means that this slide must be done in 3 minutes.
+
+```
+//@ [] 2:00
+```
+
 ## Add JS on your slides & Speakers Notes
 
 With a custom header in the `main.sdf` file, you can add a script file for the slide part, or the speaker notes part:
