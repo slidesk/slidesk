@@ -6,7 +6,7 @@ const toHHMMSS = (secs) => {
   const seconds = secnum % 60;
 
   return [hours, minutes, seconds]
-    .map((v) => (v < 10 ? `0${v}` : v))
+    .map((v) => (v < 10 ? "0" + v : v))
     .filter((v, i) => v !== "00" || i > 0)
     .join(":");
 };
@@ -42,9 +42,8 @@ window.slidesk.io.onmessage = (event) => {
     document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
   }
   if (data.action === "customcss") {
-    document.querySelector(
-      "head",
-    ).innerHTML += `<link rel="stylesheet" href="${data.payload}">`;
+    document.querySelector("head").innerHTML +=
+      '<link rel="stylesheet" href="' + data.payload + '">';
   }
   if (data.action === "customsvjs") {
     const s = document.createElement("script");
