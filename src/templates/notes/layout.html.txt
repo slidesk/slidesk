@@ -16,16 +16,17 @@
     </div>
     <div id="sd-sv-right">
       <div id="sd-sv-timer">Click to (re)start</div>
+      <div id="sd-sv-subtimer"></div>
       <aside id="sd-sv-notes"></aside>
     </div>
     <script>
       window.slidesk = {
         io: {},
         timer: document.querySelector("#sd-sv-timer"),
+        subtimer: document.querySelector("#sd-sv-subtimer"),
       };
       /* #SOCKETS# */
       /* #SV_SCRIPT# */
     </script>
   </body>
 </html>
-`;

@@ -38,9 +38,12 @@ Options:
   -s, --save        save the html file
   -n, --notes       open with speakers notes
   -src, --source    add a button on slides to display its SDF code
-  -g, -gamepad      control your slide with a gamepad from the presentation
-  --gamepad-sv      control your slide with a gamepad from the speaker-view
+  -g, -gamepad      control your slide with a gamepad from the
+                    presentation
+  --gamepad-sv      control your slide with a gamepad from the
+                    speaker-view
   -q, --qrcode      add a QRCode on each slide
+  -t, --timers      add checkpoint and slide's maximum time on notes view
   -v, --version     output the version number
   -h, --help        display help for command
 ```
@@ -133,6 +136,22 @@ Then, in your `main.sdf` file you have to prepend this line:
 /*
 A comment in a page correspond to the notes for the speaker.
 */
+```
+
+## Timers
+
+You can specify checkpoint timers in your slide. They are visibles in Speaker Note View.
+
+This following syntax means that at this slide, if you're under 22 minutes of your presentation, you're good.
+
+```
+//@ < 22:00
+```
+
+This following syntax means that this slide must be done in 3 minutes.
+
+```
+//@ [] 2:00
 ```
 
 ## Add JS on your slides & Speakers Notes
