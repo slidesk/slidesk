@@ -1,4 +1,27 @@
 const makeSlide = (slide) => slide.replace("data-src", "src");
+const toHHMMSS = (secs) => {
+  const secnum = parseInt(secs, 10);
+  const hours = Math.floor(secnum / 3600);
+  const minutes = Math.floor(secnum / 60) % 60;
+  const seconds = secnum % 60;
+
+  return [hours, minutes, seconds]
+    .map((v) => (v < 10 ? `0${v}` : v))
+    .filter((v, i) => v !== "00" || i > 0)
+    .join(":");
+};
+const fromHHMMSS = (time) => {
+  const hhmmss = time.split(":");
+  if (hhmmss.length === 3) {
+    return (
+      3600 * parseInt(hhmmss[0], 10) +
+      60 * parseInt(hhmmss[1], 10) +
+      parseInt(hhmmss[2], 10)
+    );
+  }
+  return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
+};
+let timerCheckpoint = "";
 window.slidesk.io.onmessage = (event) => {
   const data = JSON.parse(event.data);
   if (data.action === "current") {
@@ -9,6 +32,11 @@ window.slidesk.io.onmessage = (event) => {
     ]
       .map((a) => a.innerHTML)
       .join("");
+    // check timers
+    const checkpoint = current
+      .querySelector(".sdf-slide")
+      .getAttribute("data-timer-checkpoint");
+    if (checkpoint) timerCheckpoint = fromHHMMSS(checkpoint);
   }
   if (data.action === "future") {
     document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
@@ -32,20 +60,17 @@ document.addEventListener("keydown", (e) => {
   }
 });
 let startTime = null;
-const toHHMMSS = (secs) => {
-  const secnum = parseInt(secs, 10);
-  const hours = Math.floor(secnum / 3600);
-  const minutes = Math.floor(secnum / 60) % 60;
-  const seconds = secnum % 60;
-
-  return [hours, minutes, seconds]
-    .map((v) => (v < 10 ? `0${v}` : v))
-    .filter((v, i) => v !== "00" || i > 0)
-    .join(":");
-};
 setInterval(() => {
-  if (startTime)
-    window.slidesk.timer.innerText = toHHMMSS((Date.now() - startTime) / 1000);
+  if (startTime) {
+    const time = (Date.now() - startTime) / 1000;
+    window.slidesk.timer.innerText = toHHMMSS(time);
+    window.slidesk.timer.classList.remove("emergency");
+    if (timerCheckpoint) {
+      if (timerCheckpoint < time) {
+        window.slidesk.timer.classList.add("emergency");
+      }
+    }
+  }
 }, 1000);
 window.slidesk.timer.addEventListener("click", () => {
   startTime = Date.now();

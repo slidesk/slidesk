@@ -90,18 +90,17 @@ export default class Server {
         },
       },
     });
-
-    log(
-      `Your presentation is available on: ${chalk.blue.bold(
-        `http://localhost:${options.port}`,
-      )}`,
-    );
     if (options.notes)
       log(
         `Your speaker view is available on: ${chalk.green.bold(
           `http://localhost:${options.port}/notes`,
         )}`,
       );
+    log(
+      `Your presentation is available on: ${chalk.blue.bold(
+        `http://localhost:${options.port}`,
+      )}`,
+    );
     log();
   }
 

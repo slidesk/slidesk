@@ -4,6 +4,7 @@
   --sd-sv-text-line-height: 1.2;
   --sd-sv-background-color: #242424;
   --sd-sv-text-color: rgba(255, 255, 255, 0.87);
+  --sd-sv-background-color-emergency: #d9000e;
 }
 
 body {
@@ -55,6 +56,10 @@ body {
   text-align: right;
   cursor: pointer;
   font-family: monospace;
+}
+
+#sd-sv-timer.emergency {
+  background-color: var(--sd-sv-background-color-emergency);
 }
 
 #sd-sv-notes {
