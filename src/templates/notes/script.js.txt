@@ -22,9 +22,14 @@ const fromHHMMSS = (time) => {
   return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
 };
 let timerCheckpoint = "";
+let timerSlide = "";
+let startTime = null;
+let startSlideTime = null;
 window.slidesk.io.onmessage = (event) => {
   const data = JSON.parse(event.data);
   if (data.action === "current") {
+    timerSlide = "";
+    startSlideTime = null;
     const current = document.querySelector("#sd-sv-current");
     current.innerHTML = makeSlide(data.payload);
     document.querySelector("#sd-sv-notes").innerHTML = [
@@ -37,6 +42,13 @@ window.slidesk.io.onmessage = (event) => {
       .querySelector(".sdf-slide")
       .getAttribute("data-timer-checkpoint");
     if (checkpoint) timerCheckpoint = fromHHMMSS(checkpoint);
+    const slidetime = current
+      .querySelector(".sdf-slide")
+      .getAttribute("data-timer-slide");
+    if (slidetime) {
+      timerSlide = fromHHMMSS(slidetime);
+      startSlideTime = Date.now();
+    }
   }
   if (data.action === "future") {
     document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
@@ -58,7 +70,6 @@ document.addEventListener("keydown", (e) => {
     window.slidesk.io.send(JSON.stringify({ action: "next" }));
   }
 });
-let startTime = null;
 setInterval(() => {
   if (startTime) {
     const time = (Date.now() - startTime) / 1000;
@@ -69,6 +80,17 @@ setInterval(() => {
         window.slidesk.timer.classList.add("emergency");
       }
     }
+  }
+  if (startSlideTime) {
+    const subtime = (Date.now() - startSlideTime) / 1000;
+    window.slidesk.subtimer.innerText = toHHMMSS(subtime);
+    window.slidesk.subtimer.style.display = "block";
+    window.slidesk.subtimer.classList.remove("emergency");
+    if (subtime >= timerSlide) {
+      window.slidesk.subtimer.classList.add("emergency");
+    }
+  } else {
+    window.slidesk.subtimer.style.display = "none";
   }
 }, 1000);
 window.slidesk.timer.addEventListener("click", () => {

@@ -1,5 +1,6 @@
 :root {
   --sd-sv-timer-size: 80px;
+  --sd-sv-subtimer-size: 60px;
   --sd-sv-text-size: 40px;
   --sd-sv-text-line-height: 1.2;
   --sd-sv-background-color: #242424;
@@ -59,6 +60,21 @@ body {
 }
 
 #sd-sv-timer.emergency {
+  background-color: var(--sd-sv-background-color-emergency);
+}
+
+#sd-sv-subtimer {
+  background-color: var(--sd-sv-background-color);
+  color: var(--sd-sv-text-color);
+  font-size: var(--sd-sv-subtimer-size);
+  line-height: var(--sd-sv-text-line-height);
+  padding: 10px;
+  border-bottom: 1px solid white;
+  text-align: right;
+  font-family: monospace;
+}
+
+#sd-sv-subtimer.emergency {
   background-color: var(--sd-sv-background-color-emergency);
 }
 
