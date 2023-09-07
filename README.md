@@ -26,10 +26,32 @@ SliDesk is develop with https://bun.sh instead of Node.js
 bunx slidesk <talk>
 ```
 
-## Usage
+## Usage with bun
 
 ```sh
 Usage: bunx slidesk [options] <talk>
+
+Convert & present a talk
+
+Options:
+  -p, --port <int>  port (default: 1337)
+  -s, --save        save the html file
+  -n, --notes       open with speakers notes
+  -src, --source    add a button on slides to display its SDF code
+  -g, -gamepad      control your slide with a gamepad from the
+                    presentation
+  --gamepad-sv      control your slide with a gamepad from the
+                    speaker-view
+  -q, --qrcode      add a QRCode on each slide
+  -t, --timers      add checkpoint and slide's maximum time on notes view
+  -v, --version     output the version number
+  -h, --help        display help for command
+```
+
+## Usage without bun
+
+```sh
+Usage: slidesk [options] <talk>
 
 Convert & present a talk
 
@@ -54,6 +76,10 @@ In a directory, create a `main.sdf` file which is the entry point of your presen
 
 ```
 bunx slidesk <yourdirectory>
+```
+or
+```
+slidesk <yourdirectory>
 ```
 
 will convert the `main.sdf` into an html file and serve it, it will open the default browser too.
