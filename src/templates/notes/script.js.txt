@@ -1,4 +1,3 @@
-const makeSlide = (slide) => slide.replace("data-src", "src");
 const toHHMMSS = (secs) => {
   const secnum = parseInt(secs, 10);
   const hours = Math.floor(secnum / 3600);
@@ -31,7 +30,7 @@ window.slidesk.io.onmessage = (event) => {
     timerSlide = "";
     startSlideTime = null;
     const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = makeSlide(data.payload);
+    current.innerHTML = data.payload;
     document.querySelector("#sd-sv-notes").innerHTML = [
       ...current.querySelectorAll("aside.sdf-notes"),
     ]
@@ -51,7 +50,7 @@ window.slidesk.io.onmessage = (event) => {
     }
   }
   if (data.action === "future") {
-    document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
+    document.querySelector("#sd-sv-future").innerHTML = data.payload;
   }
   if (data.action === "customcss") {
     document.querySelector("head").innerHTML +=

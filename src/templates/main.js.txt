@@ -29,12 +29,6 @@ if (window.slidesk.io) {
 
 window.slidesk.cleanOldSlide = (id) => {
   window.slidesk.slides[id].classList.remove("sdf-current", "no-sdf-animation");
-  setTimeout(() => {
-    window.slidesk.slides[id].querySelectorAll("img").forEach((img) => {
-      img.setAttribute("data-src", img.getAttribute("src"));
-      img.removeAttribute("src");
-    });
-  }, window.slidesk.animationTimer);
 };
 
 window.slidesk.changeSlide = () => {
@@ -78,12 +72,6 @@ window.slidesk.changeSlide = () => {
       }),
     );
   }
-  window.slidesk.slides[window.slidesk.currentSlide]
-    .querySelectorAll("img")
-    .forEach((img) => {
-      img.setAttribute("src", img.getAttribute("data-src"));
-      img.removeAttribute("data-src");
-    });
   document.getElementById("sd-progress").style.width =
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";

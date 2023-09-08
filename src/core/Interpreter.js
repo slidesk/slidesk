@@ -249,9 +249,9 @@ export default class Interpreter {
       const opts = [...match[1].split("|")];
       newData = newData.replace(
         match[0],
-        `<img data-src="${opts[0].trim()}" ${
+        `<img src="${opts[0].trim()}" ${
           opts.length > 1 ? opts[1].trim() : ""
-        } />`,
+        } loading="lazy" />`,
       );
     });
     return newData;

@@ -20756,7 +20756,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.5.0",
+  version: "1.5.1",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -55581,7 +55581,6 @@ pre {
 }
 
 .sdf-app {
-  width: 100vw;
   height: 100vh;
   position: relative;
   overflow: hidden;
@@ -55763,12 +55762,6 @@ if (window.slidesk.io) {
 
 window.slidesk.cleanOldSlide = (id) => {
   window.slidesk.slides[id].classList.remove("sdf-current", "no-sdf-animation");
-  setTimeout(() => {
-    window.slidesk.slides[id].querySelectorAll("img").forEach((img) => {
-      img.setAttribute("data-src", img.getAttribute("src"));
-      img.removeAttribute("src");
-    });
-  }, window.slidesk.animationTimer);
 };
 
 window.slidesk.changeSlide = () => {
@@ -55812,12 +55805,6 @@ window.slidesk.changeSlide = () => {
       }),
     );
   }
-  window.slidesk.slides[window.slidesk.currentSlide]
-    .querySelectorAll("img")
-    .forEach((img) => {
-      img.setAttribute("src", img.getAttribute("data-src"));
-      img.removeAttribute("data-src");
-    });
   document.getElementById("sd-progress").style.width =
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";
@@ -56119,7 +56106,7 @@ class Interpreter {
     let newData = data;
     [...newData.matchAll(/!image\(([^()]+)\)/g)].forEach((match2) => {
       const opts = [...match2[1].split("|")];
-      newData = newData.replace(match2[0], `<img data-src="${opts[0].trim()}" ${opts.length > 1 ? opts[1].trim() : ""} />`);
+      newData = newData.replace(match2[0], `<img src="${opts[0].trim()}" ${opts.length > 1 ? opts[1].trim() : ""} loading="lazy" />`);
     });
     return newData;
   };
@@ -56305,8 +56292,7 @@ body {
 `;
 
 // src/templates/notes/script.js.txt
-var script_js_default = `const makeSlide = (slide) => slide.replace("data-src", "src");
-const toHHMMSS = (secs) => {
+var script_js_default = `const toHHMMSS = (secs) => {
   const secnum = parseInt(secs, 10);
   const hours = Math.floor(secnum / 3600);
   const minutes = Math.floor(secnum / 60) % 60;
@@ -56338,7 +56324,7 @@ window.slidesk.io.onmessage = (event) => {
     timerSlide = "";
     startSlideTime = null;
     const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = makeSlide(data.payload);
+    current.innerHTML = data.payload;
     document.querySelector("#sd-sv-notes").innerHTML = [
       ...current.querySelectorAll("aside.sdf-notes"),
     ]
@@ -56358,7 +56344,7 @@ window.slidesk.io.onmessage = (event) => {
     }
   }
   if (data.action === "future") {
-    document.querySelector("#sd-sv-future").innerHTML = makeSlide(data.payload);
+    document.querySelector("#sd-sv-future").innerHTML = data.payload;
   }
   if (data.action === "customcss") {
     document.querySelector("head").innerHTML +=
