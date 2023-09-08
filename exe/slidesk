@@ -20756,7 +20756,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.4.1",
+  version: "1.4.2",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -56561,6 +56561,7 @@ var present_default = present;
 
 // src/command/create.js
 var import_slugify = __toESM(require_slugify(), 1);
+import {existsSync, mkdirSync} from "fs";
 var prompts = require_prompts3();
 var { log: log3 } = console;
 var create = async (talk) => {
@@ -56582,6 +56583,8 @@ var create = async (talk) => {
       initial: false
     }
   ]);
+  if (!existsSync(`./${dirName}`))
+    mkdirSync(`./${dirName}`);
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (response.custom) {

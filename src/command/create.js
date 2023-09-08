@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import slugify from "slugify";
-//import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import displayHeader from "./_common";
 
 const prompts = require("prompts");
@@ -26,7 +26,7 @@ const create = async (talk) => {
       initial: false,
     },
   ]);
-  // if (!existsSync(`./${dirName}`)) mkdirSync(`./${dirName}`);
+  if (!existsSync(`./${dirName}`)) mkdirSync(`./${dirName}`);
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (response.custom) {
