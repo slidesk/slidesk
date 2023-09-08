@@ -20756,7 +20756,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.4.2",
+  version: "1.5.0",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -55510,7 +55510,7 @@ var theme_css_default = `:root {
 
 html,
 body {
-  height: 100%;
+  height: 100vh;
 }
 
 img,
@@ -55519,7 +55519,7 @@ video,
 canvas,
 svg {
   display: block;
-  max-width: 100%;
+  max-width: 100vw;
 }
 
 input,
@@ -55581,8 +55581,8 @@ pre {
 }
 
 .sdf-app {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: relative;
   overflow: hidden;
   background-color: var(--sd-background-color);
@@ -55698,6 +55698,38 @@ h3 {
 #sdf-langs option {
   color: var(--sd-text-color);
 }`;
+
+// src/templates/print.css.txt
+var print_css_default = `@page {
+  size: A4 landscape;
+}
+
+@media print {
+  #sdf-langs,
+  #sd-progress {
+    display: none;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: auto;
+  }
+
+  .sdf-app {
+    overflow: visible;
+    height: auto;
+  }
+
+  .sdf-slide {
+    position: static;
+    width: 100vw;
+    height: 100vh;
+    page-break-after: always;
+    transform: none;
+  }
+}
+`;
 
 // src/templates/main.js.txt
 var main_js_default = `const fromBinary = (encoded) => {
@@ -55950,7 +55982,7 @@ class Interpreter {
     }
     const presentation = this.#sliceSlides(await this.#includes(mainFile), options);
     let template = layout_html_default;
-    template = template.replace("/* #STYLES# */", `:root { --animationTimer: ${animationTimer}ms; }${theme_css_default}${customCSS.length ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>` : ""}`);
+    template = template.replace("/* #STYLES# */", `:root { --animationTimer: ${animationTimer}ms; }${theme_css_default}${print_css_default}${customCSS.length ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>` : ""}`);
     template = template.replace("#SCRIPT#", `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
           window.slidesk = {
             currentSlide: 0,
@@ -56499,8 +56531,7 @@ class Server {
 }
 
 // src/command/_common.js
-var joliTitle = source_default.hex("#16cedd");
-var displayHeader = () => joliTitle(`
+var displayHeader = () => `
 \u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2588\u2588\u2557
 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u255A\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2588\u2588\u2554\u255D
 \u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2551\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2591\u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2550\u255D\u2591
@@ -56508,10 +56539,11 @@ var displayHeader = () => joliTitle(`
 \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2591\u255A\u2588\u2588\u2557
 \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u255D\u2591\u2591\u255A\u2550\u255D
                                             v${package_default.version}
-`);
+`;
 var _common_default = displayHeader;
 
 // src/command/present.js
+var joliTitle = source_default.hex("#16cedd");
 var { log: log2, error } = console;
 var flow = (talk, options = {}, init = false) => {
   Interpreter.convert(`./${talk}/main.sdf`, options).then(async (html) => {
@@ -56545,7 +56577,7 @@ var getAction = () => {
   });
 };
 var present = (talk, options) => {
-  log2(_common_default(), source_default.underline("\n\nTake the control of your presentation direct from here."), "\n", `\nPress ${source_default.italic("Enter")} to go to the next slide.`, `\nPress ${source_default.italic("P + Enter")} to go to the previous slide.`, `\nPress ${source_default.italic("Q")} to quit the program.`, "\n");
+  log2(joliTitle(_common_default()), source_default.underline("\n\nTake the control of your presentation direct from here."), "\n", `\nPress ${source_default.italic("Enter")} to go to the next slide.`, `\nPress ${source_default.italic("P + Enter")} to go to the previous slide.`, `\nPress ${source_default.italic("Q")} to quit the program.`, "\n");
   flow(talk, options, true);
   if (!options.save) {
     watch(talk, { recursive: true }, (eventType, filename) => {
@@ -56563,9 +56595,10 @@ var present_default = present;
 var import_slugify = __toESM(require_slugify(), 1);
 import {existsSync, mkdirSync} from "fs";
 var prompts = require_prompts3();
+var joliTitle2 = source_default.hex("#16cedd");
 var { log: log3 } = console;
 var create = async (talk) => {
-  log3(_common_default(), `Creation of your talk: ${talk}`);
+  log3(joliTitle2(_common_default()), `Creation of your talk: ${talk}`);
   let dirName = import_slugify.default(talk);
   if (dirName === "create") {
     dirName = `${dirName}_`;

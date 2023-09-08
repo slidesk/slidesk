@@ -2,6 +2,7 @@ import { globSync } from "glob";
 import { minify } from "html-minifier-terser";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/theme.css.txt";
+import printCSS from "../templates/print.css.txt";
 import mainJS from "../templates/main.js.txt";
 import gamepadJS from "../templates/gamepad.js.txt";
 import qrcodeLibJS from "../templates/qrcode.lib.js.txt";
@@ -40,7 +41,7 @@ export default class Interpreter {
     let template = layoutHTML;
     template = template.replace(
       "/* #STYLES# */",
-      `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${
+      `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${printCSS}${
         customCSS.length
           ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
           : ""

@@ -6,6 +6,8 @@ import Interpreter from "../core/Interpreter";
 import Server from "../core/Server";
 import displayHeader from "./_common";
 
+const joliTitle = chalk.hex("#16cedd");
+
 const { log, error } = console;
 
 const flow = (talk, options = {}, init = false) => {
@@ -44,7 +46,7 @@ const getAction = () => {
 
 const present = (talk, options) => {
   log(
-    displayHeader(),
+    joliTitle(displayHeader()),
     chalk.underline(
       "\n\nTake the control of your presentation direct from here.",
     ),

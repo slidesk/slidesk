@@ -1,14 +1,17 @@
 /* eslint-disable no-undef */
 import slugify from "slugify";
 import { existsSync, mkdirSync } from "node:fs";
+import chalk from "chalk";
 import displayHeader from "./_common";
 
 const prompts = require("prompts");
 
+const joliTitle = chalk.hex("#16cedd");
+
 const { log } = console;
 
 const create = async (talk) => {
-  log(displayHeader(), `Creation of your talk: ${talk}`);
+  log(joliTitle(displayHeader()), `Creation of your talk: ${talk}`);
   let dirName = slugify(talk);
   if (dirName === "create") {
     dirName = `${dirName}_`;
