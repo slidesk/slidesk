@@ -77,7 +77,9 @@ In a directory, create a `main.sdf` file which is the entry point of your presen
 ```
 bunx slidesk <yourdirectory>
 ```
+
 or
+
 ```
 slidesk <yourdirectory>
 ```
@@ -129,7 +131,7 @@ In your `custom.css` file, you can override this variables:
   --sd-text-size: 40px;
   --sd-text-line-height: 1.2;
 
-  --sd-background-color: #242424;;
+  --sd-background-color: #242424;
   --sd-heading-color: rgba(255, 255, 255, 0.97);
   --sd-text-color: rgba(255, 255, 255, 0.87);
   --sd-primary-color: rgb(37, 186, 146);
