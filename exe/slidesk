@@ -20756,7 +20756,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.5.1",
+  version: "1.5.2",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -55701,6 +55701,7 @@ h3 {
 // src/templates/print.css.txt
 var print_css_default = `@page {
   size: A4 landscape;
+  margin: 0;
 }
 
 @media print {
