@@ -6,6 +6,7 @@ import printCSS from "../templates/print.css.txt";
 import mainJS from "../templates/main.js.txt";
 import gamepadJS from "../templates/gamepad.js.txt";
 import qrcodeLibJS from "../templates/qrcode.lib.js.txt";
+import slugify from "../utils/slugify";
 
 const animationTimer = 300;
 
@@ -278,13 +279,7 @@ export default class Interpreter {
 
   static #mainTitle = (data) => `<h1>${data.replace("# ", "")}</h1>`;
 
-  static #slugify = (data) =>
-    data
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
+  static #slugify = (data) => slugify(data);
 
   static #polish = async (presentation, template, options) => {
     let tpl = template;

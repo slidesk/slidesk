@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import slugify from "slugify";
 import { existsSync, mkdirSync } from "node:fs";
+import slugify from "../utils/slugify";
 
 const prompts = require("prompts");
 
