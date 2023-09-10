@@ -29,11 +29,12 @@ bunx slidesk <talk>
 ## Usage with bun
 
 ```sh
-Usage: bunx slidesk [options] <talk>
+Usage: bunx slidesk [options] [command] <talk>
 
-Convert & present a talk
+Your presentation companion
 
 Options:
+  -v, --version     output the version number
   -p, --port <int>  port (default: 1337)
   -s, --save        save the html file
   -n, --notes       open with speakers notes
@@ -43,19 +44,23 @@ Options:
   --gamepad-sv      control your slide with a gamepad from the
                     speaker-view
   -q, --qrcode      add a QRCode on each slide
-  -t, --timers      add checkpoint and slide's maximum time on notes view
-  -v, --version     output the version number
+  -t, --timers      add checkpoint and slide's maximum time on notes
+                    view
   -h, --help        display help for command
+
+Commands:
+  create <talk>
 ```
 
 ## Usage without bun
 
 ```sh
-Usage: slidesk [options] <talk>
+Usage: slidesk [options] [command] <talk>
 
-Convert & present a talk
+Your presentation companion
 
 Options:
+  -v, --version     output the version number
   -p, --port <int>  port (default: 1337)
   -s, --save        save the html file
   -n, --notes       open with speakers notes
@@ -65,9 +70,12 @@ Options:
   --gamepad-sv      control your slide with a gamepad from the
                     speaker-view
   -q, --qrcode      add a QRCode on each slide
-  -t, --timers      add checkpoint and slide's maximum time on notes view
-  -v, --version     output the version number
+  -t, --timers      add checkpoint and slide's maximum time on notes
+                    view
   -h, --help        display help for command
+
+Commands:
+  create <talk>
 ```
 
 ## How to create a presentation
