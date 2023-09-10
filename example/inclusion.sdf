@@ -2,7 +2,7 @@
 
 A line which begins with this below syntax
 
-`!include(./another_file.tfs)`
+``!include(./another_file.tfs)``
 
 will include the content of the file
 

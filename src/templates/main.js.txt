@@ -129,13 +129,14 @@ window.onload = () => {
       );
   }
   window.slidesk.slides = document.querySelectorAll(".sdf-slide");
-  const loadingHash = window.location.hash.replace("#/", "");
+  const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
-    const h = slide.querySelector("h2");
-    slugs.push(h ? h.getAttribute("data-slug") : i || "");
+    slugs.push(slide.getAttribute("data-slug") || `!slide-${i}`);
   });
-  window.slidesk.currentSlide = slugs.indexOf(loadingHash);
+  window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
+  if (loadingHash.length > 1)
+    window.slidesk.currentSlide += Number(loadingHash[1]);
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
