@@ -4017,28 +4017,28 @@ var require_rounding_precision = __commonJS((exports, module) => {
 // node_modules/clean-css/lib/options/optimization-level.js
 var require_optimization_level = __commonJS((exports, module) => {
   var optimizationLevelFrom = function(source) {
-    var level2 = override(DEFAULTS, {});
+    var level = override(DEFAULTS, {});
     var Zero = OptimizationLevel.Zero;
     var One = OptimizationLevel.One;
     var Two = OptimizationLevel.Two;
     if (source === undefined) {
-      delete level2[Two];
-      return level2;
+      delete level[Two];
+      return level;
     }
     if (typeof source == "string") {
       source = parseInt(source);
     }
     if (typeof source == "number" && source === parseInt(Two)) {
-      return level2;
+      return level;
     }
     if (typeof source == "number" && source === parseInt(One)) {
-      delete level2[Two];
-      return level2;
+      delete level[Two];
+      return level;
     }
     if (typeof source == "number" && source === parseInt(Zero)) {
-      delete level2[Two];
-      delete level2[One];
-      return level2;
+      delete level[Two];
+      delete level[One];
+      return level;
     }
     if (typeof source == "object") {
       source = covertValuesToHashes(source);
@@ -4050,38 +4050,38 @@ var require_optimization_level = __commonJS((exports, module) => {
       source[Two].skipProperties = source[Two].skipProperties.split(LIST_VALUE_SEPARATOR);
     }
     if ((Zero in source) || (One in source) || (Two in source)) {
-      level2[Zero] = override(level2[Zero], source[Zero]);
+      level[Zero] = override(level[Zero], source[Zero]);
     }
     if ((One in source) && (ALL_KEYWORD_1 in source[One])) {
-      level2[One] = override(level2[One], defaults2(One, normalizeValue(source[One][ALL_KEYWORD_1])));
+      level[One] = override(level[One], defaults2(One, normalizeValue(source[One][ALL_KEYWORD_1])));
       delete source[One][ALL_KEYWORD_1];
     }
     if ((One in source) && (ALL_KEYWORD_2 in source[One])) {
-      level2[One] = override(level2[One], defaults2(One, normalizeValue(source[One][ALL_KEYWORD_2])));
+      level[One] = override(level[One], defaults2(One, normalizeValue(source[One][ALL_KEYWORD_2])));
       delete source[One][ALL_KEYWORD_2];
     }
     if ((One in source) || (Two in source)) {
-      level2[One] = override(level2[One], source[One]);
+      level[One] = override(level[One], source[One]);
     } else {
-      delete level2[One];
+      delete level[One];
     }
     if ((Two in source) && (ALL_KEYWORD_1 in source[Two])) {
-      level2[Two] = override(level2[Two], defaults2(Two, normalizeValue(source[Two][ALL_KEYWORD_1])));
+      level[Two] = override(level[Two], defaults2(Two, normalizeValue(source[Two][ALL_KEYWORD_1])));
       delete source[Two][ALL_KEYWORD_1];
     }
     if ((Two in source) && (ALL_KEYWORD_2 in source[Two])) {
-      level2[Two] = override(level2[Two], defaults2(Two, normalizeValue(source[Two][ALL_KEYWORD_2])));
+      level[Two] = override(level[Two], defaults2(Two, normalizeValue(source[Two][ALL_KEYWORD_2])));
       delete source[Two][ALL_KEYWORD_2];
     }
     if (Two in source) {
-      level2[Two] = override(level2[Two], source[Two]);
+      level[Two] = override(level[Two], source[Two]);
     } else {
-      delete level2[Two];
+      delete level[Two];
     }
-    return level2;
+    return level;
   };
-  var defaults2 = function(level2, value) {
-    var options = override(DEFAULTS[level2], {});
+  var defaults2 = function(level, value) {
+    var options = override(DEFAULTS[level], {});
     var key;
     for (key in options) {
       if (typeof options[key] == "boolean") {
@@ -4104,30 +4104,30 @@ var require_optimization_level = __commonJS((exports, module) => {
   };
   var covertValuesToHashes = function(source) {
     var clonedSource = override(source, {});
-    var level2;
+    var level;
     var i;
     for (i = 0;i <= 2; i++) {
-      level2 = "" + i;
-      if ((level2 in clonedSource) && (clonedSource[level2] === undefined || clonedSource[level2] === false)) {
-        delete clonedSource[level2];
+      level = "" + i;
+      if ((level in clonedSource) && (clonedSource[level] === undefined || clonedSource[level] === false)) {
+        delete clonedSource[level];
       }
-      if ((level2 in clonedSource) && clonedSource[level2] === true) {
-        clonedSource[level2] = {};
+      if ((level in clonedSource) && clonedSource[level] === true) {
+        clonedSource[level] = {};
       }
-      if ((level2 in clonedSource) && typeof clonedSource[level2] == "string") {
-        clonedSource[level2] = covertToHash(clonedSource[level2], level2);
+      if ((level in clonedSource) && typeof clonedSource[level] == "string") {
+        clonedSource[level] = covertToHash(clonedSource[level], level);
       }
     }
     return clonedSource;
   };
-  var covertToHash = function(asString, level2) {
+  var covertToHash = function(asString, level) {
     return asString.split(OPTION_SEPARATOR).reduce(function(accumulator, directive) {
       var parts = directive.split(OPTION_VALUE_SEPARATOR);
       var name = parts[0];
       var value = parts[1];
       var normalizedValue = normalizeValue(value);
       if (ALL_KEYWORD_1 == name || ALL_KEYWORD_2 == name) {
-        accumulator = override(accumulator, defaults2(level2, normalizedValue));
+        accumulator = override(accumulator, defaults2(level, normalizedValue));
       } else {
         accumulator[name] = normalizedValue;
       }
@@ -4651,7 +4651,7 @@ var require_split = __commonJS((exports, module) => {
   var split = function(value, separator) {
     var openLevel = Marker.OPEN_ROUND_BRACKET;
     var closeLevel = Marker.CLOSE_ROUND_BRACKET;
-    var level2 = 0;
+    var level = 0;
     var cursor = 0;
     var lastStart = 0;
     var lastValue;
@@ -4667,11 +4667,11 @@ var require_split = __commonJS((exports, module) => {
     }
     while (cursor < len) {
       if (value[cursor] == openLevel) {
-        level2++;
+        level++;
       } else if (value[cursor] == closeLevel) {
-        level2--;
+        level--;
       }
-      if (level2 === 0 && cursor > 0 && cursor + 1 < len && is(value[cursor], separator, isSeparatorRegex)) {
+      if (level === 0 && cursor > 0 && cursor + 1 < len && is(value[cursor], separator, isSeparatorRegex)) {
         parts.push(value.substring(lastStart, cursor));
         if (isSeparatorRegex && separator.exec(value[cursor]).length > 1) {
           parts.push(value[cursor]);
@@ -7237,7 +7237,7 @@ var require_is_mergeable = __commonJS((exports, module) => {
     var list = [];
     var character;
     var buffer = [];
-    var level2 = Level.ROOT;
+    var level = Level.ROOT;
     var roundBracketLevel = 0;
     var isQuoted;
     var isEscaped;
@@ -7249,21 +7249,21 @@ var require_is_mergeable = __commonJS((exports, module) => {
     for (index = 0, len = selector.length;index < len; index++) {
       character = selector[index];
       isRelation = !isEscaped && RELATION_PATTERN.test(character);
-      isQuoted = level2 == Level.DOUBLE_QUOTE || level2 == Level.SINGLE_QUOTE;
+      isQuoted = level == Level.DOUBLE_QUOTE || level == Level.SINGLE_QUOTE;
       if (isEscaped) {
         buffer.push(character);
-      } else if (character == Marker.DOUBLE_QUOTE && level2 == Level.ROOT) {
+      } else if (character == Marker.DOUBLE_QUOTE && level == Level.ROOT) {
         buffer.push(character);
-        level2 = Level.DOUBLE_QUOTE;
-      } else if (character == Marker.DOUBLE_QUOTE && level2 == Level.DOUBLE_QUOTE) {
+        level = Level.DOUBLE_QUOTE;
+      } else if (character == Marker.DOUBLE_QUOTE && level == Level.DOUBLE_QUOTE) {
         buffer.push(character);
-        level2 = Level.ROOT;
-      } else if (character == Marker.SINGLE_QUOTE && level2 == Level.ROOT) {
+        level = Level.ROOT;
+      } else if (character == Marker.SINGLE_QUOTE && level == Level.ROOT) {
         buffer.push(character);
-        level2 = Level.SINGLE_QUOTE;
-      } else if (character == Marker.SINGLE_QUOTE && level2 == Level.SINGLE_QUOTE) {
+        level = Level.SINGLE_QUOTE;
+      } else if (character == Marker.SINGLE_QUOTE && level == Level.SINGLE_QUOTE) {
         buffer.push(character);
-        level2 = Level.ROOT;
+        level = Level.ROOT;
       } else if (isQuoted) {
         buffer.push(character);
       } else if (character == Marker.OPEN_ROUND_BRACKET) {
@@ -9593,13 +9593,13 @@ var require_restructure = __commonJS((exports, module) => {
       var combinations = allCombinations(mergeableTokens, propertySize, propertiesCount, maxCombinationsLevel - 1);
       return combinations.sort(fitSorter);
     }
-    function allCombinations(tokensVariant, propertySize, propertiesCount, level2) {
+    function allCombinations(tokensVariant, propertySize, propertiesCount, level) {
       var differenceVariants = [[tokensVariant, sizeDifference(tokensVariant, propertySize, propertiesCount)]];
-      if (tokensVariant.length > 2 && level2 > 0) {
+      if (tokensVariant.length > 2 && level > 0) {
         for (var i2 = tokensVariant.length - 1;i2 >= 0; i2--) {
           var subVariant = Array.prototype.slice.call(tokensVariant, 0);
           subVariant.splice(i2, 1);
-          differenceVariants = differenceVariants.concat(allCombinations(subVariant, propertySize, propertiesCount, level2 - 1));
+          differenceVariants = differenceVariants.concat(allCombinations(subVariant, propertySize, propertiesCount, level - 1));
         }
       }
       return differenceVariants;
@@ -10986,7 +10986,7 @@ var require_util = __commonJS((exports) => {
       aRoot = ".";
     }
     aRoot = aRoot.replace(/\/$/, "");
-    var level2 = 0;
+    var level = 0;
     while (aPath.indexOf(aRoot + "/") !== 0) {
       var index = aRoot.lastIndexOf("/");
       if (index < 0) {
@@ -10996,9 +10996,9 @@ var require_util = __commonJS((exports) => {
       if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
         return aPath;
       }
-      ++level2;
+      ++level;
     }
-    return Array(level2 + 1).join("../") + aPath.substr(aRoot.length + 1);
+    return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
   };
   var identity = function(s) {
     return s;
@@ -13190,7 +13190,7 @@ var require_tokenize = __commonJS((exports, module) => {
     var propertyToken;
     var metadata;
     var metadatas = [];
-    var level2 = internalContext.level;
+    var level = internalContext.level;
     var levels = [];
     var buffer = [];
     var buffers = [];
@@ -13220,16 +13220,16 @@ var require_tokenize = __commonJS((exports, module) => {
     var lastCommentStartAt;
     for (;position.index < source.length; position.index++) {
       var character = source[position.index];
-      isQuoted = level2 == Level.SINGLE_QUOTE || level2 == Level.DOUBLE_QUOTE;
+      isQuoted = level == Level.SINGLE_QUOTE || level == Level.DOUBLE_QUOTE;
       isSpace = character == Marker.SPACE || character == Marker.TAB;
       isNewLineNix = character == Marker.NEW_LINE_NIX;
       isNewLineWin = character == Marker.NEW_LINE_NIX && source[position.index - 1] == Marker.CARRIAGE_RETURN;
       isCarriageReturn = character == Marker.CARRIAGE_RETURN && source[position.index + 1] && source[position.index + 1] != Marker.NEW_LINE_NIX;
-      isCommentStart = !wasCommentEnd && level2 != Level.COMMENT && !isQuoted && character == Marker.ASTERISK && source[position.index - 1] == Marker.FORWARD_SLASH;
+      isCommentStart = !wasCommentEnd && level != Level.COMMENT && !isQuoted && character == Marker.ASTERISK && source[position.index - 1] == Marker.FORWARD_SLASH;
       isCommentEndMarker = !wasCommentStart && !isQuoted && character == Marker.FORWARD_SLASH && source[position.index - 1] == Marker.ASTERISK;
-      isCommentEnd = level2 == Level.COMMENT && isCommentEndMarker;
+      isCommentEnd = level == Level.COMMENT && isCommentEndMarker;
       characterWithNoSpecialMeaning = !isSpace && !isCarriageReturn && (character >= "A" && character <= "Z" || character >= "a" && character <= "z" || character >= "0" && character <= "9" || character == "-");
-      isVariable = isVariable || level2 != Level.COMMENT && !seekingValue && isPreviousDash && character === "-" && buffer.length === 1;
+      isVariable = isVariable || level != Level.COMMENT && !seekingValue && isPreviousDash && character === "-" && buffer.length === 1;
       isPreviousDash = character === "-";
       roundBracketLevel = Math.max(roundBracketLevel, 0);
       metadata = isBufferEmpty ? [position.line, position.column, position.source] : metadata;
@@ -13239,38 +13239,38 @@ var require_tokenize = __commonJS((exports, module) => {
       } else if (characterWithNoSpecialMeaning) {
         buffer.push(character);
         isBufferEmpty = false;
-      } else if ((isSpace || isNewLineNix && !isNewLineWin) && (isQuoted || level2 == Level.COMMENT)) {
+      } else if ((isSpace || isNewLineNix && !isNewLineWin) && (isQuoted || level == Level.COMMENT)) {
         buffer.push(character);
         isBufferEmpty = false;
       } else if ((isSpace || isNewLineNix && !isNewLineWin) && isBufferEmpty) {
-      } else if (!isCommentEnd && level2 == Level.COMMENT) {
+      } else if (!isCommentEnd && level == Level.COMMENT) {
         buffer.push(character);
         isBufferEmpty = false;
       } else if (!isCommentStart && !isCommentEnd && isRaw) {
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (isCommentStart && isVariable && (level2 == Level.BLOCK || level2 == Level.RULE) && buffer.length > 1) {
+      } else if (isCommentStart && isVariable && (level == Level.BLOCK || level == Level.RULE) && buffer.length > 1) {
         buffer.push(character);
         isBufferEmpty = false;
-        levels.push(level2);
-        level2 = Level.COMMENT;
-      } else if (isCommentStart && (level2 == Level.BLOCK || level2 == Level.RULE) && buffer.length > 1) {
+        levels.push(level);
+        level = Level.COMMENT;
+      } else if (isCommentStart && (level == Level.BLOCK || level == Level.RULE) && buffer.length > 1) {
         metadatas.push(metadata);
         buffer.push(character);
         buffers.push(buffer.slice(0, -2));
         isBufferEmpty = false;
         buffer = buffer.slice(-2);
         metadata = [position.line, position.column - 1, position.source];
-        levels.push(level2);
-        level2 = Level.COMMENT;
+        levels.push(level);
+        level = Level.COMMENT;
       } else if (isCommentStart) {
-        levels.push(level2);
-        level2 = Level.COMMENT;
+        levels.push(level);
+        level = Level.COMMENT;
         buffer.push(character);
         isBufferEmpty = false;
       } else if (isCommentEnd && isVariable) {
         buffer.push(character);
-        level2 = levels.pop();
+        level = levels.pop();
       } else if (isCommentEnd && isIgnoreStartComment(buffer)) {
         serializedBuffer = buffer.join("").trim() + character;
         lastToken = [
@@ -13302,7 +13302,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ];
         newTokens.push(lastToken);
         isRaw = false;
-        level2 = levels.pop();
+        level = levels.pop();
         metadata = metadatas.pop() || null;
         buffer = buffers.pop() || [];
         isBufferEmpty = buffer.length === 0;
@@ -13314,7 +13314,7 @@ var require_tokenize = __commonJS((exports, module) => {
           [originalMetadata(metadata, serializedBuffer, externalContext)]
         ];
         newTokens.push(lastToken);
-        level2 = levels.pop();
+        level = levels.pop();
         metadata = metadatas.pop() || null;
         buffer = buffers.pop() || [];
         isBufferEmpty = buffer.length === 0;
@@ -13323,35 +13323,35 @@ var require_tokenize = __commonJS((exports, module) => {
         buffer = [];
         isBufferEmpty = true;
       } else if (character == Marker.SINGLE_QUOTE && !isQuoted) {
-        levels.push(level2);
-        level2 = Level.SINGLE_QUOTE;
+        levels.push(level);
+        level = Level.SINGLE_QUOTE;
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character == Marker.SINGLE_QUOTE && level2 == Level.SINGLE_QUOTE) {
-        level2 = levels.pop();
+      } else if (character == Marker.SINGLE_QUOTE && level == Level.SINGLE_QUOTE) {
+        level = levels.pop();
         buffer.push(character);
         isBufferEmpty = false;
       } else if (character == Marker.DOUBLE_QUOTE && !isQuoted) {
-        levels.push(level2);
-        level2 = Level.DOUBLE_QUOTE;
+        levels.push(level);
+        level = Level.DOUBLE_QUOTE;
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character == Marker.DOUBLE_QUOTE && level2 == Level.DOUBLE_QUOTE) {
-        level2 = levels.pop();
+      } else if (character == Marker.DOUBLE_QUOTE && level == Level.DOUBLE_QUOTE) {
+        level = levels.pop();
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character != Marker.CLOSE_ROUND_BRACKET && character != Marker.OPEN_ROUND_BRACKET && level2 != Level.COMMENT && !isQuoted && roundBracketLevel > 0) {
+      } else if (character != Marker.CLOSE_ROUND_BRACKET && character != Marker.OPEN_ROUND_BRACKET && level != Level.COMMENT && !isQuoted && roundBracketLevel > 0) {
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character == Marker.OPEN_ROUND_BRACKET && !isQuoted && level2 != Level.COMMENT && !seekingValue) {
+      } else if (character == Marker.OPEN_ROUND_BRACKET && !isQuoted && level != Level.COMMENT && !seekingValue) {
         buffer.push(character);
         isBufferEmpty = false;
         roundBracketLevel++;
-      } else if (character == Marker.CLOSE_ROUND_BRACKET && !isQuoted && level2 != Level.COMMENT && !seekingValue) {
+      } else if (character == Marker.CLOSE_ROUND_BRACKET && !isQuoted && level != Level.COMMENT && !seekingValue) {
         buffer.push(character);
         isBufferEmpty = false;
         roundBracketLevel--;
-      } else if (character == Marker.SEMICOLON && level2 == Level.BLOCK && buffer[0] == Marker.AT) {
+      } else if (character == Marker.SEMICOLON && level == Level.BLOCK && buffer[0] == Marker.AT) {
         serializedBuffer = buffer.join("").trim();
         allTokens.push([
           Token.AT_RULE,
@@ -13360,7 +13360,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.COMMA && level2 == Level.BLOCK && ruleToken) {
+      } else if (character == Marker.COMMA && level == Level.BLOCK && ruleToken) {
         serializedBuffer = buffer.join("").trim();
         ruleToken[1].push([
           tokenScopeFrom(ruleToken[0]),
@@ -13369,10 +13369,10 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.COMMA && level2 == Level.BLOCK && tokenTypeFrom(buffer) == Token.AT_RULE) {
+      } else if (character == Marker.COMMA && level == Level.BLOCK && tokenTypeFrom(buffer) == Token.AT_RULE) {
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character == Marker.COMMA && level2 == Level.BLOCK) {
+      } else if (character == Marker.COMMA && level == Level.BLOCK) {
         ruleToken = [tokenTypeFrom(buffer), [], []];
         serializedBuffer = buffer.join("").trim();
         ruleToken[1].push([
@@ -13382,7 +13382,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.OPEN_CURLY_BRACKET && level2 == Level.BLOCK && ruleToken && ruleToken[0] == Token.NESTED_BLOCK) {
+      } else if (character == Marker.OPEN_CURLY_BRACKET && level == Level.BLOCK && ruleToken && ruleToken[0] == Token.NESTED_BLOCK) {
         serializedBuffer = buffer.join("").trim();
         ruleToken[1].push([
           Token.NESTED_BLOCK_SCOPE,
@@ -13390,14 +13390,14 @@ var require_tokenize = __commonJS((exports, module) => {
           [originalMetadata(metadata, serializedBuffer, externalContext)]
         ]);
         allTokens.push(ruleToken);
-        levels.push(level2);
+        levels.push(level);
         position.column++;
         position.index++;
         buffer = [];
         isBufferEmpty = true;
         ruleToken[2] = intoTokens(source, externalContext, internalContext, true);
         ruleToken = null;
-      } else if (character == Marker.OPEN_CURLY_BRACKET && level2 == Level.BLOCK && tokenTypeFrom(buffer) == Token.NESTED_BLOCK) {
+      } else if (character == Marker.OPEN_CURLY_BRACKET && level == Level.BLOCK && tokenTypeFrom(buffer) == Token.NESTED_BLOCK) {
         serializedBuffer = buffer.join("").trim();
         ruleToken = ruleToken || [Token.NESTED_BLOCK, [], []];
         ruleToken[1].push([
@@ -13406,7 +13406,7 @@ var require_tokenize = __commonJS((exports, module) => {
           [originalMetadata(metadata, serializedBuffer, externalContext)]
         ]);
         allTokens.push(ruleToken);
-        levels.push(level2);
+        levels.push(level);
         position.column++;
         position.index++;
         buffer = [];
@@ -13414,7 +13414,7 @@ var require_tokenize = __commonJS((exports, module) => {
         isVariable = false;
         ruleToken[2] = intoTokens(source, externalContext, internalContext, true);
         ruleToken = null;
-      } else if (character == Marker.OPEN_CURLY_BRACKET && level2 == Level.BLOCK) {
+      } else if (character == Marker.OPEN_CURLY_BRACKET && level == Level.BLOCK) {
         serializedBuffer = buffer.join("").trim();
         ruleToken = ruleToken || [tokenTypeFrom(buffer), [], []];
         ruleToken[1].push([
@@ -13424,19 +13424,19 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         newTokens = ruleToken[2];
         allTokens.push(ruleToken);
-        levels.push(level2);
-        level2 = Level.RULE;
+        levels.push(level);
+        level = Level.RULE;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.OPEN_CURLY_BRACKET && level2 == Level.RULE && seekingValue) {
+      } else if (character == Marker.OPEN_CURLY_BRACKET && level == Level.RULE && seekingValue) {
         ruleTokens.push(ruleToken);
         ruleToken = [Token.PROPERTY_BLOCK, []];
         propertyToken.push(ruleToken);
         newTokens = ruleToken[1];
-        levels.push(level2);
-        level2 = Level.RULE;
+        levels.push(level);
+        level = Level.RULE;
         seekingValue = false;
-      } else if (character == Marker.OPEN_CURLY_BRACKET && level2 == Level.RULE && isPageMarginBox(buffer)) {
+      } else if (character == Marker.OPEN_CURLY_BRACKET && level == Level.RULE && isPageMarginBox(buffer)) {
         serializedBuffer = buffer.join("").trim();
         ruleTokens.push(ruleToken);
         ruleToken = [Token.AT_RULE_BLOCK, [], []];
@@ -13447,11 +13447,11 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         newTokens.push(ruleToken);
         newTokens = ruleToken[2];
-        levels.push(level2);
-        level2 = Level.RULE;
+        levels.push(level);
+        level = Level.RULE;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.COLON && level2 == Level.RULE && !seekingValue) {
+      } else if (character == Marker.COLON && level == Level.RULE && !seekingValue) {
         serializedBuffer = buffer.join("").trim();
         propertyToken = [
           Token.PROPERTY,
@@ -13465,7 +13465,7 @@ var require_tokenize = __commonJS((exports, module) => {
         seekingValue = true;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && propertyToken && ruleTokens.length > 0 && !isBufferEmpty && buffer[0] == Marker.AT) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && propertyToken && ruleTokens.length > 0 && !isBufferEmpty && buffer[0] == Marker.AT) {
         serializedBuffer = buffer.join("").trim();
         ruleToken[1].push([
           Token.AT_RULE,
@@ -13474,7 +13474,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && propertyToken && !isBufferEmpty) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && propertyToken && !isBufferEmpty) {
         serializedBuffer = buffer.join("").trim();
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13486,15 +13486,15 @@ var require_tokenize = __commonJS((exports, module) => {
         buffer = [];
         isBufferEmpty = true;
         isVariable = false;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && propertyToken && isBufferEmpty && isVariable && !propertyToken[2]) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && propertyToken && isBufferEmpty && isVariable && !propertyToken[2]) {
         propertyToken.push([Token.PROPERTY_VALUE, " ", [originalMetadata(metadata, " ", externalContext)]]);
         isVariable = false;
         propertyToken = null;
         seekingValue = false;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && propertyToken && isBufferEmpty) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && propertyToken && isBufferEmpty) {
         propertyToken = null;
         seekingValue = false;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && !isBufferEmpty && buffer[0] == Marker.AT) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && !isBufferEmpty && buffer[0] == Marker.AT) {
         serializedBuffer = buffer.join("");
         newTokens.push([
           Token.AT_RULE,
@@ -13504,12 +13504,12 @@ var require_tokenize = __commonJS((exports, module) => {
         seekingValue = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && seekingPropertyBlockClosing) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && seekingPropertyBlockClosing) {
         seekingPropertyBlockClosing = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.SEMICOLON && level2 == Level.RULE && isBufferEmpty) {
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && propertyToken && seekingValue && !isBufferEmpty && ruleTokens.length > 0) {
+      } else if (character == Marker.SEMICOLON && level == Level.RULE && isBufferEmpty) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && propertyToken && seekingValue && !isBufferEmpty && ruleTokens.length > 0) {
         serializedBuffer = buffer.join("");
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13519,11 +13519,11 @@ var require_tokenize = __commonJS((exports, module) => {
         propertyToken = null;
         ruleToken = ruleTokens.pop();
         newTokens = ruleToken[2];
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && propertyToken && !isBufferEmpty && buffer[0] == Marker.AT && ruleTokens.length > 0) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && propertyToken && !isBufferEmpty && buffer[0] == Marker.AT && ruleTokens.length > 0) {
         serializedBuffer = buffer.join("");
         ruleToken[1].push([
           Token.AT_RULE,
@@ -13533,17 +13533,17 @@ var require_tokenize = __commonJS((exports, module) => {
         propertyToken = null;
         ruleToken = ruleTokens.pop();
         newTokens = ruleToken[2];
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && propertyToken && ruleTokens.length > 0) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && propertyToken && ruleTokens.length > 0) {
         propertyToken = null;
         ruleToken = ruleTokens.pop();
         newTokens = ruleToken[2];
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && propertyToken && !isBufferEmpty) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && propertyToken && !isBufferEmpty) {
         serializedBuffer = buffer.join("");
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13553,11 +13553,11 @@ var require_tokenize = __commonJS((exports, module) => {
         propertyToken = null;
         ruleToken = ruleTokens.pop();
         newTokens = allTokens;
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && !isBufferEmpty && buffer[0] == Marker.AT) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && !isBufferEmpty && buffer[0] == Marker.AT) {
         propertyToken = null;
         ruleToken = null;
         serializedBuffer = buffer.join("").trim();
@@ -13567,46 +13567,46 @@ var require_tokenize = __commonJS((exports, module) => {
           [originalMetadata(metadata, serializedBuffer, externalContext)]
         ]);
         newTokens = allTokens;
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && levels[levels.length - 1] == Level.RULE) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && levels[levels.length - 1] == Level.RULE) {
         propertyToken = null;
         ruleToken = ruleTokens.pop();
         newTokens = ruleToken[2];
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         seekingPropertyBlockClosing = true;
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE && isVariable && propertyToken && !propertyToken[2]) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE && isVariable && propertyToken && !propertyToken[2]) {
         propertyToken.push([Token.PROPERTY_VALUE, " ", [originalMetadata(metadata, " ", externalContext)]]);
         isVariable = false;
         propertyToken = null;
         ruleToken = null;
         newTokens = allTokens;
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         isVariable = false;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.RULE) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.RULE) {
         propertyToken = null;
         ruleToken = null;
         newTokens = allTokens;
-        level2 = levels.pop();
+        level = levels.pop();
         seekingValue = false;
         isVariable = false;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.BLOCK && !isNested && position.index <= source.length - 1) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.BLOCK && !isNested && position.index <= source.length - 1) {
         externalContext.warnings.push("Unexpected \'}\' at " + formatPosition([position.line, position.column, position.source]) + ".");
         buffer.push(character);
         isBufferEmpty = false;
-      } else if (character == Marker.CLOSE_CURLY_BRACKET && level2 == Level.BLOCK) {
+      } else if (character == Marker.CLOSE_CURLY_BRACKET && level == Level.BLOCK) {
         break;
-      } else if (character == Marker.OPEN_ROUND_BRACKET && level2 == Level.RULE && seekingValue) {
+      } else if (character == Marker.OPEN_ROUND_BRACKET && level == Level.RULE && seekingValue) {
         buffer.push(character);
         isBufferEmpty = false;
         roundBracketLevel++;
-      } else if (character == Marker.CLOSE_ROUND_BRACKET && level2 == Level.RULE && seekingValue && roundBracketLevel == 1) {
+      } else if (character == Marker.CLOSE_ROUND_BRACKET && level == Level.RULE && seekingValue && roundBracketLevel == 1) {
         buffer.push(character);
         isBufferEmpty = false;
         serializedBuffer = buffer.join("").trim();
@@ -13619,12 +13619,12 @@ var require_tokenize = __commonJS((exports, module) => {
         buffer = [];
         isBufferEmpty = true;
         isVariable = false;
-      } else if (character == Marker.CLOSE_ROUND_BRACKET && level2 == Level.RULE && seekingValue) {
+      } else if (character == Marker.CLOSE_ROUND_BRACKET && level == Level.RULE && seekingValue) {
         buffer.push(character);
         isBufferEmpty = false;
         isVariable = false;
         roundBracketLevel--;
-      } else if (character == Marker.FORWARD_SLASH && source[position.index + 1] != Marker.ASTERISK && level2 == Level.RULE && seekingValue && !isBufferEmpty) {
+      } else if (character == Marker.FORWARD_SLASH && source[position.index + 1] != Marker.ASTERISK && level == Level.RULE && seekingValue && !isBufferEmpty) {
         serializedBuffer = buffer.join("").trim();
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13638,7 +13638,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.FORWARD_SLASH && source[position.index + 1] != Marker.ASTERISK && level2 == Level.RULE && seekingValue) {
+      } else if (character == Marker.FORWARD_SLASH && source[position.index + 1] != Marker.ASTERISK && level == Level.RULE && seekingValue) {
         propertyToken.push([
           Token.PROPERTY_VALUE,
           character,
@@ -13646,7 +13646,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.COMMA && level2 == Level.RULE && seekingValue && !isBufferEmpty) {
+      } else if (character == Marker.COMMA && level == Level.RULE && seekingValue && !isBufferEmpty) {
         serializedBuffer = buffer.join("").trim();
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13660,7 +13660,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (character == Marker.COMMA && level2 == Level.RULE && seekingValue) {
+      } else if (character == Marker.COMMA && level == Level.RULE && seekingValue) {
         propertyToken.push([
           Token.PROPERTY_VALUE,
           character,
@@ -13674,7 +13674,7 @@ var require_tokenize = __commonJS((exports, module) => {
         propertyToken[propertyToken.length - 1][1] += serializedBuffer;
         buffer = [];
         isBufferEmpty = true;
-      } else if ((isSpace || isNewLineNix && !isNewLineWin) && level2 == Level.RULE && seekingValue && propertyToken && !isBufferEmpty) {
+      } else if ((isSpace || isNewLineNix && !isNewLineWin) && level == Level.RULE && seekingValue && propertyToken && !isBufferEmpty) {
         serializedBuffer = buffer.join("").trim();
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13683,7 +13683,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (isNewLineWin && level2 == Level.RULE && seekingValue && propertyToken && buffer.length > 1) {
+      } else if (isNewLineWin && level == Level.RULE && seekingValue && propertyToken && buffer.length > 1) {
         serializedBuffer = buffer.join("").trim();
         propertyToken.push([
           Token.PROPERTY_VALUE,
@@ -13692,7 +13692,7 @@ var require_tokenize = __commonJS((exports, module) => {
         ]);
         buffer = [];
         isBufferEmpty = true;
-      } else if (isNewLineWin && level2 == Level.RULE && seekingValue) {
+      } else if (isNewLineWin && level == Level.RULE && seekingValue) {
         buffer = [];
         isBufferEmpty = true;
       } else if (isNewLineWin && buffer.length == 1) {
@@ -13913,7 +13913,7 @@ var require_read_sources = __commonJS((exports, module) => {
   var restoreAsImport = function(uri) {
     return restoreImport("url(" + uri + ")", "") + Marker.SEMICOLON;
   };
-  var fromStyles = function(styles3, context, parentInlinerContext, callback) {
+  var fromStyles = function(styles, context, parentInlinerContext, callback) {
     var tokens;
     var rebaseConfig = {};
     if (!context.source) {
@@ -13929,7 +13929,7 @@ var require_read_sources = __commonJS((exports, module) => {
       rebaseConfig.fromBase = path2.dirname(path2.resolve(context.source));
       rebaseConfig.toBase = context.options.rebaseTo;
     }
-    tokens = tokenize(styles3, context);
+    tokens = tokenize(styles, context);
     tokens = rebase(tokens, context.options.rebase, context.validator, rebaseConfig);
     return allowsAnyImports(parentInlinerContext.inline) ? inline(tokens, context, parentInlinerContext, callback) : callback(tokens);
   };
@@ -14343,13 +14343,13 @@ var require_clean = __commonJS((exports, module) => {
     output.warnings = context.warnings;
     return output;
   };
-  var calculateStatsFrom = function(styles3, context) {
+  var calculateStatsFrom = function(styles, context) {
     var finishedAt = Date.now();
     var timeSpent = finishedAt - context.stats.startedAt;
     delete context.stats.startedAt;
     context.stats.timeSpent = timeSpent;
-    context.stats.efficiency = 1 - styles3.length / context.stats.originalSize;
-    context.stats.minifiedSize = styles3.length;
+    context.stats.efficiency = 1 - styles.length / context.stats.originalSize;
+    context.stats.minifiedSize = styles.length;
     return context.stats;
   };
   var level0Optimize = require_optimize();
@@ -15840,6 +15840,1418 @@ var require_source_map_umd = __commonJS((exports, module) => {
   });
 });
 
+// node_modules/color-name/index.js
+var require_color_name = __commonJS((exports, module) => {
+  module.exports = {
+    aliceblue: [240, 248, 255],
+    antiquewhite: [250, 235, 215],
+    aqua: [0, 255, 255],
+    aquamarine: [127, 255, 212],
+    azure: [240, 255, 255],
+    beige: [245, 245, 220],
+    bisque: [255, 228, 196],
+    black: [0, 0, 0],
+    blanchedalmond: [255, 235, 205],
+    blue: [0, 0, 255],
+    blueviolet: [138, 43, 226],
+    brown: [165, 42, 42],
+    burlywood: [222, 184, 135],
+    cadetblue: [95, 158, 160],
+    chartreuse: [127, 255, 0],
+    chocolate: [210, 105, 30],
+    coral: [255, 127, 80],
+    cornflowerblue: [100, 149, 237],
+    cornsilk: [255, 248, 220],
+    crimson: [220, 20, 60],
+    cyan: [0, 255, 255],
+    darkblue: [0, 0, 139],
+    darkcyan: [0, 139, 139],
+    darkgoldenrod: [184, 134, 11],
+    darkgray: [169, 169, 169],
+    darkgreen: [0, 100, 0],
+    darkgrey: [169, 169, 169],
+    darkkhaki: [189, 183, 107],
+    darkmagenta: [139, 0, 139],
+    darkolivegreen: [85, 107, 47],
+    darkorange: [255, 140, 0],
+    darkorchid: [153, 50, 204],
+    darkred: [139, 0, 0],
+    darksalmon: [233, 150, 122],
+    darkseagreen: [143, 188, 143],
+    darkslateblue: [72, 61, 139],
+    darkslategray: [47, 79, 79],
+    darkslategrey: [47, 79, 79],
+    darkturquoise: [0, 206, 209],
+    darkviolet: [148, 0, 211],
+    deeppink: [255, 20, 147],
+    deepskyblue: [0, 191, 255],
+    dimgray: [105, 105, 105],
+    dimgrey: [105, 105, 105],
+    dodgerblue: [30, 144, 255],
+    firebrick: [178, 34, 34],
+    floralwhite: [255, 250, 240],
+    forestgreen: [34, 139, 34],
+    fuchsia: [255, 0, 255],
+    gainsboro: [220, 220, 220],
+    ghostwhite: [248, 248, 255],
+    gold: [255, 215, 0],
+    goldenrod: [218, 165, 32],
+    gray: [128, 128, 128],
+    green: [0, 128, 0],
+    greenyellow: [173, 255, 47],
+    grey: [128, 128, 128],
+    honeydew: [240, 255, 240],
+    hotpink: [255, 105, 180],
+    indianred: [205, 92, 92],
+    indigo: [75, 0, 130],
+    ivory: [255, 255, 240],
+    khaki: [240, 230, 140],
+    lavender: [230, 230, 250],
+    lavenderblush: [255, 240, 245],
+    lawngreen: [124, 252, 0],
+    lemonchiffon: [255, 250, 205],
+    lightblue: [173, 216, 230],
+    lightcoral: [240, 128, 128],
+    lightcyan: [224, 255, 255],
+    lightgoldenrodyellow: [250, 250, 210],
+    lightgray: [211, 211, 211],
+    lightgreen: [144, 238, 144],
+    lightgrey: [211, 211, 211],
+    lightpink: [255, 182, 193],
+    lightsalmon: [255, 160, 122],
+    lightseagreen: [32, 178, 170],
+    lightskyblue: [135, 206, 250],
+    lightslategray: [119, 136, 153],
+    lightslategrey: [119, 136, 153],
+    lightsteelblue: [176, 196, 222],
+    lightyellow: [255, 255, 224],
+    lime: [0, 255, 0],
+    limegreen: [50, 205, 50],
+    linen: [250, 240, 230],
+    magenta: [255, 0, 255],
+    maroon: [128, 0, 0],
+    mediumaquamarine: [102, 205, 170],
+    mediumblue: [0, 0, 205],
+    mediumorchid: [186, 85, 211],
+    mediumpurple: [147, 112, 219],
+    mediumseagreen: [60, 179, 113],
+    mediumslateblue: [123, 104, 238],
+    mediumspringgreen: [0, 250, 154],
+    mediumturquoise: [72, 209, 204],
+    mediumvioletred: [199, 21, 133],
+    midnightblue: [25, 25, 112],
+    mintcream: [245, 255, 250],
+    mistyrose: [255, 228, 225],
+    moccasin: [255, 228, 181],
+    navajowhite: [255, 222, 173],
+    navy: [0, 0, 128],
+    oldlace: [253, 245, 230],
+    olive: [128, 128, 0],
+    olivedrab: [107, 142, 35],
+    orange: [255, 165, 0],
+    orangered: [255, 69, 0],
+    orchid: [218, 112, 214],
+    palegoldenrod: [238, 232, 170],
+    palegreen: [152, 251, 152],
+    paleturquoise: [175, 238, 238],
+    palevioletred: [219, 112, 147],
+    papayawhip: [255, 239, 213],
+    peachpuff: [255, 218, 185],
+    peru: [205, 133, 63],
+    pink: [255, 192, 203],
+    plum: [221, 160, 221],
+    powderblue: [176, 224, 230],
+    purple: [128, 0, 128],
+    rebeccapurple: [102, 51, 153],
+    red: [255, 0, 0],
+    rosybrown: [188, 143, 143],
+    royalblue: [65, 105, 225],
+    saddlebrown: [139, 69, 19],
+    salmon: [250, 128, 114],
+    sandybrown: [244, 164, 96],
+    seagreen: [46, 139, 87],
+    seashell: [255, 245, 238],
+    sienna: [160, 82, 45],
+    silver: [192, 192, 192],
+    skyblue: [135, 206, 235],
+    slateblue: [106, 90, 205],
+    slategray: [112, 128, 144],
+    slategrey: [112, 128, 144],
+    snow: [255, 250, 250],
+    springgreen: [0, 255, 127],
+    steelblue: [70, 130, 180],
+    tan: [210, 180, 140],
+    teal: [0, 128, 128],
+    thistle: [216, 191, 216],
+    tomato: [255, 99, 71],
+    turquoise: [64, 224, 208],
+    violet: [238, 130, 238],
+    wheat: [245, 222, 179],
+    white: [255, 255, 255],
+    whitesmoke: [245, 245, 245],
+    yellow: [255, 255, 0],
+    yellowgreen: [154, 205, 50]
+  };
+});
+
+// node_modules/color-convert/conversions.js
+var require_conversions = __commonJS((exports, module) => {
+  var comparativeDistance = function(x, y) {
+    return (x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2 + (x[2] - y[2]) ** 2;
+  };
+  var cssKeywords = require_color_name();
+  var reverseKeywords = {};
+  for (const key of Object.keys(cssKeywords)) {
+    reverseKeywords[cssKeywords[key]] = key;
+  }
+  var convert = {
+    rgb: { channels: 3, labels: "rgb" },
+    hsl: { channels: 3, labels: "hsl" },
+    hsv: { channels: 3, labels: "hsv" },
+    hwb: { channels: 3, labels: "hwb" },
+    cmyk: { channels: 4, labels: "cmyk" },
+    xyz: { channels: 3, labels: "xyz" },
+    lab: { channels: 3, labels: "lab" },
+    lch: { channels: 3, labels: "lch" },
+    hex: { channels: 1, labels: ["hex"] },
+    keyword: { channels: 1, labels: ["keyword"] },
+    ansi16: { channels: 1, labels: ["ansi16"] },
+    ansi256: { channels: 1, labels: ["ansi256"] },
+    hcg: { channels: 3, labels: ["h", "c", "g"] },
+    apple: { channels: 3, labels: ["r16", "g16", "b16"] },
+    gray: { channels: 1, labels: ["gray"] }
+  };
+  module.exports = convert;
+  for (const model of Object.keys(convert)) {
+    if (!("channels" in convert[model])) {
+      throw new Error("missing channels property: " + model);
+    }
+    if (!("labels" in convert[model])) {
+      throw new Error("missing channel labels property: " + model);
+    }
+    if (convert[model].labels.length !== convert[model].channels) {
+      throw new Error("channel and label counts mismatch: " + model);
+    }
+    const { channels, labels } = convert[model];
+    delete convert[model].channels;
+    delete convert[model].labels;
+    Object.defineProperty(convert[model], "channels", { value: channels });
+    Object.defineProperty(convert[model], "labels", { value: labels });
+  }
+  convert.rgb.hsl = function(rgb) {
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
+    const delta = max - min;
+    let h;
+    let s;
+    if (max === min) {
+      h = 0;
+    } else if (r === max) {
+      h = (g - b) / delta;
+    } else if (g === max) {
+      h = 2 + (b - r) / delta;
+    } else if (b === max) {
+      h = 4 + (r - g) / delta;
+    }
+    h = Math.min(h * 60, 360);
+    if (h < 0) {
+      h += 360;
+    }
+    const l = (min + max) / 2;
+    if (max === min) {
+      s = 0;
+    } else if (l <= 0.5) {
+      s = delta / (max + min);
+    } else {
+      s = delta / (2 - max - min);
+    }
+    return [h, s * 100, l * 100];
+  };
+  convert.rgb.hsv = function(rgb) {
+    let rdif;
+    let gdif;
+    let bdif;
+    let h;
+    let s;
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const v = Math.max(r, g, b);
+    const diff = v - Math.min(r, g, b);
+    const diffc = function(c) {
+      return (v - c) / 6 / diff + 1 / 2;
+    };
+    if (diff === 0) {
+      h = 0;
+      s = 0;
+    } else {
+      s = diff / v;
+      rdif = diffc(r);
+      gdif = diffc(g);
+      bdif = diffc(b);
+      if (r === v) {
+        h = bdif - gdif;
+      } else if (g === v) {
+        h = 1 / 3 + rdif - bdif;
+      } else if (b === v) {
+        h = 2 / 3 + gdif - rdif;
+      }
+      if (h < 0) {
+        h += 1;
+      } else if (h > 1) {
+        h -= 1;
+      }
+    }
+    return [
+      h * 360,
+      s * 100,
+      v * 100
+    ];
+  };
+  convert.rgb.hwb = function(rgb) {
+    const r = rgb[0];
+    const g = rgb[1];
+    let b = rgb[2];
+    const h = convert.rgb.hsl(rgb)[0];
+    const w = 1 / 255 * Math.min(r, Math.min(g, b));
+    b = 1 - 1 / 255 * Math.max(r, Math.max(g, b));
+    return [h, w * 100, b * 100];
+  };
+  convert.rgb.cmyk = function(rgb) {
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const k = Math.min(1 - r, 1 - g, 1 - b);
+    const c = (1 - r - k) / (1 - k) || 0;
+    const m = (1 - g - k) / (1 - k) || 0;
+    const y = (1 - b - k) / (1 - k) || 0;
+    return [c * 100, m * 100, y * 100, k * 100];
+  };
+  convert.rgb.keyword = function(rgb) {
+    const reversed = reverseKeywords[rgb];
+    if (reversed) {
+      return reversed;
+    }
+    let currentClosestDistance = Infinity;
+    let currentClosestKeyword;
+    for (const keyword of Object.keys(cssKeywords)) {
+      const value = cssKeywords[keyword];
+      const distance = comparativeDistance(rgb, value);
+      if (distance < currentClosestDistance) {
+        currentClosestDistance = distance;
+        currentClosestKeyword = keyword;
+      }
+    }
+    return currentClosestKeyword;
+  };
+  convert.keyword.rgb = function(keyword) {
+    return cssKeywords[keyword];
+  };
+  convert.rgb.xyz = function(rgb) {
+    let r = rgb[0] / 255;
+    let g = rgb[1] / 255;
+    let b = rgb[2] / 255;
+    r = r > 0.04045 ? ((r + 0.055) / 1.055) ** 2.4 : r / 12.92;
+    g = g > 0.04045 ? ((g + 0.055) / 1.055) ** 2.4 : g / 12.92;
+    b = b > 0.04045 ? ((b + 0.055) / 1.055) ** 2.4 : b / 12.92;
+    const x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+    const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    const z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+    return [x * 100, y * 100, z * 100];
+  };
+  convert.rgb.lab = function(rgb) {
+    const xyz = convert.rgb.xyz(rgb);
+    let x = xyz[0];
+    let y = xyz[1];
+    let z = xyz[2];
+    x /= 95.047;
+    y /= 100;
+    z /= 108.883;
+    x = x > 0.008856 ? x ** (1 / 3) : 7.787 * x + 16 / 116;
+    y = y > 0.008856 ? y ** (1 / 3) : 7.787 * y + 16 / 116;
+    z = z > 0.008856 ? z ** (1 / 3) : 7.787 * z + 16 / 116;
+    const l = 116 * y - 16;
+    const a = 500 * (x - y);
+    const b = 200 * (y - z);
+    return [l, a, b];
+  };
+  convert.hsl.rgb = function(hsl) {
+    const h = hsl[0] / 360;
+    const s = hsl[1] / 100;
+    const l = hsl[2] / 100;
+    let t2;
+    let t3;
+    let val;
+    if (s === 0) {
+      val = l * 255;
+      return [val, val, val];
+    }
+    if (l < 0.5) {
+      t2 = l * (1 + s);
+    } else {
+      t2 = l + s - l * s;
+    }
+    const t1 = 2 * l - t2;
+    const rgb = [0, 0, 0];
+    for (let i = 0;i < 3; i++) {
+      t3 = h + 1 / 3 * -(i - 1);
+      if (t3 < 0) {
+        t3++;
+      }
+      if (t3 > 1) {
+        t3--;
+      }
+      if (6 * t3 < 1) {
+        val = t1 + (t2 - t1) * 6 * t3;
+      } else if (2 * t3 < 1) {
+        val = t2;
+      } else if (3 * t3 < 2) {
+        val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+      } else {
+        val = t1;
+      }
+      rgb[i] = val * 255;
+    }
+    return rgb;
+  };
+  convert.hsl.hsv = function(hsl) {
+    const h = hsl[0];
+    let s = hsl[1] / 100;
+    let l = hsl[2] / 100;
+    let smin = s;
+    const lmin = Math.max(l, 0.01);
+    l *= 2;
+    s *= l <= 1 ? l : 2 - l;
+    smin *= lmin <= 1 ? lmin : 2 - lmin;
+    const v = (l + s) / 2;
+    const sv = l === 0 ? 2 * smin / (lmin + smin) : 2 * s / (l + s);
+    return [h, sv * 100, v * 100];
+  };
+  convert.hsv.rgb = function(hsv) {
+    const h = hsv[0] / 60;
+    const s = hsv[1] / 100;
+    let v = hsv[2] / 100;
+    const hi = Math.floor(h) % 6;
+    const f = h - Math.floor(h);
+    const p = 255 * v * (1 - s);
+    const q = 255 * v * (1 - s * f);
+    const t = 255 * v * (1 - s * (1 - f));
+    v *= 255;
+    switch (hi) {
+      case 0:
+        return [v, t, p];
+      case 1:
+        return [q, v, p];
+      case 2:
+        return [p, v, t];
+      case 3:
+        return [p, q, v];
+      case 4:
+        return [t, p, v];
+      case 5:
+        return [v, p, q];
+    }
+  };
+  convert.hsv.hsl = function(hsv) {
+    const h = hsv[0];
+    const s = hsv[1] / 100;
+    const v = hsv[2] / 100;
+    const vmin = Math.max(v, 0.01);
+    let sl;
+    let l;
+    l = (2 - s) * v;
+    const lmin = (2 - s) * vmin;
+    sl = s * vmin;
+    sl /= lmin <= 1 ? lmin : 2 - lmin;
+    sl = sl || 0;
+    l /= 2;
+    return [h, sl * 100, l * 100];
+  };
+  convert.hwb.rgb = function(hwb) {
+    const h = hwb[0] / 360;
+    let wh = hwb[1] / 100;
+    let bl = hwb[2] / 100;
+    const ratio = wh + bl;
+    let f;
+    if (ratio > 1) {
+      wh /= ratio;
+      bl /= ratio;
+    }
+    const i = Math.floor(6 * h);
+    const v = 1 - bl;
+    f = 6 * h - i;
+    if ((i & 1) !== 0) {
+      f = 1 - f;
+    }
+    const n = wh + f * (v - wh);
+    let r;
+    let g;
+    let b;
+    switch (i) {
+      default:
+      case 6:
+      case 0:
+        r = v;
+        g = n;
+        b = wh;
+        break;
+      case 1:
+        r = n;
+        g = v;
+        b = wh;
+        break;
+      case 2:
+        r = wh;
+        g = v;
+        b = n;
+        break;
+      case 3:
+        r = wh;
+        g = n;
+        b = v;
+        break;
+      case 4:
+        r = n;
+        g = wh;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = wh;
+        b = n;
+        break;
+    }
+    return [r * 255, g * 255, b * 255];
+  };
+  convert.cmyk.rgb = function(cmyk) {
+    const c = cmyk[0] / 100;
+    const m = cmyk[1] / 100;
+    const y = cmyk[2] / 100;
+    const k = cmyk[3] / 100;
+    const r = 1 - Math.min(1, c * (1 - k) + k);
+    const g = 1 - Math.min(1, m * (1 - k) + k);
+    const b = 1 - Math.min(1, y * (1 - k) + k);
+    return [r * 255, g * 255, b * 255];
+  };
+  convert.xyz.rgb = function(xyz) {
+    const x = xyz[0] / 100;
+    const y = xyz[1] / 100;
+    const z = xyz[2] / 100;
+    let r;
+    let g;
+    let b;
+    r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+    g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+    b = x * 0.0557 + y * -0.204 + z * 1.057;
+    r = r > 0.0031308 ? 1.055 * r ** (1 / 2.4) - 0.055 : r * 12.92;
+    g = g > 0.0031308 ? 1.055 * g ** (1 / 2.4) - 0.055 : g * 12.92;
+    b = b > 0.0031308 ? 1.055 * b ** (1 / 2.4) - 0.055 : b * 12.92;
+    r = Math.min(Math.max(0, r), 1);
+    g = Math.min(Math.max(0, g), 1);
+    b = Math.min(Math.max(0, b), 1);
+    return [r * 255, g * 255, b * 255];
+  };
+  convert.xyz.lab = function(xyz) {
+    let x = xyz[0];
+    let y = xyz[1];
+    let z = xyz[2];
+    x /= 95.047;
+    y /= 100;
+    z /= 108.883;
+    x = x > 0.008856 ? x ** (1 / 3) : 7.787 * x + 16 / 116;
+    y = y > 0.008856 ? y ** (1 / 3) : 7.787 * y + 16 / 116;
+    z = z > 0.008856 ? z ** (1 / 3) : 7.787 * z + 16 / 116;
+    const l = 116 * y - 16;
+    const a = 500 * (x - y);
+    const b = 200 * (y - z);
+    return [l, a, b];
+  };
+  convert.lab.xyz = function(lab) {
+    const l = lab[0];
+    const a = lab[1];
+    const b = lab[2];
+    let x;
+    let y;
+    let z;
+    y = (l + 16) / 116;
+    x = a / 500 + y;
+    z = y - b / 200;
+    const y2 = y ** 3;
+    const x2 = x ** 3;
+    const z2 = z ** 3;
+    y = y2 > 0.008856 ? y2 : (y - 16 / 116) / 7.787;
+    x = x2 > 0.008856 ? x2 : (x - 16 / 116) / 7.787;
+    z = z2 > 0.008856 ? z2 : (z - 16 / 116) / 7.787;
+    x *= 95.047;
+    y *= 100;
+    z *= 108.883;
+    return [x, y, z];
+  };
+  convert.lab.lch = function(lab) {
+    const l = lab[0];
+    const a = lab[1];
+    const b = lab[2];
+    let h;
+    const hr = Math.atan2(b, a);
+    h = hr * 360 / 2 / Math.PI;
+    if (h < 0) {
+      h += 360;
+    }
+    const c = Math.sqrt(a * a + b * b);
+    return [l, c, h];
+  };
+  convert.lch.lab = function(lch) {
+    const l = lch[0];
+    const c = lch[1];
+    const h = lch[2];
+    const hr = h / 360 * 2 * Math.PI;
+    const a = c * Math.cos(hr);
+    const b = c * Math.sin(hr);
+    return [l, a, b];
+  };
+  convert.rgb.ansi16 = function(args, saturation = null) {
+    const [r, g, b] = args;
+    let value = saturation === null ? convert.rgb.hsv(args)[2] : saturation;
+    value = Math.round(value / 50);
+    if (value === 0) {
+      return 30;
+    }
+    let ansi = 30 + (Math.round(b / 255) << 2 | Math.round(g / 255) << 1 | Math.round(r / 255));
+    if (value === 2) {
+      ansi += 60;
+    }
+    return ansi;
+  };
+  convert.hsv.ansi16 = function(args) {
+    return convert.rgb.ansi16(convert.hsv.rgb(args), args[2]);
+  };
+  convert.rgb.ansi256 = function(args) {
+    const r = args[0];
+    const g = args[1];
+    const b = args[2];
+    if (r === g && g === b) {
+      if (r < 8) {
+        return 16;
+      }
+      if (r > 248) {
+        return 231;
+      }
+      return Math.round((r - 8) / 247 * 24) + 232;
+    }
+    const ansi = 16 + 36 * Math.round(r / 255 * 5) + 6 * Math.round(g / 255 * 5) + Math.round(b / 255 * 5);
+    return ansi;
+  };
+  convert.ansi16.rgb = function(args) {
+    let color = args % 10;
+    if (color === 0 || color === 7) {
+      if (args > 50) {
+        color += 3.5;
+      }
+      color = color / 10.5 * 255;
+      return [color, color, color];
+    }
+    const mult = (~~(args > 50) + 1) * 0.5;
+    const r = (color & 1) * mult * 255;
+    const g = (color >> 1 & 1) * mult * 255;
+    const b = (color >> 2 & 1) * mult * 255;
+    return [r, g, b];
+  };
+  convert.ansi256.rgb = function(args) {
+    if (args >= 232) {
+      const c = (args - 232) * 10 + 8;
+      return [c, c, c];
+    }
+    args -= 16;
+    let rem;
+    const r = Math.floor(args / 36) / 5 * 255;
+    const g = Math.floor((rem = args % 36) / 6) / 5 * 255;
+    const b = rem % 6 / 5 * 255;
+    return [r, g, b];
+  };
+  convert.rgb.hex = function(args) {
+    const integer = ((Math.round(args[0]) & 255) << 16) + ((Math.round(args[1]) & 255) << 8) + (Math.round(args[2]) & 255);
+    const string = integer.toString(16).toUpperCase();
+    return "000000".substring(string.length) + string;
+  };
+  convert.hex.rgb = function(args) {
+    const match2 = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
+    if (!match2) {
+      return [0, 0, 0];
+    }
+    let colorString = match2[0];
+    if (match2[0].length === 3) {
+      colorString = colorString.split("").map((char) => {
+        return char + char;
+      }).join("");
+    }
+    const integer = parseInt(colorString, 16);
+    const r = integer >> 16 & 255;
+    const g = integer >> 8 & 255;
+    const b = integer & 255;
+    return [r, g, b];
+  };
+  convert.rgb.hcg = function(rgb) {
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[2] / 255;
+    const max = Math.max(Math.max(r, g), b);
+    const min = Math.min(Math.min(r, g), b);
+    const chroma = max - min;
+    let grayscale;
+    let hue;
+    if (chroma < 1) {
+      grayscale = min / (1 - chroma);
+    } else {
+      grayscale = 0;
+    }
+    if (chroma <= 0) {
+      hue = 0;
+    } else if (max === r) {
+      hue = (g - b) / chroma % 6;
+    } else if (max === g) {
+      hue = 2 + (b - r) / chroma;
+    } else {
+      hue = 4 + (r - g) / chroma;
+    }
+    hue /= 6;
+    hue %= 1;
+    return [hue * 360, chroma * 100, grayscale * 100];
+  };
+  convert.hsl.hcg = function(hsl) {
+    const s = hsl[1] / 100;
+    const l = hsl[2] / 100;
+    const c = l < 0.5 ? 2 * s * l : 2 * s * (1 - l);
+    let f = 0;
+    if (c < 1) {
+      f = (l - 0.5 * c) / (1 - c);
+    }
+    return [hsl[0], c * 100, f * 100];
+  };
+  convert.hsv.hcg = function(hsv) {
+    const s = hsv[1] / 100;
+    const v = hsv[2] / 100;
+    const c = s * v;
+    let f = 0;
+    if (c < 1) {
+      f = (v - c) / (1 - c);
+    }
+    return [hsv[0], c * 100, f * 100];
+  };
+  convert.hcg.rgb = function(hcg) {
+    const h = hcg[0] / 360;
+    const c = hcg[1] / 100;
+    const g = hcg[2] / 100;
+    if (c === 0) {
+      return [g * 255, g * 255, g * 255];
+    }
+    const pure = [0, 0, 0];
+    const hi = h % 1 * 6;
+    const v = hi % 1;
+    const w = 1 - v;
+    let mg = 0;
+    switch (Math.floor(hi)) {
+      case 0:
+        pure[0] = 1;
+        pure[1] = v;
+        pure[2] = 0;
+        break;
+      case 1:
+        pure[0] = w;
+        pure[1] = 1;
+        pure[2] = 0;
+        break;
+      case 2:
+        pure[0] = 0;
+        pure[1] = 1;
+        pure[2] = v;
+        break;
+      case 3:
+        pure[0] = 0;
+        pure[1] = w;
+        pure[2] = 1;
+        break;
+      case 4:
+        pure[0] = v;
+        pure[1] = 0;
+        pure[2] = 1;
+        break;
+      default:
+        pure[0] = 1;
+        pure[1] = 0;
+        pure[2] = w;
+    }
+    mg = (1 - c) * g;
+    return [
+      (c * pure[0] + mg) * 255,
+      (c * pure[1] + mg) * 255,
+      (c * pure[2] + mg) * 255
+    ];
+  };
+  convert.hcg.hsv = function(hcg) {
+    const c = hcg[1] / 100;
+    const g = hcg[2] / 100;
+    const v = c + g * (1 - c);
+    let f = 0;
+    if (v > 0) {
+      f = c / v;
+    }
+    return [hcg[0], f * 100, v * 100];
+  };
+  convert.hcg.hsl = function(hcg) {
+    const c = hcg[1] / 100;
+    const g = hcg[2] / 100;
+    const l = g * (1 - c) + 0.5 * c;
+    let s = 0;
+    if (l > 0 && l < 0.5) {
+      s = c / (2 * l);
+    } else if (l >= 0.5 && l < 1) {
+      s = c / (2 * (1 - l));
+    }
+    return [hcg[0], s * 100, l * 100];
+  };
+  convert.hcg.hwb = function(hcg) {
+    const c = hcg[1] / 100;
+    const g = hcg[2] / 100;
+    const v = c + g * (1 - c);
+    return [hcg[0], (v - c) * 100, (1 - v) * 100];
+  };
+  convert.hwb.hcg = function(hwb) {
+    const w = hwb[1] / 100;
+    const b = hwb[2] / 100;
+    const v = 1 - b;
+    const c = v - w;
+    let g = 0;
+    if (c < 1) {
+      g = (v - c) / (1 - c);
+    }
+    return [hwb[0], c * 100, g * 100];
+  };
+  convert.apple.rgb = function(apple) {
+    return [apple[0] / 65535 * 255, apple[1] / 65535 * 255, apple[2] / 65535 * 255];
+  };
+  convert.rgb.apple = function(rgb) {
+    return [rgb[0] / 255 * 65535, rgb[1] / 255 * 65535, rgb[2] / 255 * 65535];
+  };
+  convert.gray.rgb = function(args) {
+    return [args[0] / 100 * 255, args[0] / 100 * 255, args[0] / 100 * 255];
+  };
+  convert.gray.hsl = function(args) {
+    return [0, 0, args[0]];
+  };
+  convert.gray.hsv = convert.gray.hsl;
+  convert.gray.hwb = function(gray) {
+    return [0, 100, gray[0]];
+  };
+  convert.gray.cmyk = function(gray) {
+    return [0, 0, 0, gray[0]];
+  };
+  convert.gray.lab = function(gray) {
+    return [gray[0], 0, 0];
+  };
+  convert.gray.hex = function(gray) {
+    const val = Math.round(gray[0] / 100 * 255) & 255;
+    const integer = (val << 16) + (val << 8) + val;
+    const string = integer.toString(16).toUpperCase();
+    return "000000".substring(string.length) + string;
+  };
+  convert.rgb.gray = function(rgb) {
+    const val = (rgb[0] + rgb[1] + rgb[2]) / 3;
+    return [val / 255 * 100];
+  };
+});
+
+// node_modules/color-convert/route.js
+var require_route = __commonJS((exports, module) => {
+  var buildGraph = function() {
+    const graph = {};
+    const models = Object.keys(conversions);
+    for (let len = models.length, i = 0;i < len; i++) {
+      graph[models[i]] = {
+        distance: -1,
+        parent: null
+      };
+    }
+    return graph;
+  };
+  var deriveBFS = function(fromModel) {
+    const graph = buildGraph();
+    const queue = [fromModel];
+    graph[fromModel].distance = 0;
+    while (queue.length) {
+      const current = queue.pop();
+      const adjacents = Object.keys(conversions[current]);
+      for (let len = adjacents.length, i = 0;i < len; i++) {
+        const adjacent = adjacents[i];
+        const node = graph[adjacent];
+        if (node.distance === -1) {
+          node.distance = graph[current].distance + 1;
+          node.parent = current;
+          queue.unshift(adjacent);
+        }
+      }
+    }
+    return graph;
+  };
+  var link = function(from, to) {
+    return function(args) {
+      return to(from(args));
+    };
+  };
+  var wrapConversion = function(toModel, graph) {
+    const path2 = [graph[toModel].parent, toModel];
+    let fn = conversions[graph[toModel].parent][toModel];
+    let cur = graph[toModel].parent;
+    while (graph[cur].parent) {
+      path2.unshift(graph[cur].parent);
+      fn = link(conversions[graph[cur].parent][cur], fn);
+      cur = graph[cur].parent;
+    }
+    fn.conversion = path2;
+    return fn;
+  };
+  var conversions = require_conversions();
+  module.exports = function(fromModel) {
+    const graph = deriveBFS(fromModel);
+    const conversion = {};
+    const models = Object.keys(graph);
+    for (let len = models.length, i = 0;i < len; i++) {
+      const toModel = models[i];
+      const node = graph[toModel];
+      if (node.parent === null) {
+        continue;
+      }
+      conversion[toModel] = wrapConversion(toModel, graph);
+    }
+    return conversion;
+  };
+});
+
+// node_modules/color-convert/index.js
+var require_color_convert = __commonJS((exports, module) => {
+  var wrapRaw = function(fn) {
+    const wrappedFn = function(...args) {
+      const arg0 = args[0];
+      if (arg0 === undefined || arg0 === null) {
+        return arg0;
+      }
+      if (arg0.length > 1) {
+        args = arg0;
+      }
+      return fn(args);
+    };
+    if ("conversion" in fn) {
+      wrappedFn.conversion = fn.conversion;
+    }
+    return wrappedFn;
+  };
+  var wrapRounded = function(fn) {
+    const wrappedFn = function(...args) {
+      const arg0 = args[0];
+      if (arg0 === undefined || arg0 === null) {
+        return arg0;
+      }
+      if (arg0.length > 1) {
+        args = arg0;
+      }
+      const result = fn(args);
+      if (typeof result === "object") {
+        for (let len = result.length, i = 0;i < len; i++) {
+          result[i] = Math.round(result[i]);
+        }
+      }
+      return result;
+    };
+    if ("conversion" in fn) {
+      wrappedFn.conversion = fn.conversion;
+    }
+    return wrappedFn;
+  };
+  var conversions = require_conversions();
+  var route = require_route();
+  var convert = {};
+  var models = Object.keys(conversions);
+  models.forEach((fromModel) => {
+    convert[fromModel] = {};
+    Object.defineProperty(convert[fromModel], "channels", { value: conversions[fromModel].channels });
+    Object.defineProperty(convert[fromModel], "labels", { value: conversions[fromModel].labels });
+    const routes = route(fromModel);
+    const routeModels = Object.keys(routes);
+    routeModels.forEach((toModel) => {
+      const fn = routes[toModel];
+      convert[fromModel][toModel] = wrapRounded(fn);
+      convert[fromModel][toModel].raw = wrapRaw(fn);
+    });
+  });
+  module.exports = convert;
+});
+
+// node_modules/ansi-styles/index.js
+var require_ansi_styles = __commonJS((exports, module) => {
+  var assembleStyles = function() {
+    const codes = new Map;
+    const styles = {
+      modifier: {
+        reset: [0, 0],
+        bold: [1, 22],
+        dim: [2, 22],
+        italic: [3, 23],
+        underline: [4, 24],
+        inverse: [7, 27],
+        hidden: [8, 28],
+        strikethrough: [9, 29]
+      },
+      color: {
+        black: [30, 39],
+        red: [31, 39],
+        green: [32, 39],
+        yellow: [33, 39],
+        blue: [34, 39],
+        magenta: [35, 39],
+        cyan: [36, 39],
+        white: [37, 39],
+        blackBright: [90, 39],
+        redBright: [91, 39],
+        greenBright: [92, 39],
+        yellowBright: [93, 39],
+        blueBright: [94, 39],
+        magentaBright: [95, 39],
+        cyanBright: [96, 39],
+        whiteBright: [97, 39]
+      },
+      bgColor: {
+        bgBlack: [40, 49],
+        bgRed: [41, 49],
+        bgGreen: [42, 49],
+        bgYellow: [43, 49],
+        bgBlue: [44, 49],
+        bgMagenta: [45, 49],
+        bgCyan: [46, 49],
+        bgWhite: [47, 49],
+        bgBlackBright: [100, 49],
+        bgRedBright: [101, 49],
+        bgGreenBright: [102, 49],
+        bgYellowBright: [103, 49],
+        bgBlueBright: [104, 49],
+        bgMagentaBright: [105, 49],
+        bgCyanBright: [106, 49],
+        bgWhiteBright: [107, 49]
+      }
+    };
+    styles.color.gray = styles.color.blackBright;
+    styles.bgColor.bgGray = styles.bgColor.bgBlackBright;
+    styles.color.grey = styles.color.blackBright;
+    styles.bgColor.bgGrey = styles.bgColor.bgBlackBright;
+    for (const [groupName, group] of Object.entries(styles)) {
+      for (const [styleName, style] of Object.entries(group)) {
+        styles[styleName] = {
+          open: `\x1B[${style[0]}m`,
+          close: `\x1B[${style[1]}m`
+        };
+        group[styleName] = styles[styleName];
+        codes.set(style[0], style[1]);
+      }
+      Object.defineProperty(styles, groupName, {
+        value: group,
+        enumerable: false
+      });
+    }
+    Object.defineProperty(styles, "codes", {
+      value: codes,
+      enumerable: false
+    });
+    styles.color.close = "\x1B[39m";
+    styles.bgColor.close = "\x1B[49m";
+    setLazyProperty(styles.color, "ansi", () => makeDynamicStyles(wrapAnsi16, "ansi16", ansi2ansi, false));
+    setLazyProperty(styles.color, "ansi256", () => makeDynamicStyles(wrapAnsi256, "ansi256", ansi2ansi, false));
+    setLazyProperty(styles.color, "ansi16m", () => makeDynamicStyles(wrapAnsi16m, "rgb", rgb2rgb, false));
+    setLazyProperty(styles.bgColor, "ansi", () => makeDynamicStyles(wrapAnsi16, "ansi16", ansi2ansi, true));
+    setLazyProperty(styles.bgColor, "ansi256", () => makeDynamicStyles(wrapAnsi256, "ansi256", ansi2ansi, true));
+    setLazyProperty(styles.bgColor, "ansi16m", () => makeDynamicStyles(wrapAnsi16m, "rgb", rgb2rgb, true));
+    return styles;
+  };
+  var wrapAnsi16 = (fn, offset) => (...args) => {
+    const code = fn(...args);
+    return `\x1B[${code + offset}m`;
+  };
+  var wrapAnsi256 = (fn, offset) => (...args) => {
+    const code = fn(...args);
+    return `\x1B[${38 + offset};5;${code}m`;
+  };
+  var wrapAnsi16m = (fn, offset) => (...args) => {
+    const rgb = fn(...args);
+    return `\x1B[${38 + offset};2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
+  };
+  var ansi2ansi = (n) => n;
+  var rgb2rgb = (r, g, b) => [r, g, b];
+  var setLazyProperty = (object, property, get) => {
+    Object.defineProperty(object, property, {
+      get: () => {
+        const value = get();
+        Object.defineProperty(object, property, {
+          value,
+          enumerable: true,
+          configurable: true
+        });
+        return value;
+      },
+      enumerable: true,
+      configurable: true
+    });
+  };
+  var colorConvert;
+  var makeDynamicStyles = (wrap, targetSpace, identity2, isBackground) => {
+    if (colorConvert === undefined) {
+      colorConvert = require_color_convert();
+    }
+    const offset = isBackground ? 10 : 0;
+    const styles = {};
+    for (const [sourceSpace, suite] of Object.entries(colorConvert)) {
+      const name = sourceSpace === "ansi16" ? "ansi" : sourceSpace;
+      if (sourceSpace === targetSpace) {
+        styles[name] = wrap(identity2, offset);
+      } else if (typeof suite === "object") {
+        styles[name] = wrap(suite[targetSpace], offset);
+      }
+    }
+    return styles;
+  };
+  Object.defineProperty(module, "exports", {
+    enumerable: true,
+    get: assembleStyles
+  });
+});
+
+// node_modules/supports-color/browser.js
+var require_browser = __commonJS((exports, module) => {
+  module.exports = {
+    stdout: false,
+    stderr: false
+  };
+});
+
+// node_modules/chalk/source/util.js
+var require_util2 = __commonJS((exports, module) => {
+  var stringReplaceAll = (string, substring, replacer) => {
+    let index = string.indexOf(substring);
+    if (index === -1) {
+      return string;
+    }
+    const substringLength = substring.length;
+    let endIndex = 0;
+    let returnValue = "";
+    do {
+      returnValue += string.substr(endIndex, index - endIndex) + substring + replacer;
+      endIndex = index + substringLength;
+      index = string.indexOf(substring, endIndex);
+    } while (index !== -1);
+    returnValue += string.substr(endIndex);
+    return returnValue;
+  };
+  var stringEncaseCRLFWithFirstIndex = (string, prefix, postfix, index) => {
+    let endIndex = 0;
+    let returnValue = "";
+    do {
+      const gotCR = string[index - 1] === "\r";
+      returnValue += string.substr(endIndex, (gotCR ? index - 1 : index) - endIndex) + prefix + (gotCR ? "\r\n" : "\n") + postfix;
+      endIndex = index + 1;
+      index = string.indexOf("\n", endIndex);
+    } while (index !== -1);
+    returnValue += string.substr(endIndex);
+    return returnValue;
+  };
+  module.exports = {
+    stringReplaceAll,
+    stringEncaseCRLFWithFirstIndex
+  };
+});
+
+// node_modules/chalk/source/templates.js
+var require_templates = __commonJS((exports, module) => {
+  var unescape5 = function(c) {
+    const u = c[0] === "u";
+    const bracket = c[1] === "{";
+    if (u && !bracket && c.length === 5 || c[0] === "x" && c.length === 3) {
+      return String.fromCharCode(parseInt(c.slice(1), 16));
+    }
+    if (u && bracket) {
+      return String.fromCodePoint(parseInt(c.slice(2, -1), 16));
+    }
+    return ESCAPES.get(c) || c;
+  };
+  var parseArguments = function(name, arguments_) {
+    const results = [];
+    const chunks = arguments_.trim().split(/\s*,\s*/g);
+    let matches;
+    for (const chunk of chunks) {
+      const number = Number(chunk);
+      if (!Number.isNaN(number)) {
+        results.push(number);
+      } else if (matches = chunk.match(STRING_REGEX)) {
+        results.push(matches[2].replace(ESCAPE_REGEX, (m, escape4, character) => escape4 ? unescape5(escape4) : character));
+      } else {
+        throw new Error(`Invalid Chalk template style argument: ${chunk} (in style '${name}')`);
+      }
+    }
+    return results;
+  };
+  var parseStyle = function(style) {
+    STYLE_REGEX.lastIndex = 0;
+    const results = [];
+    let matches;
+    while ((matches = STYLE_REGEX.exec(style)) !== null) {
+      const name = matches[1];
+      if (matches[2]) {
+        const args = parseArguments(name, matches[2]);
+        results.push([name].concat(args));
+      } else {
+        results.push([name]);
+      }
+    }
+    return results;
+  };
+  var buildStyle = function(chalk2, styles) {
+    const enabled = {};
+    for (const layer of styles) {
+      for (const style of layer.styles) {
+        enabled[style[0]] = layer.inverse ? null : style.slice(1);
+      }
+    }
+    let current = chalk2;
+    for (const [styleName, styles2] of Object.entries(enabled)) {
+      if (!Array.isArray(styles2)) {
+        continue;
+      }
+      if (!(styleName in current)) {
+        throw new Error(`Unknown Chalk style: ${styleName}`);
+      }
+      current = styles2.length > 0 ? current[styleName](...styles2) : current[styleName];
+    }
+    return current;
+  };
+  var TEMPLATE_REGEX = /(?:\\(u(?:[a-f\d]{4}|\{[a-f\d]{1,6}\})|x[a-f\d]{2}|.))|(?:\{(~)?(\w+(?:\([^)]*\))?(?:\.\w+(?:\([^)]*\))?)*)(?:[ \t]|(?=\r?\n)))|(\})|((?:.|[\r\n\f])+?)/gi;
+  var STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g;
+  var STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/;
+  var ESCAPE_REGEX = /\\(u(?:[a-f\d]{4}|{[a-f\d]{1,6}})|x[a-f\d]{2}|.)|([^\\])/gi;
+  var ESCAPES = new Map([
+    ["n", "\n"],
+    ["r", "\r"],
+    ["t", "\t"],
+    ["b", "\b"],
+    ["f", "\f"],
+    ["v", "\v"],
+    ["0", "\0"],
+    ["\\", "\\"],
+    ["e", "\x1B"],
+    ["a", "\x07"]
+  ]);
+  module.exports = (chalk2, temporary) => {
+    const styles = [];
+    const chunks = [];
+    let chunk = [];
+    temporary.replace(TEMPLATE_REGEX, (m, escapeCharacter, inverse, style, close, character) => {
+      if (escapeCharacter) {
+        chunk.push(unescape5(escapeCharacter));
+      } else if (style) {
+        const string = chunk.join("");
+        chunk = [];
+        chunks.push(styles.length === 0 ? string : buildStyle(chalk2, styles)(string));
+        styles.push({ inverse, styles: parseStyle(style) });
+      } else if (close) {
+        if (styles.length === 0) {
+          throw new Error("Found extraneous } in Chalk template literal");
+        }
+        chunks.push(buildStyle(chalk2, styles)(chunk.join("")));
+        chunk = [];
+        styles.pop();
+      } else {
+        chunk.push(character);
+      }
+    });
+    chunks.push(chunk.join(""));
+    if (styles.length > 0) {
+      const errMessage = `Chalk template literal is missing ${styles.length} closing bracket${styles.length === 1 ? "" : "s"} (\`}\`)`;
+      throw new Error(errMessage);
+    }
+    return chunks.join("");
+  };
+});
+
+// node_modules/chalk/source/index.js
+var require_source = __commonJS((exports, module) => {
+  var Chalk = function(options) {
+    return chalkFactory(options);
+  };
+  var ansiStyles = require_ansi_styles();
+  var { stdout: stdoutColor, stderr: stderrColor } = require_browser();
+  var {
+    stringReplaceAll,
+    stringEncaseCRLFWithFirstIndex
+  } = require_util2();
+  var { isArray } = Array;
+  var levelMapping = [
+    "ansi",
+    "ansi",
+    "ansi256",
+    "ansi16m"
+  ];
+  var styles = Object.create(null);
+  var applyOptions = (object, options = {}) => {
+    if (options.level && !(Number.isInteger(options.level) && options.level >= 0 && options.level <= 3)) {
+      throw new Error("The `level` option should be an integer from 0 to 3");
+    }
+    const colorLevel = stdoutColor ? stdoutColor.level : 0;
+    object.level = options.level === undefined ? colorLevel : options.level;
+  };
+
+  class ChalkClass {
+    constructor(options) {
+      return chalkFactory(options);
+    }
+  }
+  var chalkFactory = (options) => {
+    const chalk3 = {};
+    applyOptions(chalk3, options);
+    chalk3.template = (...arguments_) => chalkTag(chalk3.template, ...arguments_);
+    Object.setPrototypeOf(chalk3, Chalk.prototype);
+    Object.setPrototypeOf(chalk3.template, chalk3);
+    chalk3.template.constructor = () => {
+      throw new Error("`chalk.constructor()` is deprecated. Use `new chalk.Instance()` instead.");
+    };
+    chalk3.template.Instance = ChalkClass;
+    return chalk3.template;
+  };
+  for (const [styleName, style] of Object.entries(ansiStyles)) {
+    styles[styleName] = {
+      get() {
+        const builder = createBuilder(this, createStyler(style.open, style.close, this._styler), this._isEmpty);
+        Object.defineProperty(this, styleName, { value: builder });
+        return builder;
+      }
+    };
+  }
+  styles.visible = {
+    get() {
+      const builder = createBuilder(this, this._styler, true);
+      Object.defineProperty(this, "visible", { value: builder });
+      return builder;
+    }
+  };
+  var usedModels = ["rgb", "hex", "keyword", "hsl", "hsv", "hwb", "ansi", "ansi256"];
+  for (const model of usedModels) {
+    styles[model] = {
+      get() {
+        const { level } = this;
+        return function(...arguments_) {
+          const styler = createStyler(ansiStyles.color[levelMapping[level]][model](...arguments_), ansiStyles.color.close, this._styler);
+          return createBuilder(this, styler, this._isEmpty);
+        };
+      }
+    };
+  }
+  for (const model of usedModels) {
+    const bgModel = "bg" + model[0].toUpperCase() + model.slice(1);
+    styles[bgModel] = {
+      get() {
+        const { level } = this;
+        return function(...arguments_) {
+          const styler = createStyler(ansiStyles.bgColor[levelMapping[level]][model](...arguments_), ansiStyles.bgColor.close, this._styler);
+          return createBuilder(this, styler, this._isEmpty);
+        };
+      }
+    };
+  }
+  var proto = Object.defineProperties(() => {
+  }, {
+    ...styles,
+    level: {
+      enumerable: true,
+      get() {
+        return this._generator.level;
+      },
+      set(level) {
+        this._generator.level = level;
+      }
+    }
+  });
+  var createStyler = (open, close, parent) => {
+    let openAll;
+    let closeAll;
+    if (parent === undefined) {
+      openAll = open;
+      closeAll = close;
+    } else {
+      openAll = parent.openAll + open;
+      closeAll = close + parent.closeAll;
+    }
+    return {
+      open,
+      close,
+      openAll,
+      closeAll,
+      parent
+    };
+  };
+  var createBuilder = (self2, _styler, _isEmpty) => {
+    const builder = (...arguments_) => {
+      if (isArray(arguments_[0]) && isArray(arguments_[0].raw)) {
+        return applyStyle(builder, chalkTag(builder, ...arguments_));
+      }
+      return applyStyle(builder, arguments_.length === 1 ? "" + arguments_[0] : arguments_.join(" "));
+    };
+    Object.setPrototypeOf(builder, proto);
+    builder._generator = self2;
+    builder._styler = _styler;
+    builder._isEmpty = _isEmpty;
+    return builder;
+  };
+  var applyStyle = (self2, string) => {
+    if (self2.level <= 0 || !string) {
+      return self2._isEmpty ? "" : string;
+    }
+    let styler = self2._styler;
+    if (styler === undefined) {
+      return string;
+    }
+    const { openAll, closeAll } = styler;
+    if (string.indexOf("\x1B") !== -1) {
+      while (styler !== undefined) {
+        string = stringReplaceAll(string, styler.close, styler.open);
+        styler = styler.parent;
+      }
+    }
+    const lfIndex = string.indexOf("\n");
+    if (lfIndex !== -1) {
+      string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
+    }
+    return openAll + string + closeAll;
+  };
+  var template;
+  var chalkTag = (chalk3, ...strings) => {
+    const [firstString] = strings;
+    if (!isArray(firstString) || !isArray(firstString.raw)) {
+      return strings.join(" ");
+    }
+    const arguments_ = strings.slice(1);
+    const parts = [firstString.raw[0]];
+    for (let i = 1;i < firstString.length; i++) {
+      parts.push(String(arguments_[i - 1]).replace(/[{}\\]/g, "\\$&"), String(firstString.raw[i]));
+    }
+    if (template === undefined) {
+      template = require_templates();
+    }
+    return template(chalk3, parts.join(""));
+  };
+  Object.defineProperties(Chalk.prototype, styles);
+  var chalk2 = Chalk();
+  chalk2.supportsColor = stdoutColor;
+  chalk2.stderr = Chalk({ level: stderrColor ? stderrColor.level : 0 });
+  chalk2.stderr.supportsColor = stderrColor;
+  module.exports = chalk2;
+});
+
 // node_modules/slugify/slugify.js
 var require_slugify = __commonJS((exports, module) => {
   (function(name, root, factory) {
@@ -16230,7 +17642,7 @@ var require_figures = __commonJS((exports, module) => {
 var require_style = __commonJS((exports, module) => {
   var c = require_kleur();
   var figures = require_figures();
-  var styles3 = Object.freeze({
+  var styles = Object.freeze({
     password: {
       scale: 1,
       render: (input) => "*".repeat(input.length)
@@ -16248,7 +17660,7 @@ var require_style = __commonJS((exports, module) => {
       render: (input) => `${input}`
     }
   });
-  var render = (type) => styles3[type] || styles3.default;
+  var render = (type) => styles[type] || styles.default;
   var symbols = Object.freeze({
     aborted: c.red(figures.cross),
     done: c.green(figures.tick),
@@ -16259,7 +17671,7 @@ var require_style = __commonJS((exports, module) => {
   var delimiter = (completing) => c.gray(completing ? figures.ellipsis : figures.pointerSmall);
   var item = (expandable, expanded) => c.gray(expandable ? expanded ? figures.pointerSmall : "+" : figures.line);
   module.exports = {
-    styles: styles3,
+    styles,
     render,
     symbols,
     symbol,
@@ -16310,7 +17722,7 @@ var require_entriesToDisplay = __commonJS((exports, module) => {
 });
 
 // node_modules/prompts/dist/util/index.js
-var require_util2 = __commonJS((exports, module) => {
+var require_util3 = __commonJS((exports, module) => {
   module.exports = {
     action: require_action(),
     clear: require_clear(),
@@ -16326,7 +17738,7 @@ var require_util2 = __commonJS((exports, module) => {
 // node_modules/prompts/dist/elements/prompt.js
 var require_prompt = __commonJS((exports, module) => {
   var readline2 = import.meta.require("readline");
-  var _require = require_util2();
+  var _require = require_util3();
   var action = _require.action;
   var EventEmitter3 = import.meta.require("events");
   var _require2 = require_src();
@@ -16427,7 +17839,7 @@ var require_text = __commonJS((exports, module) => {
   var _require = require_src();
   var erase = _require.erase;
   var cursor = _require.cursor;
-  var _require2 = require_util2();
+  var _require2 = require_util3();
   var style = _require2.style;
   var clear = _require2.clear;
   var lines = _require2.lines;
@@ -16615,7 +18027,7 @@ var require_text = __commonJS((exports, module) => {
 var require_select = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt();
-  var _require = require_util2();
+  var _require = require_util3();
   var style = _require.style;
   var clear = _require.clear;
   var figures = _require.figures;
@@ -16766,7 +18178,7 @@ var require_select = __commonJS((exports, module) => {
 var require_toggle = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt();
-  var _require = require_util2();
+  var _require = require_util3();
   var style = _require.style;
   var clear = _require.clear;
   var _require2 = require_src();
@@ -17153,7 +18565,7 @@ var require_date = __commonJS((exports, module) => {
   };
   var color = require_kleur();
   var Prompt = require_prompt();
-  var _require = require_util2();
+  var _require = require_util3();
   var style = _require.style;
   var clear = _require.clear;
   var figures = _require.figures;
@@ -17379,7 +18791,7 @@ var require_number = __commonJS((exports, module) => {
   var _require = require_src();
   var cursor = _require.cursor;
   var erase = _require.erase;
-  var _require2 = require_util2();
+  var _require2 = require_util3();
   var style = _require2.style;
   var figures = _require2.figures;
   var clear = _require2.clear;
@@ -17568,7 +18980,7 @@ var require_multiselect = __commonJS((exports, module) => {
   var _require = require_src();
   var cursor = _require.cursor;
   var Prompt = require_prompt();
-  var _require2 = require_util2();
+  var _require2 = require_util3();
   var clear = _require2.clear;
   var figures = _require2.figures;
   var style = _require2.style;
@@ -17824,7 +19236,7 @@ var require_autocomplete = __commonJS((exports, module) => {
   var _require = require_src();
   var erase = _require.erase;
   var cursor = _require.cursor;
-  var _require2 = require_util2();
+  var _require2 = require_util3();
   var style = _require2.style;
   var clear = _require2.clear;
   var figures = _require2.figures;
@@ -18059,7 +19471,7 @@ var require_autocompleteMultiselect = __commonJS((exports, module) => {
   var _require = require_src();
   var cursor = _require.cursor;
   var MultiselectPrompt = require_multiselect();
-  var _require2 = require_util2();
+  var _require2 = require_util3();
   var clear = _require2.clear;
   var style = _require2.style;
   var figures = _require2.figures;
@@ -18218,7 +19630,7 @@ Filtered results for: ${this.inputValue ? this.inputValue : color.gray("Enter so
 var require_confirm = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt();
-  var _require = require_util2();
+  var _require = require_util3();
   var style = _require.style;
   var clear = _require.clear;
   var _require2 = require_src();
@@ -18718,13 +20130,13 @@ var require_figures2 = __commonJS((exports, module) => {
 var require_style2 = __commonJS((exports, module) => {
   var c = require_kleur();
   var figures = require_figures2();
-  var styles3 = Object.freeze({
+  var styles = Object.freeze({
     password: { scale: 1, render: (input) => "*".repeat(input.length) },
     emoji: { scale: 2, render: (input) => "\uD83D\uDE03".repeat(input.length) },
     invisible: { scale: 0, render: (input) => "" },
     default: { scale: 1, render: (input) => `${input}` }
   });
-  var render = (type) => styles3[type] || styles3.default;
+  var render = (type) => styles[type] || styles.default;
   var symbols = Object.freeze({
     aborted: c.red(figures.cross),
     done: c.green(figures.tick),
@@ -18735,7 +20147,7 @@ var require_style2 = __commonJS((exports, module) => {
   var delimiter = (completing) => c.gray(completing ? figures.ellipsis : figures.pointerSmall);
   var item = (expandable, expanded) => c.gray(expandable ? expanded ? figures.pointerSmall : "+" : figures.line);
   module.exports = {
-    styles: styles3,
+    styles,
     render,
     symbols,
     symbol,
@@ -18783,7 +20195,7 @@ var require_entriesToDisplay2 = __commonJS((exports, module) => {
 });
 
 // node_modules/prompts/lib/util/index.js
-var require_util3 = __commonJS((exports, module) => {
+var require_util4 = __commonJS((exports, module) => {
   module.exports = {
     action: require_action2(),
     clear: require_clear2(),
@@ -18799,7 +20211,7 @@ var require_util3 = __commonJS((exports, module) => {
 // node_modules/prompts/lib/elements/prompt.js
 var require_prompt2 = __commonJS((exports, module) => {
   var readline2 = import.meta.require("readline");
-  var { action } = require_util3();
+  var { action } = require_util4();
   var EventEmitter3 = import.meta.require("events");
   var { beep, cursor } = require_src();
   var color = require_kleur();
@@ -18863,7 +20275,7 @@ var require_text2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
   var { erase, cursor } = require_src();
-  var { style, clear, lines, figures } = require_util3();
+  var { style, clear, lines, figures } = require_util4();
 
   class TextPrompt extends Prompt {
     constructor(opts = {}) {
@@ -19046,7 +20458,7 @@ var require_text2 = __commonJS((exports, module) => {
 var require_select2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
-  var { style, clear, figures, wrap, entriesToDisplay } = require_util3();
+  var { style, clear, figures, wrap, entriesToDisplay } = require_util4();
   var { cursor } = require_src();
 
   class SelectPrompt extends Prompt {
@@ -19190,7 +20602,7 @@ var require_select2 = __commonJS((exports, module) => {
 var require_toggle2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
-  var { style, clear } = require_util3();
+  var { style, clear } = require_util4();
   var { cursor, erase } = require_src();
 
   class TogglePrompt extends Prompt {
@@ -19546,7 +20958,7 @@ var require_dateparts2 = __commonJS((exports, module) => {
 var require_date2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
-  var { style, clear, figures } = require_util3();
+  var { style, clear, figures } = require_util4();
   var { erase, cursor } = require_src();
   var { DatePart, Meridiem, Day, Hours, Milliseconds, Minutes, Month, Seconds, Year } = require_dateparts2();
   var regex = /\\(.)|"((?:\\["\\]|[^"])+)"|(D[Do]?|d{3,4}|d)|(M{1,4})|(YY(?:YY)?)|([aA])|([Hh]{1,2})|(m{1,2})|(s{1,2})|(S{1,4})|./g;
@@ -19719,7 +21131,7 @@ var require_number2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
   var { cursor, erase } = require_src();
-  var { style, figures, clear, lines } = require_util3();
+  var { style, figures, clear, lines } = require_util4();
   var isNumber2 = /[0-9]/;
   var isDef = (any) => any !== undefined;
   var round = (number, precision) => {
@@ -19902,7 +21314,7 @@ var require_multiselect2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var { cursor } = require_src();
   var Prompt = require_prompt2();
-  var { clear, figures, style, wrap, entriesToDisplay } = require_util3();
+  var { clear, figures, style, wrap, entriesToDisplay } = require_util4();
 
   class MultiselectPrompt extends Prompt {
     constructor(opts = {}) {
@@ -20121,7 +21533,7 @@ var require_autocomplete2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
   var { erase, cursor } = require_src();
-  var { style, clear, figures, wrap, entriesToDisplay } = require_util3();
+  var { style, clear, figures, wrap, entriesToDisplay } = require_util4();
   var getVal = (arr, i) => arr[i] && (arr[i].value || arr[i].title || arr[i]);
   var getTitle = (arr, i) => arr[i] && (arr[i].title || arr[i].value || arr[i]);
   var getIndex = (arr, valOrTitle) => {
@@ -20339,7 +21751,7 @@ var require_autocompleteMultiselect2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var { cursor } = require_src();
   var MultiselectPrompt = require_multiselect2();
-  var { clear, style, figures } = require_util3();
+  var { clear, style, figures } = require_util4();
 
   class AutocompleteMultiselectPrompt extends MultiselectPrompt {
     constructor(opts = {}) {
@@ -20500,7 +21912,7 @@ Filtered results for: ${this.inputValue ? this.inputValue : color.gray("Enter so
 var require_confirm2 = __commonJS((exports, module) => {
   var color = require_kleur();
   var Prompt = require_prompt2();
-  var { style, clear } = require_util3();
+  var { style, clear } = require_util4();
   var { erase, cursor } = require_src();
 
   class ConfirmPrompt extends Prompt {
@@ -20756,7 +22168,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.5.2",
+  version: "1.6.0",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -20766,7 +22178,6 @@ var package_default = {
     url: "git+https://github.com/gouz/slidesk.git"
   },
   dependencies: {
-    chalk: "^5.3.0",
     commander: "^11.0.0",
     glob: "^10.3.3",
     "html-minifier-terser": "^7.2.0",
@@ -20793,385 +22204,6 @@ var package_default = {
 import {watch} from "fs";
 import readline from "readline";
 import process2 from "process";
-
-// node_modules/chalk/source/vendor/ansi-styles/index.js
-var assembleStyles = function() {
-  const codes = new Map;
-  for (const [groupName, group] of Object.entries(styles)) {
-    for (const [styleName, style] of Object.entries(group)) {
-      styles[styleName] = {
-        open: `\x1B[${style[0]}m`,
-        close: `\x1B[${style[1]}m`
-      };
-      group[styleName] = styles[styleName];
-      codes.set(style[0], style[1]);
-    }
-    Object.defineProperty(styles, groupName, {
-      value: group,
-      enumerable: false
-    });
-  }
-  Object.defineProperty(styles, "codes", {
-    value: codes,
-    enumerable: false
-  });
-  styles.color.close = "\x1B[39m";
-  styles.bgColor.close = "\x1B[49m";
-  styles.color.ansi = wrapAnsi16();
-  styles.color.ansi256 = wrapAnsi256();
-  styles.color.ansi16m = wrapAnsi16m();
-  styles.bgColor.ansi = wrapAnsi16(ANSI_BACKGROUND_OFFSET);
-  styles.bgColor.ansi256 = wrapAnsi256(ANSI_BACKGROUND_OFFSET);
-  styles.bgColor.ansi16m = wrapAnsi16m(ANSI_BACKGROUND_OFFSET);
-  Object.defineProperties(styles, {
-    rgbToAnsi256: {
-      value(red, green, blue) {
-        if (red === green && green === blue) {
-          if (red < 8) {
-            return 16;
-          }
-          if (red > 248) {
-            return 231;
-          }
-          return Math.round((red - 8) / 247 * 24) + 232;
-        }
-        return 16 + 36 * Math.round(red / 255 * 5) + 6 * Math.round(green / 255 * 5) + Math.round(blue / 255 * 5);
-      },
-      enumerable: false
-    },
-    hexToRgb: {
-      value(hex) {
-        const matches = /[a-f\d]{6}|[a-f\d]{3}/i.exec(hex.toString(16));
-        if (!matches) {
-          return [0, 0, 0];
-        }
-        let [colorString] = matches;
-        if (colorString.length === 3) {
-          colorString = [...colorString].map((character) => character + character).join("");
-        }
-        const integer = Number.parseInt(colorString, 16);
-        return [
-          integer >> 16 & 255,
-          integer >> 8 & 255,
-          integer & 255
-        ];
-      },
-      enumerable: false
-    },
-    hexToAnsi256: {
-      value: (hex) => styles.rgbToAnsi256(...styles.hexToRgb(hex)),
-      enumerable: false
-    },
-    ansi256ToAnsi: {
-      value(code) {
-        if (code < 8) {
-          return 30 + code;
-        }
-        if (code < 16) {
-          return 90 + (code - 8);
-        }
-        let red;
-        let green;
-        let blue;
-        if (code >= 232) {
-          red = ((code - 232) * 10 + 8) / 255;
-          green = red;
-          blue = red;
-        } else {
-          code -= 16;
-          const remainder = code % 36;
-          red = Math.floor(code / 36) / 5;
-          green = Math.floor(remainder / 6) / 5;
-          blue = remainder % 6 / 5;
-        }
-        const value = Math.max(red, green, blue) * 2;
-        if (value === 0) {
-          return 30;
-        }
-        let result = 30 + (Math.round(blue) << 2 | Math.round(green) << 1 | Math.round(red));
-        if (value === 2) {
-          result += 60;
-        }
-        return result;
-      },
-      enumerable: false
-    },
-    rgbToAnsi: {
-      value: (red, green, blue) => styles.ansi256ToAnsi(styles.rgbToAnsi256(red, green, blue)),
-      enumerable: false
-    },
-    hexToAnsi: {
-      value: (hex) => styles.ansi256ToAnsi(styles.hexToAnsi256(hex)),
-      enumerable: false
-    }
-  });
-  return styles;
-};
-var ANSI_BACKGROUND_OFFSET = 10;
-var wrapAnsi16 = (offset = 0) => (code) => `\x1B[${code + offset}m`;
-var wrapAnsi256 = (offset = 0) => (code) => `\x1B[${38 + offset};5;${code}m`;
-var wrapAnsi16m = (offset = 0) => (red, green, blue) => `\x1B[${38 + offset};2;${red};${green};${blue}m`;
-var styles = {
-  modifier: {
-    reset: [0, 0],
-    bold: [1, 22],
-    dim: [2, 22],
-    italic: [3, 23],
-    underline: [4, 24],
-    overline: [53, 55],
-    inverse: [7, 27],
-    hidden: [8, 28],
-    strikethrough: [9, 29]
-  },
-  color: {
-    black: [30, 39],
-    red: [31, 39],
-    green: [32, 39],
-    yellow: [33, 39],
-    blue: [34, 39],
-    magenta: [35, 39],
-    cyan: [36, 39],
-    white: [37, 39],
-    blackBright: [90, 39],
-    gray: [90, 39],
-    grey: [90, 39],
-    redBright: [91, 39],
-    greenBright: [92, 39],
-    yellowBright: [93, 39],
-    blueBright: [94, 39],
-    magentaBright: [95, 39],
-    cyanBright: [96, 39],
-    whiteBright: [97, 39]
-  },
-  bgColor: {
-    bgBlack: [40, 49],
-    bgRed: [41, 49],
-    bgGreen: [42, 49],
-    bgYellow: [43, 49],
-    bgBlue: [44, 49],
-    bgMagenta: [45, 49],
-    bgCyan: [46, 49],
-    bgWhite: [47, 49],
-    bgBlackBright: [100, 49],
-    bgGray: [100, 49],
-    bgGrey: [100, 49],
-    bgRedBright: [101, 49],
-    bgGreenBright: [102, 49],
-    bgYellowBright: [103, 49],
-    bgBlueBright: [104, 49],
-    bgMagentaBright: [105, 49],
-    bgCyanBright: [106, 49],
-    bgWhiteBright: [107, 49]
-  }
-};
-var modifierNames = Object.keys(styles.modifier);
-var foregroundColorNames = Object.keys(styles.color);
-var backgroundColorNames = Object.keys(styles.bgColor);
-var colorNames = [...foregroundColorNames, ...backgroundColorNames];
-var ansiStyles = assembleStyles();
-var ansi_styles_default = ansiStyles;
-
-// node_modules/chalk/source/vendor/supports-color/browser.js
-var level = (() => {
-  if (navigator.userAgentData) {
-    const brand = navigator.userAgentData.brands.find(({ brand: brand2 }) => brand2 === "Chromium");
-    if (brand && brand.version > 93) {
-      return 3;
-    }
-  }
-  if (/\b(Chrome|Chromium)\//.test(navigator.userAgent)) {
-    return 1;
-  }
-  return 0;
-})();
-var colorSupport = level !== 0 && {
-  level,
-  hasBasic: true,
-  has256: level >= 2,
-  has16m: level >= 3
-};
-var supportsColor = {
-  stdout: colorSupport,
-  stderr: colorSupport
-};
-var browser_default = supportsColor;
-
-// node_modules/chalk/source/utilities.js
-function stringReplaceAll(string, substring, replacer) {
-  let index = string.indexOf(substring);
-  if (index === -1) {
-    return string;
-  }
-  const substringLength = substring.length;
-  let endIndex = 0;
-  let returnValue = "";
-  do {
-    returnValue += string.slice(endIndex, index) + substring + replacer;
-    endIndex = index + substringLength;
-    index = string.indexOf(substring, endIndex);
-  } while (index !== -1);
-  returnValue += string.slice(endIndex);
-  return returnValue;
-}
-function stringEncaseCRLFWithFirstIndex(string, prefix, postfix, index) {
-  let endIndex = 0;
-  let returnValue = "";
-  do {
-    const gotCR = string[index - 1] === "\r";
-    returnValue += string.slice(endIndex, gotCR ? index - 1 : index) + prefix + (gotCR ? "\r\n" : "\n") + postfix;
-    endIndex = index + 1;
-    index = string.indexOf("\n", endIndex);
-  } while (index !== -1);
-  returnValue += string.slice(endIndex);
-  return returnValue;
-}
-
-// node_modules/chalk/source/index.js
-var createChalk = function(options) {
-  return chalkFactory(options);
-};
-var { stdout: stdoutColor, stderr: stderrColor } = browser_default;
-var GENERATOR = Symbol("GENERATOR");
-var STYLER = Symbol("STYLER");
-var IS_EMPTY = Symbol("IS_EMPTY");
-var levelMapping = [
-  "ansi",
-  "ansi",
-  "ansi256",
-  "ansi16m"
-];
-var styles2 = Object.create(null);
-var applyOptions = (object, options = {}) => {
-  if (options.level && !(Number.isInteger(options.level) && options.level >= 0 && options.level <= 3)) {
-    throw new Error("The `level` option should be an integer from 0 to 3");
-  }
-  const colorLevel = stdoutColor ? stdoutColor.level : 0;
-  object.level = options.level === undefined ? colorLevel : options.level;
-};
-var chalkFactory = (options) => {
-  const chalk = (...strings) => strings.join(" ");
-  applyOptions(chalk, options);
-  Object.setPrototypeOf(chalk, createChalk.prototype);
-  return chalk;
-};
-Object.setPrototypeOf(createChalk.prototype, Function.prototype);
-for (const [styleName, style] of Object.entries(ansi_styles_default)) {
-  styles2[styleName] = {
-    get() {
-      const builder = createBuilder(this, createStyler(style.open, style.close, this[STYLER]), this[IS_EMPTY]);
-      Object.defineProperty(this, styleName, { value: builder });
-      return builder;
-    }
-  };
-}
-styles2.visible = {
-  get() {
-    const builder = createBuilder(this, this[STYLER], true);
-    Object.defineProperty(this, "visible", { value: builder });
-    return builder;
-  }
-};
-var getModelAnsi = (model, level2, type, ...arguments_) => {
-  if (model === "rgb") {
-    if (level2 === "ansi16m") {
-      return ansi_styles_default[type].ansi16m(...arguments_);
-    }
-    if (level2 === "ansi256") {
-      return ansi_styles_default[type].ansi256(ansi_styles_default.rgbToAnsi256(...arguments_));
-    }
-    return ansi_styles_default[type].ansi(ansi_styles_default.rgbToAnsi(...arguments_));
-  }
-  if (model === "hex") {
-    return getModelAnsi("rgb", level2, type, ...ansi_styles_default.hexToRgb(...arguments_));
-  }
-  return ansi_styles_default[type][model](...arguments_);
-};
-var usedModels = ["rgb", "hex", "ansi256"];
-for (const model of usedModels) {
-  styles2[model] = {
-    get() {
-      const { level: level2 } = this;
-      return function(...arguments_) {
-        const styler = createStyler(getModelAnsi(model, levelMapping[level2], "color", ...arguments_), ansi_styles_default.color.close, this[STYLER]);
-        return createBuilder(this, styler, this[IS_EMPTY]);
-      };
-    }
-  };
-  const bgModel = "bg" + model[0].toUpperCase() + model.slice(1);
-  styles2[bgModel] = {
-    get() {
-      const { level: level2 } = this;
-      return function(...arguments_) {
-        const styler = createStyler(getModelAnsi(model, levelMapping[level2], "bgColor", ...arguments_), ansi_styles_default.bgColor.close, this[STYLER]);
-        return createBuilder(this, styler, this[IS_EMPTY]);
-      };
-    }
-  };
-}
-var proto = Object.defineProperties(() => {
-}, {
-  ...styles2,
-  level: {
-    enumerable: true,
-    get() {
-      return this[GENERATOR].level;
-    },
-    set(level2) {
-      this[GENERATOR].level = level2;
-    }
-  }
-});
-var createStyler = (open, close, parent) => {
-  let openAll;
-  let closeAll;
-  if (parent === undefined) {
-    openAll = open;
-    closeAll = close;
-  } else {
-    openAll = parent.openAll + open;
-    closeAll = close + parent.closeAll;
-  }
-  return {
-    open,
-    close,
-    openAll,
-    closeAll,
-    parent
-  };
-};
-var createBuilder = (self2, _styler, _isEmpty) => {
-  const builder = (...arguments_) => applyStyle(builder, arguments_.length === 1 ? "" + arguments_[0] : arguments_.join(" "));
-  Object.setPrototypeOf(builder, proto);
-  builder[GENERATOR] = self2;
-  builder[STYLER] = _styler;
-  builder[IS_EMPTY] = _isEmpty;
-  return builder;
-};
-var applyStyle = (self2, string) => {
-  if (self2.level <= 0 || !string) {
-    return self2[IS_EMPTY] ? "" : string;
-  }
-  let styler = self2[STYLER];
-  if (styler === undefined) {
-    return string;
-  }
-  const { openAll, closeAll } = styler;
-  if (string.includes("\x1B")) {
-    while (styler !== undefined) {
-      string = stringReplaceAll(string, styler.close, styler.open);
-      styler = styler.parent;
-    }
-  }
-  const lfIndex = string.indexOf("\n");
-  if (lfIndex !== -1) {
-    string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
-  }
-  return openAll + string + closeAll;
-};
-Object.defineProperties(createChalk.prototype, styles2);
-var chalk = createChalk();
-var chalkStderr = createChalk({ level: stderrColor ? stderrColor.level : 0 });
-var source_default = chalk;
 
 // node_modules/glob/node_modules/minimatch/dist/mjs/index.js
 var import_brace_expansion = __toESM(require_brace_expansion(), 1);
@@ -30523,9 +31555,9 @@ var DEFNODE = function(type, props, ctor, methods, base = AST_Node) {
   var self_props = props;
   if (base && base.PROPS)
     props = props.concat(base.PROPS);
-  const proto2 = base && Object.create(base.prototype);
-  if (proto2) {
-    ctor.prototype = proto2;
+  const proto = base && Object.create(base.prototype);
+  if (proto) {
+    ctor.prototype = proto;
     ctor.BASE = base;
   }
   if (base)
@@ -37473,14 +38505,14 @@ AST_Scope.DEFMETHOD("figure_out_scope", function(options, { parent_scope = null,
     }
   });
   this.walk(tw);
-  function mark_export(def, level2) {
+  function mark_export(def, level) {
     if (in_destructuring) {
       var i = 0;
       do {
-        level2++;
+        level++;
       } while (tw.parent(i++) !== in_destructuring);
     }
-    var node = tw.parent(level2);
+    var node = tw.parent(level);
     if (def.export = node instanceof AST_Export ? MASK_EXPORT_DONT_MANGLE : 0) {
       var exported = node.exported_definition;
       if ((exported instanceof AST_Defun || exported instanceof AST_DefClass) && node.is_default) {
@@ -38653,8 +39685,8 @@ function is_lhs(node, parent) {
   if (parent instanceof AST_ForIn && parent.init === node)
     return node;
 }
-function is_modified(compressor, tw, node, value, level2, immutable) {
-  var parent = tw.parent(level2);
+function is_modified(compressor, tw, node, value, level, immutable) {
+  var parent = tw.parent(level);
   var lhs = is_lhs(node, parent);
   if (lhs)
     return lhs;
@@ -38662,15 +39694,15 @@ function is_modified(compressor, tw, node, value, level2, immutable) {
     return true;
   }
   if (parent instanceof AST_Array) {
-    return is_modified(compressor, tw, parent, parent, level2 + 1);
+    return is_modified(compressor, tw, parent, parent, level + 1);
   }
   if (parent instanceof AST_ObjectKeyVal && node === parent.value) {
-    var obj = tw.parent(level2 + 1);
-    return is_modified(compressor, tw, obj, obj, level2 + 2);
+    var obj = tw.parent(level + 1);
+    return is_modified(compressor, tw, obj, obj, level + 2);
   }
   if (parent instanceof AST_PropAccess && parent.expression === node) {
     var prop = read_property(value, parent.property);
-    return !immutable && is_modified(compressor, tw, parent, prop, level2 + 1);
+    return !immutable && is_modified(compressor, tw, parent, prop, level + 1);
   }
 }
 var is_undeclared_ref = (node) => node instanceof AST_SymbolRef && node.definition().undeclared;
@@ -39166,8 +40198,8 @@ var unary_side_effects = makePredicate("delete ++ --");
       var def = node._find_defs(compressor, "");
       if (!def)
         return;
-      var level2 = 0, child = node, parent;
-      while (parent = this.parent(level2++)) {
+      var level = 0, child = node, parent;
+      while (parent = this.parent(level++)) {
         if (!(parent instanceof AST_PropAccess))
           break;
         if (parent.expression !== child)
@@ -40419,8 +41451,8 @@ var is_immutable = function(value) {
     return false;
   return value.is_constant() || value instanceof AST_Lambda || value instanceof AST_This;
 };
-var mark_escaped = function(tw, d, scope2, node, value, level2 = 0, depth = 1) {
-  var parent = tw.parent(level2);
+var mark_escaped = function(tw, d, scope2, node, value, level = 0, depth = 1) {
+  var parent = tw.parent(level);
   if (value) {
     if (value.is_constant())
       return;
@@ -40434,17 +41466,17 @@ var mark_escaped = function(tw, d, scope2, node, value, level2 = 0, depth = 1) {
       d.escaped = depth;
     return;
   } else if (parent instanceof AST_Array || parent instanceof AST_Await || parent instanceof AST_Binary && lazy_op.has(parent.operator) || parent instanceof AST_Conditional && node !== parent.condition || parent instanceof AST_Expansion || parent instanceof AST_Sequence && node === parent.tail_node()) {
-    mark_escaped(tw, d, scope2, parent, parent, level2 + 1, depth);
+    mark_escaped(tw, d, scope2, parent, parent, level + 1, depth);
   } else if (parent instanceof AST_ObjectKeyVal && node === parent.value) {
-    var obj = tw.parent(level2 + 1);
-    mark_escaped(tw, d, scope2, obj, obj, level2 + 2, depth);
+    var obj = tw.parent(level + 1);
+    mark_escaped(tw, d, scope2, obj, obj, level + 2, depth);
   } else if (parent instanceof AST_PropAccess && node === parent.expression) {
     value = read_property(value, parent.property);
-    mark_escaped(tw, d, scope2, parent, value, level2 + 1, depth + 1);
+    mark_escaped(tw, d, scope2, parent, value, level + 1, depth + 1);
     if (value)
       return;
   }
-  if (level2 > 0)
+  if (level > 0)
     return;
   if (parent instanceof AST_Sequence && node !== parent.tail_node())
     return;
@@ -40997,7 +42029,7 @@ function tighten_body(statements, compressor) {
     }
   } while (CHANGED && max_iter-- > 0);
   function find_loop_scope_try() {
-    var node = compressor.self(), level2 = 0, in_loop2 = false, in_try2 = false;
+    var node = compressor.self(), level = 0, in_loop2 = false, in_try2 = false;
     do {
       if (node instanceof AST_IterationStatement) {
         in_loop2 = true;
@@ -41006,7 +42038,7 @@ function tighten_body(statements, compressor) {
       } else if (node instanceof AST_TryBlock) {
         in_try2 = true;
       }
-    } while (node = compressor.parent(level2++));
+    } while (node = compressor.parent(level++));
     return { in_loop: in_loop2, in_try: in_try2 };
   }
   function collapse(statements2, compressor2) {
@@ -41355,17 +42387,17 @@ function tighten_body(statements, compressor) {
       }
       hit_stack.pop();
     }
-    function find_stop(node, level2, write_only) {
-      var parent = scanner.parent(level2);
+    function find_stop(node, level, write_only) {
+      var parent = scanner.parent(level);
       if (parent instanceof AST_Assign) {
         if (write_only && !parent.logical && !(parent.left instanceof AST_PropAccess || lvalues.has(parent.left.name))) {
-          return find_stop(parent, level2 + 1, write_only);
+          return find_stop(parent, level + 1, write_only);
         }
         return node;
       }
       if (parent instanceof AST_Binary) {
         if (write_only && (!lazy_op.has(parent.operator) || parent.left === node)) {
-          return find_stop(parent, level2 + 1, write_only);
+          return find_stop(parent, level + 1, write_only);
         }
         return node;
       }
@@ -41375,29 +42407,29 @@ function tighten_body(statements, compressor) {
         return node;
       if (parent instanceof AST_Conditional) {
         if (write_only && parent.condition === node) {
-          return find_stop(parent, level2 + 1, write_only);
+          return find_stop(parent, level + 1, write_only);
         }
         return node;
       }
       if (parent instanceof AST_Definitions) {
-        return find_stop(parent, level2 + 1, true);
+        return find_stop(parent, level + 1, true);
       }
       if (parent instanceof AST_Exit) {
-        return write_only ? find_stop(parent, level2 + 1, write_only) : node;
+        return write_only ? find_stop(parent, level + 1, write_only) : node;
       }
       if (parent instanceof AST_If) {
         if (write_only && parent.condition === node) {
-          return find_stop(parent, level2 + 1, write_only);
+          return find_stop(parent, level + 1, write_only);
         }
         return node;
       }
       if (parent instanceof AST_IterationStatement)
         return node;
       if (parent instanceof AST_Sequence) {
-        return find_stop(parent, level2 + 1, parent.tail_node() !== node);
+        return find_stop(parent, level + 1, parent.tail_node() !== node);
       }
       if (parent instanceof AST_SimpleStatement) {
-        return find_stop(parent, level2 + 1, true);
+        return find_stop(parent, level + 1, true);
       }
       if (parent instanceof AST_Switch)
         return node;
@@ -42053,8 +43085,8 @@ function tighten_body(statements, compressor) {
 
 // node_modules/terser/lib/compress/inline.js
 var within_array_or_object_literal = function(compressor) {
-  var node, level2 = 0;
-  while (node = compressor.parent(level2++)) {
+  var node, level = 0;
+  while (node = compressor.parent(level++)) {
     if (node instanceof AST_Statement)
       return false;
     if (node instanceof AST_Array || node instanceof AST_ObjectKeyVal || node instanceof AST_Object) {
@@ -42208,7 +43240,7 @@ function inline_into_call(self2, fn, compressor) {
     }
   }
   if (can_inline) {
-    var scope2, in_loop, level2 = -1;
+    var scope2, in_loop, level = -1;
     let def;
     let returned_value;
     let nearest_scope;
@@ -42338,7 +43370,7 @@ function inline_into_call(self2, fn, compressor) {
   function can_inject_symbols() {
     var block_scoped = new Set;
     do {
-      scope2 = compressor.parent(++level2);
+      scope2 = compressor.parent(++level);
       if (scope2.is_block_scope() && scope2.block_scope) {
         scope2.block_scope.variables.forEach(function(variable) {
           block_scoped.add(variable.name);
@@ -42437,7 +43469,7 @@ function inline_into_call(self2, fn, compressor) {
     flatten_vars(decls, expressions);
     expressions.push(returned_value);
     if (decls.length) {
-      const i = scope2.body.indexOf(compressor.parent(level2 - 1)) + 1;
+      const i = scope2.body.indexOf(compressor.parent(level - 1)) + 1;
       scope2.body.splice(i, 0, make_node(AST_Var, fn, {
         definitions: decls
       }));
@@ -44713,12 +45745,12 @@ def_optimize(AST_Assign, function(self2, compressor) {
     return self2.right;
   }
   if (compressor.option("dead_code") && self2.left instanceof AST_SymbolRef && (def = self2.left.definition()).scope === compressor.find_parent(AST_Lambda)) {
-    var level2 = 0, node, parent = self2;
+    var level = 0, node, parent = self2;
     do {
       node = parent;
-      parent = compressor.parent(level2++);
+      parent = compressor.parent(level++);
       if (parent instanceof AST_Exit) {
-        if (in_try(level2, parent))
+        if (in_try(level, parent))
           break;
         if (is_reachable(def.scope, [def]))
           break;
@@ -44744,7 +45776,7 @@ def_optimize(AST_Assign, function(self2, compressor) {
     }
   }
   return self2;
-  function in_try(level3, node2) {
+  function in_try(level2, node2) {
     function may_assignment_throw() {
       const right = self2.right;
       self2.right = make_node(AST_Null, right);
@@ -44754,7 +45786,7 @@ def_optimize(AST_Assign, function(self2, compressor) {
     }
     var stop_at = self2.left.definition().scope.get_defun_scope();
     var parent2;
-    while ((parent2 = compressor.parent(level3++)) !== stop_at) {
+    while ((parent2 = compressor.parent(level2++)) !== stop_at) {
       if (parent2 instanceof AST_Try) {
         if (parent2.bfinally)
           return true;
@@ -56111,14 +57143,14 @@ class Interpreter {
     });
     return newData;
   };
-  static #list = (data, level2 = 1) => {
+  static #list = (data, level = 1) => {
     const list = [];
     const subs = [];
     [...data.split("\n")].forEach((line) => {
-      const reg = new RegExp(`^[-]{${level2}} `, "m");
+      const reg = new RegExp(`^[-]{${level}} `, "m");
       if (line.match(reg)) {
         if (subs.length) {
-          list.push(this.#list(subs.join("\n"), level2 + 1));
+          list.push(this.#list(subs.join("\n"), level + 1));
           subs.splice(0, subs.length);
         }
         list.push(`<li>${line.replace(reg, "")}</li>`);
@@ -56126,7 +57158,7 @@ class Interpreter {
         subs.push(line);
     });
     if (subs.length) {
-      list.push(this.#list(subs.join("\n"), level2 + 1));
+      list.push(this.#list(subs.join("\n"), level + 1));
     }
     return `<ul>${list.join("")}</ul>`;
   };
@@ -56165,6 +57197,9 @@ class Interpreter {
     return pres;
   };
 }
+
+// src/core/Server.js
+var import_chalk = __toESM(require_source(), 1);
 
 // src/templates/notes/layout.html.txt
 var layout_html_default2 = `<!DOCTYPE html>
@@ -56504,8 +57539,8 @@ class Server {
       }
     });
     if (options.notes)
-      log(`Your speaker view is available on: ${source_default.green.bold(`http://localhost:${options.port}/notes`)}`);
-    log(`Your presentation is available on: ${source_default.blue.bold(`http://localhost:${options.port}`)}`);
+      log(`Your speaker view is available on: ${import_chalk.default.green.bold(`http://localhost:${options.port}/notes`)}`);
+    log(`Your presentation is available on: ${import_chalk.default.blue.bold(`http://localhost:${options.port}`)}`);
     log();
   }
   static setHTML(html) {
@@ -56517,20 +57552,7 @@ class Server {
   }
 }
 
-// src/command/_common.js
-var displayHeader = () => `
-\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2588\u2588\u2557
-\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u255A\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2588\u2588\u2554\u255D
-\u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2551\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2591\u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2550\u255D\u2591
-\u2591\u255A\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2551\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255D\u2591\u2591\u2591\u255A\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2588\u2588\u2557\u2591
-\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2591\u255A\u2588\u2588\u2557
-\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u255D\u2591\u2591\u255A\u2550\u255D
-                                            v${package_default.version}
-`;
-var _common_default = displayHeader;
-
 // src/command/present.js
-var joliTitle = source_default.hex("#16cedd");
 var { log: log2, error } = console;
 var flow = (talk, options = {}, init = false) => {
   Interpreter.convert(`./${talk}/main.sdf`, options).then(async (html) => {
@@ -56564,12 +57586,17 @@ var getAction = () => {
   });
 };
 var present = (talk, options) => {
-  log2(joliTitle(_common_default()), source_default.underline("\n\nTake the control of your presentation direct from here."), "\n", `\nPress ${source_default.italic("Enter")} to go to the next slide.`, `\nPress ${source_default.italic("P + Enter")} to go to the previous slide.`, `\nPress ${source_default.italic("Q")} to quit the program.`, "\n");
+  log2(`
+
+\x1B[4mTake the control of your presentation direct from here.\x1B[24m`, "\n", `
+Press \x1B[1mEnter\x1B[0m to go to the next slide.`, `
+Press \x1B[1mP + Enter\x1B[0m to go to the previous slide.`, `
+Press \x1B[1mQ\x1B[0m to quit the program.`, "\n");
   flow(talk, options, true);
   if (!options.save) {
     watch(talk, { recursive: true }, (eventType, filename) => {
       if (!filename.startsWith(".git")) {
-        log2(`\u267B\uFE0F  ${source_default.underline(filename)} has "${source_default.italic(eventType)}" action`);
+        log2(`\u267B\uFE0F  ${chalk.underline(filename)} has "${chalk.italic(eventType)}" action`);
         flow(talk, options);
       }
     });
@@ -56582,10 +57609,9 @@ var present_default = present;
 var import_slugify = __toESM(require_slugify(), 1);
 import {existsSync, mkdirSync} from "fs";
 var prompts = require_prompts3();
-var joliTitle2 = source_default.hex("#16cedd");
 var { log: log3 } = console;
 var create = async (talk) => {
-  log3(joliTitle2(_common_default()), `Creation of your talk: ${talk}`);
+  log3(`Creation of your talk: ${talk}`);
   let dirName = import_slugify.default(talk);
   if (dirName === "create") {
     dirName = `${dirName}_`;
@@ -56644,6 +57670,16 @@ var create = async (talk) => {
 var create_default = create;
 
 // src/index.js
+var { log: log4 } = console;
+log4(`\x1B[36;49m
+\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2591\u2591\u2588\u2588\u2557
+\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u255A\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551\u2591\u2588\u2588\u2554\u255D
+\u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2551\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2591\u255A\u2588\u2588\u2588\u2588\u2588\u2557\u2591\u2588\u2588\u2588\u2588\u2588\u2550\u255D\u2591
+\u2591\u255A\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2591\u2591\u2591\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2551\u2591\u2591\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255D\u2591\u2591\u2591\u255A\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2588\u2588\u2557\u2591
+\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2591\u255A\u2588\u2588\u2557
+\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u2550\u2550\u2550\u2550\u255D\u2591\u255A\u2550\u255D\u2591\u2591\u255A\u2550\u255D
+                                            v${package_default.version}\x1B[0m
+`);
 program.name("slidesk").description("Your presentation companion").version(package_default.version, "-v, --version");
 program.command("create").argument("<talk>").action(create_default);
 program.argument("<talk>").option("-p, --port <int>", "port", 1337).option("-s, --save", "save the html file").option("-n, --notes", "open with speakers notes").option("-src, --source", "add a button on slides to display its SDF code").option("-g, -gamepad", "control your slide with a gamepad from the presentation").option("--gamepad-sv", "control your slide with a gamepad from the speaker-view").option("-q, --qrcode", "add a QRCode on each slide").option("-t, --timers", "add checkpoint and slide's maximum time on notes view").action(present_default);

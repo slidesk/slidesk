@@ -4,6 +4,20 @@ import packagejson from "../package.json";
 import present from "./command/present";
 import create from "./command/create";
 
+const { log } = console;
+
+log(
+  `\x1b[36;49m
+░██████╗██╗░░░░░██╗██████╗░███████╗░██████╗██╗░░██╗
+██╔════╝██║░░░░░╚═╝██╔══██╗██╔════╝██╔════╝██║░██╔╝
+╚█████╗░██║░░░░░██║██║░░██║█████╗░░╚█████╗░█████═╝░
+░╚═══██╗██║░░░░░██║██║░░██║██╔══╝░░░╚═══██╗██╔═██╗░
+██████╔╝███████╗██║██████╔╝███████╗██████╔╝██║░╚██╗
+╚═════╝░╚══════╝╚═╝╚═════╝░╚══════╝╚═════╝░╚═╝░░╚═╝
+                                            v${packagejson.version}\x1b[0m
+`,
+);
+
 program
   .name("slidesk")
   .description("Your presentation companion")

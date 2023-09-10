@@ -1,12 +1,8 @@
 import { watch } from "fs";
 import readline from "readline";
 import process from "process";
-import chalk from "chalk";
 import Interpreter from "../core/Interpreter";
 import Server from "../core/Server";
-import displayHeader from "./_common";
-
-const joliTitle = chalk.hex("#16cedd");
 
 const { log, error } = console;
 
@@ -46,14 +42,11 @@ const getAction = () => {
 
 const present = (talk, options) => {
   log(
-    joliTitle(displayHeader()),
-    chalk.underline(
-      "\n\nTake the control of your presentation direct from here.",
-    ),
+    "\n\n\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
     "\n",
-    `\nPress ${chalk.italic("Enter")} to go to the next slide.`,
-    `\nPress ${chalk.italic("P + Enter")} to go to the previous slide.`,
-    `\nPress ${chalk.italic("Q")} to quit the program.`,
+    `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
+    `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
+    `\nPress \x1b[1mQ\x1b[0m to quit the program.`,
     "\n",
   );
   flow(talk, options, true);
