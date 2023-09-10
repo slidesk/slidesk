@@ -97,7 +97,7 @@ export default class Interpreter {
           `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
             (o) =>
               `<option value="${o.value}" ${
-                o.label === key ? "selected" : ""
+                key === "index" ? "selected" : ""
               }>${o.label}</option>`,
           )}</select></body>`,
         );
