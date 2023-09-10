@@ -1,8 +1,8 @@
 import { watch } from "fs";
-import readline from "readline";
 import process from "process";
 import Interpreter from "../core/Interpreter";
 import Server from "../core/Server";
+import { question, removeCurrentLine } from "../utils/interactCLI";
 
 const { log, error } = console;
 
@@ -23,21 +23,14 @@ const flow = (talk, options = {}, init = false) => {
     .catch((err) => error(err));
 };
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-const getAction = () => {
-  rl.question("", (answer) => {
-    const i = answer.trim().toLowerCase();
-    readline.moveCursor(process.stdout, 0, -1);
-    readline.clearScreenDown(process.stdout);
-    if (i === "q") process.exit();
-    else if (i === "p") Server.send("previous");
-    else Server.send("next");
-    getAction();
-  });
+const getAction = async () => {
+  const answer = await question("");
+  const i = answer.trim().toLowerCase();
+  removeCurrentLine();
+  if (i === "q") process.exit();
+  else if (i === "p") Server.send("previous");
+  else Server.send("next");
+  getAction();
 };
 
 const present = (talk, options) => {
@@ -54,9 +47,7 @@ const present = (talk, options) => {
     watch(talk, { recursive: true }, (eventType, filename) => {
       if (!filename.startsWith(".git")) {
         log(
-          `♻️  ${chalk.underline(filename)} has "${chalk.italic(
-            eventType,
-          )}" action`,
+          `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
         );
         flow(talk, options);
       }

@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 import { existsSync, mkdirSync } from "node:fs";
 import slugify from "../utils/slugify";
-
-const prompts = require("prompts");
+import { question } from "../utils/interactCLI";
 
 const { log } = console;
 
@@ -12,28 +11,20 @@ const create = async (talk) => {
   if (dirName === "create") {
     dirName = `${dirName}_`;
   }
-  const response = await prompts([
-    {
-      type: "text",
-      name: "title",
-      message: "What is the title of talk?",
-    },
-    {
-      type: "confirm",
-      name: "custom",
-      message: "Do you want to customize the presentation?",
-      initial: false,
-    },
-  ]);
+  const responseTitle = await question("What is the title of talk?");
+  const responseCustom =
+    (
+      await question("Do you want to customize the presentation? [yN]")
+    ).toLowerCase() === "y";
   if (!existsSync(`./${dirName}`)) mkdirSync(`./${dirName}`);
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
-  if (response.custom) {
+  if (responseCustom) {
     writer.write(`/::\ncustom_css: custom.css\ncustom_js: custom.js\n::/\n\n`);
   }
-  writer.write(`# ${response.title} \n\n## My first Slide`);
+  writer.write(`# ${responseTitle} \n\n## My first Slide`);
   writer.end();
-  if (response.custom) {
+  if (responseCustom) {
     Bun.write(
       `./${dirName}/custom.css`,
       `
