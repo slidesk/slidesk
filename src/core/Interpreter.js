@@ -1,5 +1,5 @@
-import { globSync } from "glob";
 import { minify } from "html-minifier-terser";
+import { readdirSync } from "node:fs";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/theme.css.txt";
 import printCSS from "../templates/print.css.txt";
@@ -65,17 +65,17 @@ export default class Interpreter {
     );
     // translation management
     const sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
-    const langFiles = globSync(`${sdfPath}/*.lang.json`);
+    const langFiles = readdirSync(sdfPath).filter((item) =>
+      /(.*).lang.json$/gi.test(item),
+    );
     const languages = {};
     if (langFiles.length) {
       const menuLang = [];
       await Promise.all(
         langFiles.map(async (lang) => {
-          const langSlug = lang
-            .replace(`${sdfPath.replace("./", "")}/`, "")
-            .replace(".lang.json", "");
+          const langSlug = lang.replace(".lang.json", "");
           // eslint-disable-next-line no-undef
-          const translationJSON = await Bun.file(lang).json();
+          const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
           menuLang.push({
             value: translationJSON.default ? "/" : `/--${langSlug}--/`,
             label: langSlug,

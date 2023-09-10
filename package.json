@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "commander": "^11.0.0",
-    "glob": "^10.3.3",
     "html-minifier-terser": "^7.2.0",
     "prompts": "^2.4.2"
   },
