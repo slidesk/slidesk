@@ -1,6 +1,6 @@
 # SliDesk
 
-Write your talk/presentation in MarkDown or AsciiDoc, generate it and visualize it in Web.
+Write your talk/presentation in a simplified language (SliDeskFormat), generate it and visualize it in Web.
 
 SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
 
