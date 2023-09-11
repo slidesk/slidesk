@@ -50,7 +50,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - run: bun install && bun make && bun make:exe
-      - run: tar -czvf ./exe/slidesk ./slidesk.tar.gz
+      - uses: actions/checkout@master
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          files: |
+            ./exe
+          outPath: slidesk.tar.gz
       - name: Run Linux Build
         if: matrix.os == 'ubuntu-latest'
         run: cat ./slidesk.tar.gz > release_ubuntu
