@@ -56,6 +56,9 @@ const present = (talk, options) => {
     });
   }
   getAction();
+  process.on("SIGINT", () => {
+    process.exit(0);
+  });
 };
 
 export default present;
