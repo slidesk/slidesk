@@ -25,6 +25,6 @@
     width: 100vw;
     height: 100vh;
     page-break-after: always;
-    transform: none;
+    transform: none !important;
   }
 }

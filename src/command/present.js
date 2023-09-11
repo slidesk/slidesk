@@ -54,8 +54,11 @@ const present = (talk, options) => {
         flow(talkdir, options);
       }
     });
+    getAction();
+    process.on("SIGINT", () => {
+      process.exit(0);
+    });
   }
-  getAction();
 };
 
 export default present;
