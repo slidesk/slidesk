@@ -61,14 +61,14 @@ jobs:
           outPath: slidesk.tar.gz
       - name: Run Linux Build
         if: matrix.os == 'ubuntu-latest'
-        run: cat ./slidesk.tar.gz > release_ubuntu
+        run: cat ./slidesk.tar.gz > release_ubuntu.tar.gz
       - name: Run Mac Build
         if: matrix.os == 'macos-latest'
-        run: cat ./slidesk.tar.gz > release_mac
+        run: cat ./slidesk.tar.gz > release_mac.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: release_${{ matrix.release_suffix }}
+          files: release_${{ matrix.release_suffix }}.tar.gz
