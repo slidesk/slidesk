@@ -1,12 +1,22 @@
 # SliDesk
 
-A new talk engine like RevealJS.
+Write your talk/presentation in MarkDown or AsciiDoc, generate it and visualize it in Web.
 
-I want to use a simplified language like MarkDown or AsciiDoc to generate the presentation.
+SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
 
-The `example` rendering is visible on https://gouz.github.io/slidesk/
+The `example` rendering is visible on [gouz.github.io/slidesk/](https://gouz.github.io/slidesk/).
+
+## Prerequisites
+
+### Bun installation
+
+```sh
+curl -fsSL https://bun.sh/install | bash
+```
 
 ## Installation
+
+### With Homebrew
 
 On mac you can use **Homebrew**:
 
@@ -20,16 +30,18 @@ or
 brew install gouz/tools/slidesk
 ```
 
-SliDesk is develop with https://bun.sh instead of Node.js
+### With Bun
 
-```
-bunx slidesk <talk>
-```
-
-## Usage with bun
+On Linux, install it with Bun:
 
 ```sh
-Usage: bunx slidesk [options] [command] <talk>
+bun make
+```
+
+## CLI Usage without Bun
+
+```sh
+Usage: slidesk [options] [command] <talk>
 
 Your presentation companion
 
@@ -52,10 +64,18 @@ Commands:
   create <talk>
 ```
 
-## Usage without bun
+## CLI Usage with Bun
+
+Usage:
+
+```
+bunx slidesk <talk>
+```
+
+Usage details:
 
 ```sh
-Usage: slidesk [options] [command] <talk>
+Usage: bunx slidesk [options] [command] <talk>
 
 Your presentation companion
 
@@ -92,7 +112,7 @@ or
 slidesk <yourdirectory>
 ```
 
-will convert the `main.sdf` into an html file and serve it, it will open the default browser too.
+will convert the `main.sdf` into a HTML file and serve it, it will open the default browser too.
 
 A livereload is activated per default.
 
@@ -204,7 +224,7 @@ custom_sv_js: assets/customsv.js
 
 Warning, it's very important to space this lines with a new line
 
-## Why a new tool ???
+## Why a new tool???
 
 I decided to create my own tool for my talks, because:
 
