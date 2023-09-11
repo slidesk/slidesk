@@ -49,13 +49,14 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: bun install && bun make && bun make:exe && tar -czf ./exe/slidesk slidesk.tar.gz
+      - run: bun install && bun make && bun make:exe
+      - run: tar -czvf ./exe/slidesk ./slidesk.tar.gz
       - name: Run Linux Build
         if: matrix.os == 'ubuntu-latest'
-        run: cat slidesk.tar.gz > release_ubuntu
+        run: cat ./slidesk.tar.gz > release_ubuntu
       - name: Run Mac Build
         if: matrix.os == 'macos-latest'
-        run: cat slidesk.tar.gz > release_mac
+        run: cat ./slidesk.tar.gz > release_mac
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
