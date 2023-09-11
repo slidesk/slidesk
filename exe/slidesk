@@ -17066,7 +17066,7 @@ var package_default = {
   name: "slidesk",
   author: "Sylvain Gougouzian",
   license: "MIT",
-  version: "1.6.1",
+  version: "1.6.2",
   main: "bin/index.js",
   bin: {
     slidesk: "./bin/index.js"
@@ -46069,6 +46069,7 @@ var slugify = (data) => data.toLowerCase().trim().replace(/[^\w\s-]/g, "").repla
 var slugify_default = slugify;
 
 // src/core/Interpreter.js
+var { error } = console;
 var animationTimer = 300;
 var socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
 var buttonSource = `
@@ -46090,7 +46091,8 @@ class Interpreter {
   static convert = async (mainFile, options) => {
     const sdfMainFile = Bun.file(mainFile);
     if (sdfMainFile.size === 0) {
-      return new Error("\uD83E\uDD14 main.sdf was not found");
+      error("\uD83E\uDD14 main.sdf was not found");
+      return null;
     }
     const presentation = this.#sliceSlides(await this.#includes(mainFile), options);
     let template = layout_html_default;
@@ -46660,19 +46662,22 @@ var question = (query) => new Promise((resolve) => {
 });
 
 // src/command/present.js
-var { log: log2, error } = console;
-var flow = (talk, options = {}, init = false) => {
-  Interpreter.convert(`./${talk}/main.sdf`, options).then(async (html) => {
+var { log: log2 } = console;
+var flow = (talkdir, options = {}, init = false) => {
+  Interpreter.convert(`${talkdir}/main.sdf`, options).then(async (html) => {
+    if (html === null) {
+      process2.exit();
+    }
     if (options.save) {
       Object.entries(html).forEach(([key, value]) => {
-        Bun.write(`./${talk}/${key}.html`, value.html);
+        Bun.write(`${talkdir}/${key}.html`, value.html);
       });
     } else if (init) {
-      Server.create(html, options, `${process2.cwd()}/${talk}`);
+      Server.create(html, options, `${process2.cwd()}/${talkdir}`);
     } else {
       Server.setHTML(html);
     }
-  }).catch((err) => error(err));
+  });
 };
 var getAction = async () => {
   const answer = await question("");
@@ -46693,12 +46698,13 @@ var present = (talk, options) => {
 Press \x1B[1mEnter\x1B[0m to go to the next slide.`, `
 Press \x1B[1mP + Enter\x1B[0m to go to the previous slide.`, `
 Press \x1B[1mQ\x1B[0m to quit the program.`, "\n");
-  flow(talk, options, true);
+  const talkdir = talk ? `./${talk}` : ".";
+  flow(talkdir, options, true);
   if (!options.save) {
-    watch(talk, { recursive: true }, (eventType, filename) => {
+    watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename.startsWith(".git")) {
         log2(`\u267B\uFE0F  \x1B[4m${filename}\x1B[0m has "\x1B[1m${eventType}\x1B[0m" action`);
-        flow(talk, options);
+        flow(talkdir, options);
       }
     });
   }
@@ -46770,5 +46776,5 @@ log4(`\x1B[36;49m
 `);
 program.name("slidesk").description("Your presentation companion").version(package_default.version, "-v, --version");
 program.command("create").argument("<talk>").action(create_default);
-program.argument("<talk>").option("-p, --port <int>", "port", 1337).option("-s, --save", "save the html file").option("-n, --notes", "open with speakers notes").option("-src, --source", "add a button on slides to display its SDF code").option("-g, -gamepad", "control your slide with a gamepad from the presentation").option("--gamepad-sv", "control your slide with a gamepad from the speaker-view").option("-q, --qrcode", "add a QRCode on each slide").option("-t, --timers", "add checkpoint and slide's maximum time on notes view").action(present_default);
+program.argument("[talk]", "the directory of your talk").option("-p, --port <int>", "port", 1337).option("-s, --save", "save the html file").option("-n, --notes", "open with speakers notes").option("-src, --source", "add a button on slides to display its SDF code").option("-g, -gamepad", "control your slide with a gamepad from the presentation").option("--gamepad-sv", "control your slide with a gamepad from the speaker-view").option("-q, --qrcode", "add a QRCode on each slide").option("-t, --timers", "add checkpoint and slide's maximum time on notes view").action(present_default);
 program.parse();
