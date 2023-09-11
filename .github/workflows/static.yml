@@ -21,22 +21,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  create_release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          generate_release_notes: false
-
   build_release:
     name: Build Release
-    needs: create_release
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -50,14 +36,17 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: bun install
-      - run: bun make
-      - run: bun make:exe
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - run: bun install && bun make && bun make:exe
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: release_${{ matrix.release_suffix }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
   # Single deploy job since we're just deploying
   deploy:
@@ -69,8 +58,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: bun example -s
+      - run: bun install && bun example -s
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
