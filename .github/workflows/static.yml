@@ -47,6 +47,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+          files: release_${{ matrix.release_suffix }}
 
   # Single deploy job since we're just deploying
   deploy:
