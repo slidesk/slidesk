@@ -21,6 +21,7 @@ jobs:
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
+    environment: build
     steps:
       - name: Create Release
         id: create_release
@@ -34,6 +35,7 @@ jobs:
   build_release:
     name: Build Release
     needs: create_release
+    environment: build
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
