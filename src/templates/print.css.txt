@@ -22,7 +22,6 @@
 
   .sdf-slide {
     position: static;
-    width: 100vw;
     height: 100vh;
     page-break-after: always;
     transform: none !important;
