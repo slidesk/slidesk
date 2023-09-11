@@ -12,9 +12,14 @@ const flow = (talkdir, options = {}, init = false) => {
       process.exit();
     }
     if (options.save) {
+      const promises = [];
       Object.entries(html).forEach(([key, value]) => {
         // eslint-disable-next-line no-undef
-        Bun.write(`${talkdir}/${key}.html`, value.html);
+        promises.push(Bun.write(`${talkdir}/${key}.html`, value.html));
+        log(`${talkdir}/${key}.html generated`);
+      });
+      Promise.all(promises).then(() => {
+        process.exit(0);
       });
     } else if (init) {
       Server.create(html, options, `${process.cwd()}/${talkdir}`);
@@ -35,17 +40,17 @@ const getAction = async () => {
 };
 
 const present = (talk, options) => {
-  log(
-    "\n\n\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
-    "\n",
-    `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
-    `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
-    `\nPress \x1b[1mQ\x1b[0m to quit the program.`,
-    "\n",
-  );
   const talkdir = talk ? `./${talk}` : ".";
   flow(talkdir, options, true);
   if (!options.save) {
+    log(
+      "\n\n\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
+      "\n",
+      `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
+      `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
+      `\nPress \x1b[1mQ\x1b[0m to quit the program.`,
+      "\n",
+    );
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename.startsWith(".git")) {
         log(
