@@ -8,6 +8,8 @@ import gamepadJS from "../templates/gamepad.js.txt";
 import qrcodeLibJS from "../templates/qrcode.lib.js.txt";
 import slugify from "../utils/slugify";
 
+const { error } = console;
+
 const animationTimer = 300;
 
 const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
@@ -33,7 +35,8 @@ export default class Interpreter {
     // eslint-disable-next-line no-undef
     const sdfMainFile = Bun.file(mainFile);
     if (sdfMainFile.size === 0) {
-      return new Error("🤔 main.sdf was not found");
+      error("🤔 main.sdf was not found");
+      return null;
     }
     const presentation = this.#sliceSlides(
       await this.#includes(mainFile),
