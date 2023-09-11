@@ -53,10 +53,10 @@ jobs:
       - run: bun install && bun make && bun make:exe
       - name: Run Linux Build
         if: matrix.os == 'ubuntu-latest'
-        run: cat ./exe/slidesk > release_ubuntu
+        run: cat ./exe/slidesk > slidesk_ubuntu
       - name: Run Mac Build
         if: matrix.os == 'macos-latest'
-        run: cat ./exe/slidesk > release_mac
+        run: cat ./exe/slidesk > slidesk_mac
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
@@ -74,8 +74,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install && bun example -s
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
