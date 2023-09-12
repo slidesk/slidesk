@@ -12,7 +12,9 @@ const { error } = console;
 
 const animationTimer = 300;
 
-const socket = `window.slidesk.io = new WebSocket("ws://localhost:#PORT#/ws");`;
+const socket =
+  // eslint-disable-next-line no-template-curly-in-string
+  "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
 const buttonSource = `
   <button id="sdf-showSource" popovertarget="sdf-source">&lt;/&gt;</button>
   <div id="sdf-source" popover><pre>x</pre></div>
@@ -61,7 +63,7 @@ export default class Interpreter {
             qrcode: ${options.qrcode ? "true" : "false"},
             source: ${options.source ? "true" : "false"}
           };
-          ${!options.save ? socket.replace("#PORT#", options.port) : ""}
+          ${!options.save ? socket : ""}
           ${mainJS}
           ${options.gamepad ? gamepadJS : ""}
         </script>${customJS}`,

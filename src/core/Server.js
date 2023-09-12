@@ -42,7 +42,7 @@ export default class Server {
             speakerViewHTML
               .replace(
                 "/* #SOCKETS# */",
-                `window.slidesk.io = new WebSocket("ws://localhost:${options.port}/ws");`,
+                `window.slidesk.io = new WebSocket("ws://${options.domain}:${options.port}/ws");`,
               )
               .replace("/* #STYLES# */", themeCSS)
               .replace("/* #SV_STYLES# */", speakerViewCSS)
@@ -60,7 +60,10 @@ export default class Server {
           return globalThis.server.upgrade(req)
             ? undefined
             : new Response("WebSocket upgrade error", { status: 400 });
-        const fileurl = req.url.replace(`http://localhost:${options.port}`, "");
+        const fileurl = req.url.replace(
+          `http://${options.domain}:${options.port}`,
+          "",
+        );
         // eslint-disable-next-line no-undef
         const file = Bun.file(
           fileurl.match(
@@ -91,10 +94,10 @@ export default class Server {
     });
     if (options.notes)
       log(
-        `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp://localhost:${options.port}/notes\x1b[0m`,
+        `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp://${options.domain}:${options.port}/notes\x1b[0m`,
       );
     log(
-      `Your presentation is available on: \x1b[1m\x1b[36;49mhttp://localhost:${options.port}\x1b[0m`,
+      `Your presentation is available on: \x1b[1m\x1b[36;49mhttp://${options.domain}:${options.port}\x1b[0m`,
     );
     log();
   }

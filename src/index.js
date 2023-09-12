@@ -29,6 +29,7 @@ program.command("create").argument("<talk>").action(create);
 // talk's presentation command
 program
   .argument("[talk]", "the directory of your talk")
+  .option("-d, --domain <string>", "domain", "localhost")
   .option("-p, --port <int>", "port", 1337)
   .option("-s, --save", "save the html file")
   .option("-n, --notes", "open with speakers notes")
