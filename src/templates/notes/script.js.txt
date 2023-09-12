@@ -1,5 +1,5 @@
 const toHHMMSS = (secs) => {
-  const secnum = parseInt(secs, 10);
+  const secnum = parseInt(Math.abs(secs), 10);
   const hours = Math.floor(secnum / 3600);
   const minutes = Math.floor(secnum / 60) % 60;
   const seconds = secnum % 60;
@@ -82,7 +82,7 @@ setInterval(() => {
   }
   if (startSlideTime) {
     const subtime = (Date.now() - startSlideTime) / 1000;
-    window.slidesk.subtimer.innerText = toHHMMSS(subtime);
+    window.slidesk.subtimer.innerText = toHHMMSS(timerSlide - subtime);
     window.slidesk.subtimer.style.display = "block";
     window.slidesk.subtimer.classList.remove("emergency");
     if (subtime >= timerSlide) {

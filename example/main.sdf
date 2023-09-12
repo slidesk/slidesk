@@ -9,6 +9,8 @@ How to create a talk with slidesk
 
 ## Slide 1
 
+//@ [] 00:30
+
 A Slide is define by a line which starts with 2 '#' and a space after
 
 !include(inclusion.sdf)
