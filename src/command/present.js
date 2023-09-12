@@ -44,7 +44,7 @@ const present = (talk, options) => {
   flow(talkdir, options, true);
   if (!options.save) {
     log(
-      "\n\n\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
+      "\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
       "\n",
       `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
       `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
