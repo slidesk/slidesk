@@ -71,7 +71,6 @@ jobs:
       - run: bun install
       - run: bun make
       - run: bun make:exe
-      - uses: actions/checkout@master
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
