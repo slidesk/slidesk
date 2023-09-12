@@ -92,3 +92,16 @@ jobs:
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
           files: release_${{ matrix.release_suffix }}.tar.gz
+
+  publish_npm:
+    name: Publish on npm
+    environment: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - run: bun make
+      - uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
