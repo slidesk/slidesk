@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
@@ -92,14 +91,10 @@ export default class Server {
     });
     if (options.notes)
       log(
-        `Your speaker view is available on: ${chalk.green.bold(
-          `http://localhost:${options.port}/notes`,
-        )}`,
+        `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp://localhost:${options.port}/notes\x1b[0m`,
       );
     log(
-      `Your presentation is available on: ${chalk.blue.bold(
-        `http://localhost:${options.port}`,
-      )}`,
+      `Your presentation is available on: \x1b[1m\x1b[36;49mhttp://localhost:${options.port}\x1b[0m`,
     );
     log();
   }
