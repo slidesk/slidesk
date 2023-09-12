@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "1.6.4",
+  "version": "next",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "make": "bun build src/index.js --outdir bin  --minify --target bun",
-    "make:exe": "bun build src/index.js --outfile exe/slidesk",
+    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile",
     "lint": "eslint src",
     "example": "bun src/index.js example"
   }
