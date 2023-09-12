@@ -308,8 +308,8 @@ export default class Interpreter {
 
     if (options.qrcode) {
       minified = minified.replace(
-        '<script type="module" id="sd-scripts"',
-        `<script>${qrcodeLibJS}</script><script type="module" id="sd-scripts"`,
+        "<script type=module id=sd-scripts",
+        `<script>${qrcodeLibJS}</script><script type=module id=sd-scripts`,
       );
     }
 
