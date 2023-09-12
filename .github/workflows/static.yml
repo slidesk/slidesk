@@ -18,6 +18,25 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 
 jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: "docs"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -49,7 +68,9 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: bun install && bun make && bun make:exe
+      - run: bun install
+      - run: bun make
+      - run: bun make:exe
       - uses: actions/checkout@master
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
