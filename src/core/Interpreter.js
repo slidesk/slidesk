@@ -24,6 +24,11 @@ let customCSS = "";
 let customJS = "";
 let customSVJS = "";
 
+let classes = "";
+let timerSlide = "";
+let timerCheckpoint = "";
+let slug = null;
+
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
   for (let i = 0; i < codeUnits.length; i += 1) {
@@ -45,29 +50,8 @@ export default class Interpreter {
       options,
     );
     let template = layoutHTML;
-    template = template.replace(
-      "/* #STYLES# */",
-      `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${printCSS}${
-        customCSS.length
-          ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
-          : ""
-      }`,
-    );
-    template = template.replace(
-      "#SCRIPT#",
-      `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
-          window.slidesk = {
-            currentSlide: 0,
-            slides: [],
-            animationTimer: ${animationTimer},
-            qrcode: ${options.qrcode ? "true" : "false"},
-            source: ${options.source ? "true" : "false"}
-          };
-          ${!options.save ? socket : ""}
-          ${mainJS}
-          ${options.gamepad ? gamepadJS : ""}
-        </script>${customJS}`,
-    );
+    template = template.replace("/* #STYLES# */", this.#getCSSTemplate());
+    template = template.replace("#SCRIPT#", this.#getJSTemplate(options));
     // translation management
     const sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
     const langFiles = readdirSync(sdfPath).filter((item) =>
@@ -99,12 +83,7 @@ export default class Interpreter {
       Object.keys(languages).forEach((key) => {
         languages[key].html = languages[key].html.replace(
           "</body>",
-          `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
-            (o) =>
-              `<option value="${o.value}" ${
-                key === "index" ? "selected" : ""
-              }>${o.label}</option>`,
-          )}</select></body>`,
+          this.#getSelectLang(menuLang, key),
         );
       });
     } else {
@@ -114,6 +93,36 @@ export default class Interpreter {
     }
     return languages;
   };
+
+  static #getSelectLang = (menuLang, key) =>
+    `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
+      (o) =>
+        `<option value="${o.value}" ${key === "index" ? "selected" : ""}>${
+          o.label
+        }</option>`,
+    )}</select></body>`;
+
+  static #getJSTemplate = (
+    options,
+  ) => `<script type="module" id="sd-scripts" data-sv="${customSVJS}">
+  window.slidesk = {
+    currentSlide: 0,
+    slides: [],
+    animationTimer: ${animationTimer},
+    qrcode: ${options.qrcode ? "true" : "false"},
+    source: ${options.source ? "true" : "false"}
+  };
+  ${!options.save ? socket : ""}
+  ${mainJS}
+  ${options.gamepad ? gamepadJS : ""}
+</script>${customJS}`;
+
+  static #getCSSTemplate = () =>
+    `:root { --animationTimer: ${animationTimer}ms; }${themeCSS}${printCSS}${
+      customCSS.length
+        ? `</style><link id="sd-customcss" rel="stylesheet" href="${customCSS}"><style>`
+        : ""
+    }`;
 
   static #replaceAsync = async (str, regex, asyncFn) => {
     const promises = [];
@@ -138,53 +147,49 @@ export default class Interpreter {
       .map((slide, s) => this.#transform(slide, s, options))
       .join("");
 
+  static #paragraph = (paragraph, p) => {
+    const par = paragraph.trimStart();
+    switch (true) {
+      case par.startsWith("/::"):
+        return this.#config(par);
+      case par.startsWith("# "):
+        return this.#mainTitle(par);
+      case par.startsWith("/*"):
+        return this.#comments(par);
+      case par.startsWith("!image"):
+        return this.#image(par);
+      case par.startsWith("- "):
+        return this.#list(par);
+      case par.startsWith("<"):
+        return par;
+      case par.startsWith("//@"):
+        return this.#timers(par);
+      default:
+        break;
+    }
+    if (p === 0) {
+      const spl = [...par.split(".[")];
+      if (spl.length !== 1) {
+        classes = spl[1].replace("]", "");
+      }
+      if (par !== "") {
+        slug = this.#slugify(par);
+        return this.#formatting(spl[0], "h2");
+      }
+    }
+    if (par.length) return this.#formatting(par, "p");
+    return "";
+  };
+
   static #transform = (slide, s, options) => {
-    let classes = "";
-    let timerSlide = "";
-    let timerCheckpoint = "";
-    let slug = null;
+    classes = "";
+    timerSlide = "";
+    timerCheckpoint = "";
+    slug = null;
     const content = slide
       .replace(/\\r/g, "")
       .split("\n\n")
-      .map((paragraph, p) => {
-        let par = paragraph;
-        if (par.startsWith("\n")) par = par.substring(1);
-        switch (par) {
-          case par.startsWith("/::"):
-            return this.#config(par);
-          case par.startsWith("# "):
-            return this.#mainTitle(par);
-          case par.startsWith("/*"):
-            return this.#comments(par);
-          case par.startsWith("!image"):
-            return this.#image(par);
-          case par.startsWith("- "):
-            return this.#list(par);
-          case par.startsWith("<"):
-            return par;
-          default:
-            break;
-        }
-        if par.startsWith("//@") {
-          // timers
-          const timer = par.replace("//@", "").replaceAll(" ", "");
-          if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
-          if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
-          return "";
-        }
-        if (p === 0) {
-          const spl = [...par.split(".[")];
-          if (spl.length !== 1) {
-            classes = spl[1].replace("]", "");
-          }
-          if (par !== "") {
-            slug = this.#slugify(par);
-            return this.#formatting(spl[0], "h2");
-          }
-        }
-        if (par.length) return this.#formatting(par, "p");
-        return "";
-      })
+      .map(this.#paragraph)
       .join("");
     const slideSlug = s ? `!slide-${s}` : "";
     return `<section class="sdf-slide ${classes}" data-slug="${
@@ -198,6 +203,14 @@ export default class Interpreter {
         ? ` data-timer-checkpoint="${timerCheckpoint}"`
         : ""
     }>${content}</section>`;
+  };
+
+  static #timers = (data) => {
+    // timers
+    const timer = data.replace("//@", "").replaceAll(" ", "");
+    if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
+    if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
+    return "";
   };
 
   static #comments = (data) =>
