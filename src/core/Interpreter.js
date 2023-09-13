@@ -71,7 +71,7 @@ export default class Interpreter {
     // translation management
     const sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
     const langFiles = readdirSync(sdfPath).filter((item) =>
-      /(.*).lang.json$/gi.test(item),
+      /.lang.json$/gi.test(item),
     );
     const languages = {};
     if (langFiles.length) {
@@ -149,19 +149,29 @@ export default class Interpreter {
       .map((paragraph, p) => {
         let par = paragraph;
         if (par.startsWith("\n")) par = par.substring(1);
-        if (par.startsWith("/::")) return this.#config(par);
-        if (par.startsWith("# ")) return this.#mainTitle(par);
-        if (par.startsWith("/*")) return this.#comments(par);
-        if (par.startsWith("!image")) return this.#image(par);
-        if (par.startsWith("- ")) return this.#list(par);
-        if (par.startsWith("//@")) {
+        switch (par) {
+          case par.startsWith("/::"):
+            return this.#config(par);
+          case par.startsWith("# "):
+            return this.#mainTitle(par);
+          case par.startsWith("/*"):
+            return this.#comments(par);
+          case par.startsWith("!image"):
+            return this.#image(par);
+          case par.startsWith("- "):
+            return this.#list(par);
+          case par.startsWith("<"):
+            return par;
+          default:
+            break;
+        }
+        if par.startsWith("//@") {
           // timers
           const timer = par.replace("//@", "").replaceAll(" ", "");
           if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
           if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
           return "";
         }
-        if (par.startsWith("<")) return par;
         if (p === 0) {
           const spl = [...par.split(".[")];
           if (spl.length !== 1) {
@@ -176,8 +186,9 @@ export default class Interpreter {
         return "";
       })
       .join("");
+    const slideSlug = s ? `!slide-${s}` : "";
     return `<section class="sdf-slide ${classes}" data-slug="${
-      slug ?? `${s ? `!slide-${s}` : ""}`
+      slug ?? slideSlug
     }"${options.source ? ` data-source="${toBinary(slide)}"` : ""}${
       options.timers && timerSlide !== ""
         ? ` data-timer-slide="${timerSlide}"`
@@ -238,7 +249,7 @@ export default class Interpreter {
     // links
     [
       ...htmlData.matchAll(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g,
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+~#?&/=]*)/g,
       ),
     ].forEach((match) => {
       htmlData = htmlData.replace(
@@ -320,7 +331,7 @@ export default class Interpreter {
 
   static #translate = (presentation, json) => {
     let pres = presentation;
-    [...pres.matchAll(/\$\$([\w]+)\$\$(\s)?/g)].forEach((match) => {
+    [...pres.matchAll(/\$\$(\w+)\$\$(\s)?/g)].forEach((match) => {
       pres = pres.replace(
         match[0],
         (json.translations[match[1]] ?? match[0]) + match[2],

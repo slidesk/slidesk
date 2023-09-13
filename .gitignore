@@ -1,3 +1,4 @@
 node_modules
 .DS_Store
 *bun-build
+sonar-project.properties
