@@ -25,7 +25,7 @@
   },
   "scripts": {
     "make": "bun build src/index.js --outdir bin  --minify --target bun",
-    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile",
+    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify",
     "lint": "eslint src",
     "sonar-start": "docker run -d --name sonarqube -p 9000:9000 sonarqube",
     "sonar-test": "sonar-scanner",
