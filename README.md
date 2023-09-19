@@ -99,11 +99,9 @@ bun make:exe
 
 Then you'll have a `exe/slidesk` file created.
 
-
-You can also use Gitpod : 
+You can also use Gitpod :
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/gouz/slidesk/-/tree/main/)
-
 
 ## How to create a presentation
 
