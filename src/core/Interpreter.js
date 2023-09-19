@@ -16,8 +16,8 @@ const socket =
   // eslint-disable-next-line no-template-curly-in-string
   "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
 const buttonSource = `
-  <button id="sdf-showSource" popovertarget="sdf-source">&lt;/&gt;</button>
-  <div id="sdf-source" popover><pre>x</pre></div>
+  <button id="sd-showSource" popovertarget="sd-source">&lt;/&gt;</button>
+  <div id="sd-source" popover><pre>x</pre></div>
 `;
 
 let customCSS = "";
@@ -95,7 +95,7 @@ export default class Interpreter {
   };
 
   static #getSelectLang = (menuLang, key) =>
-    `<select id="sdf-langs" onchange="window.location.href = this.value;">${menuLang.map(
+    `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang.map(
       (o) =>
         `<option value="${o.value}" ${key === "index" ? "selected" : ""}>${
           o.label
@@ -192,7 +192,7 @@ export default class Interpreter {
       .map(this.#paragraph)
       .join("");
     const slideSlug = s ? `!slide-${s}` : "";
-    return `<section class="sdf-slide ${classes}" data-slug="${
+    return `<section class="sd-slide ${classes}" data-slug="${
       slug ?? slideSlug
     }"${options.source ? ` data-source="${toBinary(slide)}"` : ""}${
       options.timers && timerSlide !== ""
@@ -214,7 +214,7 @@ export default class Interpreter {
   };
 
   static #comments = (data) =>
-    `<aside class="sdf-notes">${data
+    `<aside class="sd-notes">${data
       .replace("/*", "")
       .replace("*/", "")
       .split("\n")
@@ -320,7 +320,7 @@ export default class Interpreter {
       tpl += buttonSource;
     }
     if (options.qrcode) {
-      tpl += '<div id="sdf-qrcode">&nbsp;</div>';
+      tpl += '<div id="sd-qrcode">&nbsp;</div>';
     }
 
     let minified = await minify(tpl, {
