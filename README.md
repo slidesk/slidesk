@@ -6,19 +6,11 @@ SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh)
 
 The `example` rendering is visible on [gouz.github.io/slidesk/](https://gouz.github.io/slidesk/).
 
-## Prerequisites
+## How to use?
 
-### Bun installation
+### macOS with **Homebrew**
 
-```sh
-curl -fsSL https://bun.sh/install | bash
-```
-
-## Installation
-
-### With Homebrew
-
-On mac you can use **Homebrew**:
+#### Installation
 
 ```sh
 brew tap gouz/tools && brew install slidesk
@@ -30,49 +22,44 @@ or
 brew install gouz/tools/slidesk
 ```
 
-### With Bun
-
-On Linux, install it with Bun:
+#### Usage
 
 ```sh
-bun make
-```
-
-## CLI Usage without Bun
-
-```sh
-Usage: slidesk [options] [command] <talk>
+Usage: slidesk [options] [command] [talk]
 
 Your presentation companion
 
+Arguments:
+  talk                   the directory of your talk
+
 Options:
-  -v, --version     output the version number
-  -p, --port <int>  port (default: 1337)
-  -s, --save        save the html file
-  -n, --notes       open with speakers notes
-  -src, --source    add a button on slides to display its SDF code
-  -g, -gamepad      control your slide with a gamepad from the
-                    presentation
-  --gamepad-sv      control your slide with a gamepad from the
-                    speaker-view
-  -q, --qrcode      add a QRCode on each slide
-  -t, --timers      add checkpoint and slide's maximum time on notes
-                    view
-  -h, --help        display help for command
+  -v, --version          output the version number
+  -d, --domain <string>  domain (default: "localhost")
+  -p, --port <int>       port (default: 1337)
+  -s, --save             save the html file
+  -n, --notes            open with speakers notes
+  -src, --source         add a button on slides to display its SDF code
+  -g, -gamepad           control your slide with a gamepad from the presentation
+  --gamepad-sv           control your slide with a gamepad from the speaker-view
+  -q, --qrcode           add a QRCode on each slide
+  -t, --timers           add checkpoint and slide's maximum time on notes view
+  -h, --help             display help for command
 
 Commands:
   create <talk>
 ```
 
-## CLI Usage with Bun
+### Other systems
 
-Usage:
+If you want to compile **SliDesk**, you must have **Bun** installed on your computer.
 
+If not, you can install it through:
+
+```sh
+curl -fsSL https://bun.sh/install | bash
 ```
-bunx slidesk <talk>
-```
 
-Usage details:
+Then you can use it through:
 
 ```sh
 Usage: bunx slidesk [options] [command] <talk>
@@ -80,23 +67,37 @@ Usage: bunx slidesk [options] [command] <talk>
 Your presentation companion
 
 Options:
-  -v, --version     output the version number
-  -p, --port <int>  port (default: 1337)
-  -s, --save        save the html file
-  -n, --notes       open with speakers notes
-  -src, --source    add a button on slides to display its SDF code
-  -g, -gamepad      control your slide with a gamepad from the
-                    presentation
-  --gamepad-sv      control your slide with a gamepad from the
-                    speaker-view
-  -q, --qrcode      add a QRCode on each slide
-  -t, --timers      add checkpoint and slide's maximum time on notes
-                    view
-  -h, --help        display help for command
+  -v, --version          output the version number
+  -d, --domain <string>  domain (default: "localhost")
+  -p, --port <int>       port (default: 1337)
+  -s, --save             save the html file
+  -n, --notes            open with speakers notes
+  -src, --source         add a button on slides to display its SDF code
+  -g, -gamepad           control your slide with a gamepad from the presentation
+  --gamepad-sv           control your slide with a gamepad from the speaker-view
+  -q, --qrcode           add a QRCode on each slide
+  -t, --timers           add checkpoint and slide's maximum time on notes view
+  -h, --help             display help for command
 
 Commands:
   create <talk>
 ```
+
+## How to build SliDesk?
+
+Once you clone the repository, you can install the dependencies with:
+
+```sh
+bun install
+```
+
+And create the "exe" file with:
+
+```sh
+bun make:exe
+```
+
+Then you'll have a `exe/slidesk` file created.
 
 ## How to create a presentation
 
