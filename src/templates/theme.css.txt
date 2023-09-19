@@ -40,6 +40,15 @@ body {
   height: 100vh;
 }
 
+.sd-app {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+  font-size: var(--sd-text-size);
+  line-height: var(--sd-text-line-height);
+}
+
 img,
 picture,
 video,
@@ -107,17 +116,7 @@ pre {
   z-index: 1;
 }
 
-.sdf-app {
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--sd-background-color);
-  color: var(--sd-text-color);
-  font-size: var(--sd-text-size);
-  line-height: var(--sd-text-line-height);
-}
-
-.sdf-slide {
+.sd-slide {
   position: absolute;
   top: 0;
   left: 0;
@@ -132,7 +131,7 @@ pre {
   padding: 30px;
 }
 
-.sdf-slide h1,
+.sd-slide h1,
 h2,
 h3 {
   margin: 0;
@@ -140,45 +139,45 @@ h3 {
   color: var(--sd-heading-color);
 }
 
-.sdf-slide h1 {
+.sd-slide h1 {
   font-size: var(--sd-heading1-size);
   line-height: var(--sd-heading1-line-height);
   margin-bottom: 1.1vw;
 }
 
-.sdf-slide h2 {
+.sd-slide h2 {
   font-size: var(--sd-heading2-size);
   line-height: var(--sd-heading2-line-height);
   margin-bottom: 1.1vw;
 }
 
-.sdf-slide h3 {
+.sd-slide h3 {
   font-size: var(--sd-heading3-size);
   line-height: var(--sd-heading3-line-height);
   margin-bottom: 1.1vw;
 }
 
-.sdf-slide.no-sdf-animation {
+.sd-slide.no-sd-animation {
   transition-duration: 0ms;
 }
 
-.sdf-slide.sdf-current {
+.sd-slide.sd-current {
   transform: translateX(0);
 }
 
-.sdf-slide.sdf-previous {
+.sd-slide.sd-previous {
   transform: translateX(-100%);
 }
 
-.sdf-slide .sdf-notes {
+.sd-slide .sd-notes {
   display: none;
 }
 
-.sdf-slide img {
+.sd-slide img {
   max-height: 90%;
 }
 
-#sdf-showSource {
+#sd-showSource {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -187,20 +186,21 @@ h3 {
   color: var(--sd-background-color);
   text-decoration: none;
   border-radius: 5px;
+  font-size: 1rem;
 }
 
-#sdf-showSource:hover {
+#sd-showSource:hover {
   cursor: pointer;
 }
 
-#sdf-source {
+#sd-source {
   background-color: var(--sd-background-color);
   color: var(--sd-text-color);
   padding: 10px 20px;
   margin: auto;
 }
 
-#sdf-qrcode {
+#sd-qrcode {
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -208,19 +208,20 @@ h3 {
   background: white;
 }
 
-#sdf-qrcode img {
+#sd-qrcode img {
   margin: 0;
 }
 
-#sdf-langs {
+#sd-langs {
   position: absolute;
   background: transparent;
   color: var(--sd-text-color);
   border: 0;
   top: 0.2vw;
   right: 0.2vw;
+  font-size: 1rem;
 }
 
-#sdf-langs option {
+#sd-langs option {
   color: var(--sd-text-color);
 }

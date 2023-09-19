@@ -28,15 +28,15 @@ if (window.slidesk.io) {
 }
 
 window.slidesk.cleanOldSlide = (id) => {
-  window.slidesk.slides[id].classList.remove("sdf-current", "no-sdf-animation");
+  window.slidesk.slides[id].classList.remove("sd-current", "no-sd-animation");
 };
 
 window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
-    "sdf-previous",
+    "sd-previous",
   );
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-    "sdf-current",
+    "sd-current",
   );
   window.location.hash =
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
@@ -48,7 +48,7 @@ window.slidesk.changeSlide = () => {
         "data-source",
       ),
     );
-    const $source = document.getElementById("sdf-source");
+    const $source = document.getElementById("sd-source");
     $source.querySelector("pre").innerText = source;
   }
   if (window.slidesk.io) {
@@ -76,8 +76,8 @@ window.slidesk.changeSlide = () => {
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";
   if (window.slidesk.qrcode) {
-    document.getElementById("sdf-qrcode").innerHTML = "";
-    new QRCode(document.getElementById("sdf-qrcode"), {
+    document.getElementById("sd-qrcode").innerHTML = "";
+    new QRCode(document.getElementById("sd-qrcode"), {
       text: window.location.href,
       width: 96,
       height: 96,
@@ -92,7 +92,7 @@ window.slidesk.next = () => {
   if (window.slidesk.currentSlide !== window.slidesk.slides.length - 1) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-      "sdf-previous",
+      "sd-previous",
     );
     window.slidesk.currentSlide += 1;
     window.slidesk.changeSlide();
@@ -128,7 +128,7 @@ window.onload = () => {
         }),
       );
   }
-  window.slidesk.slides = document.querySelectorAll(".sdf-slide");
+  window.slidesk.slides = document.querySelectorAll(".sd-slide");
   const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
@@ -140,20 +140,17 @@ window.onload = () => {
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
-      window.slidesk.slides[i].classList.add(
-        "sdf-previous",
-        "no-sdf-animation",
-      );
+      window.slidesk.slides[i].classList.add("sd-previous", "no-sd-animation");
     }
     setTimeout(() => {
       for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
-        window.slidesk.slides[i].classList.remove("no-sdf-animation");
+        window.slidesk.slides[i].classList.remove("no-sd-animation");
       }
     }, window.slidesk.animationTimer);
   }
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-    "sdf-current",
-    "no-sdf-animation",
+    "sd-current",
+    "no-sd-animation",
   );
   window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {

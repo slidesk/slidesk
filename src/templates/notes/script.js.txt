@@ -32,17 +32,17 @@ window.slidesk.io.onmessage = (event) => {
     const current = document.querySelector("#sd-sv-current");
     current.innerHTML = data.payload;
     document.querySelector("#sd-sv-notes").innerHTML = [
-      ...current.querySelectorAll("aside.sdf-notes"),
+      ...current.querySelectorAll("aside.sd-notes"),
     ]
       .map((a) => a.innerHTML)
       .join("");
     // check timers
     const checkpoint = current
-      .querySelector(".sdf-slide")
+      .querySelector(".sd-slide")
       .getAttribute("data-timer-checkpoint");
     if (checkpoint) timerCheckpoint = fromHHMMSS(checkpoint);
     const slidetime = current
-      .querySelector(".sdf-slide")
+      .querySelector(".sd-slide")
       .getAttribute("data-timer-slide");
     if (slidetime) {
       timerSlide = fromHHMMSS(slidetime);

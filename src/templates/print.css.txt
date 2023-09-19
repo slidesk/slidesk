@@ -1,28 +1,34 @@
-@page {
-  size: A4 landscape;
-  margin: 0;
-}
-
 @media print {
-  #sdf-langs,
-  #sd-progress {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  #sd-langs,
+  #sd-progress,
+  #sd-showSource,
+  #sd-source {
     display: none;
+  }
+
+  html {
+    height: 100%;
   }
 
   body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    height: auto;
-  }
-
-  .sdf-app {
+    height: 100%;
     overflow: visible;
-    height: auto;
   }
 
-  .sdf-slide {
+  .sd-slide {
     position: static;
-    height: 100vh;
+    height: 100%;
     page-break-after: always;
     transform: none !important;
   }
