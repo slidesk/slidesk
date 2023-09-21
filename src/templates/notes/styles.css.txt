@@ -20,13 +20,13 @@ body {
   margin: 0;
 }
 
-#sd-sv-left .sdf-app {
+#sd-sv-left .sd-app {
   height: 50%;
   box-sizing: border-box;
   border: 1px solid white;
 }
 
-#sd-sv-left .sdf-app .sdf-slide {
+#sd-sv-left .sd-app .sd-slide {
   transform: translateX(0);
   transition-duration: 0ms;
   zoom: 0.5;

@@ -178,7 +178,9 @@ In your `custom.css` file, you can override this variables:
 Then, in your `main.sdf` file you have to prepend this line:
 
 ```
-:custom_css: location/of/your/custom.css
+/::
+custom_css: location/of/your/custom.css
+::/
 ```
 
 ## Custom class on slides
