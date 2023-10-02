@@ -1,0 +1,11 @@
+image: gitpod/workspace-bun
+
+tasks:
+  - name: Init workspace
+    init: |
+      bun install
+      bun make:exe
+
+ports:
+  - port: 3000
+    onOpen: open-preview
