@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -27,8 +27,6 @@
     "make": "bun build src/index.js --outdir bin  --minify --target bun",
     "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify",
     "lint": "eslint src",
-    "sonar-start": "docker run -d --name sonarqube -p 9000:9000 sonarqube",
-    "sonar-test": "sonar-scanner",
     "example": "bun src/index.js example"
   }
 }

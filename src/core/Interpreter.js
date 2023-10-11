@@ -45,10 +45,11 @@ export default class Interpreter {
       error("🤔 main.sdf was not found");
       return null;
     }
-    const presentation = this.#sliceSlides(
+    let presentation = this.#sliceSlides(
       await this.#includes(mainFile),
       options,
     );
+    presentation = this.#image(presentation);
     let template = layoutHTML;
     template = template.replace("/* #STYLES# */", this.#getCSSTemplate());
     template = template.replace("#SCRIPT#", this.#getJSTemplate(options));
@@ -156,8 +157,6 @@ export default class Interpreter {
         return this.#mainTitle(par);
       case par.startsWith("/*"):
         return this.#comments(par);
-      case par.startsWith("!image"):
-        return this.#image(par);
       case par.startsWith("- "):
         return this.#list(par);
       case par.startsWith("<"):

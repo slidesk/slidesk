@@ -114,6 +114,7 @@ pre {
   bottom: 0;
   height: 0.25rem;
   z-index: 1;
+  overflow: hidden;
 }
 
 .sd-slide {
