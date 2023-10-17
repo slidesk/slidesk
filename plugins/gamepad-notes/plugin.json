@@ -1,0 +1,3 @@
+{
+  "addSpeakerScripts": ["./plugins/gamepad-notes/gamepad.js"]
+}

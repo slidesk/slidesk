@@ -130,6 +130,7 @@ pre {
   transform: translateX(100%);
   transition: all var(--animationTimer) ease;
   padding: 30px;
+  overflow: hidden;
 }
 
 .sd-slide h1,

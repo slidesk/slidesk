@@ -33,20 +33,11 @@ program
   .option("-p, --port <int>", "port", 1337)
   .option("-s, --save", "save the html file")
   .option("-n, --notes", "open with speakers notes")
-  .option("-src, --source", "add a button on slides to display its SDF code")
-  .option(
-    "-g, -gamepad",
-    "control your slide with a gamepad from the presentation",
-  )
-  .option(
-    "--gamepad-sv",
-    "control your slide with a gamepad from the speaker-view",
-  )
-  .option("-q, --qrcode", "add a QRCode on each slide")
   .option(
     "-t, --timers",
     "add checkpoint and slide's maximum time on notes view",
   )
+  .option("-a, --transition <int>", "transition timer", 300)
   .action(present);
 
 program.parse();

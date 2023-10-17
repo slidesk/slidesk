@@ -1,12 +1,3 @@
-const fromBinary = (encoded) => {
-  const binary = atob(encoded);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < bytes.length; i += 1) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return String.fromCharCode(...new Uint16Array(bytes.buffer));
-};
-
 window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
@@ -42,15 +33,6 @@ window.slidesk.changeSlide = () => {
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
       "data-slug",
     );
-  if (window.slidesk.source) {
-    const source = fromBinary(
-      window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-        "data-source",
-      ),
-    );
-    const $source = document.getElementById("sd-source");
-    $source.querySelector("pre").innerText = source;
-  }
   if (window.slidesk.io) {
     window.slidesk.sendMessage(
       JSON.stringify({
@@ -75,17 +57,7 @@ window.slidesk.changeSlide = () => {
   document.getElementById("sd-progress").style.width =
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";
-  if (window.slidesk.qrcode) {
-    document.getElementById("sd-qrcode").innerHTML = "";
-    new QRCode(document.getElementById("sd-qrcode"), {
-      text: window.location.href,
-      width: 96,
-      height: 96,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.L,
-    });
-  }
+  window.slidesk.onSlideChange();
 };
 
 window.slidesk.next = () => {

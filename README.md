@@ -33,17 +33,14 @@ Arguments:
   talk                   the directory of your talk
 
 Options:
-  -v, --version          output the version number
-  -d, --domain <string>  domain (default: "localhost")
-  -p, --port <int>       port (default: 1337)
-  -s, --save             save the html file
-  -n, --notes            open with speakers notes
-  -src, --source         add a button on slides to display its SDF code
-  -g, -gamepad           control your slide with a gamepad from the presentation
-  --gamepad-sv           control your slide with a gamepad from the speaker-view
-  -q, --qrcode           add a QRCode on each slide
-  -t, --timers           add checkpoint and slide's maximum time on notes view
-  -h, --help             display help for command
+  -v, --version           output the version number
+  -d, --domain <string>   domain (default: "localhost")
+  -p, --port <int>        port (default: 1337)
+  -s, --save              save the html file
+  -n, --notes             open with speakers notes
+  -t, --timers            add checkpoint and slide's maximum time on notes view
+  -a, --transition <int>  transition timer (default: 300)
+  -h, --help              display help for command
 
 Commands:
   create <talk>
@@ -67,17 +64,14 @@ Usage: bunx slidesk [options] [command] <talk>
 Your presentation companion
 
 Options:
-  -v, --version          output the version number
-  -d, --domain <string>  domain (default: "localhost")
-  -p, --port <int>       port (default: 1337)
-  -s, --save             save the html file
-  -n, --notes            open with speakers notes
-  -src, --source         add a button on slides to display its SDF code
-  -g, -gamepad           control your slide with a gamepad from the presentation
-  --gamepad-sv           control your slide with a gamepad from the speaker-view
-  -q, --qrcode           add a QRCode on each slide
-  -t, --timers           add checkpoint and slide's maximum time on notes view
-  -h, --help             display help for command
+  -v, --version           output the version number
+  -d, --domain <string>   domain (default: "localhost")
+  -p, --port <int>        port (default: 1337)
+  -s, --save              save the html file
+  -n, --notes             open with speakers notes
+  -t, --timers            add checkpoint and slide's maximum time on notes view
+  -a, --transition <int>  transition timer (default: 300)
+  -h, --help              display help for command
 
 Commands:
   create <talk>
@@ -99,11 +93,9 @@ bun make:exe
 
 Then you'll have a `exe/slidesk` file created.
 
-
-You can also use Gitpod : 
+You can also use Gitpod :
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/gouz/slidesk/-/tree/main/)
-
 
 ## How to create a presentation
 
@@ -231,7 +223,23 @@ custom_sv_js: assets/customsv.js
 ::/
 ```
 
-Warning, it's very important to space this lines with a new line
+## Plugins
+
+SliDesk has a plugin system.
+
+To use it, you have to create a plugin directory into your main directory (where main.sdf is).
+
+There is some samples in this repository.
+
+A plugin is a directory with at least one file: plugin.json
+
+This `json` file describes the comportement of the plugin. Each keys of the json correspond to a "hook":
+
+- `addHTML`: add some html at the end of the presentation
+- `addScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry)
+- `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
+- `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
+- `onSlideChange`: javascript will be executed after a slide is changed
 
 ## Why a new tool???
 
