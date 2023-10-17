@@ -1,7 +1,6 @@
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
-import gamepadJS from "../templates/notes/gamepad.js.txt";
 import themeCSS from "../templates/theme.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
 
@@ -36,10 +35,7 @@ export const notePage = (options) =>
       )
       .replace("/* #STYLES# */", themeCSS)
       .replace("/* #SV_STYLES# */", speakerViewCSS)
-      .replace(
-        "/* #SV_SCRIPT# */",
-        speakerViewJS + (options.gamepadSv ? gamepadJS : ""),
-      ),
+      .replace("/* #SV_SCRIPT# */", speakerViewJS),
     {
       headers: {
         "Content-Type": "text/html",

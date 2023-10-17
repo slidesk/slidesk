@@ -1,0 +1,3 @@
+{
+  "addScripts": ["./plugin/gamepad/gamepad.js"]
+}
