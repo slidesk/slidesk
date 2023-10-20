@@ -58,7 +58,7 @@ window.slidesk.changeSlide = () => {
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";
   window.slidesk.slides[window.slidesk.currentSlide]
-    .querySelectorAll("[data-gif='1']")
+    .querySelectorAll("img")
     .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
   window.slidesk.onSlideChange();
 };
