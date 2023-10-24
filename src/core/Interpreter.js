@@ -231,6 +231,7 @@ export default class Interpreter {
         slug = slugify(spl[0]);
         return this.#formatting(spl[0], "h2");
       }
+      return "";
     }
     if (par.length) return this.#formatting(par, "p");
     return "";

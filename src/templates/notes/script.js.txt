@@ -20,10 +20,11 @@ const fromHHMMSS = (time) => {
   }
   return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
 };
-let timerCheckpoint = "";
+let timerCheckpoints = [];
 let timerSlide = "";
 let startTime = null;
 let startSlideTime = null;
+let currentNum = null;
 window.slidesk.io.onmessage = (event) => {
   const data = JSON.parse(event.data);
   if (data.action === "current") {
@@ -36,11 +37,8 @@ window.slidesk.io.onmessage = (event) => {
     ]
       .map((a) => a.innerHTML)
       .join("");
+    currentNum = current.querySelector(".sd-slide").getAttribute("data-num");
     // check timers
-    const checkpoint = current
-      .querySelector(".sd-slide")
-      .getAttribute("data-timer-checkpoint");
-    if (checkpoint) timerCheckpoint = fromHHMMSS(checkpoint);
     const slidetime = current
       .querySelector(".sd-slide")
       .getAttribute("data-timer-slide");
@@ -65,6 +63,15 @@ window.slidesk.io.onmessage = (event) => {
       }
     });
   }
+  if (data.action === "checkpoints") {
+    let lastCheckpoint = null;
+    for (let i = Number(data.payload.nbSlides); i > 0; i -= 1) {
+      if (data.payload.timerCheckpoints[i]) {
+        lastCheckpoint = fromHHMMSS(data.payload.timerCheckpoints[i]);
+      }
+      timerCheckpoints[i] = lastCheckpoint;
+    }
+  }
 };
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") {
@@ -78,8 +85,8 @@ setInterval(() => {
     const time = (Date.now() - startTime) / 1000;
     window.slidesk.timer.innerText = toHHMMSS(time);
     window.slidesk.timer.classList.remove("emergency");
-    if (timerCheckpoint) {
-      if (timerCheckpoint < time) {
+    if (timerCheckpoints[currentNum]) {
+      if (timerCheckpoints[currentNum] < time) {
         window.slidesk.timer.classList.add("emergency");
       }
     }
