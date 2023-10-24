@@ -25,6 +25,8 @@ let timerCheckpoint = "";
 let slug = null;
 let sdfPath = "";
 let plugins = [];
+let components = [];
+let hasPluginSource = false;
 
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
@@ -45,10 +47,12 @@ export default class Interpreter {
     slug = null;
     sdfPath = "";
     plugins = [];
+    components = [];
     // eslint-disable-next-line no-undef
     const sdfMainFile = Bun.file(mainFile);
     sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
     await this.#loadPlugins();
+    this.#loadComponents();
     if (sdfMainFile.size === 0) {
       error("🤔 main.sdf was not found");
       return null;
@@ -103,6 +107,7 @@ export default class Interpreter {
     if (existsSync(pluginsDir))
       await Promise.all(
         readdirSync(pluginsDir).map(async (plugin) => {
+          if (plugin === "source") hasPluginSource = true;
           const pluginPath = `${sdfPath}/plugins/${plugin}/plugin.json`;
           // eslint-disable-next-line no-undef
           const pluginFile = Bun.file(pluginPath);
@@ -112,6 +117,16 @@ export default class Interpreter {
           }
         }),
       );
+  };
+
+  static #loadComponents = () => {
+    const componentsDir = `${sdfPath}/components`;
+    if (existsSync(componentsDir)) {
+      components = readdirSync(componentsDir)
+        .filter((item) => /.mjs$/gi.test(item))
+        // eslint-disable-next-line no-undef
+        .map((c) => Bun.resolveSync(`${componentsDir}/${c}`, process.cwd()));
+    }
   };
 
   static #getSelectLang = (menuLang, key) =>
@@ -184,6 +199,13 @@ export default class Interpreter {
     fusion = this.#mainTitle(fusion);
     // image
     fusion = image(fusion);
+    // custom components
+    await Promise.all(
+      components.map(async (c) => {
+        const { default: comp } = await import(c);
+        fusion = comp(fusion);
+      }),
+    );
     return `${fusion}${plugins.map((p) => p.addHTML ?? "").join("")}`;
   };
 
@@ -251,7 +273,7 @@ export default class Interpreter {
     const slideSlug = s ? `!slide-${s}` : "";
     datas.num = s;
     datas.slug = slug || slideSlug;
-    if (plugins.includes("source")) datas.source = toBinary(slide);
+    if (hasPluginSource) datas.source = toBinary(slide);
     if (options.timers) {
       if (timerSlide !== "") datas["timer-slide"] = timerSlide;
       if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;

@@ -25,7 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - run: bun install
+      - run: bun gendocs
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
