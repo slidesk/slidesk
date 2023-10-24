@@ -1,0 +1,3 @@
+{
+  "onSlideChange": "const classes = [...window.slidesk.slides[window.slidesk.currentSlide].classList].filter(c => c.startsWith('auto-')); if (classes.length) { const timer = Number(classes[0].replace('auto-', '')) + Number(window.slidesk.animationTimer); window.slidesk.autonext = setTimeout(() => window.slidesk.next(), timer); } else { clearTimeout(window.slidesk.autonext); }"
+}

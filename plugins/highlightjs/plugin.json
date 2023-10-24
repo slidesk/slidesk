@@ -1,0 +1,7 @@
+{
+  "addScripts": [
+    "./plugins/highlightjs/highlight.min.js",
+    "./plugins/highlightjs/plugin.js"
+  ],
+  "addStyles": ["./plugins/highlightjs/default.min.css"]
+}

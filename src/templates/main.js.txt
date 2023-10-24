@@ -58,7 +58,7 @@ window.slidesk.changeSlide = () => {
     (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
     "%";
   window.slidesk.slides[window.slidesk.currentSlide]
-    .querySelectorAll("[data-gif='1']")
+    .querySelectorAll("img")
     .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
   window.slidesk.onSlideChange();
 };
@@ -83,6 +83,7 @@ window.slidesk.previous = () => {
 };
 
 window.onload = () => {
+  window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
     const customcss = document.getElementById("sd-customcss");
     if (customcss)
@@ -102,12 +103,26 @@ window.onload = () => {
           payload: customsvjs,
         }),
       );
+    const timerCheckpoints = {};
+    window.slidesk.slides.forEach((slide) => {
+      timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(
+        "data-timer-checkpoint",
+      );
+    });
+    window.slidesk.sendMessage(
+      JSON.stringify({
+        action: "checkpoints",
+        payload: {
+          timerCheckpoints,
+          nbSlides: window.slidesk.slides.length,
+        },
+      }),
+    );
   }
-  window.slidesk.slides = document.querySelectorAll(".sd-slide");
   const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
   window.slidesk.slides.forEach((slide, i) => {
-    slugs.push(slide.getAttribute("data-slug") || `!slide-${i}`);
+    slugs.push(slide.getAttribute("data-slug"));
   });
   window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
   if (loadingHash.length > 1)

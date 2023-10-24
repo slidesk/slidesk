@@ -227,10 +227,11 @@ export default class Interpreter {
       if (spl.length !== 1) {
         classes = spl[1].replace("]", "");
       }
-      if (par !== "") {
-        slug = slugify(par);
+      if (spl[0].trim() !== "") {
+        slug = slugify(spl[0]);
         return this.#formatting(spl[0], "h2");
       }
+      return "";
     }
     if (par.length) return this.#formatting(par, "p");
     return "";
@@ -248,8 +249,9 @@ export default class Interpreter {
       .join("\n\n");
     const datas = {};
     const slideSlug = s ? `!slide-${s}` : "";
-    datas.slug = slug ?? slideSlug;
-    datas.source = toBinary(slide);
+    datas.num = s;
+    datas.slug = slug || slideSlug;
+    if (plugins.includes("source")) datas.source = toBinary(slide);
     if (options.timers) {
       if (timerSlide !== "") datas["timer-slide"] = timerSlide;
       if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
