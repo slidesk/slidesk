@@ -249,7 +249,7 @@ export default class Interpreter {
     const datas = {};
     const slideSlug = s ? `!slide-${s}` : "";
     datas.slug = slug ?? slideSlug;
-    datas.source = toBinary(slide);
+    if (plugins.includes("source")) datas.source = toBinary(slide);
     if (options.timers) {
       if (timerSlide !== "") datas["timer-slide"] = timerSlide;
       if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
