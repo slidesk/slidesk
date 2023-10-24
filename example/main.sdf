@@ -43,6 +43,12 @@ My notes will be displayed on speaker view only
 It can be multiline now
 */
 
+## Components
+
+With a ``componenents/myComponent.mjs`` file, you can create custom component like ``!````test(my test)`` giving this:
+
+!test(my test)
+
 ## Final
 
 /*
