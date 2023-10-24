@@ -227,7 +227,7 @@ custom_sv_js: assets/customsv.js
 
 SliDesk has a plugin system.
 
-To use it, you have to create a plugin directory into your main directory (where main.sdf is).
+To use it, you have to create a `plugins` directory into your main directory (where main.sdf is).
 
 There is some samples in this repository.
 
@@ -240,6 +240,32 @@ This `json` file describes the comportement of the plugin. Each keys of the json
 - `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
 - `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
 - `onSlideChange`: javascript will be executed after a slide is changed
+
+## Components
+
+SliDesk has a component system.
+
+To use it, you have to create a `components` directory into your main directory (where main.sdf is).
+
+In this directory, you can add custom components with a `.mjs` file. One per component.
+
+Example:
+
+I want to have a `!test(my text)` which generate a `<p>Test: my text</p>`.
+
+So I create a `components/test.mjs` with the following content.
+
+```js
+export default (data) => {
+  let newData = data;
+  [...newData.matchAll(/!test\((.*)\)/g)].forEach((match) => {
+    newData = newData.replace(match[0], `<p>Test: ${match[1]}</p>`);
+  });
+  return newData;
+};
+```
+
+Then a dynamic call will be done when parsing a slide (at the end of default parsing).
 
 ## Why a new tool???
 
