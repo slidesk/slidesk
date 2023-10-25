@@ -8,7 +8,7 @@ const options = {
   source: true,
 };
 
-const file = "example/main.sdf";
+const file = "sdf-test/main.sdf";
 
 test("snap", async () => {
   expect(await Interpreter.convert(file, options)).toMatchSnapshot();

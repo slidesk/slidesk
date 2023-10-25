@@ -334,11 +334,7 @@ export default class Interpreter {
       });
     });
     // links
-    [
-      ...htmlData.matchAll(
-        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+~#?&/=]*)/g,
-      ),
-    ].forEach((match) => {
+    [...htmlData.matchAll(/https?:\/\/(\S*)/g)].forEach((match) => {
       htmlData = htmlData.replace(
         match[0],
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,

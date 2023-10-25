@@ -55,9 +55,7 @@ export const defaultAction = (req, options) => {
   );
   // eslint-disable-next-line no-undef
   const file = Bun.file(
-    fileurl.match(
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+~#?&/=]*)/g,
-    )
+    fileurl.match(/https?:\/\/(\S*)/g)
       ? fileurl
       : `${globalThis.path}${fileurl}`,
   );
