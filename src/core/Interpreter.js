@@ -206,7 +206,7 @@ export default class Interpreter {
         fusion = comp(fusion);
       }),
     );
-    return `${fusion}${plugins.map((p) => p.addHTML ?? "").join("")}`;
+    return fusion;
   };
 
   static #replaceAsync = async (str, regex, asyncFn) => {
@@ -349,7 +349,7 @@ export default class Interpreter {
 
   static #mainTitle = (data) => {
     let fusion = data;
-    const m = /<p># (.*)<\/p>/.exec(fusion);
+    const m = /# (.*)/.exec(fusion);
     if (m !== null) {
       fusion = fusion.replace(m[0], `<h1>${m[1]}</h1>`);
     }
@@ -363,14 +363,19 @@ export default class Interpreter {
     });
     tpl = tpl.replace("#SECTIONS#", presentation);
 
-    return minify(tpl, {
+    tpl = await minify(tpl, {
       collapseWhitespace: true,
-      removeEmptyElements: false,
+      removeEmptyElements: true,
       minifyCSS: true,
       minifyJS: true,
       removeComments: true,
       removeAttributeQuotes: true,
     });
+
+    return tpl.replace(
+      "</body>",
+      `${plugins.map((p) => p.addHTML ?? "").join("")}</body>`,
+    );
   };
 
   static #translate = (presentation, json) => {

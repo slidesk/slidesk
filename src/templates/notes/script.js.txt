@@ -65,7 +65,7 @@ window.slidesk.io.onmessage = (event) => {
   }
   if (data.action === "checkpoints") {
     let lastCheckpoint = null;
-    for (let i = Number(data.payload.nbSlides); i > 0; i -= 1) {
+    for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {
       if (data.payload.timerCheckpoints[i]) {
         lastCheckpoint = fromHHMMSS(data.payload.timerCheckpoints[i]);
       }
