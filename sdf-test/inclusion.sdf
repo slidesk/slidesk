@@ -1,0 +1,9 @@
+## Inclusion of file to structurate your file like your talk
+
+A line which begins with this below syntax
+
+``!include(./another_file.tfs)``
+
+will include the content of the file
+
+It works with other file types.
