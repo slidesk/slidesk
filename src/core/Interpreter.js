@@ -365,7 +365,7 @@ export default class Interpreter {
 
     return minify(tpl, {
       collapseWhitespace: true,
-      removeEmptyElements: true,
+      removeEmptyElements: false,
       minifyCSS: true,
       minifyJS: true,
       removeComments: true,
