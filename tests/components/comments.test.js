@@ -10,6 +10,6 @@ const data = `
 
 test("comments", () => {
   expect(comments(data)).toEqual(
-    '\n  \n    <aside class="sd-notes">\n          This is a comment<br/>  \n    </aside>\n    \n',
+    '\n  <aside class="sd-notes">  This is a comment<br/>  </aside>\n',
   );
 });
