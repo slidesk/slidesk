@@ -70,12 +70,12 @@ jobs:
     steps:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - run: bun install
       - run: bun make
       - run: bun make:exe
       - name: Compress action step
-        uses: a7ul/tar-action@v1.1.0
+        uses: a7ul/tar-action@v1.1.3
         id: compress
         with:
           command: c
