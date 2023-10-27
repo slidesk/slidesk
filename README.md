@@ -149,13 +149,11 @@ In your `custom.css` file, you can override this variables:
 
 ```
 :root {
-  --sd-heading1-size: 3.75em;
+  --sd-heading1-size: 8.5vw;
   --sd-heading1-line-height: 1;
-  --sd-heading2-size: 2.25em;
+  --sd-heading2-size: 5vw;
   --sd-heading2-line-height: 1;
-  --sd-heading3-size: 1.75em;
-  --sd-heading3-line-height: 1;
-  --sd-text-size: 40px;
+  --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
 
   --sd-background-color: #242424;
