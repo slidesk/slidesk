@@ -9,16 +9,12 @@ export default function comments(data) {
     }
     newData = newData.replace(
       m[0],
-      `
-    <aside class="sd-notes">
-        ${m[0]
-          .replace("/*", "")
-          .replace("*/", "")
-          .split("\n")
-          .slice(1)
-          .join("<br/>")}
-    </aside>
-    `,
+      `<aside class="sd-notes">${m[0]
+        .replace("/*", "")
+        .replace("*/", "")
+        .split("\n")
+        .slice(1)
+        .join("<br/>")}</aside>`,
     );
   }
   return newData;

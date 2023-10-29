@@ -8,7 +8,7 @@ export default function list(data, level) {
         lists.push(list(subs.join("\n"), level + 1));
         subs.splice(0, subs.length);
       }
-      lists.push(`<li>${line.replace(reg, "")}</li>`);
+      lists.push(`<li>${line.replace(reg, "")} </li>`);
     } else if (line !== "") subs.push(line);
   });
   if (subs.length) {

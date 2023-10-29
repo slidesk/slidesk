@@ -160,7 +160,13 @@ export default class Interpreter {
   };
   ${!options.save ? socket : ""}
   ${mainJS}
-</script>${customJS}`;
+</script>${plugins
+    .map((p) =>
+      p.addScriptsAfter
+        ? p.addScriptsAfter.map((s) => `<script src="${s}"></script>`).join("")
+        : "",
+    )
+    .join("")}${customJS}`;
 
   static #getCSSTemplate = (options) =>
     `<style>
@@ -197,8 +203,6 @@ export default class Interpreter {
     fusion = this.#sliceSlides(fusion, options);
     // get mainTitle
     fusion = this.#mainTitle(fusion);
-    // image
-    fusion = image(fusion);
     // custom components
     await Promise.all(
       components.map(async (c) => {
@@ -206,6 +210,10 @@ export default class Interpreter {
         fusion = comp(fusion);
       }),
     );
+    // format text
+    fusion = this.#formatting(fusion);
+    // image
+    fusion = image(fusion);
     return fusion;
   };
 
@@ -251,11 +259,11 @@ export default class Interpreter {
       }
       if (spl[0].trim() !== "") {
         slug = slugify(spl[0]);
-        return this.#formatting(spl[0], "h2");
+        return `<h2>${spl[0]}</h2>`;
       }
       return "";
     }
-    if (par.length) return this.#formatting(par, "p");
+    if (par.length) return `<p>${par}</p>`;
     return "";
   };
 
@@ -309,7 +317,7 @@ export default class Interpreter {
     });
   };
 
-  static #formatting = (data, element) => {
+  static #formatting = (data) => {
     let htmlData = data;
     // italic, bold, ...
     [
@@ -322,7 +330,7 @@ export default class Interpreter {
       [
         ...htmlData.matchAll(
           new RegExp(
-            `${couple[0]}${couple[0]}([^\\${couple[0]}]+)${couple[0]}${couple[0]}(\\s)?`,
+            `${couple[0]}${couple[0]}(.+)${couple[0]}${couple[0]}(\\s)?`,
             "g",
           ),
         ),
@@ -340,7 +348,7 @@ export default class Interpreter {
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
       );
     });
-    return `<${element}>${htmlData}</${element}>`;
+    return htmlData;
   };
 
   static #mainTitle = (data) => {

@@ -29,27 +29,25 @@ const create = async (talk) => {
       `./${dirName}/custom.css`,
       `
 :root {
---sd-heading1-size: 3.75em;
---sd-heading1-line-height: 1;
---sd-heading2-size: 2.25em;
---sd-heading2-line-height: 1;
---sd-heading3-size: 1.75em;
---sd-heading3-line-height: 1;
---sd-text-size: 40px;
---sd-text-line-height: 1.2;
+  --sd-heading1-size: 8.5vw;
+  --sd-heading1-line-height: 1;
+  --sd-heading2-size: 5vw;
+  --sd-heading2-line-height: 1;
+  --sd-text-size: 2.2vw;
+  --sd-text-line-height: 1.2;
 
---sd-background-color: #242424;
---sd-heading-color: rgba(255, 255, 255, 0.97);
---sd-text-color: rgba(255, 255, 255, 0.87);
---sd-primary-color: rgb(37, 186, 146);
+  --sd-background-color: #242424;
+  --sd-heading-color: rgba(255, 255, 255, 0.97);
+  --sd-text-color: rgba(255, 255, 255, 0.87);
+  --sd-primary-color: rgb(37, 186, 146);
 
 
-/* SpeakerView */
---sd-sv-timer-size: 80px;
---sd-sv-text-size: 40px;
---sd-sv-text-line-height: 1.2;
---sd-sv-background-color: #242424;
---sd-sv-text-color: rgba(255, 255, 255, 0.87);
+  /* SpeakerView */
+  --sd-sv-timer-size: 80px;
+  --sd-sv-text-size: 40px;
+  --sd-sv-text-line-height: 1.2;
+  --sd-sv-background-color: #242424;
+  --sd-sv-text-color: rgba(255, 255, 255, 0.87);
 }`,
     );
     Bun.write(`./${dirName}/custom.js`, "");

@@ -10,6 +10,6 @@ const data = `- test
 
 test("list", () => {
   expect(list(data, 0)).toEqual(
-    "<ul><ul><li>test</li><ul><li>test</li></ul><li>test</li><ul><li>test</li><li>test</li></ul></ul></ul>",
+    "<ul><ul><li>test </li><ul><li>test </li></ul><li>test </li><ul><li>test </li><li>test </li></ul></ul></ul>",
   );
 });

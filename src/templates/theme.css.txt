@@ -15,8 +15,6 @@
   --sd-heading1-line-height: 1;
   --sd-heading2-size: 5vw;
   --sd-heading2-line-height: 1;
-  --sd-heading3-size: 3vw;
-  --sd-heading3-line-height: 1;
   --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
 
