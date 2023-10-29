@@ -160,7 +160,13 @@ export default class Interpreter {
   };
   ${!options.save ? socket : ""}
   ${mainJS}
-</script>${customJS}`;
+</script>${plugins
+    .map((p) =>
+      p.addScriptsAfter
+        ? p.addScriptsAfter.map((s) => `<script src="${s}"></script>`).join("")
+        : "",
+    )
+    .join("")}${customJS}`;
 
   static #getCSSTemplate = (options) =>
     `<style>
@@ -195,12 +201,8 @@ export default class Interpreter {
     fusion = comments(fusion);
     // slice & treatment
     fusion = this.#sliceSlides(fusion, options);
-    // format text
-    fusion = this.#formatting(fusion);
     // get mainTitle
     fusion = this.#mainTitle(fusion);
-    // image
-    fusion = image(fusion);
     // custom components
     await Promise.all(
       components.map(async (c) => {
@@ -208,6 +210,10 @@ export default class Interpreter {
         fusion = comp(fusion);
       }),
     );
+    // format text
+    fusion = this.#formatting(fusion);
+    // image
+    fusion = image(fusion);
     return fusion;
   };
 

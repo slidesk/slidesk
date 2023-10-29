@@ -235,6 +235,7 @@ This `json` file describes the comportement of the plugin. Each keys of the json
 
 - `addHTML`: add some html at the end of the presentation
 - `addScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry)
+- `addScriptsAfter`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) after the regular script insertion
 - `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
 - `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
 - `onSlideChange`: javascript will be executed after a slide is changed
