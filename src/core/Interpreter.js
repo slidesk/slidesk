@@ -195,6 +195,8 @@ export default class Interpreter {
     fusion = comments(fusion);
     // slice & treatment
     fusion = this.#sliceSlides(fusion, options);
+    // format text
+    fusion = this.#formatting(fusion);
     // get mainTitle
     fusion = this.#mainTitle(fusion);
     // image
@@ -251,11 +253,11 @@ export default class Interpreter {
       }
       if (spl[0].trim() !== "") {
         slug = slugify(spl[0]);
-        return this.#formatting(spl[0], "h2");
+        return `<h2>${spl[0]}</h2>`;
       }
       return "";
     }
-    if (par.length) return this.#formatting(par, "p");
+    if (par.length) return `<p>${par}</p>`;
     return "";
   };
 
@@ -309,7 +311,7 @@ export default class Interpreter {
     });
   };
 
-  static #formatting = (data, element) => {
+  static #formatting = (data) => {
     let htmlData = data;
     // italic, bold, ...
     [
@@ -322,7 +324,7 @@ export default class Interpreter {
       [
         ...htmlData.matchAll(
           new RegExp(
-            `${couple[0]}${couple[0]}([^\\${couple[0]}]+)${couple[0]}${couple[0]}(\\s)?`,
+            `${couple[0]}${couple[0]}(.+)${couple[0]}${couple[0]}(\\s)?`,
             "g",
           ),
         ),
@@ -340,7 +342,7 @@ export default class Interpreter {
         `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
       );
     });
-    return `<${element}>${htmlData}</${element}>`;
+    return htmlData;
   };
 
   static #mainTitle = (data) => {
