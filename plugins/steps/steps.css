@@ -1,0 +1,8 @@
+.steps li {
+  opacity: 1;
+  transition: opacity var(--animationTimer);
+}
+
+.steps li.step-hidden {
+  opacity: 0;
+}

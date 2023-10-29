@@ -1,0 +1,5 @@
+{
+  "addScriptsAfter": ["/plugins/steps/steps.js"],
+  "addStyles": ["/plugins/steps/steps.css"],
+  "onSlideChange": "window.slidesk.prepareSteps();"
+}
