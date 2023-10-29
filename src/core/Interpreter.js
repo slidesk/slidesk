@@ -163,7 +163,9 @@ export default class Interpreter {
 </script>${plugins
     .map((p) =>
       p.addScriptsAfter
-        ? p.addScriptsAfter.map((s) => `<script src="${s}"></script>`).join("")
+        ? p.addScriptsAfter
+            .map((s) => `<script src="${s}" defer></script>`)
+            .join("")
         : "",
     )
     .join("")}${customJS}`;
