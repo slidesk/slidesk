@@ -74,8 +74,12 @@ h6 {
 }
 
 p,
-img {
+.sd-img {
   margin: 0.7vw auto;
+}
+
+p {
+  text-align: center;
 }
 
 a,
@@ -173,10 +177,6 @@ h3 {
   display: none;
 }
 
-.sd-slide img {
-  max-height: 90%;
-}
-
 #sd-showSource {
   position: absolute;
   bottom: 10px;
@@ -224,4 +224,13 @@ h3 {
 
 #sd-langs option {
   color: var(--sd-text-color);
+}
+
+.sd-img {
+  display: inline-block;
+}
+
+.sd-img img {
+  width: 100%;
+  height: 100%;
 }

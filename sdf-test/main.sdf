@@ -23,7 +23,7 @@ With a ``!````image(path of your image)`` at the beginning of a line will displa
 
 !image(SD.png)
 
-and you can add html attributes with a "|" ``!````image(path | width="123px")``
+and you can specify width (in vw), height (in vh), and styles,  ``!````image(path, 20, 10, float:left;)``
 
 ## List
 
