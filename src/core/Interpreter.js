@@ -339,12 +339,17 @@ export default class Interpreter {
       ["`", "code"],
       ["˜", "u"],
     ].forEach((couple) => {
-      htmlData = [...htmlData.split(new RegExp(`${couple[0]}{2}`))]
-        .map((t, i) => {
-          if (i % 2) return `<span class="${couple[1]}">${t}</span>`;
-          return t;
-        })
-        .join("");
+      if (
+        (htmlData.match(new RegExp(`${couple[0]}{2}`)) || []).length &&
+        !htmlData.includes("data-source")
+      ) {
+        htmlData = [...htmlData.split(new RegExp(`${couple[0]}{2}`))]
+          .map((t, i) => {
+            if (i % 2) return `<span class="${couple[1]}">${t}</span>`;
+            return t;
+          })
+          .join("");
+      }
     });
     return htmlData;
   };
