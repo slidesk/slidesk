@@ -5,13 +5,15 @@ export default function image(data) {
     newData = newData.replace(
       match[0],
       `<div class="sd-img" style="${
-        width && width.trim() !== "" ? `width: ${width}vw;` : "width: auto;"
+        width && width.trim() !== ""
+          ? `width: ${width.trim()}vw;`
+          : "width: auto;"
       }${
         height && height.trim() !== ""
-          ? `height: ${height}vh;`
+          ? `height: ${height.trim()}vh;`
           : "height: auto;"
       }${optionals || ""}">
-        <img src="${src.trim()}" loading="lazy" alt="${alt}" />
+        <img src="${src.trim()}" loading="lazy" alt="${alt?.trim()}" />
       </div>`,
     );
   });
