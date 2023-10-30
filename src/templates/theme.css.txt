@@ -228,6 +228,7 @@ h3 {
 
 .sd-img {
   display: inline-block;
+  overflow: hidden;
 }
 
 .sd-img img {

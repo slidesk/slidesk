@@ -319,9 +319,19 @@ export default class Interpreter {
     });
   };
 
-  static #formatting = (data) => {
+  static #links = (data) => {
     let htmlData = data;
-    // italic, bold, ...
+    [...htmlData.matchAll(/https?:\/\/(\S*)/g)].forEach((match) => {
+      htmlData = htmlData.replace(
+        match[0],
+        `<p><a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a></p>`,
+      );
+    });
+    return htmlData;
+  };
+
+  static #grammar = (data) => {
+    let htmlData = data;
     [
       ["=", "s"],
       ["_", "i"],
@@ -329,26 +339,25 @@ export default class Interpreter {
       ["`", "code"],
       ["˜", "u"],
     ].forEach((couple) => {
-      [
-        ...htmlData.matchAll(
-          new RegExp(`${couple[0]}{2}([^${couple[0]}]+)${couple[0]}{2}`, "g"),
-        ),
-      ].forEach((match) => {
-        htmlData = htmlData.replace(
-          match[0],
-          `<span class="${couple[1]}">${match[1]}</span>${match[2] ?? ""}`,
-        );
-      });
-    });
-    // links
-    [...htmlData.matchAll(/https?:\/\/(\S*)/g)].forEach((match) => {
-      htmlData = htmlData.replace(
-        match[0],
-        `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
-      );
+      htmlData = [...htmlData.split(new RegExp(`${couple[0]}{2}`))]
+        .map((t, i) => {
+          if (i % 2) return `<span class="${couple[1]}">${t}</span>`;
+          return t;
+        })
+        .join("");
     });
     return htmlData;
   };
+
+  static #formatting = (data) =>
+    [...data.split("\n")]
+      .map((l) => {
+        let nl = l;
+        nl = this.#grammar(nl);
+        nl = this.#links(nl);
+        return nl;
+      })
+      .join("\n");
 
   static #mainTitle = (data) => {
     let fusion = data;
