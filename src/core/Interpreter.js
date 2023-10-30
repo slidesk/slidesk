@@ -332,7 +332,7 @@ export default class Interpreter {
       [
         ...htmlData.matchAll(
           new RegExp(
-            `${couple[0]}${couple[0]}(.+)${couple[0]}${couple[0]}(\\s)?`,
+            `${couple[0]}${couple[0]}([^${couple[0]}]+)${couple[0]}${couple[0]}(\\s)?`,
             "g",
           ),
         ),
