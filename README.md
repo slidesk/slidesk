@@ -128,7 +128,7 @@ __italic__
 
 **bold**
 
-!image(path or url | html attributes)
+!image(path or url, width (in vw), height (in vh), styles)
 
 - list
 -- sublist

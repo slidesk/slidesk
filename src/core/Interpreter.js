@@ -261,11 +261,11 @@ export default class Interpreter {
       }
       if (spl[0].trim() !== "") {
         slug = slugify(spl[0]);
-        return `<h2>${spl[0]}</h2>`;
+        return `<h2>${spl[0]} </h2>`;
       }
       return "";
     }
-    if (par.length) return `<p>${par}</p>`;
+    if (par.length) return `<p>${par} </p>`;
     return "";
   };
 
@@ -332,7 +332,7 @@ export default class Interpreter {
       [
         ...htmlData.matchAll(
           new RegExp(
-            `${couple[0]}${couple[0]}(.+)${couple[0]}${couple[0]}(\\s)?`,
+            `${couple[0]}${couple[0]}([^${couple[0]}]+)${couple[0]}${couple[0]}(\\s)?`,
             "g",
           ),
         ),
