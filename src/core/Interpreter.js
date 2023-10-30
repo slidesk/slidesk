@@ -324,7 +324,7 @@ export default class Interpreter {
     [...htmlData.matchAll(/https?:\/\/(\S*)/g)].forEach((match) => {
       htmlData = htmlData.replace(
         match[0],
-        `<p><a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a></p>`,
+        `<a href="${match[0]}" target="_blank" rel="noopener">${match[0]}</a>`,
       );
     });
     return htmlData;
