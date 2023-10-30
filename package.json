@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -24,8 +24,8 @@
     "prettier": "^3.0.0"
   },
   "scripts": {
-    "make": "bun build src/index.js --outdir bin  --minify --target bun",
-    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify",
+    "make": "bun build src/index.js --outdir bin --minify --target bun --sourcemap none",
+    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify --sourcemap none",
     "lint": "eslint src",
     "example": "bun src/index.js example",
     "gendocs": "bun src/index.js example -s && mv -f example/*.html docs"
