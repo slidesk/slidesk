@@ -9,6 +9,7 @@ import slugify from "../utils/slugify";
 import image from "../components/image";
 import comments from "../components/comments";
 import list from "../components/list";
+import dotenv from "dotenv";
 
 const { error } = console;
 
@@ -28,6 +29,7 @@ let sdfPath = "";
 let plugins = [];
 let components = [];
 let hasPluginSource = false;
+let env = {};
 
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
@@ -50,15 +52,20 @@ export default class Interpreter {
     plugins = [];
     components = [];
     const sdfMainFile = Bun.file(mainFile);
+    if (sdfMainFile.size === 0) {
+      error("🤔 main.sdf was not found");
+      return null;
+    }
     sdfPath = `${process.cwd()}/${mainFile.substring(
       0,
       mainFile.lastIndexOf("/"),
     )}`;
     await this.#loadPlugins();
     this.#loadComponents();
-    if (sdfMainFile.size === 0) {
-      error("🤔 main.sdf was not found");
-      return null;
+    const slideskEnvFile = Bun.file(`${sdfPath}/.env`);
+    if (slideskEnvFile.size !== 0) {
+      const buf = await slideskEnvFile.text();
+      env = dotenv.parse(buf);
     }
     const presentation = await this.#getPresentation(mainFile, options);
     let template = layoutHTML;
@@ -156,7 +163,8 @@ export default class Interpreter {
     animationTimer: ${options.transition},
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
-      .join("")}}
+      .join("")}},
+    env: ${JSON.stringify(env)}
   };
   ${!options.save ? socket : ""}
   ${mainJS}
