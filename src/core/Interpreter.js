@@ -156,8 +156,7 @@ export default class Interpreter {
     animationTimer: ${options.transition},
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
-      .join("")}},
-    env: ${JSON.stringify(Bun.env)}
+      .join("")}}
   };
   ${!options.save ? socket : ""}
   ${mainJS}
