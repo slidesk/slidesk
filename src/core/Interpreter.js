@@ -50,7 +50,10 @@ export default class Interpreter {
     components = [];
     // eslint-disable-next-line no-undef
     const sdfMainFile = Bun.file(mainFile);
-    sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
+    sdfPath = `${process.cwd()}/${mainFile.substring(
+      0,
+      mainFile.lastIndexOf("/"),
+    )}`;
     await this.#loadPlugins();
     this.#loadComponents();
     if (sdfMainFile.size === 0) {
@@ -125,7 +128,7 @@ export default class Interpreter {
       components = readdirSync(componentsDir)
         .filter((item) => /.mjs$/gi.test(item))
         // eslint-disable-next-line no-undef
-        .map((c) => Bun.resolveSync(`${componentsDir}/${c}`, process.cwd()));
+        .map((c) => `${componentsDir}/${c}`);
     }
   };
 

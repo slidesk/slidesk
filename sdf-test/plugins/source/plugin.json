@@ -1,4 +1,0 @@
-{
-  "addHTML": "<button id=\"sd-showSource\" popovertarget=\"sd-source\">&lt;/&gt;</button><div id=\"sd-source\" popover><pre>x</pre></div>",
-  "onSlideChange": "const fromBinary = (encoded) => {const binary = atob(encoded);const bytes = new Uint8Array(binary.length);for (let i = 0; i < bytes.length; i += 1) {bytes[i] = binary.charCodeAt(i);}return String.fromCharCode(...new Uint16Array(bytes.buffer));};document.querySelector(\"#sd-source pre\").innerText = fromBinary(window.slidesk.slides[window.slidesk.currentSlide].getAttribute(\"data-source\"),);"
-}
