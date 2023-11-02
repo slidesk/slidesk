@@ -50,7 +50,10 @@ export default class Interpreter {
     components = [];
     // eslint-disable-next-line no-undef
     const sdfMainFile = Bun.file(mainFile);
-    sdfPath = mainFile.substring(0, mainFile.lastIndexOf("/"));
+    sdfPath = `${process.cwd()}/${mainFile.substring(
+      0,
+      mainFile.lastIndexOf("/"),
+    )}`;
     await this.#loadPlugins();
     this.#loadComponents();
     if (sdfMainFile.size === 0) {
@@ -125,7 +128,7 @@ export default class Interpreter {
       components = readdirSync(componentsDir)
         .filter((item) => /.mjs$/gi.test(item))
         // eslint-disable-next-line no-undef
-        .map((c) => Bun.resolveSync(`${componentsDir}/${c}`, process.cwd()));
+        .map((c) => `${componentsDir}/${c}`);
     }
   };
 
@@ -203,8 +206,6 @@ export default class Interpreter {
     fusion = comments(fusion);
     // slice & treatment
     fusion = this.#sliceSlides(fusion, options);
-    // get mainTitle
-    fusion = this.#mainTitle(fusion);
     // custom components
     await Promise.all(
       components.map(async (c) => {
@@ -216,6 +217,8 @@ export default class Interpreter {
     fusion = this.#formatting(fusion);
     // image
     fusion = image(fusion);
+    // mainTitle
+    fusion = this.#mainTitle(fusion);
     return fusion;
   };
 
@@ -366,7 +369,7 @@ export default class Interpreter {
 
   static #mainTitle = (data) => {
     let fusion = data;
-    const m = /# (.*)/.exec(fusion);
+    const m = /<p># (.*)<\/p>/.exec(fusion);
     if (m !== null) {
       fusion = fusion.replace(m[0], `<h1>${m[1]}</h1>`);
     }
@@ -375,7 +378,7 @@ export default class Interpreter {
 
   static #polish = async (presentation, template) => {
     let tpl = template;
-    [...presentation.matchAll(/<h1>([^\0]*)<\/h1>/g)].forEach((title) => {
+    [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title) => {
       tpl = tpl.replace("#TITLE#", title[1]);
     });
     tpl = tpl.replace("#SECTIONS#", presentation);
