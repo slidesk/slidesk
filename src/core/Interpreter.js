@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync } from "node:fs";
 import layoutHTML from "../templates/layout.html.txt";
@@ -48,7 +49,6 @@ export default class Interpreter {
     sdfPath = "";
     plugins = [];
     components = [];
-    // eslint-disable-next-line no-undef
     const sdfMainFile = Bun.file(mainFile);
     sdfPath = `${process.cwd()}/${mainFile.substring(
       0,
@@ -74,7 +74,6 @@ export default class Interpreter {
       await Promise.all(
         langFiles.map(async (lang) => {
           const langSlug = lang.replace(".lang.json", "");
-          // eslint-disable-next-line no-undef
           const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
           menuLang.push({
             value: translationJSON.default ? "/" : `/--${langSlug}--/`,
@@ -112,7 +111,6 @@ export default class Interpreter {
         readdirSync(pluginsDir).map(async (plugin) => {
           if (plugin === "source") hasPluginSource = true;
           const pluginPath = `${sdfPath}/plugins/${plugin}/plugin.json`;
-          // eslint-disable-next-line no-undef
           const pluginFile = Bun.file(pluginPath);
           const exists = await pluginFile.exists();
           if (exists) {
@@ -127,7 +125,6 @@ export default class Interpreter {
     if (existsSync(componentsDir)) {
       components = readdirSync(componentsDir)
         .filter((item) => /.mjs$/gi.test(item))
-        // eslint-disable-next-line no-undef
         .map((c) => `${componentsDir}/${c}`);
     }
   };
@@ -159,7 +156,8 @@ export default class Interpreter {
     animationTimer: ${options.transition},
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
-      .join("")}}
+      .join("")}},
+    env: ${JSON.stringify(Bun.env)}
   };
   ${!options.save ? socket : ""}
   ${mainJS}
@@ -233,7 +231,6 @@ export default class Interpreter {
   };
 
   static #includes = async (file) => {
-    // eslint-disable-next-line no-undef
     const data = await Bun.file(file).text();
     return this.#replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) =>
       this.#includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`),

@@ -28,6 +28,6 @@
     "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify --sourcemap=none",
     "lint": "eslint src",
     "example": "bun src/index.js example",
-    "gendocs": "bun src/index.js example -s && mv -f example/*.html docs"
+    "gendocs": "bun src/index.js example -s && mv -f example/*.html docs && cp -R example/components docs && cp example/custom.* docs"
   }
 }
