@@ -3,5 +3,8 @@
     "./plugins/highlightjs/highlight.min.js",
     "./plugins/highlightjs/plugin.js"
   ],
-  "addStyles": ["./plugins/highlightjs/default.min.css"]
+  "addStyles": ["./plugins/highlightjs/default.min.css"],
+  "addSpeakerScripts": ["./plugins/highlightjs/highlight.min.js"],
+  "addSpeakerStyles": ["./plugins/highlightjs/default.min.css"],
+  "onSpeakerViewSlideChange": "if (hljs) hljs.highlightAll();"
 }

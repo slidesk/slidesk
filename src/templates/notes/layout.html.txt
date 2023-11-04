@@ -24,6 +24,9 @@
         io: {},
         timer: document.querySelector("#sd-sv-timer"),
         subtimer: document.querySelector("#sd-sv-subtimer"),
+        onSpeakerViewSlideChange: () => {
+          /* #SLIDE_CHANGE# */
+        }
       };
       /* #SOCKETS# */
       /* #SV_SCRIPT# */
