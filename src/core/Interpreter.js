@@ -2,9 +2,9 @@
 import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync } from "node:fs";
 import layoutHTML from "../templates/layout.html.txt";
-import themeCSS from "../templates/theme.css.txt";
+import themeCSS from "../templates/styles.css.txt";
 import printCSS from "../templates/print.css.txt";
-import mainJS from "../templates/main.js.txt";
+import mainJS from "../templates/script.js.txt";
 import slugify from "../utils/slugify";
 import image from "../components/image";
 import comments from "../components/comments";
@@ -17,9 +17,9 @@ const socket =
   // eslint-disable-next-line no-template-curly-in-string
   "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
 
-let customCSS = "";
+let customCSS = [];
 let customJS = "";
-let customSVJS = "";
+let customSVJS = [];
 
 let classes = "";
 let timerSlide = "";
@@ -41,9 +41,9 @@ const toBinary = (string) => {
 
 export default class Interpreter {
   static convert = async (mainFile, options) => {
-    customCSS = "";
+    customCSS = [];
     customJS = "";
-    customSVJS = "";
+    customSVJS = [];
     classes = "";
     timerSlide = "";
     timerCheckpoint = "";
@@ -117,7 +117,7 @@ export default class Interpreter {
       await Promise.all(
         readdirSync(pluginsDir).map(async (plugin) => {
           if (plugin === "source") hasPluginSource = true;
-          const pluginPath = `${sdfPath}/plugins/${plugin}/plugin.json`;
+          const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
           const pluginFile = Bun.file(pluginPath);
           const exists = await pluginFile.exists();
           if (exists) {
@@ -144,19 +144,11 @@ export default class Interpreter {
         }</option>`,
     )}</select></body>`;
 
-  static #getJSTemplate = (options) => `${plugins
-    .map((p) =>
-      p.addScripts
-        ? p.addScripts.map((s) => `<script src="${s}"></script>`).join("")
-        : "",
-    )
-    .join("")}<script type="module" id="sd-scripts" data-sv="${[
-    customSVJS,
-    plugins
-      .filter((p) => p.addSpeakerScripts)
-      .map((p) => p.addSpeakerScripts)
-      .join(","),
-  ].join(",")}">
+  static #getJSTemplate = (
+    options,
+  ) => `<script type="module" id="sd-scripts" data-sv="${[...customSVJS].join(
+    ",",
+  )}">
   window.slidesk = {
     currentSlide: 0,
     slides: [],
@@ -170,10 +162,8 @@ export default class Interpreter {
   ${mainJS}
 </script>${plugins
     .map((p) =>
-      p.addScriptsAfter
-        ? p.addScriptsAfter
-            .map((s) => `<script src="${s}" defer></script>`)
-            .join("")
+      p.addScripts
+        ? p.addScripts.map((s) => `<script src="${s}" defer></script>`).join("")
         : "",
     )
     .join("")}${customJS}`;
@@ -193,11 +183,9 @@ export default class Interpreter {
           : "",
       )
       .join("")}
-      ${
-        customCSS.length
-          ? `<link id="sd-customcss" rel="stylesheet" href="${customCSS}">`
-          : ""
-      }`;
+      ${customCSS.map(
+        (s) => `<link class="sd-customcss" rel="stylesheet" href="${s}">`,
+      )}`;
 
   static #getPresentation = async (mainFile, options) => {
     let fusion = await this.#includes(mainFile);
@@ -207,6 +195,13 @@ export default class Interpreter {
       fusion = fusion.replace(m[0], "");
       this.#config(m[1]);
     }
+    // customs
+    plugins.forEach((p) => {
+      if (p.addSpeakerScripts)
+        p.addSpeakerScripts.forEach((s) => customSVJS.push(s));
+      if (p.addSpeakerStyles)
+        p.addSpeakerStyles.forEach((s) => customCSS.push(s));
+    });
     // comments
     fusion = comments(fusion);
     // slice & treatment
@@ -316,13 +311,13 @@ export default class Interpreter {
     const lines = [...data.split("\n")].filter((l) => l.length);
     lines.forEach((line) => {
       if (line.startsWith("custom_css:"))
-        customCSS = line.replace("custom_css:", "").trim();
+        customCSS.push(line.replace("custom_css:", "").trim());
       else if (line.startsWith("custom_js:"))
         customJS = `<script src="${line
           .replace("custom_js:", "")
           .trim()}"></script>`;
       else if (line.startsWith("custom_sv_js"))
-        customSVJS = line.replace("custom_sv_js:", "").trim();
+        customSVJS.push(line.replace("custom_sv_js:", "").trim());
     });
   };
 

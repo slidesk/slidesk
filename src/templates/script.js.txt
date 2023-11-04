@@ -85,12 +85,14 @@ window.slidesk.previous = () => {
 window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
-    const customcss = document.getElementById("sd-customcss");
+    const customcss = [...document.querySelectorAll(".sd-customcss")].map((s) =>
+      s.getAttribute("href"),
+    );
     if (customcss)
       window.slidesk.sendMessage(
         JSON.stringify({
           action: "customcss",
-          payload: customcss.getAttribute("href"),
+          payload: customcss.join(","),
         }),
       );
     const customsvjs = document

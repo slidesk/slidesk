@@ -1,14 +1,11 @@
 const toHHMMSS = (secs) => {
   const secnum = parseInt(Math.abs(secs), 10);
-  const hours = Math.floor(secnum / 3600);
-  const minutes = Math.floor(secnum / 60) % 60;
-  const seconds = secnum % 60;
-
-  return [hours, minutes, seconds]
+  return [Math.floor(secnum / 3600), Math.floor(secnum / 60) % 60, secnum % 60]
     .map((v) => (v < 10 ? "0" + v : v))
     .filter((v, i) => v !== "00" || i > 0)
     .join(":");
 };
+
 const fromHHMMSS = (time) => {
   const hhmmss = time.split(":");
   if (hhmmss.length === 3) {
@@ -20,7 +17,8 @@ const fromHHMMSS = (time) => {
   }
   return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
 };
-let timerCheckpoints = [];
+
+const timerCheckpoints = [];
 let timerSlide = "";
 let startTime = null;
 let startSlideTime = null;
@@ -46,19 +44,23 @@ window.slidesk.io.onmessage = (event) => {
       timerSlide = fromHHMMSS(slidetime);
       startSlideTime = Date.now();
     }
+    window.slidesk.onSpeakerViewSlideChange();
   }
   if (data.action === "future") {
     document.querySelector("#sd-sv-future").innerHTML = data.payload;
   }
   if (data.action === "customcss") {
-    document.querySelector("head").innerHTML +=
-      '<link rel="stylesheet" href="' + data.payload + '">';
+    data.payload.split(",").forEach((sc) => {
+      document.querySelector("head").innerHTML +=
+        '<link rel="stylesheet" href="' + sc + '">';
+    });
   }
   if (data.action === "customsvjs") {
     data.payload.split(",").forEach((sc) => {
       if (sc) {
         const s = document.createElement("script");
         s.src = sc;
+        s.defer = true;
         document.querySelector("body").append(s);
       }
     });
