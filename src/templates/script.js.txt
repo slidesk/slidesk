@@ -65,6 +65,7 @@ window.slidesk.changeSlide = () => {
 
 window.slidesk.next = () => {
   if (window.slidesk.currentSlide !== window.slidesk.slides.length - 1) {
+    window.slidesk.lastAction = "next";
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides[window.slidesk.currentSlide].classList.add(
       "sd-previous",
@@ -76,6 +77,7 @@ window.slidesk.next = () => {
 
 window.slidesk.previous = () => {
   if (window.slidesk.currentSlide !== 0) {
+    window.slidesk.lastAction = "previous";
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.currentSlide -= 1;
     window.slidesk.changeSlide();

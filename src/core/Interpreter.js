@@ -156,7 +156,8 @@ export default class Interpreter {
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
       .join("")}},
-    env: ${JSON.stringify(env)}
+    env: ${JSON.stringify(env)},
+    lastAction: ""
   };
   ${!options.save ? socket : ""}
   ${mainJS}
