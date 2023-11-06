@@ -32,7 +32,7 @@ export const favicon = () =>
 
 const getCustomCSS = async () => {
   let res = "";
-  let fusion = await Bun.file(`${globalThis.path}/main.sdf`).text();
+  const fusion = await Bun.file(`${globalThis.path}/main.sdf`).text();
   // get Custom configuration
   const m = /\/::([\s\S]*)::\//m.exec(fusion);
   if (m !== null) {
