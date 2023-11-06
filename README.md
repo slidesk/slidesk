@@ -209,18 +209,6 @@ This following syntax means that this slide must be done in 3 minutes.
 //@ [] 2:00
 ```
 
-## Add JS on your slides & Speakers Notes
-
-With a custom header in the `main.sdf` file, you can add a script file for the slide part, or the speaker notes part:
-
-```
-/::
-custom_css: assets/custom.css
-custom_js: assets/custom.js
-custom_sv_js: assets/customsv.js
-::/
-```
-
 ## `.env` file
 
 SliDesk can load a `.env` file. The content will be available in JS (for your plugins) with the property `window.slidesk.env`.

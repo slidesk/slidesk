@@ -18,8 +18,7 @@ const socket =
   // eslint-disable-next-line no-template-curly-in-string
   "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
 
-let customCSS = [];
-let customJS = [];
+let customCSS = "";
 
 let classes = "";
 let timerSlide = "";
@@ -67,8 +66,7 @@ export default class Interpreter {
   };
 
   static #initVariables = () => {
-    customCSS = [];
-    customJS = [];
+    customCSS = "";
     classes = "";
     timerSlide = "";
     timerCheckpoint = "";
@@ -108,12 +106,7 @@ export default class Interpreter {
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            [
-              "addScripts",
-              "addSpeakerScripts",
-              "addStyles",
-              "addSpeakerStyles",
-            ].map(async (t) => {
+            ["addScripts", "addStyles"].map(async (t) => {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
@@ -140,7 +133,7 @@ export default class Interpreter {
     }
   };
 
-  static #getJS = (options) => `<script type="module">
+  static #getJS = (options) => `<script>
   window.slidesk = {
     currentSlide: 0,
     slides: [],
@@ -170,23 +163,18 @@ export default class Interpreter {
           : "",
       )
       .join("")}
-      ${customCSS.map(
-        (s) => `<link class="sd-customcss" rel="stylesheet" href="${s}">`,
-      )}`;
+      ${customCSS}`;
 
   static #getPluginsJS = () =>
     `${plugins
       .map((p) =>
         p.addScripts
           ? Object.keys(p.addScripts)
-              .map(
-                (k) =>
-                  `<script type="module" data-src="${k}">${p.addScripts[k]}</script>`,
-              )
+              .map((k) => `<script data-src="${k}">${p.addScripts[k]}</script>`)
               .join("")
           : "",
       )
-      .join("")}${customJS}`;
+      .join("")}`;
 
   static #prepareSDF = async (mainFile) => {
     let fusion = await this.#includes(mainFile);
@@ -196,13 +184,6 @@ export default class Interpreter {
       fusion = fusion.replace(m[0], "");
       this.#config(m[1]);
     }
-    // customs
-    plugins.forEach((p) => {
-      if (p.addSpeakerScripts)
-        p.addSpeakerScripts.forEach((s) => customSVJS.push(s));
-      if (p.addSpeakerStyles)
-        p.addSpeakerStyles.forEach((s) => customCSS.push(s));
-    });
     return fusion;
   };
 
@@ -324,13 +305,9 @@ export default class Interpreter {
     const lines = [...data.split("\n")].filter((l) => l.length);
     lines.forEach((line) => {
       if (line.startsWith("custom_css:"))
-        customCSS.push(line.replace("custom_css:", "").trim());
-      else if (line.startsWith("custom_js:"))
-        customJS = `<script src="${line
-          .replace("custom_js:", "")
-          .trim()}"></script>`;
-      else if (line.startsWith("custom_sv_js"))
-        customSVJS.push(line.replace("custom_sv_js:", "").trim());
+        customCSS = `<link rel="stylesheet" href="${line
+          .replace("custom_css:", "")
+          .trim()}" />`;
     });
   };
 

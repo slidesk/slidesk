@@ -177,29 +177,6 @@ h3 {
   display: none;
 }
 
-#sd-showSource {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: var(--sd-text-color);
-  padding: 5px;
-  color: var(--sd-background-color);
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-#sd-showSource:hover {
-  cursor: pointer;
-}
-
-#sd-source {
-  background-color: var(--sd-background-color);
-  color: var(--sd-text-color);
-  padding: 10px 20px;
-  margin: auto;
-}
-
 #sd-langs {
   position: absolute;
   background: transparent;
