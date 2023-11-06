@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
+import dotenv from "dotenv";
 import { minify } from "html-minifier-terser";
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, readFileSync } from "node:fs";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/styles.css.txt";
 import printCSS from "../templates/print.css.txt";
@@ -9,7 +10,7 @@ import slugify from "../utils/slugify";
 import image from "../components/image";
 import comments from "../components/comments";
 import list from "../components/list";
-import dotenv from "dotenv";
+import pluginsJSON from "../plugins.json";
 
 const { error } = console;
 
@@ -18,8 +19,7 @@ const socket =
   "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
 
 let customCSS = [];
-let customJS = "";
-let customSVJS = [];
+let customJS = [];
 
 let classes = "";
 let timerSlide = "";
@@ -41,9 +41,34 @@ const toBinary = (string) => {
 
 export default class Interpreter {
   static convert = async (mainFile, options) => {
+    this.#initVariables();
+    const sdfMainFile = Bun.file(mainFile);
+    if (sdfMainFile.size === 0) {
+      error("🤔 main.sdf was not found");
+      return null;
+    }
+    this.#getRealPath(mainFile);
+    await this.#loadEnv();
+    await this.#loadPlugins();
+    this.#loadComponents();
+    const sdf = await this.#prepareSDF(mainFile);
+    return this.#generateHTML(
+      await this.#getPresentation(sdf, options),
+      this.#prepareTPL(options),
+      options,
+    );
+  };
+
+  static #getRealPath = (mainFile) => {
+    sdfPath = `${process.cwd()}/${mainFile.substring(
+      0,
+      mainFile.lastIndexOf("/"),
+    )}`;
+  };
+
+  static #initVariables = () => {
     customCSS = [];
-    customJS = "";
-    customSVJS = [];
+    customJS = [];
     classes = "";
     timerSlide = "";
     timerCheckpoint = "";
@@ -51,67 +76,28 @@ export default class Interpreter {
     sdfPath = "";
     plugins = [];
     components = [];
-    const sdfMainFile = Bun.file(mainFile);
-    if (sdfMainFile.size === 0) {
-      error("🤔 main.sdf was not found");
-      return null;
-    }
-    sdfPath = `${process.cwd()}/${mainFile.substring(
-      0,
-      mainFile.lastIndexOf("/"),
-    )}`;
-    await this.#loadPlugins();
-    this.#loadComponents();
+  };
+
+  static #loadEnv = async () => {
     const slideskEnvFile = Bun.file(`${sdfPath}/.env`);
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
     }
-    const presentation = await this.#getPresentation(mainFile, options);
-    let template = layoutHTML;
-    template = template.replace("#STYLES#", this.#getCSSTemplate(options));
-    template = template.replace("#SCRIPT#", this.#getJSTemplate(options));
-    // translation management
-    const langFiles = readdirSync(sdfPath).filter((item) =>
-      /.lang.json$/gi.test(item),
-    );
-    const languages = {};
-    if (langFiles.length) {
-      const menuLang = [];
-      await Promise.all(
-        langFiles.map(async (lang) => {
-          const langSlug = lang.replace(".lang.json", "");
-          const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
-          menuLang.push({
-            value: translationJSON.default ? "/" : `/--${langSlug}--/`,
-            label: langSlug,
-          });
-          languages[translationJSON.default ? "index" : langSlug] = {
-            html: await this.#polish(
-              this.#translate(presentation, translationJSON),
-              template,
-              options,
-            ),
-            slug: langSlug,
-          };
-        }),
-      );
-      // add menu lang
-      Object.keys(languages).forEach((key) => {
-        languages[key].html = languages[key].html.replace(
-          "</body>",
-          this.#getSelectLang(menuLang, key),
-        );
-      });
-    } else {
-      languages.index = {
-        html: await this.#polish(presentation, template, options),
-      };
-    }
-    return languages;
   };
 
   static #loadPlugins = async () => {
+    // internal plugins
+    if (env.PLUGINS) {
+      [...env.PLUGINS.split(",")].forEach((p) => {
+        const pl = p.trim();
+        if (pl === "source") hasPluginSource = true;
+        if (pluginsJSON[pl]) {
+          plugins.push(pluginsJSON[p.trim()]);
+        }
+      });
+    }
+    // external plugins
     const pluginsDir = `${sdfPath}/plugins`;
     if (existsSync(pluginsDir))
       await Promise.all(
@@ -121,7 +107,25 @@ export default class Interpreter {
           const pluginFile = Bun.file(pluginPath);
           const exists = await pluginFile.exists();
           if (exists) {
-            plugins.push(await pluginFile.json());
+            const json = await pluginFile.json();
+            [
+              "addScripts",
+              "addSpeakerScripts",
+              "addStyles",
+              "addSpeakerStyles",
+            ].map(async (t) => {
+              if (json[t]) {
+                const files = json[t];
+                json[t] = {};
+                files.forEach((s) => {
+                  json[t][s] = readFileSync(`${sdfPath}/${s}`, {
+                    encoding: "utf8",
+                  });
+                });
+              }
+              return true;
+            });
+            plugins.push(json);
           }
         }),
       );
@@ -136,19 +140,7 @@ export default class Interpreter {
     }
   };
 
-  static #getSelectLang = (menuLang, key) =>
-    `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang.map(
-      (o) =>
-        `<option value="${o.value}" ${key === "index" ? "selected" : ""}>${
-          o.label
-        }</option>`,
-    )}</select></body>`;
-
-  static #getJSTemplate = (
-    options,
-  ) => `<script type="module" id="sd-scripts" data-sv="${[...customSVJS].join(
-    ",",
-  )}">
+  static #getJS = (options) => `<script type="module">
   window.slidesk = {
     currentSlide: 0,
     slides: [],
@@ -161,15 +153,9 @@ export default class Interpreter {
   };
   ${!options.save ? socket : ""}
   ${mainJS}
-</script>${plugins
-    .map((p) =>
-      p.addScripts
-        ? p.addScripts.map((s) => `<script src="${s}" defer></script>`).join("")
-        : "",
-    )
-    .join("")}${customJS}`;
+</script>`;
 
-  static #getCSSTemplate = (options) =>
+  static #getCSS = (options) =>
     `<style>
     :root { --animationTimer: ${options.transition}ms; }
     ${themeCSS}
@@ -178,8 +164,8 @@ export default class Interpreter {
     ${plugins
       .map((p) =>
         p.addStyles
-          ? p.addStyles
-              .map((s) => `<link rel="stylesheet" href="${s}" />`)
+          ? Object.keys(p.addStyles)
+              .map((k) => `<style data-href="${k}">${p.addStyles[k]}</style>`)
               .join("")
           : "",
       )
@@ -188,7 +174,21 @@ export default class Interpreter {
         (s) => `<link class="sd-customcss" rel="stylesheet" href="${s}">`,
       )}`;
 
-  static #getPresentation = async (mainFile, options) => {
+  static #getPluginsJS = () =>
+    `${plugins
+      .map((p) =>
+        p.addScripts
+          ? Object.keys(p.addScripts)
+              .map(
+                (k) =>
+                  `<script type="module" data-src="${k}">${p.addScripts[k]}</script>`,
+              )
+              .join("")
+          : "",
+      )
+      .join("")}${customJS}`;
+
+  static #prepareSDF = async (mainFile) => {
     let fusion = await this.#includes(mainFile);
     // get Custom configuration
     const m = /\/::([\s\S]*)::\//m.exec(fusion);
@@ -203,6 +203,18 @@ export default class Interpreter {
       if (p.addSpeakerStyles)
         p.addSpeakerStyles.forEach((s) => customCSS.push(s));
     });
+    return fusion;
+  };
+
+  static #prepareTPL = (options) => {
+    let template = layoutHTML;
+    template = template.replace("#STYLES#", this.#getCSS(options));
+    template = template.replace("#SCRIPT#", this.#getJS(options));
+    return template;
+  };
+
+  static #getPresentation = async (sdf, options) => {
+    let fusion = sdf;
     // comments
     fusion = comments(fusion);
     // slice & treatment
@@ -376,6 +388,54 @@ export default class Interpreter {
     return fusion;
   };
 
+  static #generateHTML = async (presentation, template, options) => {
+    const langFiles = readdirSync(sdfPath).filter((item) =>
+      /.lang.json$/gi.test(item),
+    );
+    const languages = {};
+    if (langFiles.length) {
+      const menuLang = [];
+      await Promise.all(
+        langFiles.map(async (lang) => {
+          const langSlug = lang.replace(".lang.json", "");
+          const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
+          menuLang.push({
+            value: translationJSON.default ? "/" : `/--${langSlug}--/`,
+            label: langSlug,
+          });
+          languages[translationJSON.default ? "index" : langSlug] = {
+            html: await this.#polish(
+              this.#translate(presentation, translationJSON),
+              template,
+              options,
+            ),
+            slug: langSlug,
+          };
+        }),
+      );
+      // add menu lang
+      Object.keys(languages).forEach((key) => {
+        languages[key].html = languages[key].html.replace(
+          "</body>",
+          this.#getSelectLang(menuLang, key),
+        );
+      });
+    } else {
+      languages.index = {
+        html: await this.#polish(presentation, template, options),
+      };
+    }
+    return languages;
+  };
+
+  static #translate = (presentation, json) => {
+    let pres = presentation;
+    [...pres.matchAll(/\${2}(\w+)\${2}/g)].forEach((match) => {
+      pres = pres.replace(match[0], json.translations[match[1]] ?? match[0]);
+    });
+    return pres;
+  };
+
   static #polish = async (presentation, template) => {
     let tpl = template;
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title) => {
@@ -392,17 +452,19 @@ export default class Interpreter {
       removeAttributeQuotes: true,
     });
 
-    return tpl.replace(
-      "</body>",
-      `${plugins.map((p) => p.addHTML ?? "").join("")}</body>`,
-    );
+    return tpl
+      .replace(
+        "</body>",
+        `${plugins.map((p) => p.addHTML ?? "").join("")}</body>`,
+      )
+      .replace("#PLUGINSSCRIPTS#", this.#getPluginsJS());
   };
 
-  static #translate = (presentation, json) => {
-    let pres = presentation;
-    [...pres.matchAll(/\${2}(\w+)\${2}/g)].forEach((match) => {
-      pres = pres.replace(match[0], json.translations[match[1]] ?? match[0]);
-    });
-    return pres;
-  };
+  static #getSelectLang = (menuLang, key) =>
+    `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang.map(
+      (o) =>
+        `<option value="${o.value}" ${key === "index" ? "selected" : ""}>${
+          o.label
+        }</option>`,
+    )}</select></body>`;
 }

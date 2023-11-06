@@ -87,26 +87,6 @@ window.slidesk.previous = () => {
 window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
-    const customcss = [...document.querySelectorAll(".sd-customcss")].map((s) =>
-      s.getAttribute("href"),
-    );
-    if (customcss)
-      window.slidesk.sendMessage(
-        JSON.stringify({
-          action: "customcss",
-          payload: customcss.join(","),
-        }),
-      );
-    const customsvjs = document
-      .getElementById("sd-scripts")
-      .getAttribute("data-sv");
-    if (customsvjs)
-      window.slidesk.sendMessage(
-        JSON.stringify({
-          action: "customsvjs",
-          payload: customsvjs,
-        }),
-      );
     const timerCheckpoints = {};
     window.slidesk.slides.forEach((slide) => {
       timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(

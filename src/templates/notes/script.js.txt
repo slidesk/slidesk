@@ -49,22 +49,6 @@ window.slidesk.io.onmessage = (event) => {
   if (data.action === "future") {
     document.querySelector("#sd-sv-future").innerHTML = data.payload;
   }
-  if (data.action === "customcss") {
-    data.payload.split(",").forEach((sc) => {
-      document.querySelector("head").innerHTML +=
-        '<link rel="stylesheet" href="' + sc + '">';
-    });
-  }
-  if (data.action === "customsvjs") {
-    data.payload.split(",").forEach((sc) => {
-      if (sc) {
-        const s = document.createElement("script");
-        s.src = sc;
-        s.defer = true;
-        document.querySelector("body").append(s);
-      }
-    });
-  }
   if (data.action === "checkpoints") {
     let lastCheckpoint = null;
     for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {

@@ -200,18 +200,6 @@ h3 {
   margin: auto;
 }
 
-#sd-qrcode {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  padding: 10px;
-  background: white;
-}
-
-#sd-qrcode img {
-  margin: 0;
-}
-
 #sd-langs {
   position: absolute;
   background: transparent;
