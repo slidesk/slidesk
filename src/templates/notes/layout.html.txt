@@ -5,9 +5,11 @@
     <link rel="icon" href="/favicon.svg" />
     <title>Speaker View</title>
     <style>
-      /* #STYLES# */
-      /* #SV_STYLES# */
+      #STYLES#
+      #SV_STYLES#
     </style>
+    #PLUGINSSTYLES#
+    #CUSTOMCSS#
   </head>
   <body>
     <div id="sd-sv-left">
@@ -23,13 +25,16 @@
       window.slidesk = {
         io: {},
         timer: document.querySelector("#sd-sv-timer"),
-        subtimer: document.querySelector("#sd-sv-subtimer"),
-        onSpeakerViewSlideChange: () => {
-          /* #SLIDE_CHANGE# */
-        }
+        subtimer: document.querySelector("#sd-sv-subtimer")
       };
-      /* #SOCKETS# */
-      /* #SV_SCRIPT# */
+      #SOCKETS#
+      #SV_SCRIPT#
+    </script>
+    #PLUGINSSCRIPTS#
+    <script>
+      window.slidesk.onSpeakerViewSlideChange = () => {
+        #SLIDE_CHANGE#
+      };
     </script>
   </body>
 </html>

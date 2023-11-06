@@ -1,9 +1,12 @@
-import { existsSync, readdirSync } from "fs";
+/* eslint-disable no-undef */
+import dotenv from "dotenv";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
 import themeCSS from "../templates/styles.css.txt";
 import faviconSVG from "../templates/SD.svg.txt";
+import pluginsJSON from "../plugins.json";
 
 export const defaultPage = () =>
   new Response(globalThis.html.index.html, {
@@ -27,8 +30,39 @@ export const favicon = () =>
     headers: { "Content-Type": "image/svg+xml" },
   });
 
-export const notePage = async (options) => {
-  const onSpeakerViewSlideChange = [];
+const getCustomCSS = async () => {
+  let res = "";
+  const fusion = await Bun.file(`${globalThis.path}/main.sdf`).text();
+  // get Custom configuration
+  const m = /\/::([\s\S]*)::\//m.exec(fusion);
+  if (m !== null) {
+    const lines = [...m[1].split("\n")].filter((l) => l.length);
+    lines.forEach((line) => {
+      if (line.startsWith("custom_css:"))
+        res = `<link rel="stylesheet" href="${line
+          .replace("custom_css:", "")
+          .trim()}" />`;
+    });
+  }
+  return res;
+};
+
+const getPlugins = async () => {
+  const plugins = [];
+  let env = {};
+  const slideskEnvFile = Bun.file(`${globalThis.path}/.env`);
+  if (slideskEnvFile.size !== 0) {
+    const buf = await slideskEnvFile.text();
+    env = dotenv.parse(buf);
+  }
+  if (env.PLUGINS) {
+    [...env.PLUGINS.split(",")].forEach((p) => {
+      const pl = p.trim();
+      if (pluginsJSON[pl]) {
+        plugins.push(pluginsJSON[p.trim()]);
+      }
+    });
+  }
   if (existsSync(`${globalThis.path}/plugins`))
     await Promise.all(
       readdirSync(`${globalThis.path}/plugins`).map(async (plugin) => {
@@ -37,21 +71,71 @@ export const notePage = async (options) => {
         const exists = await pluginFile.exists();
         if (exists) {
           const json = await pluginFile.json();
-          if (json.onSpeakerViewSlideChange)
-            onSpeakerViewSlideChange.push(json.onSpeakerViewSlideChange);
+          ["addSpeakerScripts", "addSpeakerStyles"].map(async (t) => {
+            if (json[t]) {
+              const files = json[t];
+              json[t] = {};
+              files.forEach((s) => {
+                json[t][s] = readFileSync(`${globalThis.path}/${s}`, {
+                  encoding: "utf8",
+                });
+              });
+            }
+            return true;
+          });
+          plugins.push(json);
         }
       }),
     );
+  return plugins;
+};
+
+export const notePage = async (options) => {
+  const plugins = await getPlugins();
   return new Response(
     speakerViewHTML
       .replace(
-        "/* #SOCKETS# */",
+        "#SOCKETS#",
         `window.slidesk.io = new WebSocket("ws://${options.domain}:${options.port}/ws");`,
       )
-      .replace("/* #STYLES# */", themeCSS)
-      .replace("/* #SV_STYLES# */", speakerViewCSS)
-      .replace("/* #SV_SCRIPT# */", speakerViewJS)
-      .replace("/* #SLIDE_CHANGE# */", onSpeakerViewSlideChange.join(";")),
+      .replace("#STYLES#", themeCSS)
+      .replace("#SV_STYLES#", speakerViewCSS)
+      .replace(
+        "#PLUGINSSTYLES#",
+        plugins
+          .map((p) =>
+            p.addSpeakerStyles
+              ? Object.keys(p.addSpeakerStyles)
+                  .map(
+                    (k) =>
+                      `<style data-href="${k}">${p.addSpeakerStyles[k]}</style>`,
+                  )
+                  .join("")
+              : "",
+          )
+          .join(""),
+      )
+      .replace("#CUSTOMCSS#", await getCustomCSS())
+      .replace("#SV_SCRIPT#", speakerViewJS)
+      .replace(
+        "#PLUGINSSCRIPTS#",
+        plugins
+          .map((p) =>
+            p.addSpeakerScripts
+              ? Object.keys(p.addSpeakerScripts)
+                  .map(
+                    (k) =>
+                      `<script data-src="${k}">${p.addSpeakerScripts[k]}</script>`,
+                  )
+                  .join("")
+              : "",
+          )
+          .join(""),
+      )
+      .replace(
+        "#SLIDE_CHANGE#",
+        plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";"),
+      ),
     {
       headers: {
         "Content-Type": "text/html",

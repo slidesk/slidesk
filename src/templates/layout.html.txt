@@ -10,5 +10,6 @@
     #SECTIONS#
     <div id="sd-progress">X/X</div>
     #SCRIPT#
+    #PLUGINSSCRIPTS#
   </body>
 </html>

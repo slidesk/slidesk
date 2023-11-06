@@ -20,7 +20,7 @@ const create = async (talk) => {
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (responseCustom) {
-    writer.write(`/::\ncustom_css: custom.css\ncustom_js: custom.js\n::/\n\n`);
+    writer.write(`/::\ncustom_css: custom.css\n::/\n\n`);
   }
   writer.write(`# ${responseTitle} \n\n## My first Slide`);
   writer.end();
@@ -50,7 +50,6 @@ const create = async (talk) => {
   --sd-sv-text-color: rgba(255, 255, 255, 0.87);
 }`,
     );
-    Bun.write(`./${dirName}/custom.js`, "");
   }
   process.exit();
 };

@@ -1,6 +1,5 @@
 /::
 custom_css: custom.css
-custom_js: custom.js
 ::/
 
 # Example's talk
@@ -41,6 +40,10 @@ With conventional comments ``/````*`` end ``*````/``, you can write your speaker
 My notes will be displayed on speaker view only
 
 It can be multiline now
+*/
+
+/*
+Multiple comments available
 */
 
 ## Components

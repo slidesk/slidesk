@@ -209,17 +209,11 @@ This following syntax means that this slide must be done in 3 minutes.
 //@ [] 2:00
 ```
 
-## Add JS on your slides & Speakers Notes
+## `.env` file
 
-With a custom header in the `main.sdf` file, you can add a script file for the slide part, or the speaker notes part:
+SliDesk can load a `.env` file. The content will be available in JS (for your plugins) with the property `window.slidesk.env`.
 
-```
-/::
-custom_css: assets/custom.css
-custom_js: assets/custom.js
-custom_sv_js: assets/customsv.js
-::/
-```
+Reserved key: `PLUGINS`, used to specify internal plugins to load.
 
 ## Plugins
 
@@ -240,6 +234,12 @@ This `json` file describes the comportement of the plugin. Each keys of the json
 - `addSpeakerStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry) but on speaker view
 - `onSlideChange`: javascript code which will be executed after a slide is changed
 - `onSpeakerViewSlideChange`: javascript code which will be executed after a slide is changed
+
+If you want to use one of the "core" plugins, available in this repository, you don't need to copy them. You have just to create a `.env` file in your root directory of the talk, and precise the plugins you need:
+
+```
+PLUGINS="source, qrcode"
+```
 
 ## Components
 
