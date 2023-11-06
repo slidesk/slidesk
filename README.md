@@ -203,7 +203,7 @@ This following syntax means that at this slide, if you're under 22 minutes of yo
 //@ < 22:00
 ```
 
-This following syntax means that this slide must be done in 3 minutes.
+This following syntax means that this slide must be done in 2 minutes.
 
 ```
 //@ [] 2:00
