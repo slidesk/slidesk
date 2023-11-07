@@ -5,7 +5,7 @@ import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
 import themeCSS from "../templates/styles.css.txt";
-import faviconSVG from "../templates/SD.svg.txt";
+import faviconSVG from "../templates/slidesk.svg.txt";
 import pluginsJSON from "../plugins.json";
 
 export const defaultPage = () =>
