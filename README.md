@@ -1,6 +1,8 @@
 # SliDesk
 
-![favicon](https://github.com/gouz/slidesk/assets/219936/5cdc9f5c-1b9c-4a9a-9a7f-124043dee8d5)
+<p align="center">
+<img src="https://github.com/gouz/slidesk/assets/219936/5cdc9f5c-1b9c-4a9a-9a7f-124043dee8d5" />
+</p>
 
 Write your talk/presentation in a simplified language (SliDeskFormat), generate it and visualize it in Web.
 
