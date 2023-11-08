@@ -84,8 +84,7 @@ export default class Interpreter {
     }
   };
 
-  static #loadPlugins = async () => {
-    // internal plugins
+  static #internalPlugins = () => {
     if (env.PLUGINS) {
       [...env.PLUGINS.split(",")].forEach((p) => {
         const pl = p.trim();
@@ -95,7 +94,9 @@ export default class Interpreter {
         }
       });
     }
-    // external plugins
+  };
+
+  static #externalPlugins = async () => {
     const pluginsDir = `${sdfPath}/plugins`;
     if (existsSync(pluginsDir))
       await Promise.all(
@@ -106,7 +107,7 @@ export default class Interpreter {
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            ["addScripts", "addStyles"].map(async (t) => {
+            ["addScripts", "addStyles"].forEach((t) => {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
@@ -122,6 +123,11 @@ export default class Interpreter {
           }
         }),
       );
+  };
+
+  static #loadPlugins = async () => {
+    this.#internalPlugins();
+    await this.#externalPlugins();
   };
 
   static #loadComponents = () => {

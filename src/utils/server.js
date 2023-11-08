@@ -71,7 +71,7 @@ const getPlugins = async () => {
         const exists = await pluginFile.exists();
         if (exists) {
           const json = await pluginFile.json();
-          ["addSpeakerScripts", "addSpeakerStyles"].map(async (t) => {
+          ["addSpeakerScripts", "addSpeakerStyles"].forEach((t) => {
             if (json[t]) {
               const files = json[t];
               json[t] = {};
