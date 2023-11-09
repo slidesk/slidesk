@@ -25,11 +25,15 @@ const gameLoop = () => {
   }
 
   const gp = gamepads[0];
-  for (let i = 0; i < 16; i += 1)
+  for (let i = 0; i < 16; i += 1) {
     if (buttonPressed(gp.buttons[i]) && mapping[i]) {
-      window.slidesk.io.send(JSON.stringify({ action: mapping[i] }));
+      if (mapping[i].startsWith("notes")) {
+        window.slidesk[mapping[i]]();
+      } else {
+        window.slidesk.io.send(JSON.stringify({ action: mapping[i] }));
+      }
     }
-
+  }
   requestAnimationFrame(() => throttle(gameLoop, 300));
 };
 
