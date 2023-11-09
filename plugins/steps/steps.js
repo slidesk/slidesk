@@ -13,7 +13,7 @@ window.slidesk.prepareSteps = () => {
         "ul li",
       );
     window.slidesk.maxSteps = window.slidesk.$lis.length;
-    [...window.slidesk.$lis].forEach((li) => li.classList.add("step-hidden"));
+    [...window.slidesk.$lis].forEach((li) => li.classList.remove("step-shown"));
   }
 };
 
@@ -22,9 +22,7 @@ window.slidesk.next = () => {
     if (window.slidesk.step === window.slidesk.maxSteps) {
       window.slidesk.oldNext();
     } else {
-      window.slidesk.$lis[window.slidesk.step++].classList.remove(
-        "step-hidden",
-      );
+      window.slidesk.$lis[window.slidesk.step++].classList.add("step-shown");
     }
   } else window.slidesk.oldNext();
 };

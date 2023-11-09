@@ -1,7 +1,7 @@
 const toHHMMSS = (secs) => {
   const secnum = parseInt(Math.abs(secs), 10);
   return [Math.floor(secnum / 3600), Math.floor(secnum / 60) % 60, secnum % 60]
-    .map((v) => (v < 10 ? "0" + v : v))
+    .map((v) => v.toString().padStart(2, "0"))
     .filter((v, i) => v !== "00" || i > 0)
     .join(":");
 };
@@ -66,6 +66,22 @@ document.addEventListener("keydown", (e) => {
     window.slidesk.io.send(JSON.stringify({ action: "next" }));
   }
 });
+
+window.slidesk.notes_up = () => {
+  window.slidesk.scrollPosition -= 100;
+  if (window.slidesk.scrollPosition < 0) window.slidesk.scrollPosition = 0;
+  document
+    .getElementById("sd-sv-notes")
+    .scroll({ top: window.slidesk.scrollPosition });
+};
+
+window.slidesk.notes_down = () => {
+  window.slidesk.scrollPosition += 100;
+  document
+    .getElementById("sd-sv-notes")
+    .scroll({ top: window.slidesk.scrollPosition });
+};
+
 setInterval(() => {
   if (startTime) {
     const time = (Date.now() - startTime) / 1000;
