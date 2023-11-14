@@ -256,7 +256,7 @@ In this directory, you can add custom components with a `.mjs` file. One per com
 
 Example:
 
-I want to have a `!test(my text)` which generate a `<p>Test: my text</p>`.
+I want to have a `!test(my text)` which generate a `Test: my text`.
 
 So I create a `components/test.mjs` with the following content.
 
@@ -264,7 +264,7 @@ So I create a `components/test.mjs` with the following content.
 export default (data) => {
   let newData = data;
   [...newData.matchAll(/!test\((.*)\)/g)].forEach((match) => {
-    newData = newData.replace(match[0], `<p>Test: ${match[1]}</p>`);
+    newData = newData.replace(match[0], `Test: ${match[1]}`);
   });
   return newData;
 };
