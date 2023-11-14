@@ -16,6 +16,6 @@ Example:
 }
 ```
 
-Keys correspond to the button's key and values correspond to action ("next", "previous", "notes_up", "notes_down").
+Keys correspond to the button's key and values correspond to action ("next", "previous", "notes_up", "notes_down", "start_timer").
 
 WARNING: `gamepad-notes` does not be loaded with `gamepad`

@@ -27,7 +27,7 @@ const gameLoop = () => {
   const gp = gamepads[0];
   for (let i = 0; i < 16; i += 1) {
     if (buttonPressed(gp.buttons[i]) && mapping[i]) {
-      if (mapping[i].startsWith("notes")) {
+      if (typeof window.slidesk[mapping[i]] !== "undefined") {
         window.slidesk[mapping[i]]();
       } else {
         window.slidesk.io.send(JSON.stringify({ action: mapping[i] }));

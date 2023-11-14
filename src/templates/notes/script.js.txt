@@ -82,6 +82,8 @@ window.slidesk.notes_down = () => {
     .scroll({ top: window.slidesk.scrollPosition });
 };
 
+window.slidesk.start_timer = () => startTime = Date.now();
+
 setInterval(() => {
   if (startTime) {
     const time = (Date.now() - startTime) / 1000;
@@ -106,5 +108,5 @@ setInterval(() => {
   }
 }, 1000);
 window.slidesk.timer.addEventListener("click", () => {
-  startTime = Date.now();
+  window.slidesk.start_timer();
 });

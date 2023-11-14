@@ -1,5 +1,6 @@
 {
   "addHTML": "<span class=\"test\"></span>",
+  "addHtmlFromFiles": ["./plugins/test/test.html"],
   "addScripts": ["./plugins/test/test.js"],
   "addStyles": ["./plugins/test/test.css"],
   "onSlideChange": "console.log(\"new slide\")"
