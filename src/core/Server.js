@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+import dotenv from "dotenv";
 import {
   langPage,
   defaultPage,
@@ -10,11 +12,17 @@ import {
 const { log } = console;
 
 export default class Server {
-  static create(html, options, path) {
+  static async create(html, options, path) {
     globalThis.html = html;
     globalThis.path = path;
-    // eslint-disable-next-line no-undef
-    globalThis.server = Bun.serve({
+    const slideskEnvFile = Bun.file(`${path}/.env`);
+    let env;
+    if (slideskEnvFile.size !== 0) {
+      const buf = await slideskEnvFile.text();
+      env = dotenv.parse(buf);
+    }
+    const https = env.HTTPS === "true";
+    const serverOptions = {
       port: options.port,
       fetch(req) {
         const url = new URL(req.url);
@@ -26,11 +34,11 @@ export default class Server {
           case "/favicon.svg":
             return favicon();
           case "/notes":
-            return notePage(options);
+            return notePage(options, https);
           case "/ws":
             return webSockets(req);
           default:
-            return defaultAction(req, options);
+            return defaultAction(req, options, https);
         }
       },
       websocket: {
@@ -44,13 +52,24 @@ export default class Server {
           ws.unsubscribe("slidesk");
         },
       },
-    });
+    };
+    if (https) {
+      serverOptions.tls = {
+        key: Bun.file(env.KEY),
+        cert: Bun.file(env.CERT),
+      };
+    }
+    globalThis.server = Bun.serve(serverOptions);
     if (options.notes)
       log(
-        `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp://${options.domain}:${options.port}/notes\x1b[0m`,
+        `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
+          https ? "s" : ""
+        }://${options.domain}:${options.port}/notes\x1b[0m`,
       );
     log(
-      `Your presentation is available on: \x1b[1m\x1b[36;49mhttp://${options.domain}:${options.port}\x1b[0m`,
+      `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
+        https ? "s" : ""
+      }://${options.domain}:${options.port}\x1b[0m`,
     );
     log();
   }

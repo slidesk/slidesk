@@ -90,13 +90,15 @@ const getPlugins = async () => {
   return plugins;
 };
 
-export const notePage = async (options) => {
+export const notePage = async (options, https) => {
   const plugins = await getPlugins();
   return new Response(
     speakerViewHTML
       .replace(
         "#SOCKETS#",
-        `window.slidesk.io = new WebSocket("ws://${options.domain}:${options.port}/ws");`,
+        `window.slidesk.io = new WebSocket("ws${https ? "s" : ""}://${
+          options.domain
+        }:${options.port}/ws");`,
       )
       .replace("#STYLES#", themeCSS)
       .replace("#SV_STYLES#", speakerViewCSS)
@@ -149,9 +151,9 @@ export const webSockets = (req) =>
     ? undefined
     : new Response("WebSocket upgrade error", { status: 400 });
 
-export const defaultAction = (req, options) => {
+export const defaultAction = (req, options, https) => {
   const fileurl = req.url.replace(
-    `http://${options.domain}:${options.port}`,
+    `http${https ? "s" : ""}://${options.domain}:${options.port}`,
     "",
   );
   // eslint-disable-next-line no-undef
