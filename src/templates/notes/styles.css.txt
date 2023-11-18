@@ -87,3 +87,14 @@ body {
   padding: 10px;
   overflow: scroll;
 }
+
+#sd-open-presentation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sd-open-presentation svg {
+  width: 3vw;
+  height: 3vw;
+}

@@ -67,6 +67,28 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+document.getElementById("sd-open-presentation").addEventListener('click', async () => {
+  const screens = (await window.getScreenDetails()).screens;
+  const screen = screens.filter(s => !s.isPrimary)[0];
+  window.open(
+    "//localhost:1337",
+    "_blank",
+    `left=${screen.availLeft},
+    top=${screen.availTop},
+    width=${screen.availWidth},
+    height=${screen.availHeight},
+    fullscreen=yes,
+    location=no,
+    menubar=no,
+    status=no,
+    scrollsbar=no,
+    titlebar=no,
+    toolbar=no,
+    popup`,
+  );
+  document.getElementById("sd-open-presentation").style.display = "none";
+});
+
 window.slidesk.notes_up = () => {
   window.slidesk.scrollPosition -= 100;
   if (window.slidesk.scrollPosition < 0) window.slidesk.scrollPosition = 0;

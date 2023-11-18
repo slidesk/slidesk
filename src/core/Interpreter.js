@@ -150,7 +150,7 @@ export default class Interpreter {
     !options.save
       ? `window.slidesk.io = new WebSocket(\`ws${
           env.HTTPS === "true" ? "s" : ""
-        }://${window.location.host}/ws\`);`
+        }://\${window.location.host}/ws\`);`
       : ""
   }
   ${mainJS}
