@@ -14,10 +14,6 @@ import pluginsJSON from "../plugins.json";
 
 const { error } = console;
 
-const socket =
-  // eslint-disable-next-line no-template-curly-in-string
-  "window.slidesk.io = new WebSocket(`ws://${window.location.host}/ws`);";
-
 let customCSS = "";
 
 let classes = "";
@@ -150,7 +146,13 @@ export default class Interpreter {
     env: ${JSON.stringify(env)},
     lastAction: ""
   };
-  ${!options.save ? socket : ""}
+  ${
+    !options.save
+      ? `window.slidesk.io = new WebSocket(\`ws${
+          env.HTTPS === "true" ? "s" : ""
+        }://\${window.location.host}/ws\`);`
+      : ""
+  }
   ${mainJS}
 </script>`;
 

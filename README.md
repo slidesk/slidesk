@@ -272,6 +272,22 @@ export default (data) => {
 
 Then a dynamic call will be done when parsing a slide (at the end of default parsing).
 
+## HTTPS
+
+SliDesk is per default listening on port 80 with an HTTP protocol.
+
+You can enable HTTPS with the `.env` file:
+
+```
+HTTPS=true
+KEY=absolute path of the key file
+CERT=absolute path of the cert file
+```
+
+On Chromium-based browsers, in the Speaker view, you will see buttons that can open the Presentation view on the screen you want.
+
+If the parameter "Fullscreen popup windows" is enabled in "chrome://flags/", then the presentation will be opened in fullscreen.
+
 ## Why a new tool???
 
 I decided to create my own tool for my talks, because:

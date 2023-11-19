@@ -13,8 +13,7 @@ if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
     const { action } = JSON.parse(event.data);
     if (action === "reload") window.location.reload();
-    else if (action === "next") window.slidesk.next();
-    else if (action === "previous") window.slidesk.previous();
+    else if (window.slidesk[action]) window.slidesk[action]();
   };
 }
 

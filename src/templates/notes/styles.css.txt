@@ -87,3 +87,18 @@ body {
   padding: 10px;
   overflow: scroll;
 }
+
+#sd-open-presentation {
+  display: flex;
+}
+
+#sd-open-presentation button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sd-open-presentation svg {
+  width: 2vw;
+  height: 2vw;
+}
