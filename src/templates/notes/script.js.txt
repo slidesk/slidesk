@@ -67,27 +67,40 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-document.getElementById("sd-open-presentation").addEventListener('click', async () => {
-  const screens = (await window.getScreenDetails()).screens;
-  const screen = screens.filter(s => !s.isPrimary)[0];
-  window.open(
-    "//localhost:1337",
-    "_blank",
-    `left=${screen.availLeft},
-    top=${screen.availTop},
-    width=${screen.availWidth},
-    height=${screen.availHeight},
-    fullscreen=yes,
-    location=no,
-    menubar=no,
-    status=no,
-    scrollsbar=no,
-    titlebar=no,
-    toolbar=no,
-    popup`,
-  );
-  document.getElementById("sd-open-presentation").style.display = "none";
-});
+const svgOpen =
+  '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 004.5 9.75v7.5a2.25 2.25 0 002.25 2.25h7.5a2.25 2.25 0 002.25-2.25v-7.5a2.25 2.25 0 00-2.25-2.25h-.75m0-3l-3-3m0 0l-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25v-.75" /></svg>';
+
+const createbuttons = async () => {
+  const $screenWrapper = document.getElementById("sd-open-presentation");
+  const { screens } = await window.getScreenDetails();
+  [...screens].forEach((screen) => {
+    const button = document.createElement("button");
+    button.innerHTML = `${svgOpen}<span>Open presentation on <b>${screen.label}</b></span>`;
+    button.addEventListener("click", () => {
+      window.open(
+        "//localhost:1337",
+        "_blank",
+        `left=${screen.availLeft},
+      top=${screen.availTop},
+      width=${screen.availWidth},
+      height=${screen.availHeight},
+      fullscreen=yes,
+      location=no,
+      menubar=no,
+      status=no,
+      scrollsbar=no,
+      titlebar=no,
+      toolbar=no,
+      popup`,
+      );
+    });
+    $screenWrapper.appendChild(button);
+  });
+};
+
+if (window.location.href.startsWith("https")) {
+  createbuttons();
+}
 
 window.slidesk.notes_up = () => {
   window.slidesk.scrollPosition -= 100;
@@ -104,7 +117,7 @@ window.slidesk.notes_down = () => {
     .scroll({ top: window.slidesk.scrollPosition });
 };
 
-window.slidesk.start_timer = () => startTime = Date.now();
+window.slidesk.start_timer = () => (startTime = Date.now());
 
 setInterval(() => {
   if (startTime) {
