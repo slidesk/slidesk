@@ -151,7 +151,7 @@ bun example
 
 In your `custom.css` file, you can override this variables:
 
-```
+```css
 :root {
   --sd-heading1-size: 8.5vw;
   --sd-heading1-line-height: 1;
@@ -164,7 +164,6 @@ In your `custom.css` file, you can override this variables:
   --sd-heading-color: rgba(255, 255, 255, 0.97);
   --sd-text-color: rgba(255, 255, 255, 0.87);
   --sd-primary-color: rgb(37, 186, 146);
-
 
   /* SpeakerView */
   --sd-sv-timer-size: 80px;
