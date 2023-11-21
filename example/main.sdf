@@ -52,6 +52,12 @@ With a ``componenents/myComponent.mjs`` file, you can create custom component li
 
 !test(my test)
 
+## Env Variables
+
+Wrapped with a "``+````+``" will display in bold
+
+++MYVAR++
+
 ## Final
 
 /*

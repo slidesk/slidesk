@@ -32,10 +32,7 @@ program
   .option("-p, --port <int>", "port", 1337)
   .option("-s, --save", "save the html file")
   .option("-n, --notes", "open with speakers notes")
-  .option(
-    "-t, --timers",
-    "add checkpoint and slide's maximum time on notes view",
-  )
+  .option("-t, --timers", "add checkpoint and slide maximum time on notes view")
   .option("-a, --transition <int>", "transition timer", 300)
   .action(present);
 

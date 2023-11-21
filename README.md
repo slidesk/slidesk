@@ -218,6 +218,16 @@ SliDesk can load a `.env` file. The content will be available in JS (for your pl
 
 Reserved key: `PLUGINS`, used to specify internal plugins to load.
 
+You can get a variable defined in this `.env` file with a shortcode `++`.
+
+If you add a variable in `.env`:
+
+```
+MYVAR="this text will be displayed"
+```
+
+Then in the presentation, `++MYVAR++` will render `this text will be displayed`.
+
 ## Plugins
 
 SliDesk has a plugin system.
