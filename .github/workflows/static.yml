@@ -109,3 +109,26 @@ jobs:
       - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
+
+  generate_deb:
+    name: Build deb file
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: oven-sh/setup-bun@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: bun install
+      - run: bun tools
+      - run: bun make:exe
+      - name: create sample script
+        run: |
+          mkdir -p .debpkg/usr/bin
+          cp -p exe/* .debpkg/usr/bin/
+      - name: build-deb-action
+        uses: jiro4989/build-deb-action@v3.0.0
+        with:
+          package: "slidesk"
+          package_root: "exe"
+          maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
+          version: ${{ needs.create_release.outputs.tag-name }}
