@@ -354,11 +354,20 @@ export default class Interpreter {
     return htmlData;
   };
 
+  static #envVariables = (data) =>
+    [...data.split("++")]
+      .map((t, i) => {
+        if (i % 2) return env[t] || "";
+        return t;
+      })
+      .join("");
+
   static #formatting = (data) =>
     [...data.split("\n")]
       .map((l) => {
         let nl = l;
         nl = this.#grammar(nl);
+        nl = this.#envVariables(nl);
         nl = this.#links(nl);
         return nl;
       })
