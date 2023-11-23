@@ -134,24 +134,8 @@ jobs:
           package_root: "exe"
           maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
           version: ${{ github.ref }}
-      - uses: jiro4989/build-rpm-action@v2
-        with:
-          summary: "Your presentation companion"
-          package: "slidesk"
-          package_root: .rpmpkg
-          maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
-          version: ${{ github.ref }}
-          arch: "x86_64"
-          desc: "Your presentation companion"
       - uses: actions/upload-artifact@v3
         with:
           name: artifact-deb
           path: |
             ./*.deb
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: artifact-rpm
-          path: |
-            ./*.rpm
-            !./*-debuginfo-*.rpm
