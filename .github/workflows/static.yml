@@ -126,9 +126,11 @@ jobs:
           mkdir -p .debpkg/usr/bin
           cp -p exe/* .debpkg/usr/bin/
       - name: build-deb-action
-        uses: jiro4989/build-deb-action@v3.0.0
+        uses: jiro4989/build-deb-action@v3
         with:
           package: "slidesk"
+          desc: "Your presentation companion"
+          arch: "amd64"
           package_root: "exe"
           maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
-          version: ${{ github.ref_name }}
+          version: ${{ github.ref }}
