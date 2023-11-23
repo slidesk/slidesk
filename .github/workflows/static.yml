@@ -131,4 +131,4 @@ jobs:
           package: "slidesk"
           package_root: "exe"
           maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
-          version: ${{ needs.create_release.outputs.tag-name }}
+          version: ${{ github.ref_name }}
