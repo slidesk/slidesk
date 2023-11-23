@@ -16,7 +16,7 @@ export default class Server {
     globalThis.html = html;
     globalThis.path = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env;
+    let env = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
