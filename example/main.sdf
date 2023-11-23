@@ -58,6 +58,11 @@ Wrapped with a "``+````+``" will display in bold
 
 ++MYVAR++
 
+## test links
+
+https://sylvain.gougouzian/en.html
+<a href="https://gouz.dev">gouz</a>
+
 ## Final
 
 /*
