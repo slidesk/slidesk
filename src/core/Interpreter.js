@@ -320,7 +320,7 @@ export default class Interpreter {
   };
 
   static #links = (data) => {
-    const reg = /s?:\/\/([a-zA-Z0-9.-]+(:\d+)?([a-zA-Z0-9._\-/~=?]*\/?))/g;
+    const reg = /s?:\/\/([a-zA-Z0-9.-]+(:\d+)?([a-zA-Z0-9._\-/~=?@]*\/?))/g;
     return data
       .split("http")
       .map((d, i) => {
