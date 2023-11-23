@@ -244,7 +244,7 @@ export default class Interpreter {
   static #sliceSlides = (presentation, options) =>
     [...presentation.split("\n## ")]
       .map((slide, s) => this.#treatSlide(slide, s, options))
-      .join("");
+      .join("\n");
 
   static #paragraph = (paragraph, p) => {
     const par = paragraph.trimStart();
