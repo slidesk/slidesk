@@ -219,8 +219,6 @@ export default class Interpreter {
     fusion = this.#formatting(fusion);
     // image
     fusion = image(fusion);
-    // mainTitle
-    fusion = this.#mainTitle(fusion);
     return fusion;
   };
 
@@ -255,6 +253,8 @@ export default class Interpreter {
         return par;
       case par.startsWith("//@"):
         return this.#timers(par);
+      case par.startsWith("# "):
+        return `<h1>${par.replace(/^# /, "").trim()}</h1>`;
       default:
         break;
     }
@@ -381,15 +381,6 @@ export default class Interpreter {
         return nl;
       })
       .join("\n");
-
-  static #mainTitle = (data) => {
-    let fusion = data;
-    const m = /<p># (.*)<\/p>/.exec(fusion);
-    if (m !== null) {
-      fusion = fusion.replace(m[0], `<h1>${m[1]}</h1>`);
-    }
-    return fusion;
-  };
 
   static #generateHTML = async (presentation, template, options) => {
     const langFiles = readdirSync(sdfPath).filter((item) =>
