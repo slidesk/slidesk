@@ -103,7 +103,7 @@ export default class Interpreter {
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            ["addScripts", "addStyles", "addHtmlFromFiles"].forEach((t) => {
+            ["addScripts", "addStyles", "addHTMLFromFiles"].forEach((t) => {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
@@ -451,9 +451,9 @@ export default class Interpreter {
         "</body>",
         `${plugins.map((p) => p.addHTML ?? "").join("")}${plugins
           .map((p) =>
-            p.addHtmlFromFiles
-              ? Object.keys(p.addHtmlFromFiles)
-                  .map((k) => p.addHtmlFromFiles[k])
+            p.addHTMLFromFiles
+              ? Object.keys(p.addHTMLFromFiles)
+                  .map((k) => p.addHTMLFromFiles[k])
                   .join("")
               : "",
           )
