@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build
 
 on:
   push:
@@ -18,28 +18,6 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: oven-sh/setup-bun@v1
-      - name: Checkout
-        uses: actions/checkout@v4
-      - run: bun install
-      - run: bun gendocs
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload entire repository
-          path: "docs"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -95,20 +73,6 @@ jobs:
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
           files: release_${{ matrix.release_suffix }}.tar.gz
-
-  publish_npm:
-    name: Publish on npm
-    environment: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: bun tools
-      - run: bun make
-      - uses: JS-DevTools/npm-publish@v2
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
 
   generate_packages:
     name: Build packages file

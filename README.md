@@ -241,7 +241,7 @@ A plugin is a directory with at least one file: plugin.json
 This `json` file describes the comportement of the plugin. Each keys of the json correspond to a "hook":
 
 - `addHTML`: add some html at the end of the presentation
-- `addHtmlFromFiles`: an array of html files to append in the <body>
+- `addHTMLFromFiles`: an array of html files to append in the <body>
 - `addScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry)
 - `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
 - `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
