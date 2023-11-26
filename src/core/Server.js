@@ -57,6 +57,7 @@ export default class Server {
       serverOptions.tls = {
         key: Bun.file(env.KEY),
         cert: Bun.file(env.CERT),
+        passphrase: Bun.file(env.PASSPHRASE) || "",
       };
     }
     globalThis.server = Bun.serve(serverOptions);

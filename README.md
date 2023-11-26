@@ -42,7 +42,7 @@ Options:
   -p, --port <int>        port (default: 1337)
   -s, --save              save the html file
   -n, --notes             open with speakers notes
-  -t, --timers            add checkpoint and slide's maximum time on notes view
+  -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
   -h, --help              display help for command
 
@@ -73,7 +73,7 @@ Options:
   -p, --port <int>        port (default: 1337)
   -s, --save              save the html file
   -n, --notes             open with speakers notes
-  -t, --timers            add checkpoint and slide's maximum time on notes view
+  -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
   -h, --help              display help for command
 
@@ -291,6 +291,7 @@ You can enable HTTPS with the `.env` file:
 HTTPS=true
 KEY=absolute path of the key file
 CERT=absolute path of the cert file
+PASSPHRASE=the passphrase if needed
 ```
 
 On Chromium-based browsers, in the Speaker view, you will see buttons that can open the Presentation view on the screen you want.
