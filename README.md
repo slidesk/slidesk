@@ -216,7 +216,14 @@ This following syntax means that this slide must be done in 2 minutes.
 
 SliDesk can load a `.env` file. The content will be available in JS (for your plugins) with the property `window.slidesk.env`.
 
-Reserved key: `PLUGINS`, used to specify internal plugins to load.
+Reserved keys:
+
+- `PLUGINS`, used to specify internal plugins to load.
+- `HTTPS`, set to `true`, the server will listen to a secured connection
+- `KEY`, to specify the key file for https
+- `CERT`, to specity the cert file for https
+- `PASSPHRASE`, to give the passphrase of cert/key files
+- `WIDTH`, to force the width based to calc the ratio of images
 
 You can get a variable defined in this `.env` file with a shortcode `++`.
 
