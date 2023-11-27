@@ -56,9 +56,7 @@ window.slidesk.changeSlide = () => {
 
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll("img")
-    .forEach((i) => {
-      i.setAttribute("src", i.getAttribute("src"));
-    });
+    .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
   window.slidesk.onSlideChange();
 };
 
@@ -128,16 +126,10 @@ window.onload = () => {
   document.querySelectorAll("img").forEach((img) =>
     img.addEventListener("load", () => {
       let ratio = 1;
-      if (window.slidesk.env.WIDTH)
-        ratio = window.innerWidth / window.slidesk.env.WIDTH;
-      const imgInitWidth = Number(img.getAttribute("init-width")) ?? 0;
-      const imgInitHeight = Number(img.getAttribute("init-height")) ?? 0;
-      if (imgInitWidth) {
-        img.setAttribute("width", ratio * imgInitWidth);
-      }
-      if (imgInitHeight) {
-        img.setAttribute("height", ratio * imgInitHeight);
-      }
+      if (Number(window.slidesk.env.WIDTH))
+        ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
+      img.parentElement.style.width = ratio * img.width + "px";
+      img.parentElement.style.height = ratio * img.height + "px";
     }),
   );
   window.slidesk.changeSlide();
@@ -147,5 +139,13 @@ window.onload = () => {
     } else if (e.key === "ArrowRight" || e.key === " ") {
       window.slidesk.next();
     }
+  });
+
+  let timeoutResize = false;
+  window.addEventListener("resize", () => {
+    clearTimeout(timeoutResize);
+    timeoutResize = setTimeout(() => {
+      window.location.reload();
+    }, 250);
   });
 };

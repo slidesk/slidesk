@@ -53,7 +53,6 @@ video,
 canvas,
 svg {
   display: block;
-  max-width: 90vw;
 }
 
 input,
@@ -172,4 +171,14 @@ h3 {
 
 #sd-langs option {
   color: var(--sd-text-color);
+}
+
+.sd-img {
+  display: inline-block;
+  max-width: 90vw;
+}
+
+.sd-img img {
+  max-width: 100%;
+  max-height: 100%;
 }
