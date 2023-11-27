@@ -56,7 +56,9 @@ window.slidesk.changeSlide = () => {
 
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll("img")
-    .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
+    .forEach((i) => {
+      i.setAttribute("src", i.getAttribute("src"));
+    });
   window.slidesk.onSlideChange();
 };
 
@@ -122,6 +124,27 @@ window.onload = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "sd-current",
     "no-sd-animation",
+  );
+  document.querySelectorAll("img").forEach((img) =>
+    img.addEventListener("load", () => {
+      if (window.slidesk.env.WIDTH) {
+        const ratio = window.innerWidth / window.slidesk.env.WIDTH;
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+        let ratioW = 0;
+        let ratioH = 0;
+        if (img.getAttribute("init-width")) {
+          ratioW = img.getAttribute("init-width") / imgWidth;
+        }
+        if (img.getAttribute("init-height")) {
+          ratioH = img.getAttribute("init-height") / imgHeight;
+        }
+        if (!ratioW && ratioH) ratioW = ratioH;
+        if (!ratioH && ratioW) ratioH = ratioW;
+        img.setAttribute("width", imgWidth * ratio * ratioW);
+        img.setAttribute("height", imgHeight * ratio * ratioH);
+      }
+    }),
   );
   window.slidesk.changeSlide();
   document.addEventListener("keydown", (e) => {
