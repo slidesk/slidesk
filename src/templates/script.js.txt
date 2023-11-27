@@ -127,22 +127,16 @@ window.onload = () => {
   );
   document.querySelectorAll("img").forEach((img) =>
     img.addEventListener("load", () => {
-      if (window.slidesk.env.WIDTH) {
-        const ratio = window.innerWidth / window.slidesk.env.WIDTH;
-        const imgWidth = img.width;
-        const imgHeight = img.height;
-        let ratioW = 0;
-        let ratioH = 0;
-        if (img.getAttribute("init-width")) {
-          ratioW = img.getAttribute("init-width") / imgWidth;
-        }
-        if (img.getAttribute("init-height")) {
-          ratioH = img.getAttribute("init-height") / imgHeight;
-        }
-        if (!ratioW && ratioH) ratioW = ratioH;
-        if (!ratioH && ratioW) ratioH = ratioW;
-        img.setAttribute("width", imgWidth * ratio * ratioW);
-        img.setAttribute("height", imgHeight * ratio * ratioH);
+      let ratio = 1;
+      if (window.slidesk.env.WIDTH)
+        ratio = window.innerWidth / window.slidesk.env.WIDTH;
+      const imgInitWidth = Number(img.getAttribute("init-width")) ?? 0;
+      const imgInitHeight = Number(img.getAttribute("init-height")) ?? 0;
+      if (imgInitWidth) {
+        img.setAttribute("width", ratio * imgInitWidth);
+      }
+      if (imgInitHeight) {
+        img.setAttribute("height", ratio * imgInitHeight);
       }
     }),
   );
