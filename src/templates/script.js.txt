@@ -53,9 +53,7 @@ window.slidesk.changeSlide = () => {
       }),
     );
   }
-  document.getElementById("sd-progress").style.width =
-    (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length +
-    "%";
+
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll("img")
     .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
