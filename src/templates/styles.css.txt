@@ -34,8 +34,10 @@
   margin: 0;
 }
 
+html,
 body {
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .sd-app {
@@ -53,7 +55,6 @@ video,
 canvas,
 svg {
   display: block;
-  max-width: 100vw;
 }
 
 input,
@@ -73,12 +74,8 @@ h6 {
   overflow-wrap: break-word;
 }
 
-p,
-.sd-img {
-  margin: 0.7vw auto;
-}
-
 p {
+  margin: 0.7vw auto;
   text-align: center;
 }
 
@@ -109,16 +106,6 @@ pre {
   text-decoration-line: underline;
 }
 
-#sd-progress {
-  background-color: var(--sd-primary-color);
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 0.25rem;
-  z-index: 1;
-  overflow: hidden;
-}
-
 .sd-slide {
   position: absolute;
   top: 0;
@@ -135,30 +122,27 @@ pre {
   overflow: hidden;
 }
 
-.sd-slide h1,
+h1,
 h2,
 h3 {
-  margin: 0;
+  margin: 0 0 1.1vw 0;
   text-align: center;
   color: var(--sd-heading-color);
 }
 
-.sd-slide h1 {
+h1 {
   font-size: var(--sd-heading1-size);
   line-height: var(--sd-heading1-line-height);
-  margin-bottom: 1.1vw;
 }
 
-.sd-slide h2 {
+h2 {
   font-size: var(--sd-heading2-size);
   line-height: var(--sd-heading2-line-height);
-  margin-bottom: 1.1vw;
 }
 
-.sd-slide h3 {
+h3 {
   font-size: var(--sd-heading3-size);
   line-height: var(--sd-heading3-line-height);
-  margin-bottom: 1.1vw;
 }
 
 .sd-slide.no-sd-animation {
@@ -193,10 +177,5 @@ h3 {
 
 .sd-img {
   display: inline-block;
-  overflow: hidden;
-}
-
-.sd-img img {
-  width: 100%;
-  height: 100%;
+  max-width: 90vw;
 }

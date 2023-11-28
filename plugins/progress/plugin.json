@@ -1,0 +1,5 @@
+{
+  "addHTML": "<div id=\"sd-progress\">X/X</div>",
+  "onSlideChange": "  document.getElementById(\"sd-progress\").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + \"%\";",
+  "addStyles": ["./plugins/progress/progress.css"]
+}

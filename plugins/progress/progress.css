@@ -1,0 +1,10 @@
+#sd-progress {
+  background-color: var(--sd-primary-color);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0.25rem;
+  z-index: 1;
+  overflow: hidden;
+  transition: width var(--animationTimer) ease;
+}
