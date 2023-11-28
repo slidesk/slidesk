@@ -34,7 +34,8 @@
   margin: 0;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
 }
@@ -177,23 +178,4 @@ h3 {
 .sd-img {
   display: inline-block;
   max-width: 90vw;
-}
-
-@media (max-width: 576px) {
-  .sd-app {
-    display: flex;
-    flex-direction: row;
-    overflow-x: visible;
-  }
-
-  .sd-slide {
-    transform: none;
-    min-width: 100vw;
-    width: 100vw;
-    position: relative;
-  }
-
-  .sd-slide.sd-current {
-    transform: none;
-  }
 }

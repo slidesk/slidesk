@@ -147,10 +147,30 @@ window.onload = () => {
       window.slidesk.next();
     }
   });
-  let timeoutResize = false;
+  document.querySelectorAll(".sd-slide").forEach((slide) => {
+    slide.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      window.slidesk.touchStart = e.touches[0].pageX;
+      window.slidesk.touchMove = e.touches[0].pageX;
+    });
+    slide.addEventListener("touchmove", (e) => {
+      window.slidesk.touchMove = e.touches[0].pageX;
+    });
+    slide.addEventListener("touchend", (e) => {
+      if (
+        Math.abs(window.slidesk.touchMove - window.slidesk.touchStart) > 100
+      ) {
+        if (window.slidesk.touchMove > window.slidesk.touchStart)
+          window.slidesk.previous();
+        else window.slidesk.next();
+      }
+      window.slidesk.touchStart = 0;
+    });
+  });
+  window.slidesk.timeoutResize = false;
   window.addEventListener("resize", () => {
-    clearTimeout(timeoutResize);
-    timeoutResize = setTimeout(() => {
+    clearTimeout(window.slidesk.timeoutResize);
+    window.slidesk.timeoutResize = setTimeout(() => {
       window.location.reload();
     }, 250);
   });
