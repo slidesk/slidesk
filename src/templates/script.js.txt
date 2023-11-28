@@ -55,8 +55,11 @@ window.slidesk.changeSlide = () => {
   }
 
   window.slidesk.slides[window.slidesk.currentSlide]
-    .querySelectorAll("img")
-    .forEach((i) => i.setAttribute("src", i.getAttribute("src")));
+    .querySelectorAll(".sd-img img")
+    .forEach((i) => {
+      i.setAttribute("style", "");
+      i.setAttribute("src", i.getAttribute("src"));
+    });
   window.slidesk.onSlideChange();
 };
 
@@ -123,13 +126,17 @@ window.onload = () => {
     "sd-current",
     "no-sd-animation",
   );
-  document.querySelectorAll("img").forEach((img) =>
+  document.querySelectorAll(".sd-img img").forEach((img) =>
     img.addEventListener("load", () => {
       let ratio = 1;
       if (Number(window.slidesk.env.WIDTH))
         ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
-      img.parentElement.style.width = ratio * img.width + "px";
-      img.parentElement.style.height = ratio * img.height + "px";
+      const newW = ratio * img.width + "px";
+      const newH = ratio * img.height + "px";
+      img.parentElement.style.width = newW;
+      img.parentElement.style.height = newH;
+      img.style.width = newW;
+      img.style.height = newH;
     }),
   );
   window.slidesk.changeSlide();
@@ -140,7 +147,6 @@ window.onload = () => {
       window.slidesk.next();
     }
   });
-
   let timeoutResize = false;
   window.addEventListener("resize", () => {
     clearTimeout(timeoutResize);
