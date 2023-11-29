@@ -84,6 +84,16 @@ window.slidesk.previous = () => {
   }
 };
 
+window.slidesk.fullscreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
 window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
