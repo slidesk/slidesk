@@ -25,19 +25,15 @@ const gameLoop = () => {
   }
 
   const gp = gamepads[0];
-  for (let i = 0; i < 16; i += 1)
+  for (let i = 0; i < 16; i += 1) {
     if (buttonPressed(gp.buttons[i]) && mapping[i]) {
-      switch (mapping[i]) {
-        case "previous":
-          window.slidesk.previous();
-          break;
-        case "next":
-          window.slidesk.next();
-          break;
-        default:
-          break;
+      if (typeof window.slidesk[mapping[i]] !== "undefined") {
+        window.slidesk[mapping[i]]();
+      } else {
+        window.slidesk.io.send(JSON.stringify({ action: mapping[i] }));
       }
     }
+  }
 
   requestAnimationFrame(() =>
     throttle(gameLoop, window.slidesk.animationTimer),
@@ -46,7 +42,7 @@ const gameLoop = () => {
 
 const fetchMapping = async () => {
   try {
-    const response = await fetch("/mapping.json");
+    const response = await fetch("/gamepad.json");
     const json = await response.json();
     mapping = json;
   } catch (erreur) {
