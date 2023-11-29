@@ -16,6 +16,6 @@ Example:
 }
 ```
 
-Keys correspond to the keyboard's key and values correspond to action ("next" or "previous").
+Keys correspond to the keyboard's key and values correspond to action ("next", "previous", "fullscreen", ...).
 
 WARNING: `keyboard` does not be loaded with `keyboard-notes`
