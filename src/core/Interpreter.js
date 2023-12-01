@@ -6,6 +6,9 @@ import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/styles.css.txt";
 import mainJS from "../templates/script.js.txt";
 import faviconSVG from "../templates/slidesk.svg.txt";
+import speakerViewHTML from "../templates/notes/layout.html.txt";
+import speakerViewCSS from "../templates/notes/styles.css.txt";
+import speakerViewJS from "../templates/notes/script.js.txt";
 import slugify from "../utils/slugify";
 import image from "../components/image";
 import comments from "../components/comments";
@@ -24,6 +27,7 @@ let components = [];
 let hasPluginSource = false;
 let env = {};
 let customCSS = "";
+let hasNotesView = false;
 
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
@@ -36,6 +40,7 @@ const toBinary = (string) => {
 export default class Interpreter {
   static convert = async (mainFile, options) => {
     this.#initVariables();
+    hasNotesView = options.notes;
     const sdfMainFile = Bun.file(mainFile);
     if (sdfMainFile.size === 0) {
       error("🤔 main.sdf was not found");
@@ -56,8 +61,16 @@ export default class Interpreter {
         content: this.#getCSS(options),
         headers: { "Content-type": "text/css" },
       },
+      "/slidesk-notes.css": {
+        content: speakerViewCSS,
+        headers: { "Content-type": "text/css" },
+      },
       "/slidesk.js": {
         content: this.#getJS(options),
+        headers: { "Content-type": "application/javascript" },
+      },
+      "/slidesk-notes.js": {
+        content: this.#getNotesJS(options),
         headers: { "Content-type": "application/javascript" },
       },
       "/favicon.svg": {
@@ -66,6 +79,10 @@ export default class Interpreter {
       },
       ...this.#getPluginCSS(),
       ...this.#getPluginsJS(),
+      "/notes": {
+        content: this.#getNoteView(),
+        headers: { "Content-Type": "text/html" },
+      },
     };
   };
 
@@ -101,7 +118,10 @@ export default class Interpreter {
         const pl = p.trim();
         if (pl === "source") hasPluginSource = true;
         if (pluginsJSON[pl]) {
-          plugins.push(pluginsJSON[p.trim()]);
+          plugins.push({
+            type: "internal",
+            ...pluginsJSON[pl],
+          });
         }
       });
     }
@@ -112,13 +132,12 @@ export default class Interpreter {
     if (existsSync(pluginsDir))
       await Promise.all(
         readdirSync(pluginsDir).map(async (plugin) => {
-          if (plugin === "source") hasPluginSource = true;
           const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
           const pluginFile = Bun.file(pluginPath);
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            ["addScripts", "addStyles", "addHTMLFromFiles"].forEach((t) => {
+            ["addHTMLFromFiles"].forEach((t) => {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
@@ -128,9 +147,8 @@ export default class Interpreter {
                   });
                 });
               }
-              return true;
             });
-            plugins.push(json);
+            plugins.push({ type: "external", ...json });
           }
         }),
       );
@@ -170,19 +188,45 @@ export default class Interpreter {
   }
   ${mainJS}`;
 
+  static #getNotesJS = (options) => `
+window.slidesk = {
+  io: {},
+  timer: document.querySelector("#sd-sv-timer"),
+  subtimer: document.querySelector("#sd-sv-subtimer"),
+  scrollPosition: 0,
+  onSpeakerViewSlideChange: () => {
+    window.slidesk.scrollPosition = 0;
+    ${plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";")}
+  }
+};
+window.slidesk.io = new WebSocket("ws${env.HTTPS === "true" ? "s" : ""}://${
+    options.domain
+  }:${options.port}/ws");
+${speakerViewJS}
+`;
+
   static #getCSS = (options) =>
     `:root { --animationTimer: ${options.transition}ms; }${themeCSS}`;
 
   static #getPluginCSS = () => {
     const css = {};
     plugins.forEach((p) => {
-      if (p.addStyles)
-        Object.keys(p.addStyles).forEach((k) => {
-          css[k.replace("./", "/")] = {
-            content: p.addStyles[k],
-            headers: { "Content-type": "text/css" },
-          };
-        });
+      if (p.type === "internal") {
+        if (p.addStyles)
+          Object.keys(p.addStyles).forEach((k) => {
+            css[k.replace("./", "/")] = {
+              content: p.addStyles[k],
+              headers: { "Content-type": "text/css" },
+            };
+          });
+        if (p.addSpeakerStyles && hasNotesView)
+          Object.keys(p.addSpeakerStyles).forEach((k) => {
+            css[k.replace("./", "/")] = {
+              content: p.addSpeakerStyles[k],
+              headers: { "Content-type": "text/css" },
+            };
+          });
+      }
     });
     return css;
   };
@@ -190,13 +234,22 @@ export default class Interpreter {
   static #getPluginsJS = () => {
     const js = {};
     plugins.forEach((p) => {
-      if (p.addScripts)
-        Object.keys(p.addScripts).forEach((k) => {
-          js[k.replace("./", "/")] = {
-            content: p.addScripts[k],
-            headers: { "Content-type": "application/javascript" },
-          };
-        });
+      if (p.type === "internal") {
+        if (p.addScripts)
+          Object.keys(p.addScripts).forEach((k) => {
+            js[k.replace("./", "/")] = {
+              content: p.addScripts[k],
+              headers: { "Content-type": "application/javascript" },
+            };
+          });
+        if (p.addSpeakerScripts && hasNotesView)
+          Object.keys(p.addSpeakerScripts).forEach((k) => {
+            js[k.replace("./", "/")] = {
+              content: p.addSpeakerScripts[k],
+              headers: { "Content-type": "application/javascript" },
+            };
+          });
+      }
     });
     return js;
   };
@@ -214,30 +267,32 @@ export default class Interpreter {
 
   static #prepareTPL = () => {
     let template = layoutHTML;
-    template = template.replace(
-      "#STYLES#",
-      `<link rel="stylesheet" href="slidesk.css" />${plugins
-        .map((p) =>
-          p.addStyles
-            ? Object.keys(p.addStyles)
-                .map((k) => `<link href="${k}" rel="stylesheet"/>`)
-                .join("")
-            : "",
-        )
-        .join("")}${customCSS}`,
-    );
-    template = template.replace(
-      "#SCRIPTS#",
-      `<script src="slidesk.js"></script>${plugins
-        .map((p) =>
-          p.addScripts
-            ? Object.keys(p.addScripts)
-                .map((k) => `<script src="${k}"></script>`)
-                .join("")
-            : "",
-        )
-        .join("")}`,
-    );
+    const css = ['<link rel="stylesheet" href="slidesk.css" />'];
+    const js = ['<script src="slidesk.js"></script>'];
+    plugins.forEach((p) => {
+      if (p.addStyles) {
+        if (p.type === "internal") {
+          Object.keys(p.addStyles).forEach((k) =>
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
+          );
+        } else {
+          p.addStyles.forEach((k) =>
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
+          );
+        }
+      }
+      if (p.addScripts) {
+        if (p.type === "internal") {
+          Object.keys(p.addScripts).forEach((k) =>
+            js.push(`<script src="${k}"></script>`),
+          );
+        } else {
+          p.addScripts.forEach((k) => js.push(`<script src="${k}"></script>`));
+        }
+      }
+    });
+    template = template.replace("#STYLES#", `${css.join("")}${customCSS}`);
+    template = template.replace("#SCRIPTS#", `${js.join("")}`);
     return template;
   };
 
@@ -515,4 +570,40 @@ export default class Interpreter {
           o.label
         }</option>`,
     )}</select></body>`;
+
+  static #getNoteView = () => {
+    let template = speakerViewHTML;
+    const css = [
+      '<link rel="stylesheet" href="slidesk.css" />',
+      '<link rel="stylesheet" href="slidesk-notes.css" />',
+    ];
+    const js = ['<script src="slidesk-notes.js"></script>'];
+    plugins.forEach((p) => {
+      if (p.addSpeakerStyles) {
+        if (p.type === "internal") {
+          Object.keys(p.addSpeakerStyles).forEach((k) =>
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
+          );
+        } else {
+          p.addSpeakerStyles.forEach((k) =>
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
+          );
+        }
+      }
+      if (p.addSpeakerScripts) {
+        if (p.type === "internal") {
+          Object.keys(p.addSpeakerScripts).forEach((k) =>
+            js.push(`<script src="${k}"></script>`),
+          );
+        } else {
+          p.addSpeakerScripts.forEach((k) =>
+            js.push(`<script src="${k}"></script>`),
+          );
+        }
+      }
+    });
+    template = template.replace("#STYLES#", `${css.join("")}${customCSS}`);
+    template = template.replace("#SCRIPTS#", `${js.join("")}`);
+    return template;
+  };
 }

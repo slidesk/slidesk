@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import dotenv from "dotenv";
-import { notePage, webSockets, getFile } from "../utils/server";
+import { webSockets, getFile } from "../utils/server";
 
 const { log } = console;
 
@@ -20,8 +20,6 @@ export default class Server {
       fetch(req) {
         const url = new URL(req.url);
         switch (url.pathname) {
-          case "/notes":
-            return notePage(options, https);
           case "/ws":
             return webSockets(req);
           case "/":

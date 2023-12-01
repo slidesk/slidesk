@@ -2,14 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/favicon.svg" />
     <title>Speaker View</title>
-    <style>
-      #STYLES#
-      #SV_STYLES#
-    </style>
-    #PLUGINSSTYLES#
-    #CUSTOMCSS#
+    #STYLES#
   </head>
   <body>
     <div id="sd-sv-left">
@@ -22,20 +18,6 @@
       <aside id="sd-sv-notes"></aside>
       <div id="sd-open-presentation"></div>
     </div>
-    <script>
-      window.slidesk = {
-        io: {},
-        timer: document.querySelector("#sd-sv-timer"),
-        subtimer: document.querySelector("#sd-sv-subtimer"),
-        scrollPosition: 0,
-        onSpeakerViewSlideChange: () => {
-          window.slidesk.scrollPosition = 0;
-          #SLIDE_CHANGE#
-        }
-      };
-      #SOCKETS#
-      #SV_SCRIPT#
-    </script>
-    #PLUGINSSCRIPTS#
+    #SCRIPTS#
   </body>
 </html>
