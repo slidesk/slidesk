@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -29,7 +29,7 @@
     "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify --sourcemap=none",
     "lint": "eslint src",
     "example": "bun src/index.js example",
-    "gendocs": "bun src/index.js example -s && mv -f example/*.html docs && cp -R example/components docs && cp example/custom.* docs && cp -R example/plugins docs",
+    "gendocs": "bun src/index.js example --save docs",
     "tools": "bun tools/pluginGeneration.js"
   }
 }

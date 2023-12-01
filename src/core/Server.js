@@ -1,19 +1,12 @@
 /* eslint-disable no-undef */
 import dotenv from "dotenv";
-import {
-  langPage,
-  defaultPage,
-  favicon,
-  notePage,
-  webSockets,
-  defaultAction,
-} from "../utils/server";
+import { webSockets, getFile } from "../utils/server";
 
 const { log } = console;
 
 export default class Server {
-  static async create(html, options, path) {
-    globalThis.html = html;
+  static async create(files, options, path) {
+    globalThis.files = files;
     globalThis.path = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
     let env = {};
@@ -26,19 +19,19 @@ export default class Server {
       port: options.port,
       fetch(req) {
         const url = new URL(req.url);
-        if (url.pathname.match(/^\/--(\w+)--\/$/g))
-          return langPage(url.pathname);
         switch (url.pathname) {
-          case "/":
-            return defaultPage();
-          case "/favicon.svg":
-            return favicon();
-          case "/notes":
-            return notePage(options, https);
           case "/ws":
             return webSockets(req);
+          case "/":
+            return new Response(globalThis.files["/index.html"].content, {
+              headers: globalThis.files["/index.html"].headers,
+            });
           default:
-            return defaultAction(req, options, https);
+            if (Object.keys(files).includes(url.pathname))
+              return new Response(globalThis.files[url.pathname].content, {
+                headers: globalThis.files[url.pathname].headers,
+              });
+            return getFile(req, options, https);
         }
       },
       websocket: {
@@ -65,7 +58,7 @@ export default class Server {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${options.domain}:${options.port}/notes\x1b[0m`,
+        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
       );
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
@@ -75,8 +68,8 @@ export default class Server {
     log();
   }
 
-  static setHTML(html) {
-    globalThis.html = html;
+  static setFiles(files) {
+    globalThis.files = files;
     globalThis.server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 

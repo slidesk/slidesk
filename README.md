@@ -290,7 +290,7 @@ Then a dynamic call will be done when parsing a slide (at the end of default par
 
 ## HTTPS
 
-SliDesk is per default listening on port 80 with an HTTP protocol.
+SliDesk is per default listening on port 1337 with an HTTP protocol.
 
 You can enable HTTPS with the `.env` file:
 

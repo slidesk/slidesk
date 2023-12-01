@@ -52,6 +52,10 @@ With a ``componenents/myComponent.mjs`` file, you can create custom component li
 
 !test(my test)
 
+## Plugins .[auto-4000]
+
+This slide is controled by a plugin `autonext`. It will go next in 4s
+
 ## Env Variables
 
 Wrapped with a "``+````+``" will display in bold

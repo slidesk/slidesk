@@ -1,4 +1,14 @@
-window.slidesk.sendMessage = (payload) => {
+
+  window.slidesk = {
+    currentSlide: 0,
+    slides: [],
+    animationTimer: 300,
+    onSlideChange: function() {window.slidesk.changeSource();window.slidesk.qrcode();  document.getElementById("sd-progress").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + "%";window.slidesk.autonext();console.log("new slide")},
+    env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext","MYVAR":"Variable env","WIDTH":"1920"},
+    lastAction: ""
+  };
+  
+  window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
 

@@ -1,0 +1,3 @@
+{
+  "addScripts": ["./plugins/keyboard/keyboard.js"]
+}

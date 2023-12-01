@@ -4,7 +4,7 @@ This plugin allows you to control the navigation with a gamepad.
 
 Per default, arrows left and right and buttons A and B control next() and previous().
 
-You can override it with a `mapping.json` file in the root directory of the presentation.
+You can override it with a `gamepad.json` file in the root directory of the presentation.
 
 Example:
 
