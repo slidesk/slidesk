@@ -40,7 +40,7 @@ Options:
   -v, --version           output the version number
   -d, --domain <string>   domain (default: "localhost")
   -p, --port <int>        port (default: 1337)
-  -s, --save              save the html file
+  -s, --save <path>       save the presentation
   -n, --notes             open with speakers notes
   -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
@@ -71,7 +71,7 @@ Options:
   -v, --version           output the version number
   -d, --domain <string>   domain (default: "localhost")
   -p, --port <int>        port (default: 1337)
-  -s, --save              save the html file
+  -s, --save <path>       save the presentation
   -n, --notes             open with speakers notes
   -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
