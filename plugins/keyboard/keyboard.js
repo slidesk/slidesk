@@ -2,7 +2,7 @@ let mapping = {};
 
 const fetchMapping = async () => {
   try {
-    const response = await fetch("/keyboard.json");
+    const response = await fetch("./keyboard.json");
     const json = await response.json();
     mapping = json;
   } catch (erreur) {

@@ -23,11 +23,11 @@ export default class Server {
           case "/ws":
             return webSockets(req);
           case "/":
-            return new Response(globalThis.files["index.html"].content, {
-              headers: globalThis.files["index.html"].headers,
+            return new Response(globalThis.files["/index.html"].content, {
+              headers: globalThis.files["/index.html"].headers,
             });
           default:
-            if (Object.keys(files).indexOf(url.pathname) !== -1)
+            if (Object.keys(files).includes(url.pathname))
               return new Response(globalThis.files[url.pathname].content, {
                 headers: globalThis.files[url.pathname].headers,
               });
@@ -58,7 +58,7 @@ export default class Server {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${options.domain}:${options.port}/notes\x1b[0m`,
+        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
       );
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${

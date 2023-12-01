@@ -42,7 +42,7 @@ const gameLoop = () => {
 
 const fetchMapping = async () => {
   try {
-    const response = await fetch("/gamepad.json");
+    const response = await fetch("./gamepad.json");
     const json = await response.json();
     mapping = json;
   } catch (erreur) {

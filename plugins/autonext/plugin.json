@@ -1,3 +1,7 @@
 {
-  "onSlideChange": "const classes = [...window.slidesk.slides[window.slidesk.currentSlide].classList].filter(c => c.startsWith('auto-')); if (classes.length) { const timer = Number(classes[0].replace('auto-', '')) + Number(window.slidesk.animationTimer); window.slidesk.autonext = setTimeout(() => window.slidesk.next(), timer); } else { clearTimeout(window.slidesk.autonext); }"
+  "onSlideChange": "window.slidesk.autonext();",
+  "onSpeakerSlideChange": "window.slidesk.autonextNotes();",
+  "addScripts": ["./plugins/autonext/autonext.js"],
+  "addSpeakerScripts": ["./plugins/autonext/autonext.js"],
+  "addSpeakerStyles": ["./plugins/autonext/autonext.css"]
 }

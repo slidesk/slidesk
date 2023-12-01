@@ -7,10 +7,18 @@ const fromBinary = (encoded) => {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 };
 
+const supportsPopover = () => HTMLElement.prototype.hasOwnProperty("popover");
+
 window.slidesk.changeSource = () => {
-  document.querySelector("#sd-source pre").innerText = fromBinary(
-    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-source",
-    ),
-  );
+  if (supportsPopover())
+    document.querySelector("#sd-source pre").innerText = fromBinary(
+      window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+        "data-source",
+      ),
+    );
 };
+
+if (!supportsPopover()) {
+  document.querySelector("#sd-showSource").style.display = "none";
+  document.querySelector("#sd-source").style.display = "none";
+}

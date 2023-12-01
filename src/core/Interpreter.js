@@ -79,7 +79,7 @@ export default class Interpreter {
       },
       ...this.#getPluginCSS(),
       ...this.#getPluginsJS(),
-      "/notes": {
+      "/notes.html": {
         content: this.#getNoteView(),
         headers: { "Content-Type": "text/html" },
       },
@@ -87,10 +87,7 @@ export default class Interpreter {
   };
 
   static #getRealPath = (mainFile) => {
-    sdfPath = `${process.cwd()}/${mainFile.substring(
-      0,
-      mainFile.lastIndexOf("/"),
-    )}`;
+    sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   };
 
   static #initVariables = () => {
@@ -219,7 +216,7 @@ ${speakerViewJS}
               headers: { "Content-type": "text/css" },
             };
           });
-        if (p.addSpeakerStyles && hasNotesView)
+        if (hasNotesView && p.addSpeakerStyles)
           Object.keys(p.addSpeakerStyles).forEach((k) => {
             css[k.replace("./", "/")] = {
               content: p.addSpeakerStyles[k],
@@ -242,7 +239,7 @@ ${speakerViewJS}
               headers: { "Content-type": "application/javascript" },
             };
           });
-        if (p.addSpeakerScripts && hasNotesView)
+        if (hasNotesView && p.addSpeakerScripts)
           Object.keys(p.addSpeakerScripts).forEach((k) => {
             js[k.replace("./", "/")] = {
               content: p.addSpeakerScripts[k],
@@ -492,7 +489,7 @@ ${speakerViewJS}
             label: langSlug,
           });
           languages[
-            `${translationJSON.default ? "index" : `/${langSlug}`}.html`
+            `/${translationJSON.default ? "index" : `${langSlug}`}.html`
           ] = {
             content: await this.#polish(
               this.#translate(presentation, translationJSON),
@@ -513,7 +510,7 @@ ${speakerViewJS}
         );
       });
     } else {
-      languages["index.html"] = {
+      languages["/index.html"] = {
         content: await this.#polish(presentation, template, options),
         headers: {
           "Content-Type": "text/html",
