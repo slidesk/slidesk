@@ -4,8 +4,8 @@ import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync, readFileSync } from "node:fs";
 import layoutHTML from "../templates/layout.html.txt";
 import themeCSS from "../templates/styles.css.txt";
-import printCSS from "../templates/print.css.txt";
 import mainJS from "../templates/script.js.txt";
+import faviconSVG from "../templates/slidesk.svg.txt";
 import slugify from "../utils/slugify";
 import image from "../components/image";
 import comments from "../components/comments";
@@ -13,8 +13,6 @@ import list from "../components/list";
 import pluginsJSON from "../plugins.json";
 
 const { error } = console;
-
-let customCSS = "";
 
 let classes = "";
 let timerSlide = "";
@@ -25,6 +23,7 @@ let plugins = [];
 let components = [];
 let hasPluginSource = false;
 let env = {};
+let customCSS = "";
 
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
@@ -47,11 +46,27 @@ export default class Interpreter {
     await this.#loadPlugins();
     this.#loadComponents();
     const sdf = await this.#prepareSDF(mainFile);
-    return this.#generateHTML(
-      await this.#getPresentation(sdf, options),
-      this.#prepareTPL(options),
-      options,
-    );
+    return {
+      ...(await this.#generateHTML(
+        await this.#getPresentation(sdf, options),
+        this.#prepareTPL(),
+        options,
+      )),
+      "/slidesk.css": {
+        content: this.#getCSS(options),
+        headers: { "Content-type": "text/css" },
+      },
+      "/slidesk.js": {
+        content: this.#getJS(options),
+        headers: { "Content-type": "application/javascript" },
+      },
+      "/favicon.svg": {
+        content: faviconSVG,
+        headers: { "Content-Type": "image/svg+xml" },
+      },
+      ...this.#getPluginCSS(),
+      ...this.#getPluginsJS(),
+    };
   };
 
   static #getRealPath = (mainFile) => {
@@ -135,7 +150,7 @@ export default class Interpreter {
     }
   };
 
-  static #getJS = (options) => `<script>
+  static #getJS = (options) => `
   window.slidesk = {
     currentSlide: 0,
     slides: [],
@@ -153,36 +168,38 @@ export default class Interpreter {
         }://\${window.location.host}/ws\`);`
       : ""
   }
-  ${mainJS}
-</script>`;
+  ${mainJS}`;
 
   static #getCSS = (options) =>
-    `<style>
-    :root { --animationTimer: ${options.transition}ms; }
-    ${themeCSS}
-    ${printCSS}
-    </style>
-    ${plugins
-      .map((p) =>
-        p.addStyles
-          ? Object.keys(p.addStyles)
-              .map((k) => `<style data-href="${k}">${p.addStyles[k]}</style>`)
-              .join("")
-          : "",
-      )
-      .join("")}
-      ${customCSS}`;
+    `:root { --animationTimer: ${options.transition}ms; }${themeCSS}`;
 
-  static #getPluginsJS = () =>
-    `${plugins
-      .map((p) =>
-        p.addScripts
-          ? Object.keys(p.addScripts)
-              .map((k) => `<script data-src="${k}">${p.addScripts[k]}</script>`)
-              .join("")
-          : "",
-      )
-      .join("")}`;
+  static #getPluginCSS = () => {
+    const css = {};
+    plugins.forEach((p) => {
+      if (p.addStyles)
+        Object.keys(p.addStyles).forEach((k) => {
+          css[k.replace("./", "/")] = {
+            content: p.addStyles[k],
+            headers: { "Content-type": "text/css" },
+          };
+        });
+    });
+    return css;
+  };
+
+  static #getPluginsJS = () => {
+    const js = {};
+    plugins.forEach((p) => {
+      if (p.addScripts)
+        Object.keys(p.addScripts).forEach((k) => {
+          js[k.replace("./", "/")] = {
+            content: p.addScripts[k],
+            headers: { "Content-type": "application/javascript" },
+          };
+        });
+    });
+    return js;
+  };
 
   static #prepareSDF = async (mainFile) => {
     let fusion = await this.#includes(mainFile);
@@ -195,10 +212,32 @@ export default class Interpreter {
     return fusion;
   };
 
-  static #prepareTPL = (options) => {
+  static #prepareTPL = () => {
     let template = layoutHTML;
-    template = template.replace("#STYLES#", this.#getCSS(options));
-    template = template.replace("#SCRIPT#", this.#getJS(options));
+    template = template.replace(
+      "#STYLES#",
+      `<link rel="stylesheet" href="slidesk.css" />${plugins
+        .map((p) =>
+          p.addStyles
+            ? Object.keys(p.addStyles)
+                .map((k) => `<link href="${k}" rel="stylesheet"/>`)
+                .join("")
+            : "",
+        )
+        .join("")}${customCSS}`,
+    );
+    template = template.replace(
+      "#SCRIPTS#",
+      `<script src="slidesk.js"></script>${plugins
+        .map((p) =>
+          p.addScripts
+            ? Object.keys(p.addScripts)
+                .map((k) => `<script src="${k}"></script>`)
+                .join("")
+            : "",
+        )
+        .join("")}`,
+    );
     return template;
   };
 
@@ -394,29 +433,36 @@ export default class Interpreter {
           const langSlug = lang.replace(".lang.json", "");
           const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
           menuLang.push({
-            value: translationJSON.default ? "/" : `/--${langSlug}--/`,
+            value: translationJSON.default ? "/" : `${langSlug}.html`,
             label: langSlug,
           });
-          languages[translationJSON.default ? "index" : langSlug] = {
-            html: await this.#polish(
+          languages[
+            `${translationJSON.default ? "index" : `/${langSlug}`}.html`
+          ] = {
+            content: await this.#polish(
               this.#translate(presentation, translationJSON),
               template,
               options,
             ),
-            slug: langSlug,
+            headers: {
+              "Content-Type": "text/html",
+            },
           };
         }),
       );
       // add menu lang
       Object.keys(languages).forEach((key) => {
-        languages[key].html = languages[key].html.replace(
+        languages[key].content = languages[key].content.replace(
           "</body>",
           this.#getSelectLang(menuLang, key),
         );
       });
     } else {
-      languages.index = {
-        html: await this.#polish(presentation, template, options),
+      languages["index.html"] = {
+        content: await this.#polish(presentation, template, options),
+        headers: {
+          "Content-Type": "text/html",
+        },
       };
     }
     return languages;
@@ -465,7 +511,7 @@ export default class Interpreter {
   static #getSelectLang = (menuLang, key) =>
     `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang.map(
       (o) =>
-        `<option value="${o.value}" ${key === "index" ? "selected" : ""}>${
+        `<option value="${o.value}" ${key === "index.html" ? "selected" : ""}>${
           o.label
         }</option>`,
     )}</select></body>`;

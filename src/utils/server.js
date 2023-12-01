@@ -5,30 +5,7 @@ import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
 import speakerViewJS from "../templates/notes/script.js.txt";
 import themeCSS from "../templates/styles.css.txt";
-import faviconSVG from "../templates/slidesk.svg.txt";
 import pluginsJSON from "../plugins.json";
-
-export const defaultPage = () =>
-  new Response(globalThis.html.index.html, {
-    headers: {
-      "Content-Type": "text/html",
-    },
-  });
-
-export const langPage = (pathname) =>
-  new Response(
-    globalThis.html[pathname.replaceAll("-", "").replaceAll("/", "")].html,
-    {
-      headers: {
-        "Content-Type": "text/html",
-      },
-    },
-  );
-
-export const favicon = () =>
-  new Response(faviconSVG, {
-    headers: { "Content-Type": "image/svg+xml" },
-  });
 
 const getCustomCSS = async () => {
   let res = "";
@@ -151,7 +128,7 @@ export const webSockets = (req) =>
     ? undefined
     : new Response("WebSocket upgrade error", { status: 400 });
 
-export const defaultAction = (req, options, https) => {
+export const getFile = (req, options, https) => {
   const fileurl = req.url.replace(
     `http${https ? "s" : ""}://${options.domain}:${options.port}`,
     "",

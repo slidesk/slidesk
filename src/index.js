@@ -13,7 +13,8 @@ log(
 ╚█████╗░██║░░░░░██║██║░░██║█████╗░░╚█████╗░█████═╝░
 ░╚═══██╗██║░░░░░██║██║░░██║██╔══╝░░░╚═══██╗██╔═██╗░
 ██████╔╝███████╗██║██████╔╝███████╗██████╔╝██║░╚██╗
-╚═════╝░╚══════╝╚═╝╚═════╝░╚══════╝╚═════╝░╚═╝░░╚═╝ v${packagejson.version}\x1b[0m
+╚═════╝░╚══════╝╚═╝╚═════╝░╚══════╝╚═════╝░╚═╝░░╚═╝ 
+                                           v ${packagejson.version}\x1b[0m
 `,
 );
 
@@ -30,7 +31,7 @@ program
   .argument("[talk]", "the directory of your talk")
   .option("-d, --domain <string>", "domain", "localhost")
   .option("-p, --port <int>", "port", 1337)
-  .option("-s, --save", "save the html file")
+  .option("-s, --save <path>", "save the presentation")
   .option("-n, --notes", "open with speakers notes")
   .option("-t, --timers", "add checkpoint and slide maximum time on notes view")
   .option("-a, --transition <int>", "transition timer", 300)

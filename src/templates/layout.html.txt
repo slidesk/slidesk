@@ -9,7 +9,6 @@
   </head>
   <body class="sd-app">
     #SECTIONS#
-    #SCRIPT#
-    #PLUGINSSCRIPTS#
+    #SCRIPTS#
   </body>
 </html>

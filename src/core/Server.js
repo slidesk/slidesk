@@ -1,19 +1,12 @@
 /* eslint-disable no-undef */
 import dotenv from "dotenv";
-import {
-  langPage,
-  defaultPage,
-  favicon,
-  notePage,
-  webSockets,
-  defaultAction,
-} from "../utils/server";
+import { notePage, webSockets, getFile } from "../utils/server";
 
 const { log } = console;
 
 export default class Server {
-  static async create(html, options, path) {
-    globalThis.html = html;
+  static async create(files, options, path) {
+    globalThis.files = files;
     globalThis.path = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
     let env = {};
@@ -26,19 +19,21 @@ export default class Server {
       port: options.port,
       fetch(req) {
         const url = new URL(req.url);
-        if (url.pathname.match(/^\/--(\w+)--\/$/g))
-          return langPage(url.pathname);
         switch (url.pathname) {
-          case "/":
-            return defaultPage();
-          case "/favicon.svg":
-            return favicon();
           case "/notes":
             return notePage(options, https);
           case "/ws":
             return webSockets(req);
+          case "/":
+            return new Response(globalThis.files["index.html"].content, {
+              headers: globalThis.files["index.html"].headers,
+            });
           default:
-            return defaultAction(req, options, https);
+            if (Object.keys(files).indexOf(url.pathname) !== -1)
+              return new Response(globalThis.files[url.pathname].content, {
+                headers: globalThis.files[url.pathname].headers,
+              });
+            return getFile(req, options, https);
         }
       },
       websocket: {
@@ -75,8 +70,8 @@ export default class Server {
     log();
   }
 
-  static setHTML(html) {
-    globalThis.html = html;
+  static setFiles(files) {
+    globalThis.files = files;
     globalThis.server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 

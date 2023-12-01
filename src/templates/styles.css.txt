@@ -179,3 +179,39 @@ h3 {
   display: inline-block;
   max-width: 90vw;
 }
+
+@media print {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  #sd-langs,
+  #sd-progress,
+  #sd-showSource,
+  #sd-source {
+    display: none;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .sd-slide {
+    position: static;
+    height: 100%;
+    page-break-after: always;
+    transform: none !important;
+  }
+}

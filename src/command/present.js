@@ -7,24 +7,26 @@ import { question, removeCurrentLine } from "../utils/interactCLI";
 const { log } = console;
 
 const flow = (talkdir, options = {}, init = false) => {
-  Interpreter.convert(`${talkdir}/main.sdf`, options).then(async (html) => {
-    if (html === null) {
+  Interpreter.convert(`${talkdir}/main.sdf`, options).then(async (files) => {
+    if (files === null) {
       process.exit();
     }
     if (options.save) {
       const promises = [];
+      /*
       Object.entries(html).forEach(([key, value]) => {
         // eslint-disable-next-line no-undef
-        promises.push(Bun.write(`${talkdir}/${key}.html`, value.html));
+        promises.push(Bun.write(`${talkdir}/${key}`, value.html));
         log(`${talkdir}/${key}.html generated`);
       });
+      */
       Promise.all(promises).then(() => {
         process.exit(0);
       });
     } else if (init) {
-      Server.create(html, options, `${process.cwd()}/${talkdir}`);
+      Server.create(files, options, `${process.cwd()}/${talkdir}`);
     } else {
-      Server.setHTML(html);
+      Server.setHTML(files);
     }
   });
 };
