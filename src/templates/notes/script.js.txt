@@ -45,11 +45,9 @@ window.slidesk.io.onmessage = (event) => {
       startSlideTime = Date.now();
     }
     window.slidesk.onSpeakerViewSlideChange();
-  }
-  if (data.action === "future") {
+  } else if (data.action === "future") {
     document.querySelector("#sd-sv-future").innerHTML = data.payload;
-  }
-  if (data.action === "checkpoints") {
+  } else if (data.action === "checkpoints") {
     let lastCheckpoint = null;
     for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {
       if (data.payload.timerCheckpoints[i]) {
@@ -57,12 +55,12 @@ window.slidesk.io.onmessage = (event) => {
       }
       timerCheckpoints[i] = lastCheckpoint;
     }
-  }
+  } else if (window.slidesk[data.action]) window.slidesk[data.action](data);
 };
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") {
     window.slidesk.io.send(JSON.stringify({ action: "previous" }));
-  } else if (e.key === "ArrowRight" || e.key === " ") {
+  } else if (e.key === "ArrowRight") {
     window.slidesk.io.send(JSON.stringify({ action: "next" }));
   }
 });

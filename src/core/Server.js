@@ -1,8 +1,27 @@
 /* eslint-disable no-undef */
 import dotenv from "dotenv";
-import { webSockets, getFile } from "../utils/server";
+import { readdirSync, existsSync } from "node:fs";
 
 const { log } = console;
+
+const getFile = (req, options, https) => {
+  const fileurl = req.url.replace(
+    `http${https ? "s" : ""}://${options.domain}:${options.port}`,
+    "",
+  );
+  const file = Bun.file(
+    fileurl.match(/https?:\/\/(\S*)/g)
+      ? fileurl
+      : `${globalThis.path}${fileurl}`,
+  );
+  if (file.size !== 0)
+    return new Response(file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+  return new Response(`${req.url} not found`, { status: 404 });
+};
 
 export default class Server {
   static async create(files, options, path) {
@@ -14,6 +33,35 @@ export default class Server {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
     }
+    globalThis.plugins = {};
+    const pluginsDir = `${path}/plugins`;
+    if (existsSync(pluginsDir))
+      await Promise.all(
+        readdirSync(pluginsDir).map(async (plugin) => {
+          const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
+          const pluginFile = Bun.file(pluginPath);
+          const exists = await pluginFile.exists();
+          if (exists) {
+            const json = await pluginFile.json();
+            if (json.addRoute || json.addWSRoute) {
+              let obj = { type: "external", ...json };
+              if (json.addRoute) {
+                const { default: addRoute } = await import(
+                  `${path}/${json.addRoute}`
+                );
+                obj = { ...obj, addRoute };
+              }
+              if (json.addWSRoute) {
+                const { default: addWSRoute } = await import(
+                  `${path}/${json.addWSRoute}`
+                );
+                obj = { ...obj, addWSRoute };
+              }
+              globalThis.plugins[plugin] = obj;
+            }
+          }
+        }),
+      );
     const https = env.HTTPS === "true";
     const serverOptions = {
       port: options.port,
@@ -21,7 +69,9 @@ export default class Server {
         const url = new URL(req.url);
         switch (url.pathname) {
           case "/ws":
-            return webSockets(req);
+            return globalThis.server.upgrade(req)
+              ? undefined
+              : new Response("WebSocket upgrade error", { status: 400 });
           case "/":
             return new Response(globalThis.files["/index.html"].content, {
               headers: globalThis.files["/index.html"].headers,
@@ -38,8 +88,24 @@ export default class Server {
         open(ws) {
           ws.subscribe("slidesk");
         },
-        message(ws, message) {
-          ws.publish("slidesk", message);
+        async message(ws, message) {
+          const json = JSON.parse(message);
+          if (
+            json.plugin &&
+            globalThis.plugins[json.plugin] &&
+            globalThis.plugins[json.plugin].addWSRoute
+          ) {
+            globalThis.server.publish(
+              "slidesk",
+              JSON.stringify({
+                action: `${json.plugin}_response`,
+                response:
+                  await globalThis.plugins[json.plugin].addWSRoute(message),
+              }),
+            );
+          } else {
+            ws.publish("slidesk", message);
+          }
         },
         close(ws) {
           ws.unsubscribe("slidesk");
