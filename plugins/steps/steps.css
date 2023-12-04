@@ -10,3 +10,9 @@
 .steps li.step-shown {
   opacity: 1;
 }
+
+@media print {
+  .steps li {
+    opacity: 1;
+  }
+}

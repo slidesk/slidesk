@@ -24,7 +24,7 @@ With a ``!````image(path of your image)`` at the beginning of a line will displa
 
 and you can specify width, height, and styles,  ``!````image(path, placeholder, 20, 20, float:left;)``
 
-## List (-)
+## List (-) .[steps]
 
 - list
 -- sublist
