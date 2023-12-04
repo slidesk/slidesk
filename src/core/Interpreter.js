@@ -477,12 +477,14 @@ ${speakerViewJS}
 
   static #envVariables = (data) => {
     const splitted = [...data.split("++")];
-    return splitted
-      .map((t, i) => {
-        if (i % 2) return env[t] || "";
-        return t;
-      })
-      .join("");
+    if (splitted.length % 2 && splitted.length > 1)
+      return splitted
+        .map((t, i) => {
+          if (i % 2) return env[t] || "";
+          return t;
+        })
+        .join("");
+    return data;
   };
 
   static #formatting = (data) =>
