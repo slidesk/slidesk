@@ -343,7 +343,9 @@ ${speakerViewJS}
     const par = paragraph.trimStart();
     switch (true) {
       case par.startsWith("-"):
-        return list(par, 1);
+        return list(par, 1, "ul");
+      case par.startsWith("."):
+        return list(par, 1, "ol");
       case par.startsWith("<"):
         return par;
       case par.startsWith("//@"):
