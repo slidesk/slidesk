@@ -41694,3 +41694,1577 @@ window.onload = () => {
   },
 }
 `;
+
+exports[`snap 1`] = `
+{
+  "/favicon.svg": {
+    "content": 
+"<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 256 256">
+    <defs>
+        <style>
+            .color {
+                stroke: black;
+                color-scheme: light dark;
+            }
+            @media (prefers-color-scheme:dark) {
+                .color {
+                    stroke: white;
+                }
+            }
+        </style>
+    </defs>
+    <circle cx="149.95" cy="72.23" r="36.22" fill="none" stroke="#999" stroke-width="14"/>
+    <ellipse cx="128" cy="163.51" fill="none" stroke="#999" stroke-width="14" rx="88.25" ry="56.48"/>
+    <path fill="none" class="color" stroke-width="14" d="M128 107.03c48.74 0 88.25 25.29 88.25 56.48s-39.51 56.48-88.25 56.48c-33.72 0-63.02-12.1-77.88-29.89"/>
+    <path fill="none" class="color" stroke-linecap="round" stroke-width="14" d="M144.11 107.98c-41.53-4.76-66.08 8.98-68.24 18.96-3.77 17.45 18.76 23.4 37.85 30.11 26.5 9.31 28.48 26.57 20.95 39.79-11.45 20.11-65.69 20.6-87.92-11.22"/>
+    <ellipse cx="155.7" cy="66.47" fill="#999" stroke="#999" stroke-miterlimit="10" rx="5.29" ry="5.76"/>
+    <path fill="#999" stroke="#999" stroke-miterlimit="10" d="M186.17 69.62s15.38-1.47 17.28 1.35c1.35 6.92-12.66 13.48-18.25 13.48"/>
+</svg>"
+,
+    "headers": {
+      "Content-Type": "image/svg+xml",
+    },
+  },
+  "/fr.html": {
+    "content": 
+"<!DOCTYPE html><html><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=./favicon.svg sizes=any type=image/svg+xml><title>Example's talk</title><link rel=stylesheet href=slidesk.css><link href=./plugins/source/source.css rel=stylesheet><link href=./plugins/qrcode/qrcode.css rel=stylesheet><link href=./plugins/progress/progress.css rel=stylesheet><link href=./plugins/steps/steps.css rel=stylesheet><link href=./plugins/test/test.css rel=stylesheet><link href=./plugins/highlightjs/default.min.css rel=stylesheet><link rel=stylesheet href=custom.css></head><body class=sd-app><section class=sd-slide data-num=0 data-slug="" data-source=CgAKACMAIABFAHgAYQBtAHAAbABlACcAcwAgAHQAYQBsAGsACgAKAEgAbwB3ACAAdABvACAAYwByAGUAYQB0AGUAIABhACAAdABhAGwAawAgAHcAaQB0AGgAIABzAGwAaQBkAGUAcwBrAAoA><h1>Example's talk</h1><p>How to create a talk with slidesk</p></section><section class=sd-slide data-num=1 data-slug=slide-1 data-source="UwBsAGkAZABlACAAMQAKAAoALwAvAEAAIABbAF0AIAAwADAAOgAzADAACgAKAEEAIABTAGwAaQBkAGUAIABpAHMAIABkAGUAZgBpAG4AZQAgAGIAeQAgAGEAIABsAGkAbgBlACAAdwBoAGkAYwBoACAAcwB0AGEAcgB0AHMAIAB3AGkAdABoACAAMgAgACcAIwAnACAAYQBuAGQAIABhACAAcwBwAGEAYwBlACAAYQBmAHQAZQByAA=="><h2>Slide 1</h2><p>A Slide is define by a line which starts with 2 '#' and a space after</p></section><section class=sd-slide data-num=2 data-slug=inclusion-of-file-to-structurate-your-file-like-your-talk data-source="SQBuAGMAbAB1AHMAaQBvAG4AIABvAGYAIABmAGkAbABlACAAdABvACAAcwB0AHIAdQBjAHQAdQByAGEAdABlACAAeQBvAHUAcgAgAGYAaQBsAGUAIABsAGkAawBlACAAeQBvAHUAcgAgAHQAYQBsAGsACgAKAEEAIABsAGkAbgBlACAAdwBoAGkAYwBoACAAYgBlAGcAaQBuAHMAIAB3AGkAdABoACAAdABoAGkAcwAgAGIAZQBsAG8AdwAgAHMAeQBuAHQAYQB4AAoACgBgAGAAIQBpAG4AYwBsAHUAZABlACgALgAvAGEAbgBvAHQAaABlAHIAXwBmAGkAbABlAC4AdABmAHMAKQBgAGAACgAKAHcAaQBsAGwAIABpAG4AYwBsAHUAZABlACAAdABoAGUAIABjAG8AbgB0AGUAbgB0ACAAbwBmACAAdABoAGUAIABmAGkAbABlAAoACgBJAHQAIAB3AG8AcgBrAHMAIAB3AGkAdABoACAAbwB0AGgAZQByACAAZgBpAGwAZQAgAHQAeQBwAGUAcwAuAA=="><h2>Inclusion of file to structurate your file like your talk</h2><p>A line which begins with this below syntax</p><p><span class=code>!include(./another_file.tfs)</span></p><p>will include the content of the file</p><p>It works with other file types.</p></section><section class=sd-slide data-num=3 data-slug=syntaxic-words data-source="UwB5AG4AdABhAHgAaQBjACAAdwBvAHIAZABzAAoACgBTAGwAaQBEAGUAcwBrACAAYQBsAGwAbwB3AHMAIAB0AG8AIABjAGgAYQBuAGcAZQAgAHQAaABlACAAZgBvAG4AdAAgAHMAdAB5AGwAZQAKAA=="><h2>Syntaxic words</h2><p>SliDesk allows to change the font style</p></section><section class=sd-slide data-num=4 data-slug=!slide-4 data-source="CgAKAEEAIAB3AG8AcgBkAC8AcABoAHIAYQBzAGUAIAB3AHIAYQBwAHAAZQBkACAAYgB5ACAAIgBgAGAAXwBgAGAAYABgAF8AYABgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGkAbgAgAGkAdABhAGwAaQBjAC4ACgAKAEEAbgAgAF8AXwBpAHQAYQBsAGkAYwBfAF8AIAB3AG8AcgBkACAAYwBhAG4AIABiAGUAIABpAG4AIABhACAAcABoAHIAYQBzAGUACgA="><p>A word/phrase wrapped by "<span class=code>_</span><span class=code>_</span>" will display in italic.</p><p>An <span class=i>italic</span> word can be in a phrase</p></section><section class=sd-slide data-num=5 data-slug=!slide-5 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgACoAYABgAGAAYAAqAGAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABpAG4AIABiAG8AbABkAAoACgAqACoAYgBvAGwAZAAqACoACgA="><p>Wrapped with a "<span class=code>*</span><span class=code>*</span>" will display in bold</p><p><span class=b>bold</span></p></section><section class=sd-slide data-num=6 data-slug=!slide-6 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgAGQAbwB1AGIAbABlACAAIgBgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGEAcwAgAGMAbwBkAGUACgAKAGAAYABjAG8AbgBzAG8AbABlAC4AbABvAGcAKAAiAHQAZQBzAHQAIgApAGAAYAAKAA=="><p>Wrapped with a double "\`" will display as code</p><p><span class=code>console.log("test")</span></p></section><section class=sd-slide data-num=7 data-slug=!slide-7 data-source=CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgANwCYABgAGAAYADcAmAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABhAHMAIAB1AG4AZABlAHIAbABpAG4AZQBkAAoACgDcAtwCdQBuAGQAZQByAGwAaQBuAGUA3ALcAgoA><p>Wrapped with a "<span class=code>˜</span><span class=code>˜</span>" will display as underlined</p><p><span class=u>underline</span></p></section><section class=sd-slide data-num=8 data-slug=!slide-8 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgAD0AYABgAGAAYAA9AGAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABhAHMAIABsAGkAbgBlACAAdABoAHIAbwB1AGcAaAAKAAoAPQA9AGwAaQBuAGUAIAB0AGgAcgBvAHUAZwBoAD0APQAKAA=="><p>Wrapped with a "<span class=code>=</span><span class=code>=</span>" will display as line through</p><p><span class=s>line through</span></p></section><section class=sd-slide data-num=9 data-slug=!slide-9 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgACQAYABgAGAAYAAkAGAAYAAiACAAdwBpAGwAbAAgAGEAbABsAG8AdwAgAHkAbwB1ACAAdABvACAAaQBuAHQAZQByAG4AYQB0AGkAbwBuAGEAbABpAHoAZQAgAHkAbwB1AHIAIABwAHIAZQBzAGUAbgB0AGEAdABpAG8AbgAKAAoAJAAkAG0AeQBWAGEAcgAkACQAIABpAHMAIABpAG4AIAB0AGgAZQAgAGwAYQBuAGcAdQBhAGcAZQAgAHcAZQAgAHcAYQBuAHQACgAKAA=="><p>Wrapped with a "<span class=code>$</span><span class=code>$</span>" will allow you to internationalize your presentation</p><p>Ma variable is in the language we want</p></section><section class=sd-slide data-num=10 data-slug=image-attributes data-source="SQBtAGEAZwBlACAAKwAgAGEAdAB0AHIAaQBiAHUAdABlAHMACgAKAFcAaQB0AGgAIABhACAAYABgACEAYABgAGAAYABpAG0AYQBnAGUAKABwAGEAdABoACAAbwBmACAAeQBvAHUAcgAgAGkAbQBhAGcAZQApAGAAYAAgAGEAdAAgAHQAaABlACAAYgBlAGcAaQBuAG4AaQBuAGcAIABvAGYAIABhACAAbABpAG4AZQAgAHcAaQBsAGwAIABkAGkAcwBwAGwAYQB5AAoACgAhAGkAbQBhAGcAZQAoAHMAbABpAGQAZQBzAGsALgBwAG4AZwAsACAAcwBsAGkAZABlAHMAawAsACAAMgAwADAAKQAKAAoAYQBuAGQAIAB5AG8AdQAgAGMAYQBuACAAcwBwAGUAYwBpAGYAeQAgAHcAaQBkAHQAaAAsACAAaABlAGkAZwBoAHQALAAgAGEAbgBkACAAcwB0AHkAbABlAHMALAAgACAAYABgACEAYABgAGAAYABpAG0AYQBnAGUAKABwAGEAdABoACwAIABwAGwAYQBjAGUAaABvAGwAZABlAHIALAAgADIAMAAsACAAMgAwACwAIABmAGwAbwBhAHQAOgBsAGUAZgB0ADsAKQBgAGAACgA="><h2>Image + attributes</h2><p>With a <span class=code>!</span><span class=code>image(path of your image)</span> at the beginning of a line will display</p><p></p><div class=sd-img><img src=slidesk.png loading=lazy alt=slidesk width=200></div><p></p><p>and you can specify width, height, and styles, <span class=code>!</span><span class=code>image(path, placeholder, 20, 20, float:left;)</span></p></section><section class="sd-slide steps" data-num=11 data-slug=list- data-source="TABpAHMAdAAgACgALQApACAALgBbAHMAdABlAHAAcwBdAAoACgAtACAAbABpAHMAdAAKAC0ALQAgAHMAdQBiAGwAaQBzAHQACgAtAC0AIABzAHUAYgAKAC0AIABlAG4AZAAgAG8AZgAgAGEAIABMAGkAcwB0AAoALQAtACAAYQBuACAAbwB0AGgAZQByACAAcwB1AGIAbABpAHMAdAAKAA=="><h2>List (-)</h2><ul><li>list</li><ul><li>sublist</li><li>sub</li></ul><li>end of a List</li><ul><li>an other sublist</li></ul></ul></section><section class=sd-slide data-num=12 data-slug=list-with-num- data-source="TABpAHMAdAAgAHcAaQB0AGgAIABuAHUAbQAgACgALgApAAoACgAuACAAbABpAHMAdAAKAC4ALgAgAHMAdQBiAGwAaQBzAHQACgAuAC4AIABzAHUAYgAKAC4AIABlAG4AZAAgAG8AZgAgAGEAIABMAGkAcwB0AAoALgAuACAAYQBuACAAbwB0AGgAZQByACAAcwB1AGIAbABpAHMAdAAKAA=="><h2>List with num (.)</h2><ol><li>list</li><ol><li>sublist</li><li>sub</li></ol><li>end of a List</li><ol><li>an other sublist</li></ol></ol></section><section class=sd-slide data-num=13 data-slug=notes-for-speakers data-source=TgBvAHQAZQBzACAAZgBvAHIAIABzAHAAZQBhAGsAZQByAHMACgAKAFcAaQB0AGgAIABjAG8AbgB2AGUAbgB0AGkAbwBuAGEAbAAgAGMAbwBtAG0AZQBuAHQAcwAgAGAAYAAvAGAAYABgAGAAKgBgAGAAIABlAG4AZAAgAGAAYAAqAGAAYABgAGAALwBgAGAALAAgAHkAbwB1ACAAYwBhAG4AIAB3AHIAaQB0AGUAIAB5AG8AdQByACAAcwBwAGUAYQBrAGUAcgAgAG4AbwB0AGUAIABmAG8AcgAgAGUAYQBjAGgAIABzAGwAaQBkAGUACgAKADwAYQBzAGkAZABlACAAYwBsAGEAcwBzAD0AIgBzAGQALQBuAG8AdABlAHMAIgA+AE0AeQAgAG4AbwB0AGUAcwAgAHcAaQBsAGwAIABiAGUAIABkAGkAcwBwAGwAYQB5AGUAZAAgAG8AbgAgAHMAcABlAGEAawBlAHIAIAB2AGkAZQB3ACAAbwBuAGwAeQA8AGIAcgAvAD4APABiAHIALwA+AEkAdAAgAGMAYQBuACAAYgBlACAAbQB1AGwAdABpAGwAaQBuAGUAIABuAG8AdwA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoACgA8AGEAcwBpAGQAZQAgAGMAbABhAHMAcwA9ACIAcwBkAC0AbgBvAHQAZQBzACIAPgBNAHUAbAB0AGkAcABsAGUAIABjAG8AbQBtAGUAbgB0AHMAIABhAHYAYQBpAGwAYQBiAGwAZQA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoA><h2>Notes for speakers</h2><p>With conventional comments <span class=code>/</span><span class=code>*</span> end <span class=code>*</span><span class=code>/</span>, you can write your speaker note for each slide</p><aside class=sd-notes>My notes will be displayed on speaker view only<br><br>It can be multiline now<br></aside><aside class=sd-notes>Multiple comments available<br></aside></section><section class=sd-slide data-num=14 data-slug=components data-source=QwBvAG0AcABvAG4AZQBuAHQAcwAKAAoAVwBpAHQAaAAgAGEAIABgAGAAYwBvAG0AcABvAG4AZQBuAGUAbgB0AHMALwBtAHkAQwBvAG0AcABvAG4AZQBuAHQALgBtAGoAcwBgAGAAIABmAGkAbABlACwAIAB5AG8AdQAgAGMAYQBuACAAYwByAGUAYQB0AGUAIABjAHUAcwB0AG8AbQAgAGMAbwBtAHAAbwBuAGUAbgB0ACAAbABpAGsAZQAgAGAAYAAhAGAAYABgAGAAdABlAHMAdAAoAG0AeQAgAHQAZQBzAHQAKQBgAGAAIABnAGkAdgBpAG4AZwAgAHQAaABpAHMAOgAKAAoAIQB0AGUAcwB0ACgAbQB5ACAAdABlAHMAdAApAAoA><h2>Components</h2><p>With a <span class=code>componenents/myComponent.mjs</span> file, you can create custom component like <span class=code>!</span><span class=code>test(my test)</span> giving this:</p><p>Test: my test</p></section><section class="sd-slide auto-4000" data-num=15 data-slug=plugins data-source="UABsAHUAZwBpAG4AcwAgAC4AWwBhAHUAdABvAC0ANAAwADAAMABdAAoACgBUAGgAaQBzACAAcwBsAGkAZABlACAAaQBzACAAYwBvAG4AdAByAG8AbABlAGQAIABiAHkAIABhACAAcABsAHUAZwBpAG4AIABgAGEAdQB0AG8AbgBlAHgAdABgAC4AIABJAHQAIAB3AGkAbABsACAAZwBvACAAbgBlAHgAdAAgAGkAbgAgADQAcwAKAA=="><h2>Plugins</h2><p>This slide is controled by a plugin \`autonext\`. It will go next in 4s</p></section><section class=sd-slide data-num=16 data-slug=env-variables data-source="RQBuAHYAIABWAGEAcgBpAGEAYgBsAGUAcwAKAAoAVwByAGEAcABwAGUAZAAgAHcAaQB0AGgAIABhACAAIgBgAGAAKwBgAGAAYABgACsAYABgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGkAbgAgAGIAbwBsAGQACgAKACsAKwBNAFkAVgBBAFIAKwArAAoACgBDACsAKwAKAA=="><h2>Env Variables</h2><p>Wrapped with a "<span class=code>+</span><span class=code>+</span>" will display in bold</p><p>Variable env</p><p>C++</p></section><section class=sd-slide data-num=17 data-slug=test-links data-source="dABlAHMAdAAgAGwAaQBuAGsAcwAKAAoAaAB0AHQAcABzADoALwAvAHMAeQBsAHYAYQBpAG4ALgBnAG8AdQBnAG8AdQB6AGkAYQBuAC8AZQBuAC4AaAB0AG0AbAAKADwAYQAgAGgAcgBlAGYAPQAiAGgAdAB0AHAAcwA6AC8ALwBnAG8AdQB6AC4AZABlAHYAIgA+AGcAbwB1AHoAPAAvAGEAPgAKAA=="><h2>test links</h2><p><a href=https://sylvain.gougouzian/en.html target=_blank rel=noopener>https://sylvain.gougouzian/en.html</a> <a href=https://gouz.dev>gouz</a></p></section><section class=sd-slide data-num=18 data-slug=final data-source="RgBpAG4AYQBsAAoACgA8AGEAcwBpAGQAZQAgAGMAbABhAHMAcwA9ACIAcwBkAC0AbgBvAHQAZQBzACIAPgBUAGgAYQBuAGsAIAB5AG8AdQA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoACgBUAGgAYQBuAGsAcwAKAAoARABlAHYAZQBsAG8AcABlAGQAIABiAHkAIABoAHQAdABwAHMAOgAvAC8AZwBvAHUAegAuAGQAZQB2AA=="><h2>Final</h2><aside class=sd-notes>Thank you<br></aside><p>Thanks</p><p>Developed by <a href=https://gouz.dev target=_blank rel=noopener>https://gouz.dev</a></p></section><script src=slidesk.js></script><script src=./plugins/source/source.js></script><script src=./plugins/qrcode/qrcode.lib.js></script><script src=./plugins/qrcode/qrcode.js></script><script src=./plugins/keyboard/keyboard.js></script><script src=./plugins/autonext/autonext.js></script><script src=./plugins/steps/steps.js></script><script src=./plugins/test/test.js></script><script src=./plugins/highlightjs/highlight.min.js></script><script src=./plugins/highlightjs/plugin.js></script><button id="sd-showSource" popovertarget="sd-source">&lt;/&gt;</button><div id="sd-source" popover><pre>x</pre></div><div id="sd-qrcode">&nbsp;</div><div id="sd-progress">X/X</div><span class="test"></span><div class="test">Test from a file</div>
+<select id="sd-langs" onchange="window.location.href = this.value;"><option value="fr.html" >fr</option>,<option value="/" >en</option></select></body></html>"
+,
+    "headers": {
+      "Content-Type": "text/html",
+    },
+  },
+  "/index.html": {
+    "content": 
+"<!DOCTYPE html><html><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=./favicon.svg sizes=any type=image/svg+xml><title>Example's talk</title><link rel=stylesheet href=slidesk.css><link href=./plugins/source/source.css rel=stylesheet><link href=./plugins/qrcode/qrcode.css rel=stylesheet><link href=./plugins/progress/progress.css rel=stylesheet><link href=./plugins/steps/steps.css rel=stylesheet><link href=./plugins/test/test.css rel=stylesheet><link href=./plugins/highlightjs/default.min.css rel=stylesheet><link rel=stylesheet href=custom.css></head><body class=sd-app><section class=sd-slide data-num=0 data-slug="" data-source=CgAKACMAIABFAHgAYQBtAHAAbABlACcAcwAgAHQAYQBsAGsACgAKAEgAbwB3ACAAdABvACAAYwByAGUAYQB0AGUAIABhACAAdABhAGwAawAgAHcAaQB0AGgAIABzAGwAaQBkAGUAcwBrAAoA><h1>Example's talk</h1><p>How to create a talk with slidesk</p></section><section class=sd-slide data-num=1 data-slug=slide-1 data-source="UwBsAGkAZABlACAAMQAKAAoALwAvAEAAIABbAF0AIAAwADAAOgAzADAACgAKAEEAIABTAGwAaQBkAGUAIABpAHMAIABkAGUAZgBpAG4AZQAgAGIAeQAgAGEAIABsAGkAbgBlACAAdwBoAGkAYwBoACAAcwB0AGEAcgB0AHMAIAB3AGkAdABoACAAMgAgACcAIwAnACAAYQBuAGQAIABhACAAcwBwAGEAYwBlACAAYQBmAHQAZQByAA=="><h2>Slide 1</h2><p>A Slide is define by a line which starts with 2 '#' and a space after</p></section><section class=sd-slide data-num=2 data-slug=inclusion-of-file-to-structurate-your-file-like-your-talk data-source="SQBuAGMAbAB1AHMAaQBvAG4AIABvAGYAIABmAGkAbABlACAAdABvACAAcwB0AHIAdQBjAHQAdQByAGEAdABlACAAeQBvAHUAcgAgAGYAaQBsAGUAIABsAGkAawBlACAAeQBvAHUAcgAgAHQAYQBsAGsACgAKAEEAIABsAGkAbgBlACAAdwBoAGkAYwBoACAAYgBlAGcAaQBuAHMAIAB3AGkAdABoACAAdABoAGkAcwAgAGIAZQBsAG8AdwAgAHMAeQBuAHQAYQB4AAoACgBgAGAAIQBpAG4AYwBsAHUAZABlACgALgAvAGEAbgBvAHQAaABlAHIAXwBmAGkAbABlAC4AdABmAHMAKQBgAGAACgAKAHcAaQBsAGwAIABpAG4AYwBsAHUAZABlACAAdABoAGUAIABjAG8AbgB0AGUAbgB0ACAAbwBmACAAdABoAGUAIABmAGkAbABlAAoACgBJAHQAIAB3AG8AcgBrAHMAIAB3AGkAdABoACAAbwB0AGgAZQByACAAZgBpAGwAZQAgAHQAeQBwAGUAcwAuAA=="><h2>Inclusion of file to structurate your file like your talk</h2><p>A line which begins with this below syntax</p><p><span class=code>!include(./another_file.tfs)</span></p><p>will include the content of the file</p><p>It works with other file types.</p></section><section class=sd-slide data-num=3 data-slug=syntaxic-words data-source="UwB5AG4AdABhAHgAaQBjACAAdwBvAHIAZABzAAoACgBTAGwAaQBEAGUAcwBrACAAYQBsAGwAbwB3AHMAIAB0AG8AIABjAGgAYQBuAGcAZQAgAHQAaABlACAAZgBvAG4AdAAgAHMAdAB5AGwAZQAKAA=="><h2>Syntaxic words</h2><p>SliDesk allows to change the font style</p></section><section class=sd-slide data-num=4 data-slug=!slide-4 data-source="CgAKAEEAIAB3AG8AcgBkAC8AcABoAHIAYQBzAGUAIAB3AHIAYQBwAHAAZQBkACAAYgB5ACAAIgBgAGAAXwBgAGAAYABgAF8AYABgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGkAbgAgAGkAdABhAGwAaQBjAC4ACgAKAEEAbgAgAF8AXwBpAHQAYQBsAGkAYwBfAF8AIAB3AG8AcgBkACAAYwBhAG4AIABiAGUAIABpAG4AIABhACAAcABoAHIAYQBzAGUACgA="><p>A word/phrase wrapped by "<span class=code>_</span><span class=code>_</span>" will display in italic.</p><p>An <span class=i>italic</span> word can be in a phrase</p></section><section class=sd-slide data-num=5 data-slug=!slide-5 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgACoAYABgAGAAYAAqAGAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABpAG4AIABiAG8AbABkAAoACgAqACoAYgBvAGwAZAAqACoACgA="><p>Wrapped with a "<span class=code>*</span><span class=code>*</span>" will display in bold</p><p><span class=b>bold</span></p></section><section class=sd-slide data-num=6 data-slug=!slide-6 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgAGQAbwB1AGIAbABlACAAIgBgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGEAcwAgAGMAbwBkAGUACgAKAGAAYABjAG8AbgBzAG8AbABlAC4AbABvAGcAKAAiAHQAZQBzAHQAIgApAGAAYAAKAA=="><p>Wrapped with a double "\`" will display as code</p><p><span class=code>console.log("test")</span></p></section><section class=sd-slide data-num=7 data-slug=!slide-7 data-source=CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgANwCYABgAGAAYADcAmAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABhAHMAIAB1AG4AZABlAHIAbABpAG4AZQBkAAoACgDcAtwCdQBuAGQAZQByAGwAaQBuAGUA3ALcAgoA><p>Wrapped with a "<span class=code>˜</span><span class=code>˜</span>" will display as underlined</p><p><span class=u>underline</span></p></section><section class=sd-slide data-num=8 data-slug=!slide-8 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgAD0AYABgAGAAYAA9AGAAYAAiACAAdwBpAGwAbAAgAGQAaQBzAHAAbABhAHkAIABhAHMAIABsAGkAbgBlACAAdABoAHIAbwB1AGcAaAAKAAoAPQA9AGwAaQBuAGUAIAB0AGgAcgBvAHUAZwBoAD0APQAKAA=="><p>Wrapped with a "<span class=code>=</span><span class=code>=</span>" will display as line through</p><p><span class=s>line through</span></p></section><section class=sd-slide data-num=9 data-slug=!slide-9 data-source="CgAKAFcAcgBhAHAAcABlAGQAIAB3AGkAdABoACAAYQAgACIAYABgACQAYABgAGAAYAAkAGAAYAAiACAAdwBpAGwAbAAgAGEAbABsAG8AdwAgAHkAbwB1ACAAdABvACAAaQBuAHQAZQByAG4AYQB0AGkAbwBuAGEAbABpAHoAZQAgAHkAbwB1AHIAIABwAHIAZQBzAGUAbgB0AGEAdABpAG8AbgAKAAoAJAAkAG0AeQBWAGEAcgAkACQAIABpAHMAIABpAG4AIAB0AGgAZQAgAGwAYQBuAGcAdQBhAGcAZQAgAHcAZQAgAHcAYQBuAHQACgAKAA=="><p>Wrapped with a "<span class=code>$</span><span class=code>$</span>" will allow you to internationalize your presentation</p><p>My variable is in the language we want</p></section><section class=sd-slide data-num=10 data-slug=image-attributes data-source="SQBtAGEAZwBlACAAKwAgAGEAdAB0AHIAaQBiAHUAdABlAHMACgAKAFcAaQB0AGgAIABhACAAYABgACEAYABgAGAAYABpAG0AYQBnAGUAKABwAGEAdABoACAAbwBmACAAeQBvAHUAcgAgAGkAbQBhAGcAZQApAGAAYAAgAGEAdAAgAHQAaABlACAAYgBlAGcAaQBuAG4AaQBuAGcAIABvAGYAIABhACAAbABpAG4AZQAgAHcAaQBsAGwAIABkAGkAcwBwAGwAYQB5AAoACgAhAGkAbQBhAGcAZQAoAHMAbABpAGQAZQBzAGsALgBwAG4AZwAsACAAcwBsAGkAZABlAHMAawAsACAAMgAwADAAKQAKAAoAYQBuAGQAIAB5AG8AdQAgAGMAYQBuACAAcwBwAGUAYwBpAGYAeQAgAHcAaQBkAHQAaAAsACAAaABlAGkAZwBoAHQALAAgAGEAbgBkACAAcwB0AHkAbABlAHMALAAgACAAYABgACEAYABgAGAAYABpAG0AYQBnAGUAKABwAGEAdABoACwAIABwAGwAYQBjAGUAaABvAGwAZABlAHIALAAgADIAMAAsACAAMgAwACwAIABmAGwAbwBhAHQAOgBsAGUAZgB0ADsAKQBgAGAACgA="><h2>Image + attributes</h2><p>With a <span class=code>!</span><span class=code>image(path of your image)</span> at the beginning of a line will display</p><p></p><div class=sd-img><img src=slidesk.png loading=lazy alt=slidesk width=200></div><p></p><p>and you can specify width, height, and styles, <span class=code>!</span><span class=code>image(path, placeholder, 20, 20, float:left;)</span></p></section><section class="sd-slide steps" data-num=11 data-slug=list- data-source="TABpAHMAdAAgACgALQApACAALgBbAHMAdABlAHAAcwBdAAoACgAtACAAbABpAHMAdAAKAC0ALQAgAHMAdQBiAGwAaQBzAHQACgAtAC0AIABzAHUAYgAKAC0AIABlAG4AZAAgAG8AZgAgAGEAIABMAGkAcwB0AAoALQAtACAAYQBuACAAbwB0AGgAZQByACAAcwB1AGIAbABpAHMAdAAKAA=="><h2>List (-)</h2><ul><li>list</li><ul><li>sublist</li><li>sub</li></ul><li>end of a List</li><ul><li>an other sublist</li></ul></ul></section><section class=sd-slide data-num=12 data-slug=list-with-num- data-source="TABpAHMAdAAgAHcAaQB0AGgAIABuAHUAbQAgACgALgApAAoACgAuACAAbABpAHMAdAAKAC4ALgAgAHMAdQBiAGwAaQBzAHQACgAuAC4AIABzAHUAYgAKAC4AIABlAG4AZAAgAG8AZgAgAGEAIABMAGkAcwB0AAoALgAuACAAYQBuACAAbwB0AGgAZQByACAAcwB1AGIAbABpAHMAdAAKAA=="><h2>List with num (.)</h2><ol><li>list</li><ol><li>sublist</li><li>sub</li></ol><li>end of a List</li><ol><li>an other sublist</li></ol></ol></section><section class=sd-slide data-num=13 data-slug=notes-for-speakers data-source=TgBvAHQAZQBzACAAZgBvAHIAIABzAHAAZQBhAGsAZQByAHMACgAKAFcAaQB0AGgAIABjAG8AbgB2AGUAbgB0AGkAbwBuAGEAbAAgAGMAbwBtAG0AZQBuAHQAcwAgAGAAYAAvAGAAYABgAGAAKgBgAGAAIABlAG4AZAAgAGAAYAAqAGAAYABgAGAALwBgAGAALAAgAHkAbwB1ACAAYwBhAG4AIAB3AHIAaQB0AGUAIAB5AG8AdQByACAAcwBwAGUAYQBrAGUAcgAgAG4AbwB0AGUAIABmAG8AcgAgAGUAYQBjAGgAIABzAGwAaQBkAGUACgAKADwAYQBzAGkAZABlACAAYwBsAGEAcwBzAD0AIgBzAGQALQBuAG8AdABlAHMAIgA+AE0AeQAgAG4AbwB0AGUAcwAgAHcAaQBsAGwAIABiAGUAIABkAGkAcwBwAGwAYQB5AGUAZAAgAG8AbgAgAHMAcABlAGEAawBlAHIAIAB2AGkAZQB3ACAAbwBuAGwAeQA8AGIAcgAvAD4APABiAHIALwA+AEkAdAAgAGMAYQBuACAAYgBlACAAbQB1AGwAdABpAGwAaQBuAGUAIABuAG8AdwA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoACgA8AGEAcwBpAGQAZQAgAGMAbABhAHMAcwA9ACIAcwBkAC0AbgBvAHQAZQBzACIAPgBNAHUAbAB0AGkAcABsAGUAIABjAG8AbQBtAGUAbgB0AHMAIABhAHYAYQBpAGwAYQBiAGwAZQA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoA><h2>Notes for speakers</h2><p>With conventional comments <span class=code>/</span><span class=code>*</span> end <span class=code>*</span><span class=code>/</span>, you can write your speaker note for each slide</p><aside class=sd-notes>My notes will be displayed on speaker view only<br><br>It can be multiline now<br></aside><aside class=sd-notes>Multiple comments available<br></aside></section><section class=sd-slide data-num=14 data-slug=components data-source=QwBvAG0AcABvAG4AZQBuAHQAcwAKAAoAVwBpAHQAaAAgAGEAIABgAGAAYwBvAG0AcABvAG4AZQBuAGUAbgB0AHMALwBtAHkAQwBvAG0AcABvAG4AZQBuAHQALgBtAGoAcwBgAGAAIABmAGkAbABlACwAIAB5AG8AdQAgAGMAYQBuACAAYwByAGUAYQB0AGUAIABjAHUAcwB0AG8AbQAgAGMAbwBtAHAAbwBuAGUAbgB0ACAAbABpAGsAZQAgAGAAYAAhAGAAYABgAGAAdABlAHMAdAAoAG0AeQAgAHQAZQBzAHQAKQBgAGAAIABnAGkAdgBpAG4AZwAgAHQAaABpAHMAOgAKAAoAIQB0AGUAcwB0ACgAbQB5ACAAdABlAHMAdAApAAoA><h2>Components</h2><p>With a <span class=code>componenents/myComponent.mjs</span> file, you can create custom component like <span class=code>!</span><span class=code>test(my test)</span> giving this:</p><p>Test: my test</p></section><section class="sd-slide auto-4000" data-num=15 data-slug=plugins data-source="UABsAHUAZwBpAG4AcwAgAC4AWwBhAHUAdABvAC0ANAAwADAAMABdAAoACgBUAGgAaQBzACAAcwBsAGkAZABlACAAaQBzACAAYwBvAG4AdAByAG8AbABlAGQAIABiAHkAIABhACAAcABsAHUAZwBpAG4AIABgAGEAdQB0AG8AbgBlAHgAdABgAC4AIABJAHQAIAB3AGkAbABsACAAZwBvACAAbgBlAHgAdAAgAGkAbgAgADQAcwAKAA=="><h2>Plugins</h2><p>This slide is controled by a plugin \`autonext\`. It will go next in 4s</p></section><section class=sd-slide data-num=16 data-slug=env-variables data-source="RQBuAHYAIABWAGEAcgBpAGEAYgBsAGUAcwAKAAoAVwByAGEAcABwAGUAZAAgAHcAaQB0AGgAIABhACAAIgBgAGAAKwBgAGAAYABgACsAYABgACIAIAB3AGkAbABsACAAZABpAHMAcABsAGEAeQAgAGkAbgAgAGIAbwBsAGQACgAKACsAKwBNAFkAVgBBAFIAKwArAAoACgBDACsAKwAKAA=="><h2>Env Variables</h2><p>Wrapped with a "<span class=code>+</span><span class=code>+</span>" will display in bold</p><p>Variable env</p><p>C++</p></section><section class=sd-slide data-num=17 data-slug=test-links data-source="dABlAHMAdAAgAGwAaQBuAGsAcwAKAAoAaAB0AHQAcABzADoALwAvAHMAeQBsAHYAYQBpAG4ALgBnAG8AdQBnAG8AdQB6AGkAYQBuAC8AZQBuAC4AaAB0AG0AbAAKADwAYQAgAGgAcgBlAGYAPQAiAGgAdAB0AHAAcwA6AC8ALwBnAG8AdQB6AC4AZABlAHYAIgA+AGcAbwB1AHoAPAAvAGEAPgAKAA=="><h2>test links</h2><p><a href=https://sylvain.gougouzian/en.html target=_blank rel=noopener>https://sylvain.gougouzian/en.html</a> <a href=https://gouz.dev>gouz</a></p></section><section class=sd-slide data-num=18 data-slug=final data-source="RgBpAG4AYQBsAAoACgA8AGEAcwBpAGQAZQAgAGMAbABhAHMAcwA9ACIAcwBkAC0AbgBvAHQAZQBzACIAPgBUAGgAYQBuAGsAIAB5AG8AdQA8AGIAcgAvAD4APAAvAGEAcwBpAGQAZQA+AAoACgBUAGgAYQBuAGsAcwAKAAoARABlAHYAZQBsAG8AcABlAGQAIABiAHkAIABoAHQAdABwAHMAOgAvAC8AZwBvAHUAegAuAGQAZQB2AA=="><h2>Final</h2><aside class=sd-notes>Thank you<br></aside><p>Thanks</p><p>Developed by <a href=https://gouz.dev target=_blank rel=noopener>https://gouz.dev</a></p></section><script src=slidesk.js></script><script src=./plugins/source/source.js></script><script src=./plugins/qrcode/qrcode.lib.js></script><script src=./plugins/qrcode/qrcode.js></script><script src=./plugins/keyboard/keyboard.js></script><script src=./plugins/autonext/autonext.js></script><script src=./plugins/steps/steps.js></script><script src=./plugins/test/test.js></script><script src=./plugins/highlightjs/highlight.min.js></script><script src=./plugins/highlightjs/plugin.js></script><button id="sd-showSource" popovertarget="sd-source">&lt;/&gt;</button><div id="sd-source" popover><pre>x</pre></div><div id="sd-qrcode">&nbsp;</div><div id="sd-progress">X/X</div><span class="test"></span><div class="test">Test from a file</div>
+<select id="sd-langs" onchange="window.location.href = this.value;"><option value="fr.html" >fr</option>,<option value="/" >en</option></select></body></html>"
+,
+    "headers": {
+      "Content-Type": "text/html",
+    },
+  },
+  "/notes.html": {
+    "content": 
+"<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./favicon.svg" sizes="any" type="image/svg+xml" />
+    <title>Speaker View</title>
+    <link rel="stylesheet" href="slidesk.css" /><link rel="stylesheet" href="slidesk-notes.css" /><link href="./plugins/autonext/autonext.css" rel="stylesheet" /><link href="./plugins/highlightjs/default.min.css" rel="stylesheet" /><link rel="stylesheet" href="custom.css" />
+  </head>
+  <body>
+    <div id="sd-sv-left">
+      <main id="sd-sv-current" class="sd-app"></main>
+      <main id="sd-sv-future" class="sd-app"></main>
+    </div>
+    <div id="sd-sv-right">
+      <div id="sd-sv-timer">Click to (re)start</div>
+      <div id="sd-sv-subtimer"></div>
+      <aside id="sd-sv-notes"></aside>
+      <div id="sd-open-presentation"></div>
+    </div>
+    <script src="slidesk-notes.js"></script><script src="./plugins/autonext/autonext.js"></script><script src="./plugins/highlightjs/highlight.min.js"></script>
+  </body>
+</html>"
+,
+    "headers": {
+      "Content-Type": "text/html",
+    },
+  },
+  "/plugins/autonext/autonext.css": {
+    "content": 
+".autonexted::before {
+  content: "TIMER";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(13, 12, 82, 0.49);
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/plugins/autonext/autonext.js": {
+    "content": 
+"window.slidesk.autonext = () => {
+  const classes = [
+    ...window.slidesk.slides[window.slidesk.currentSlide].classList,
+  ].filter((c) => c.startsWith("auto-"));
+  if (classes.length) {
+    const timer =
+      Number(classes[0].replace("auto-", "")) +
+      Number(window.slidesk.animationTimer);
+    window.slidesk.autonextTimer = setTimeout(
+      () => window.slidesk.next(),
+      timer,
+    );
+  } else {
+    clearTimeout(window.slidesk.autonextTimer);
+  }
+};
+
+window.slidesk.autonextNotes = () => {
+  const classes = [
+    ...window.slidesk.slides[window.slidesk.currentSlide].classList,
+  ].filter((c) => c.startsWith("auto-"));
+  const current = document.querySelector("#sd-sv-current");
+  if (classes.length) {
+    current.classList.add("autonexted");
+  } else {
+    current.classList.remove("autonexted");
+  }
+};
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/plugins/keyboard/keyboard.js": {
+    "content": 
+"let mapping = {};
+
+const fetchMapping = async () => {
+  try {
+    const response = await fetch("./keyboard.json");
+    const json = await response.json();
+    mapping = json;
+  } catch (erreur) {
+    mapping = {
+      f: "fullscreen",
+    };
+  }
+  document.addEventListener("keydown", (e) => {
+    if (typeof window.slidesk[mapping[e.key]] !== "undefined") {
+      window.slidesk[mapping[e.key]]();
+    } else {
+      window.slidesk.io.send(JSON.stringify({ action: mapping[e.key] }));
+    }
+  });
+};
+
+fetchMapping();
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/plugins/progress/progress.css": {
+    "content": 
+"#sd-progress {
+  background-color: var(--sd-primary-color);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0.25rem;
+  z-index: 1;
+  overflow: hidden;
+  transition: width var(--animationTimer) ease;
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/plugins/qrcode/qrcode.css": {
+    "content": 
+"#sd-qrcode {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+}
+
+#sd-qrcode svg {
+  width: 128px;
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/plugins/qrcode/qrcode.js": {
+    "content": 
+"window.slidesk.qrcode = () => {
+  document.getElementById("sd-qrcode").innerHTML = window.QRCodeRender(
+    window.QRCodeGetMatrix(window.location.href),
+    "#000",
+  );
+};
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/plugins/qrcode/qrcode.lib.js": {
+    "content": 
+"let chunkString = (content, length) =>
+  range0(Math.ceil(len(content) / length)).map((i) =>
+    content.substr(i++ * length, length),
+  );
+let pad0 = (count, content = "") => content.padStart(count, "0");
+let numToBits = (content, count) => pad0(count, content.toString(2));
+let bitsToArray = (bits) => [...bits].map(Number);
+let range = (from, to) => Array.from({ length: to - from }, (_, i) => i + from);
+let range0 = (to) => range(0, to);
+let createMatrix = (dimensions) => {
+  let base = range0(dimensions).map((_) => null);
+  return base.map((_) => base.slice());
+};
+let cloneMatrix = (matrix) => matrix.slice().map((m) => m.slice());
+let len = (array) => array.length;
+let mergeMatrices = (matrix1, matrix2) => {
+  let result2 = cloneMatrix(matrix1);
+  iterateOverMatrix(
+    matrix1,
+    (val, x, y) => val === null && (result2[y][x] = matrix2[y][x]),
+  );
+  return result2;
+};
+let iterateOverMatrix = (matrix, fn, fnSecondary = () => {}, direction = 0) => {
+  matrix.map(
+    (row, y) => (
+      row.map((val, x) =>
+        direction === 0
+          ? fn(val, x, y, matrix)
+          : fn(matrix[x][y], y, x, matrix),
+      ),
+      fnSecondary(y, matrix)
+    ),
+  );
+};
+let encodeUtf8 = (s) => {
+  let ci = 0,
+    bytes = [],
+    c;
+  for (; ci < len(s); ci++) {
+    if ((c = s.charCodeAt(ci)) < 128 && bytes.push(c)) continue;
+    if (c < 2048) bytes.push((c >> 6) | 192);
+    else {
+      if (c > 55295 && c < 56320) {
+        c = 65536 + ((c & 1023) << 10) + (s.charCodeAt(++ci) & 1023);
+        bytes.push((c >> 18) | 240, ((c >> 12) & 63) | 128);
+      } else bytes.push((c >> 12) | 224);
+      bytes.push(((c >> 6) & 63) | 128);
+    }
+    bytes.push((c & 63) | 128);
+  }
+  return bytes;
+};
+var EcLevels = /* @__PURE__ */ ((EcLevels2) => {
+  EcLevels2[(EcLevels2["L"] = 0)] = "L";
+  EcLevels2[(EcLevels2["M"] = 1)] = "M";
+  EcLevels2[(EcLevels2["Q"] = 2)] = "Q";
+  EcLevels2[(EcLevels2["H"] = 3)] = "H";
+  return EcLevels2;
+})(EcLevels || {});
+let qrDefinitionTable = chunkString(
+  "0011030906060a020325091a14141a0908441834100a1406126710231816090218921633100814041056091916111a0812651022100718061682142914101807219a1427120916051056183316111a081268213a1a1416051678142718121a0718911428161214042199163012091605147316312116160516831a35161121081a911a361a141a0721a318331a141a071a971834181318061a91183121161a081a9a18321a1421091a951a362116160621a41a372116210821a01a352116210918901a37211621081a981a361a14210921a51a352115210821a01a3521162108219a1a352115210821991a372116210821991a362116210821991a362116210821991a362116210821991a362116210921a41a372116210821a41a372116210821a51a362116210821a51a362116210821a01a372116210821a11a3721162108",
+  2,
+).map((s) => parseInt(s, 11) + 7);
+let getDimensions = (version) => 17 + 4 * version;
+let getSupportedBits = (version) => {
+  let dimensions = getDimensions(version);
+  let alignmentElementsDimensions = 2 + (0 | (version / 7));
+  let alignmentModules =
+    (5 * alignmentElementsDimensions - 1) *
+      (5 * alignmentElementsDimensions - 1) -
+    56;
+  return (
+    -191 -
+    2 * dimensions +
+    dimensions * dimensions -
+    alignmentModules * +(version > 1) -
+    36 * +(version > 6)
+  );
+};
+let getRemainderBits = (version) => getSupportedBits(version) % 8;
+let getAlignmentPattern = (version) => {
+  let last = 4 + 4 * version;
+  let elements = 0 | (version / 7);
+  let startStep = 0 | (last / (elements + 1));
+  let firstStep = startStep;
+  let nextStep = firstStep;
+  if (elements > 1) {
+    nextStep = 2 * Math.ceil(((last - startStep) / elements + 1e-4) / 2);
+    firstStep = last - nextStep * elements;
+  }
+  return version < 2
+    ? []
+    : [6, ...range0(elements + 1).map((i) => 6 + firstStep + i * nextStep)];
+};
+let getGroups = (version, ecLevel) => {
+  let index = version * 8 - 8 + ecLevel * 2,
+    ecPerBlock = qrDefinitionTable[index],
+    wordsPerBlock = qrDefinitionTable[++index],
+    bytes = 0 | (getSupportedBits(version) / 8),
+    y = 0,
+    x = 0,
+    sumBlock = ecPerBlock + wordsPerBlock;
+  for (; x < 57; x++)
+    if ((y = (bytes - sumBlock * x) / (sumBlock + 1)) % 1 === 0) break;
+  let result2 = [{ blocks: x, wordsPerBlock, ecPerBlock }];
+  y > 0 && wordsPerBlock++;
+  result2.push({ blocks: y, wordsPerBlock, ecPerBlock });
+  return result2;
+};
+let getChracterCountBits = (version) => (version <= 9 ? 8 : 16);
+let getRequiredNumberOfBits = (groups2) =>
+  groups2.reduce((acc, val) => acc + val.wordsPerBlock * val.blocks, 0) * 8;
+let versionLookup = [];
+let requiredNumberOfBits, characterCountBits, groups;
+range(1, 41).map((version) => {
+  range0(4).map((ecLevel) => {
+    groups = getGroups(version, ecLevel);
+    requiredNumberOfBits = getRequiredNumberOfBits(groups);
+    characterCountBits = getChracterCountBits(version);
+    versionLookup.push({
+      ecLevel,
+      version,
+      groups,
+      requiredNumberOfBits,
+      characterCountBits,
+      upperLimit: 0 | ((requiredNumberOfBits - (4 + characterCountBits)) / 8),
+      remainderBits: getRemainderBits(version),
+      dimensions: getDimensions(version),
+      alignmentPattern: getAlignmentPattern(version),
+    });
+  });
+});
+let getSmallestVersion = (length, ecLevel) => {
+  let lookup = versionLookup.filter(
+    (v) => v.ecLevel === ecLevel && v.upperLimit >= length,
+  );
+  if (!lookup) throw new Error("Input too long!");
+  return lookup[0];
+};
+let getParameters = (content, ecLevel) =>
+  getSmallestVersion(len(encodeUtf8(content)), ecLevel);
+let score = 0;
+let getLineGroupScore = (matrix) => {
+  let currentColor = false;
+  let currentRun = 0;
+  let scoreLineGroupCondition = () => {
+    score += currentRun >= 5 ? currentRun - 2 : 0;
+    currentRun = 0;
+  };
+  [0, 1].map((dir) => {
+    iterateOverMatrix(
+      matrix,
+      (value) => {
+        if (value !== currentColor) {
+          scoreLineGroupCondition();
+          currentColor = value;
+        }
+        currentRun++;
+      },
+      scoreLineGroupCondition,
+      dir,
+    );
+  });
+};
+let getSquareScore = (matrix) => {
+  iterateOverMatrix(matrix, (_, x, y) => {
+    if (x < len(matrix) - 1 && y < len(matrix) - 1) {
+      let squareBitMask = range0(4).reduce(
+        (acc, dirBitMask, i) =>
+          acc | (+matrix[y + (dirBitMask >> 1)][x + (dirBitMask & 1)] << i),
+        0,
+      );
+      score += squareBitMask % 15 === 0 ? 3 : 0;
+    }
+  });
+};
+let getFinderConfusionScore = (matrix) => {
+  let patterns = [
+    { template: bitsToArray("10111010000"), current: 0 },
+    { template: bitsToArray("00001011101"), current: 0 },
+  ];
+  [0, 1].map((dir) => {
+    iterateOverMatrix(
+      matrix,
+      (value) =>
+        patterns.map((pattern) => {
+          pattern.current +=
+            +value === pattern.template[pattern.current] ? 1 : -pattern.current;
+          if (pattern.current >= len(pattern.template)) {
+            score += 40;
+            pattern.current = 0;
+          }
+        }),
+      () => patterns.map((pattern) => (pattern.current = 0)),
+      dir,
+    );
+  });
+};
+let getColorImbalanceScore = (matrix) => {
+  let darkCount = 0;
+  iterateOverMatrix(matrix, (value) => (darkCount += +value));
+  let percentage = +((darkCount / (len(matrix) * len(matrix))) * 100);
+  let lower = percentage - (percentage & 5);
+  score +=
+    Math.min(...[lower, lower + 5].map((el) => Math.abs(el - 50) / 5)) * 10 + 5;
+};
+let maskingMethods = [
+  (x, y) => (x + y) % 2,
+  (x, y) => y % 2,
+  (x) => x % 3,
+  (x, y) => (x + y) % 3,
+  (x, y) => (0 | (y / 2 + (0 | (x / 3)))) % 2,
+  (x, y) => ((x * y) % 2) + ((x * y) % 3),
+  (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2,
+  (x, y) => (((x + y) % 2) + ((x * y) % 3)) % 2,
+];
+let evaluateMasking = (matrix) => (
+  (score = 0),
+  getLineGroupScore(matrix),
+  getSquareScore(matrix),
+  getFinderConfusionScore(matrix),
+  getColorImbalanceScore(matrix)
+);
+let maskMatrix = (matrix, condition) => {
+  let copy = cloneMatrix(matrix);
+  iterateOverMatrix(copy, (value, x, y) =>
+    !condition(x, y) ? (copy[y][x] = !value) : 0,
+  );
+  return copy;
+};
+let applyMasking = (patternMatrix, dataMatrix) =>
+  maskingMethods
+    .map((method) =>
+      mergeMatrices(patternMatrix, maskMatrix(dataMatrix, method)),
+    )
+    .reduce(
+      (acc, matrix, mask) => (
+        evaluateMasking(matrix),
+        score < acc.score ? { score, mask, matrix } : acc
+      ),
+      {
+        score: 1 << 30,
+        mask: 0,
+        matrix: [],
+      },
+    );
+let applyFinderPatterns = (matrix) => {
+  let dimensions = len(matrix);
+  let dimensionsSubSeven = dimensions - 7;
+  let drawSquares = (x, y) => {
+    matrix[y + 3][x + 3] = true;
+    range0(3).map((j) => {
+      range(j, 7 - j).map(
+        (i) =>
+          (matrix[y + j][x + i] =
+            matrix[y + 6 - j][x + i] =
+            matrix[y + i][x + j] =
+            matrix[y + i][x + 6 - j] =
+              j % 2 === 0),
+      );
+    });
+  };
+  range0(8).map(
+    (i) =>
+      (matrix[i][7] =
+        matrix[7][i] =
+        matrix[7][dimensions - i - 1] =
+        matrix[dimensions - i - 1][7] =
+        matrix[dimensionsSubSeven - 1][i] =
+        matrix[i][dimensionsSubSeven - 1] =
+          false),
+  );
+  drawSquares(0, 0);
+  drawSquares(0, dimensionsSubSeven);
+  drawSquares(dimensionsSubSeven, 0);
+};
+let applyTimingPatterns = (matrix) =>
+  range(7, len(matrix) - 7).map(
+    (i) => (matrix[6][i] = matrix[i][6] = i % 2 === 0),
+  );
+let applyDarkModule = (matrix) => (matrix[matrix.length - 8][8] = true);
+let applyReservedAreas = (matrix, version) => {
+  let dimensions = len(matrix);
+  [range0(9), range(dimensions - 8, dimensions)]
+    .flat()
+    .map((i) => (matrix[i][8] = matrix[8][i] = false));
+  if (version >= 7)
+    range0(3).map((i) =>
+      range0(6).map(
+        (j) =>
+          (matrix[dimensions - 11 + i][j] = matrix[j][dimensions - 11 + i] =
+            false),
+      ),
+    );
+};
+let applyAlignmentPatterns = (matrix, locations) =>
+  locations.map((x, i) =>
+    locations
+      .slice(
+        +(i === 0 || i === len(locations) - 1),
+        i > 0 ? len(locations) : -1,
+      )
+      .map((y) =>
+        range0(3).map((j) =>
+          range(j, 5 - j).map(
+            (i2) =>
+              (matrix[y - 2 + j][x - 2 + i2] =
+                matrix[y + 2 - j][x - 2 + i2] =
+                matrix[y - 2 + i2][x - 2 + j] =
+                matrix[y - 2 + i2][x + 2 - j] =
+                  j % 2 === 0),
+          ),
+        ),
+      ),
+  );
+let getPatternMatrix = (config) => {
+  let patternMatrix = createMatrix(config.dimensions);
+  applyFinderPatterns(patternMatrix);
+  applyAlignmentPatterns(patternMatrix, config.alignmentPattern);
+  applyReservedAreas(patternMatrix, config.version);
+  applyTimingPatterns(patternMatrix);
+  applyDarkModule(patternMatrix);
+  return patternMatrix;
+};
+let exponents = {};
+let logs = { 1: 0 };
+range0(255).reduce(
+  (acc, i) => (
+    (logs[(exponents[i] = acc)] = i), acc & 128 ? (acc * 2) ^ 285 : acc * 2
+  ),
+  1,
+);
+let mul = (x, y) => (x * y === 0 ? 0 : exponents[(logs[x] + logs[y]) % 255]);
+let result$1;
+let mulPoly = (poly1, poly2) => (
+  (result$1 = []),
+  poly1.map((p1, j) => poly2.map((p2, i) => (result$1[j + i] ^= mul(p2, p1)))),
+  result$1
+);
+let divPoly = (dividend, divisor) => {
+  result$1 = dividend.slice();
+  range0(len(dividend) - len(divisor) + 1).map((i) =>
+    range(1, len(divisor)).map(
+      (j) => (result$1[i + j] ^= mul(divisor[j], result$1[i])),
+    ),
+  );
+  return result$1.slice(len(result$1) - len(divisor) + 1);
+};
+let generatorPoly = (n) =>
+  range0(n).reduce((acc, i) => mulPoly(acc, [1, exponents[i]]), [1]);
+let applyFormatInformation = (ecLevel, mask, matrix) => {
+  let bits = chunkString("01001110", 2)[ecLevel] + numToBits(mask, 3);
+  let formatInfo = numToBits(
+    parseInt(
+      bits +
+        pad0(
+          10,
+          divPoly(
+            bitsToArray(bits + pad0(10)),
+            bitsToArray("10100110111"),
+          ).join(""),
+        ),
+      2,
+    ) ^ 21522,
+    15,
+  );
+  let a = 0,
+    b = 0;
+  [range0(8 + 1), range(len(matrix) - 7, len(matrix))]
+    .flat()
+    .map((h, i, arr) => {
+      let v = arr[arr.length - 1 - i];
+      if (h !== 6) matrix[8][h] = formatInfo[a++] === "1";
+      if (v !== 6 && v !== len(matrix) - 8)
+        matrix[v][8] = formatInfo[b++] === "1";
+    });
+  return matrix;
+};
+let applyVerisonInformation = (version, matrix) => {
+  if (version < 7) return matrix;
+  let bits = numToBits(version, 6);
+  let versionInfo =
+    bits +
+    pad0(
+      12,
+      divPoly(bitsToArray(bits + pad0(12)), bitsToArray("1111100100101")).join(
+        "",
+      ),
+    );
+  let d = 0;
+  range0(6).map((x) =>
+    range0(3).map(
+      (y) =>
+        (matrix[matrix.length - 9 - y][5 - x] = matrix[5 - x][
+          len(matrix) - 9 - y
+        ] =
+          versionInfo[d++] === "1"),
+    ),
+  );
+  return matrix;
+};
+let applyData = (patternMatrix, data) => {
+  let dataMatrix = createMatrix(len(patternMatrix)),
+    MAX = len(patternMatrix) - 1,
+    x = MAX,
+    y = MAX,
+    dx = 0,
+    d = 0,
+    direction = -1;
+  while (d < len(data)) {
+    patternMatrix[y][x - dx] === null &&
+      (dataMatrix[y][x - dx] = data[d++] === "1");
+    if (dx === 1) {
+      y += direction;
+      if (y < 0 || y > MAX) {
+        y = (MAX + MAX * direction) / 2;
+        direction *= -1;
+        x -= 2;
+      }
+    }
+    dx ^= 1;
+    x >= 6 && x <= 7 && (x = 5);
+  }
+  return dataMatrix;
+};
+let place = (config, data) => {
+  let patternMatrix = getPatternMatrix(config);
+  let dataMatrix = applyData(patternMatrix, data);
+  let { mask, matrix } = applyMasking(patternMatrix, dataMatrix);
+  applyFormatInformation(config.ecLevel, mask, matrix);
+  return applyVerisonInformation(config.version, matrix);
+};
+let getEcWords = (message, ecCodeWordsCount) =>
+  divPoly(
+    message.concat(range0(ecCodeWordsCount).map((_) => 0)),
+    generatorPoly(ecCodeWordsCount),
+  );
+let encodeSymbols = (content) =>
+  encodeUtf8(content)
+    .map((el) => numToBits(el, 8))
+    .join("");
+let currentElement;
+let createBlocks = (config, encodedData) => (
+  (currentElement = 0),
+  config.groups
+    .map((group) =>
+      range0(group.blocks).map((i) =>
+        range0(group.wordsPerBlock).map((j) => encodedData[currentElement++]),
+      ),
+    )
+    .flat()
+);
+let result;
+let interleave = (blocks2) => (
+  (result = []),
+  range0(len(blocks2)).map((j) =>
+    range0(len(blocks2[j])).map(
+      (i) => (result[i * len(blocks2) + j] = blocks2[j][i]),
+    ),
+  ),
+  result
+);
+let blocks;
+let encode = (config, content) => (
+  (blocks = createBlocks(
+    config,
+    chunkString(
+      fillUpBits(
+        config.requiredNumberOfBits,
+        "0100" +
+          numToBits(len(content), config.characterCountBits) +
+          encodeSymbols(content),
+      ),
+      8,
+    ).map((el) => parseInt(el, 2)),
+  )),
+  [
+    interleave(blocks),
+    interleave(blocks.map((b) => getEcWords(b, config.groups[0].ecPerBlock))),
+  ]
+    .flat()
+    .map((uint) => numToBits(uint, 8))
+    .join("") + pad0(config.remainderBits)
+);
+let fillUpBits = (requiredNumberOfBits2, bits) => {
+  bits += pad0(
+    requiredNumberOfBits2 - len(bits) < 4
+      ? requiredNumberOfBits2 - len(bits)
+      : 4,
+  );
+  bits += pad0(8 - (len(bits) % 8));
+  return bits
+    .padEnd(requiredNumberOfBits2, "1110110000010001")
+    .substr(0, requiredNumberOfBits2);
+};
+window.QRCodeGetMatrix = (content, ecLevel = EcLevels.L) => {
+  let config = getParameters(content, ecLevel);
+  return place(config, encode(config, content));
+};
+window.QRCodeRender = (matrix, color = "#000") => {
+  let { d, dim } = renderPath(matrix);
+  return \`<svg viewBox="0 0 ${dim} ${dim}" stroke=${color} stroke-width=1.05 xmlns=http://www.w3.org/2000/svg><path d="${d}"/></svg>\`;
+};
+let renderPath = (matrix) => {
+  let d = "";
+  matrix.map((row, y) => {
+    let lastX = 0,
+      x = 0,
+      len2;
+    d += \`M${5} ${y + 5}\`;
+    for (; x < matrix.length; x++) {
+      if (row[x]) {
+        len2 = 0;
+        while (row[++len2 + x]);
+        d += \`m${x - lastX} 0h${len2}\`;
+        lastX = (x += len2 - 1) + 1;
+      }
+    }
+  });
+  return { d, dim: matrix.length + 10 };
+};
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/plugins/source/source.css": {
+    "content": 
+"#sd-showSource {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--sd-text-color);
+  padding: 5px;
+  color: var(--sd-background-color);
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+#sd-showSource:hover {
+  cursor: pointer;
+}
+
+#sd-source {
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+  padding: 10px 20px;
+  margin: auto;
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/plugins/source/source.js": {
+    "content": 
+"const fromBinary = (encoded) => {
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint16Array(bytes.buffer));
+};
+
+const supportsPopover = () => HTMLElement.prototype.hasOwnProperty("popover");
+
+window.slidesk.changeSource = () => {
+  if (supportsPopover())
+    document.querySelector("#sd-source pre").innerText = fromBinary(
+      window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+        "data-source",
+      ),
+    );
+};
+
+if (!supportsPopover()) {
+  document.querySelector("#sd-showSource").style.display = "none";
+  document.querySelector("#sd-source").style.display = "none";
+}
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/plugins/steps/steps.css": {
+    "content": 
+":root {
+  --animationSteps: var(--animationTimer);
+}
+
+.steps li {
+  opacity: 0;
+  transition: opacity var(--animationSteps);
+}
+
+.steps li.step-shown {
+  opacity: 1;
+}
+
+@media print {
+  .steps li {
+    opacity: 1;
+  }
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/plugins/steps/steps.js": {
+    "content": 
+"window.slidesk.oldNext = window.slidesk.next;
+
+const checkStepConditions = () =>
+  [...window.slidesk.slides[window.slidesk.currentSlide].classList].includes(
+    "steps",
+  ) && window.slidesk.lastAction === "next";
+
+window.slidesk.prepareSteps = () => {
+  if (checkStepConditions()) {
+    window.slidesk.step = 0;
+    window.slidesk.$lis =
+      window.slidesk.slides[window.slidesk.currentSlide].querySelectorAll(
+        "ul li",
+      );
+    window.slidesk.maxSteps = window.slidesk.$lis.length;
+    [...window.slidesk.$lis].forEach((li) => li.classList.remove("step-shown"));
+  }
+};
+
+window.slidesk.next = () => {
+  if (checkStepConditions()) {
+    if (window.slidesk.step === window.slidesk.maxSteps) {
+      window.slidesk.oldNext();
+    } else {
+      window.slidesk.$lis[window.slidesk.step++].classList.add("step-shown");
+    }
+  } else window.slidesk.oldNext();
+};
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/slidesk-notes.css": {
+    "content": 
+":root {
+  --sd-sv-timer-size: 80px;
+  --sd-sv-subtimer-size: 60px;
+  --sd-sv-text-size: 40px;
+  --sd-sv-text-line-height: 1.2;
+  --sd-sv-background-color: #242424;
+  --sd-sv-text-color: rgba(255, 255, 255, 0.87);
+  --sd-sv-background-color-emergency: #d9000e;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+#sd-sv-left,
+#sd-sv-right {
+  width: 50%;
+  height: 100%;
+  margin: 0;
+}
+
+#sd-sv-left .sd-app {
+  height: 50%;
+  box-sizing: border-box;
+  border: 1px solid white;
+}
+
+#sd-sv-left .sd-app .sd-slide {
+  transform: translateX(0);
+  transition-duration: 0ms;
+  zoom: 0.5;
+}
+
+#sd-sv-left #sd-sv-future:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(18, 18, 18, 0.65);
+}
+
+#sd-sv-right {
+  display: flex;
+  flex-direction: column;
+}
+
+#sd-sv-timer {
+  background-color: var(--sd-sv-background-color);
+  color: var(--sd-sv-text-color);
+  font-size: var(--sd-sv-timer-size);
+  line-height: var(--sd-sv-text-line-height);
+  padding: 10px;
+  border-bottom: 1px solid white;
+  text-align: right;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+#sd-sv-timer.emergency {
+  background-color: var(--sd-sv-background-color-emergency);
+}
+
+#sd-sv-subtimer {
+  background-color: var(--sd-sv-background-color);
+  color: var(--sd-sv-text-color);
+  font-size: var(--sd-sv-subtimer-size);
+  line-height: var(--sd-sv-text-line-height);
+  padding: 10px;
+  border-bottom: 1px solid white;
+  text-align: right;
+  font-family: monospace;
+}
+
+#sd-sv-subtimer.emergency {
+  background-color: var(--sd-sv-background-color-emergency);
+}
+
+#sd-sv-notes {
+  flex-grow: 1;
+  background-color: var(--sd-sv-background-color);
+  color: var(--sd-sv-text-color);
+  font-size: var(--sd-sv-text-size);
+  line-height: var(--sd-sv-text-line-height);
+  padding: 10px;
+  overflow: scroll;
+}
+
+#sd-open-presentation {
+  display: flex;
+}
+
+#sd-open-presentation button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sd-open-presentation svg {
+  width: 2vw;
+  height: 2vw;
+}"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/slidesk-notes.js": {
+    "content": 
+"
+window.slidesk = {
+  io: {},
+  timer: document.querySelector("#sd-sv-timer"),
+  subtimer: document.querySelector("#sd-sv-subtimer"),
+  scrollPosition: 0,
+  cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
+  onSpeakerViewSlideChange: () => {
+    window.slidesk.scrollPosition = 0;
+    ;;;;;;;if (hljs) hljs.highlightAll();
+  }
+};
+window.slidesk.io = new WebSocket("ws://undefined:undefined/ws");
+const toHHMMSS = (secs) => {
+  const secnum = parseInt(Math.abs(secs), 10);
+  return [Math.floor(secnum / 3600), Math.floor(secnum / 60) % 60, secnum % 60]
+    .map((v) => v.toString().padStart(2, "0"))
+    .filter((v, i) => v !== "00" || i > 0)
+    .join(":");
+};
+
+const fromHHMMSS = (time) => {
+  const hhmmss = time.split(":");
+  if (hhmmss.length === 3) {
+    return (
+      3600 * parseInt(hhmmss[0], 10) +
+      60 * parseInt(hhmmss[1], 10) +
+      parseInt(hhmmss[2], 10)
+    );
+  }
+  return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
+};
+
+const timerCheckpoints = [];
+let timerSlide = "";
+let startTime = null;
+let startSlideTime = null;
+let currentNum = null;
+window.slidesk.io.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.action === "current") {
+    timerSlide = "";
+    startSlideTime = null;
+    const current = document.querySelector("#sd-sv-current");
+    current.innerHTML = data.payload;
+    document.querySelector("#sd-sv-notes").innerHTML = [
+      ...current.querySelectorAll("aside.sd-notes"),
+    ]
+      .map((a) => a.innerHTML)
+      .join("");
+    currentNum = current.querySelector(".sd-slide").getAttribute("data-num");
+    // check timers
+    const slidetime = current
+      .querySelector(".sd-slide")
+      .getAttribute("data-timer-slide");
+    if (slidetime) {
+      timerSlide = fromHHMMSS(slidetime);
+      startSlideTime = Date.now();
+    }
+    window.slidesk.onSpeakerViewSlideChange();
+  } else if (data.action === "future") {
+    document.querySelector("#sd-sv-future").innerHTML = data.payload;
+  } else if (data.action === "checkpoints") {
+    let lastCheckpoint = null;
+    for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {
+      if (data.payload.timerCheckpoints[i]) {
+        lastCheckpoint = fromHHMMSS(data.payload.timerCheckpoints[i]);
+      }
+      timerCheckpoints[i] = lastCheckpoint;
+    }
+  } else if (window.slidesk[data.action]) window.slidesk[data.action](data);
+};
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") {
+    window.slidesk.io.send(JSON.stringify({ action: "previous" }));
+  } else if (e.key === "ArrowRight") {
+    window.slidesk.io.send(JSON.stringify({ action: "next" }));
+  }
+});
+
+const svgOpen =
+  '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 004.5 9.75v7.5a2.25 2.25 0 002.25 2.25h7.5a2.25 2.25 0 002.25-2.25v-7.5a2.25 2.25 0 00-2.25-2.25h-.75m0-3l-3-3m0 0l-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25v-.75" /></svg>';
+
+const createbuttons = async () => {
+  const $screenWrapper = document.getElementById("sd-open-presentation");
+  const { screens } = await window.getScreenDetails();
+  [...screens].forEach((screen) => {
+    const button = document.createElement("button");
+    button.innerHTML = \`${svgOpen}<span>Open presentation on <b>${screen.label}</b></span>\`;
+    button.addEventListener("click", () => {
+      window.open(
+        "//localhost:1337",
+        "_blank",
+        \`left=${screen.availLeft},
+      top=${screen.availTop},
+      width=${screen.availWidth},
+      height=${screen.availHeight},
+      fullscreen=yes,
+      location=no,
+      menubar=no,
+      status=no,
+      scrollsbar=no,
+      titlebar=no,
+      toolbar=no,
+      popup\`,
+      );
+    });
+    $screenWrapper.appendChild(button);
+  });
+};
+
+if (window.location.href.startsWith("https")) {
+  createbuttons();
+}
+
+window.slidesk.notes_up = () => {
+  window.slidesk.scrollPosition -= 100;
+  if (window.slidesk.scrollPosition < 0) window.slidesk.scrollPosition = 0;
+  document
+    .getElementById("sd-sv-notes")
+    .scroll({ top: window.slidesk.scrollPosition });
+};
+
+window.slidesk.notes_down = () => {
+  window.slidesk.scrollPosition += 100;
+  document
+    .getElementById("sd-sv-notes")
+    .scroll({ top: window.slidesk.scrollPosition });
+};
+
+window.slidesk.start_timer = () => (startTime = Date.now());
+
+setInterval(() => {
+  if (startTime) {
+    const time = (Date.now() - startTime) / 1000;
+    window.slidesk.timer.innerText = toHHMMSS(time);
+    window.slidesk.timer.classList.remove("emergency");
+    if (timerCheckpoints[currentNum]) {
+      if (timerCheckpoints[currentNum] < time) {
+        window.slidesk.timer.classList.add("emergency");
+      }
+    }
+  }
+  if (startSlideTime) {
+    const subtime = (Date.now() - startSlideTime) / 1000;
+    window.slidesk.subtimer.innerText = toHHMMSS(timerSlide - subtime + 1);
+    window.slidesk.subtimer.style.display = "block";
+    window.slidesk.subtimer.classList.remove("emergency");
+    if (subtime >= timerSlide) {
+      window.slidesk.subtimer.classList.add("emergency");
+    }
+  } else {
+    window.slidesk.subtimer.style.display = "none";
+  }
+}, 1000);
+window.slidesk.timer.addEventListener("click", () => {
+  window.slidesk.start_timer();
+});
+
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+  "/slidesk.css": {
+    "content": 
+":root { --animationTimer: undefinedms; }:root {
+  font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --sd-heading1-size: 8.5vw;
+  --sd-heading1-line-height: 1;
+  --sd-heading2-size: 5vw;
+  --sd-heading2-line-height: 1;
+  --sd-text-size: 2.2vw;
+  --sd-text-line-height: 1.2;
+
+  --sd-background-color: #242424;
+  --sd-heading-color: rgba(255, 255, 255, 0.97);
+  --sd-text-color: rgba(255, 255, 255, 0.87);
+  --sd-primary-color: rgb(37, 186, 146);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.sd-app {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+  font-size: var(--sd-text-size);
+  line-height: var(--sd-text-line-height);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  margin: 0.7vw auto;
+  text-align: center;
+}
+
+a,
+.b {
+  color: var(--sd-primary-color);
+}
+
+.b {
+  font-weight: bold;
+}
+
+.i {
+  font-style: italic;
+}
+
+.code,
+pre {
+  font-family: monospace;
+  white-space: pre;
+}
+
+.s {
+  text-decoration-line: line-through;
+}
+
+.u {
+  text-decoration-line: underline;
+}
+
+.sd-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(100%);
+  transition: all var(--animationTimer) ease;
+  padding: 30px;
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 1.1vw 0;
+  text-align: center;
+  color: var(--sd-heading-color);
+}
+
+h1 {
+  font-size: var(--sd-heading1-size);
+  line-height: var(--sd-heading1-line-height);
+}
+
+h2 {
+  font-size: var(--sd-heading2-size);
+  line-height: var(--sd-heading2-line-height);
+}
+
+h3 {
+  font-size: var(--sd-heading3-size);
+  line-height: var(--sd-heading3-line-height);
+}
+
+.sd-slide.no-sd-animation {
+  transition-duration: 0ms;
+}
+
+.sd-slide.sd-current {
+  transform: translateX(0);
+}
+
+.sd-slide.sd-previous {
+  transform: translateX(-100%);
+}
+
+.sd-slide .sd-notes {
+  display: none;
+}
+
+#sd-langs {
+  position: absolute;
+  background: transparent;
+  color: var(--sd-text-color);
+  border: 0;
+  top: 0.2vw;
+  right: 0.2vw;
+  font-size: 1rem;
+}
+
+#sd-langs option {
+  color: var(--sd-text-color);
+}
+
+.sd-img {
+  display: inline-block;
+  max-width: 90vw;
+}
+
+@media print {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  #sd-langs,
+  #sd-progress,
+  #sd-showSource,
+  #sd-source {
+    display: none;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .sd-slide {
+    position: static;
+    height: 100%;
+    page-break-after: always;
+    transform: none !important;
+  }
+}
+"
+,
+    "headers": {
+      "Content-type": "text/css",
+    },
+  },
+  "/slidesk.js": {
+    "content": 
+"
+  window.slidesk = {
+    currentSlide: 0,
+    slides: [],
+    animationTimer: undefined,
+    onSlideChange: function() {window.slidesk.changeSource();window.slidesk.qrcode();  document.getElementById("sd-progress").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + "%";window.slidesk.autonext();window.slidesk.prepareSteps();console.log("new slide")},
+    env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext, steps","MYVAR":"Variable env","WIDTH":"1920"},
+    cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
+    lastAction: ""
+  };
+  window.slidesk.io = new WebSocket(\`ws://${window.location.host}/ws\`);
+  
+  window.slidesk.sendMessage = (payload) => {
+  window.slidesk.waitForSocketConnection(payload);
+};
+
+window.slidesk.waitForSocketConnection = (payload) => {
+  setTimeout(() => {
+    if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
+    else window.slidesk.waitForSocketConnection(payload);
+  }, 5);
+};
+
+if (window.slidesk.io) {
+  window.slidesk.io.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.action === "reload") window.location.reload();
+    else if (window.slidesk[data.action]) window.slidesk[data.action](data);
+  };
+}
+
+window.slidesk.cleanOldSlide = (id) => {
+  window.slidesk.slides[id].classList.remove("sd-current", "no-sd-animation");
+};
+
+window.slidesk.changeSlide = () => {
+  window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
+    "sd-previous",
+  );
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+    "sd-current",
+  );
+  window.location.hash =
+    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
+      "data-slug",
+    );
+  if (window.slidesk.io) {
+    window.slidesk.sendMessage(
+      JSON.stringify({
+        action: "current",
+        payload: window.slidesk.slides[
+          window.slidesk.currentSlide
+        ].outerHTML.replace(/data-source="(^["])"/gi, ""),
+      }),
+    );
+    window.slidesk.sendMessage(
+      JSON.stringify({
+        action: "future",
+        payload:
+          window.slidesk.currentSlide !== window.slidesk.slides.length - 1
+            ? window.slidesk.slides[
+                window.slidesk.currentSlide + 1
+              ].outerHTML.replace(/data-source="(^["])"/gi, "")
+            : "",
+      }),
+    );
+  }
+
+  window.slidesk.slides[window.slidesk.currentSlide]
+    .querySelectorAll(".sd-img img")
+    .forEach((i) => {
+      i.setAttribute("style", "");
+      i.setAttribute("src", i.getAttribute("src"));
+    });
+  window.slidesk.onSlideChange();
+};
+
+window.slidesk.next = () => {
+  if (window.slidesk.currentSlide !== window.slidesk.slides.length - 1) {
+    window.slidesk.lastAction = "next";
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+      "sd-previous",
+    );
+    window.slidesk.currentSlide += 1;
+    window.slidesk.changeSlide();
+  }
+};
+
+window.slidesk.previous = () => {
+  if (window.slidesk.currentSlide !== 0) {
+    window.slidesk.lastAction = "previous";
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.currentSlide -= 1;
+    window.slidesk.changeSlide();
+  }
+};
+
+window.slidesk.fullscreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+window.onload = () => {
+  window.slidesk.slides = document.querySelectorAll(".sd-slide");
+  if (window.slidesk.io) {
+    const timerCheckpoints = {};
+    window.slidesk.slides.forEach((slide) => {
+      timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(
+        "data-timer-checkpoint",
+      );
+    });
+    window.slidesk.sendMessage(
+      JSON.stringify({
+        action: "checkpoints",
+        payload: {
+          timerCheckpoints,
+          nbSlides: window.slidesk.slides.length,
+        },
+      }),
+    );
+  }
+  const loadingHash = window.location.hash.replace("#", "").split("+");
+  const slugs = [];
+  window.slidesk.slides.forEach((slide, i) => {
+    slugs.push(slide.getAttribute("data-slug"));
+  });
+  window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
+  if (loadingHash.length > 1)
+    window.slidesk.currentSlide += Number(loadingHash[1]);
+  if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
+  if (window.slidesk.currentSlide) {
+    for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
+      window.slidesk.slides[i].classList.add("sd-previous", "no-sd-animation");
+    }
+    setTimeout(() => {
+      for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
+        window.slidesk.slides[i].classList.remove("no-sd-animation");
+      }
+    }, window.slidesk.animationTimer);
+  }
+  window.slidesk.slides[window.slidesk.currentSlide].classList.add(
+    "sd-current",
+    "no-sd-animation",
+  );
+  document.querySelectorAll(".sd-img img").forEach((img) =>
+    img.addEventListener("load", () => {
+      let ratio = 1;
+      if (Number(window.slidesk.env.WIDTH))
+        ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
+      const newW = ratio * img.width + "px";
+      const newH = ratio * img.height + "px";
+      img.parentElement.style.width = newW;
+      img.parentElement.style.height = newH;
+      img.style.width = newW;
+      img.style.height = newH;
+    }),
+  );
+  window.slidesk.changeSlide();
+  document.querySelectorAll(".sd-slide").forEach((slide) => {
+    slide.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      window.slidesk.touchStart = e.touches[0].pageX;
+      window.slidesk.touchMove = e.touches[0].pageX;
+    });
+    slide.addEventListener("touchmove", (e) => {
+      window.slidesk.touchMove = e.touches[0].pageX;
+    });
+    slide.addEventListener("touchend", (e) => {
+      if (
+        Math.abs(window.slidesk.touchMove - window.slidesk.touchStart) > 100
+      ) {
+        if (window.slidesk.touchMove > window.slidesk.touchStart)
+          window.slidesk.previous();
+        else window.slidesk.next();
+      }
+      window.slidesk.touchStart = 0;
+    });
+  });
+  window.slidesk.timeoutResize = false;
+  window.addEventListener("resize", () => {
+    clearTimeout(window.slidesk.timeoutResize);
+    window.slidesk.timeoutResize = setTimeout(() => {
+      window.location.reload();
+    }, 250);
+  });
+};
+"
+,
+    "headers": {
+      "Content-type": "application/javascript",
+    },
+  },
+}
+`;

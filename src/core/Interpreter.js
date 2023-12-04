@@ -186,6 +186,19 @@ export default class Interpreter {
         }://\${window.location.host}/ws\`);`
       : ""
   }
+  ${
+    !hasNotesView
+      ? `
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        window.slidesk.previous();
+      } else if (e.key === "ArrowRight") {
+        window.slidesk.next();
+      }
+    });
+    `
+      : ""
+  }
   ${mainJS}`;
 
   static #getNotesJS = (options) => `
@@ -462,13 +475,17 @@ ${speakerViewJS}
     return htmlData;
   };
 
-  static #envVariables = (data) =>
-    [...data.split("++")]
-      .map((t, i) => {
-        if (i % 2) return env[t] || "";
-        return t;
-      })
-      .join("");
+  static #envVariables = (data) => {
+    const splitted = [...data.split("++")];
+    if (splitted.length >= 3)
+      return splitted
+        .map((t, i) => {
+          if (i % 2) return env[t] || "";
+          return t;
+        })
+        .join("");
+    return data;
+  };
 
   static #formatting = (data) =>
     [...data.split("\n")]
