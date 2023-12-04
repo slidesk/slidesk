@@ -342,9 +342,9 @@ ${speakerViewJS}
   static #paragraph = (paragraph, p) => {
     const par = paragraph.trimStart();
     switch (true) {
-      case par.startsWith("-"):
+      case par.startsWith("- "):
         return list(par, 1, "ul");
-      case par.startsWith("."):
+      case par.startsWith(". "):
         return list(par, 1, "ol");
       case par.startsWith("<"):
         return par;
