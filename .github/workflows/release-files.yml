@@ -121,6 +121,13 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
+      - name: install docker if mac
+        if: matrix.os == 'macos-latest'
+        run: brew install docker
+      - name: execute colima
+        if: matrix.os == 'macos-latest'
+        run: colima start
+
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
@@ -142,12 +149,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: install docker if mac
-        if: matrix.os == 'macos-latest'
-        run: brew install docker
-      - name: execute colima
-        if: matrix.os == 'macos-latest'
-        run: colima start
       - name: Build and push Docker image (Arm64)
         if: matrix.os == 'macos-latest'
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
