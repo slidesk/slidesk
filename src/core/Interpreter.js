@@ -28,6 +28,7 @@ let hasPluginSource = false;
 let env = {};
 let customCSS = "";
 let hasNotesView = false;
+let cptSlide = 0;
 
 const toBinary = (string) => {
   const codeUnits = new Uint16Array(string.length);
@@ -99,6 +100,7 @@ export default class Interpreter {
     sdfPath = "";
     plugins = [];
     components = [];
+    cptSlide = 0;
   };
 
   static #loadEnv = async () => {
@@ -174,6 +176,7 @@ export default class Interpreter {
       .map((p) => p.onSlideChange ?? "")
       .join("")}},
     env: ${JSON.stringify(env)},
+    cwd: '${process.cwd()}/',
     lastAction: ""
   };
   ${
@@ -191,6 +194,7 @@ window.slidesk = {
   timer: document.querySelector("#sd-sv-timer"),
   subtimer: document.querySelector("#sd-sv-subtimer"),
   scrollPosition: 0,
+  cwd: '${process.cwd()}/',
   onSpeakerViewSlideChange: () => {
     window.slidesk.scrollPosition = 0;
     ${plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";")}
@@ -332,14 +336,16 @@ ${speakerViewJS}
 
   static #sliceSlides = (presentation, options) =>
     [...presentation.split("\n## ")]
-      .map((slide, s) => this.#treatSlide(slide, s, options))
+      .map((slide) => this.#treatSlide(slide, options))
       .join("\n");
 
   static #paragraph = (paragraph, p) => {
     const par = paragraph.trimStart();
     switch (true) {
-      case par.startsWith("-"):
-        return list(par, 1);
+      case par.startsWith("- "):
+        return list(par, 1, "ul");
+      case par.startsWith(". "):
+        return list(par, 1, "ol");
       case par.startsWith("<"):
         return par;
       case par.startsWith("//@"):
@@ -364,7 +370,8 @@ ${speakerViewJS}
     return "";
   };
 
-  static #treatSlide = (slide, s, options) => {
+  static #treatSlide = (slide, options) => {
+    if (slide.trim() === "") return "";
     classes = "";
     timerSlide = "";
     timerCheckpoint = "";
@@ -375,8 +382,9 @@ ${speakerViewJS}
       .map(this.#paragraph)
       .join("\n\n");
     const datas = {};
-    const slideSlug = s ? `!slide-${s}` : "";
-    datas.num = s;
+    const slideSlug = cptSlide ? `!slide-${cptSlide}` : "";
+    datas.num = cptSlide;
+    cptSlide += 1;
     datas.slug = slug || slideSlug;
     if (hasPluginSource) datas.source = toBinary(slide);
     if (options.timers) {
@@ -533,11 +541,12 @@ ${speakerViewJS}
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title) => {
       tpl = tpl.replace("#TITLE#", title[1]);
     });
+    tpl = tpl.replace("#TITLE#", "SliDesk");
     tpl = tpl.replace("#SECTIONS#", presentation);
 
     tpl = await minify(tpl, {
       collapseWhitespace: true,
-      removeEmptyElements: true,
+      removeEmptyElements: false,
       minifyCSS: true,
       minifyJS: true,
       removeComments: true,
@@ -579,11 +588,11 @@ ${speakerViewJS}
       if (p.addSpeakerStyles) {
         if (p.type === "internal") {
           Object.keys(p.addSpeakerStyles).forEach((k) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`),
+            css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         } else {
           p.addSpeakerStyles.forEach((k) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`),
+            css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         }
       }

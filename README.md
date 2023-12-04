@@ -10,6 +10,10 @@ SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh)
 
 The `example` rendering is visible on [gouz.github.io/slidesk/](https://gouz.github.io/slidesk/).
 
+Plugins & Components can be found here : https://github.com/gouz/slidesk-extras
+
+A VSCode extension is available too : https://github.com/gouz/vscode-sdf-language
+
 ## How to use?
 
 ### macOS with **Homebrew**
@@ -271,6 +275,7 @@ This `json` file describes the comportement of the plugin. Each keys of the json
 - `addSpeakerStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry) but on speaker view
 - `onSlideChange`: javascript code which will be executed after a slide is changed
 - `onSpeakerViewSlideChange`: javascript code which will be executed after a slide is changed
+- `addWSRoute`: a `.mjs` file will be imported on Server launch
 
 If you want to use one of the "core" plugins, available in this repository, you don't need to copy them. You have just to create a `.env` file in your root directory of the talk, and precise the plugins you need:
 
