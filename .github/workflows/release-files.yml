@@ -120,19 +120,19 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      
+
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: gouz/slidesk
-      
+
       - name: Build and push Docker image (Amd64)
         if: matrix.os == 'ubuntu-latest'
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -145,6 +145,8 @@ jobs:
       - name: install docker if mac
         if: matrix.os == 'macos-latest'
         run: brew install docker
+      - name: execute colima
+        if: matrix.os == 'macos-latest'
         run: colima start
       - name: Build and push Docker image (Arm64)
         if: matrix.os == 'macos-latest'
