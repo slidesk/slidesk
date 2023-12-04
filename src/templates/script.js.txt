@@ -11,9 +11,9 @@ window.slidesk.waitForSocketConnection = (payload) => {
 
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
-    const { action } = JSON.parse(event.data);
-    if (action === "reload") window.location.reload();
-    else if (window.slidesk[action]) window.slidesk[action]();
+    const data = JSON.parse(event.data);
+    if (data.action === "reload") window.location.reload();
+    else if (window.slidesk[data.action]) window.slidesk[data.action](data);
   };
 }
 
@@ -153,7 +153,7 @@ window.onload = () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();
-    } else if (e.key === "ArrowRight" || e.key === " ") {
+    } else if (e.key === "ArrowRight") {
       window.slidesk.next();
     }
   });
