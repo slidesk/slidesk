@@ -10,6 +10,10 @@ SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh)
 
 The `example` rendering is visible on [gouz.github.io/slidesk/](https://gouz.github.io/slidesk/).
 
+Plugins & Components can be found here : https://github.com/gouz/slidesk-extras
+
+A VSCode extension is available too : https://github.com/gouz/vscode-sdf-language
+
 ## How to use?
 
 ### macOS with **Homebrew**
