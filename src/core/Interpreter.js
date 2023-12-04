@@ -186,6 +186,19 @@ export default class Interpreter {
         }://\${window.location.host}/ws\`);`
       : ""
   }
+  ${
+    !hasNotesView
+      ? `
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        window.slidesk.previous();
+      } else if (e.key === "ArrowRight") {
+        window.slidesk.next();
+      }
+    });
+    `
+      : ""
+  }
   ${mainJS}`;
 
   static #getNotesJS = (options) => `

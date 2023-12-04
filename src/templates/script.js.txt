@@ -150,13 +150,6 @@ window.onload = () => {
     }),
   );
   window.slidesk.changeSlide();
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") {
-      window.slidesk.previous();
-    } else if (e.key === "ArrowRight") {
-      window.slidesk.next();
-    }
-  });
   document.querySelectorAll(".sd-slide").forEach((slide) => {
     slide.addEventListener("touchstart", (e) => {
       e.preventDefault();
