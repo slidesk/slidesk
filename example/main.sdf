@@ -32,13 +32,22 @@ and you can specify width, height, and styles,  ``!````image(path, placeholder, 
 - end of a List
 -- an other sublist
 
-## List with num (.)
+## List with num (.) .[steps]
 
 . list
 .. sublist
 .. sub
 . end of a List
 .. an other sublist
+
+## Both .[steps]
+
+. list
+.. test
+
+- list
+-- test
+
 
 ## Notes for speakers
 

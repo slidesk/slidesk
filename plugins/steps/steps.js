@@ -9,9 +9,7 @@ window.slidesk.prepareSteps = () => {
   if (checkStepConditions()) {
     window.slidesk.step = 0;
     window.slidesk.$lis =
-      window.slidesk.slides[window.slidesk.currentSlide].querySelectorAll(
-        "ul li",
-      );
+      window.slidesk.slides[window.slidesk.currentSlide].querySelectorAll("li");
     window.slidesk.maxSteps = window.slidesk.$lis.length;
     [...window.slidesk.$lis].forEach((li) => li.classList.remove("step-shown"));
   }
