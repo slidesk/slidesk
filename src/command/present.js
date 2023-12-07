@@ -35,7 +35,7 @@ const flow = (talkdir, options = {}, init = false) => {
         const nfile = file.replace(talkdir, "");
         if (
           !nfile.match(
-            "(.sdf|/.env|.lang.json|/.DS_Store|/plugin.json|/README.md)$",
+            "(.sdf|.env|.lang.json|.DS_Store|/plugin.json|/README.md)$",
           ) &&
           !nfile.match("^/components/")
         ) {
@@ -46,10 +46,18 @@ const flow = (talkdir, options = {}, init = false) => {
           mkdirSync(filePath, { recursive: true });
           // eslint-disable-next-line no-undef
           promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
-          log(`📃 ${options.save}${nfile} generated`);
+          log(
+            `📃 ${[...options.save.split("/"), ...nfile.split("/")]
+              .filter((p) => p !== "")
+              .join("/")} generated`,
+          );
         }
       });
-      const excludes = ["/notes", "/slidesk-notes.css", "/slidesk-notes.js"];
+      const excludes = [
+        "/notes.html",
+        "/slidesk-notes.css",
+        "/slidesk-notes.js",
+      ];
       Object.entries(files).forEach(([key, value]) => {
         if (!excludes.includes(key)) {
           const filePath = `${options.save}/${key.substring(
