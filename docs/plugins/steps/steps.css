@@ -1,0 +1,18 @@
+:root {
+  --animationSteps: var(--animationTimer);
+}
+
+.steps li {
+  opacity: 0;
+  transition: opacity var(--animationSteps);
+}
+
+.steps li.step-shown {
+  opacity: 1;
+}
+
+@media print {
+  .steps li {
+    opacity: 1;
+  }
+}

@@ -3,11 +3,21 @@
     currentSlide: 0,
     slides: [],
     animationTimer: 300,
-    onSlideChange: function() {window.slidesk.changeSource();window.slidesk.qrcode();  document.getElementById("sd-progress").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + "%";window.slidesk.autonext();console.log("new slide")},
-    env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext","MYVAR":"Variable env","WIDTH":"1920"},
+    onSlideChange: function() {window.slidesk.changeSource();window.slidesk.qrcode();  document.getElementById("sd-progress").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + "%";window.slidesk.autonext();window.slidesk.prepareSteps();console.log("new slide")},
+    env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext, steps","MYVAR":"Variable env","WIDTH":"1920"},
+    cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
     lastAction: ""
   };
   
+  
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        window.slidesk.previous();
+      } else if (e.key === "ArrowRight") {
+        window.slidesk.next();
+      }
+    });
+    
   window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
@@ -21,9 +31,9 @@ window.slidesk.waitForSocketConnection = (payload) => {
 
 if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
-    const { action } = JSON.parse(event.data);
-    if (action === "reload") window.location.reload();
-    else if (window.slidesk[action]) window.slidesk[action]();
+    const data = JSON.parse(event.data);
+    if (data.action === "reload") window.location.reload();
+    else if (window.slidesk[data.action]) window.slidesk[data.action](data);
   };
 }
 
@@ -160,13 +170,6 @@ window.onload = () => {
     }),
   );
   window.slidesk.changeSlide();
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") {
-      window.slidesk.previous();
-    } else if (e.key === "ArrowRight" || e.key === " ") {
-      window.slidesk.next();
-    }
-  });
   document.querySelectorAll(".sd-slide").forEach((slide) => {
     slide.addEventListener("touchstart", (e) => {
       e.preventDefault();
