@@ -48,6 +48,7 @@ Options:
   -n, --notes             open with speakers notes
   -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
+  -w, --watch             watch modification of files
   -h, --help              display help for command
 
 Commands:
@@ -55,6 +56,7 @@ Commands:
 ```
 
 ### Docker
+
 Slidesk now has a DockerHub repository ! https://hub.docker.com/r/gouz/slidesk
 
 To use it with your current working directory as your slidesk directory
@@ -64,10 +66,10 @@ docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest
 ```
 
 Slidesk is now accessible through http://localhost:1337. If you need additional arguments, specify them after specifying the slidesk binary.
-Example : 
+Example :
 
 ```sh
-docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest slidesk -tn 
+docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest slidesk -tn
 ```
 
 ### Other systems
@@ -95,6 +97,7 @@ Options:
   -n, --notes             open with speakers notes
   -t, --timers            add checkpoint and slide maximum time on notes view
   -a, --transition <int>  transition timer (default: 300)
+  -w, --watch             watch modification of files
   -h, --help              display help for command
 
 Commands:
