@@ -35,6 +35,7 @@ program
   .option("-n, --notes", "open with speakers notes")
   .option("-t, --timers", "add checkpoint and slide maximum time on notes view")
   .option("-a, --transition <int>", "transition timer", 300)
+  .option("-w, --watch", "watch modification of files")
   .action(present);
 
 program.parse();
