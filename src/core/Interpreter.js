@@ -174,7 +174,7 @@ export default class Interpreter {
     animationTimer: ${options.transition},
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
-      .join("")}},
+      .join(";")}},
     env: ${JSON.stringify(env)},
     cwd: '${process.cwd()}/',
     lastAction: ""
@@ -587,12 +587,14 @@ ${speakerViewJS}
   };
 
   static #getSelectLang = (menuLang, key) =>
-    `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang.map(
-      (o) =>
-        `<option value="${o.value}" ${key === "index.html" ? "selected" : ""}>${
-          o.label
-        }</option>`,
-    )}</select></body>`;
+    `<select id="sd-langs" onchange="window.location.href = this.value;">${menuLang
+      .map(
+        (o) =>
+          `<option value="${o.value}" ${
+            key === "index.html" ? "selected" : ""
+          }>${o.label}</option>`,
+      )
+      .join("")}</select></body>`;
 
   static #getNoteView = () => {
     let template = speakerViewHTML;
