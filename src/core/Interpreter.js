@@ -174,7 +174,7 @@ export default class Interpreter {
     animationTimer: ${options.transition},
     onSlideChange: function() {${plugins
       .map((p) => p.onSlideChange ?? "")
-      .join("")}},
+      .join(";")}},
     env: ${JSON.stringify(env)},
     cwd: '${process.cwd()}/',
     lastAction: ""
