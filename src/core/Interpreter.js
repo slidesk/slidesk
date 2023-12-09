@@ -2,9 +2,9 @@
 import dotenv from "dotenv";
 import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync, readFileSync } from "node:fs";
-import layoutHTML from "../templates/layout.html.txt";
-import themeCSS from "../templates/styles.css.txt";
-import mainJS from "../templates/script.js.txt";
+import layoutHTML from "../templates/present/layout.html.txt";
+import themeCSS from "../templates/present/styles.css.txt";
+import mainJS from "../templates/present/script.js.txt";
 import faviconSVG from "../templates/slidesk.svg.txt";
 import speakerViewHTML from "../templates/notes/layout.html.txt";
 import speakerViewCSS from "../templates/notes/styles.css.txt";
@@ -324,7 +324,7 @@ ${speakerViewJS}
       }),
     );
     // format text
-    fusion = this.#formatting(fusion);
+    fusion = this.formatting(fusion);
     // image
     fusion = image(fusion);
     return fusion;
@@ -349,7 +349,7 @@ ${speakerViewJS}
 
   static #sliceSlides = (presentation, options) =>
     [...presentation.split("\n## ")]
-      .map((slide) => this.#treatSlide(slide, options))
+      .map((slide) => this.treatSlide(slide, options))
       .join("\n");
 
   static #paragraph = (paragraph, p) => {
@@ -383,7 +383,7 @@ ${speakerViewJS}
     return "";
   };
 
-  static #treatSlide = (slide, options) => {
+  static treatSlide = (slide, options) => {
     if (slide.trim() === "") return "";
     classes = "";
     timerSlide = "";
@@ -487,7 +487,7 @@ ${speakerViewJS}
     return data;
   };
 
-  static #formatting = (data) =>
+  static formatting = (data) =>
     [...data.split("\n")]
       .map((l) => {
         let nl = l;
