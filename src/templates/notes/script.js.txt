@@ -76,7 +76,7 @@ const createbuttons = async () => {
     button.innerHTML = `${svgOpen}<span>Open presentation on <b>${screen.label}</b></span>`;
     button.addEventListener("click", () => {
       window.open(
-        `//${window.location.host}
+        `//${window.location.host}`,
         "_blank",
         `left=${screen.availLeft},
       top=${screen.availTop},
