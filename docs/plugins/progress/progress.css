@@ -23,4 +23,5 @@
 
 #sd-progress .sd-progression.active {
   background-color: var(--sd-primary-color);
+  border-color: var(--sd-primary-color);
 }

@@ -1,30 +1,40 @@
+window.slidesk = {
+  currentSlide: 0,
+  slides: [],
+  animationTimer: 300,
+  onSlideChange: function () {
+    window.slidesk.changeSource();
+    window.slidesk.qrcode();
+    window.slidesk.progressActive();
+    window.slidesk.autonext();
+    window.slidesk.prepareSteps();
+    console.log("new slide");
+  },
+  env: {
+    PLUGINS: "source, qrcode, progress, keyboard, autonext, steps",
+    MYVAR: "Variable env",
+    WIDTH: "1920",
+  },
+  cwd: "/Users/sylvaingougouzian/Dev/Perso/slidesk/",
+  lastAction: "",
+};
 
-  window.slidesk = {
-    currentSlide: 0,
-    slides: [],
-    animationTimer: 300,
-    onSlideChange: function() {window.slidesk.changeSource();;window.slidesk.qrcode();;window.slidesk.progressActive();;;window.slidesk.autonext();;window.slidesk.prepareSteps();;console.log("new slide");},
-    env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext, steps","MYVAR":"Variable env","WIDTH":"1920"},
-    cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
-    lastAction: ""
-  };
-  
-  
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") {
-        window.slidesk.previous();
-      } else if (e.key === "ArrowRight") {
-        window.slidesk.next();
-      }
-    });
-    
-  window.slidesk.sendMessage = (payload) => {
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") {
+    window.slidesk.previous();
+  } else if (e.key === "ArrowRight") {
+    window.slidesk.next();
+  }
+});
+
+window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
 
 window.slidesk.waitForSocketConnection = (payload) => {
   setTimeout(() => {
-    if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
+    if (window.slidesk.io?.readyState === 1)
+      window.slidesk.io.send(JSON.stringify(payload));
     else window.slidesk.waitForSocketConnection(payload);
   }, 5);
 };
@@ -53,25 +63,21 @@ window.slidesk.changeSlide = () => {
       "data-slug",
     );
   if (window.slidesk.io) {
-    window.slidesk.sendMessage(
-      JSON.stringify({
-        action: "current",
-        payload: window.slidesk.slides[
-          window.slidesk.currentSlide
-        ].outerHTML.replace(/data-source="(^["])"/gi, ""),
-      }),
-    );
-    window.slidesk.sendMessage(
-      JSON.stringify({
-        action: "future",
-        payload:
-          window.slidesk.currentSlide !== window.slidesk.slides.length - 1
-            ? window.slidesk.slides[
-                window.slidesk.currentSlide + 1
-              ].outerHTML.replace(/data-source="(^["])"/gi, "")
-            : "",
-      }),
-    );
+    window.slidesk.sendMessage({
+      action: "current",
+      payload: window.slidesk.slides[
+        window.slidesk.currentSlide
+      ].outerHTML.replace(/data-source="(^["])"/gi, ""),
+    });
+    window.slidesk.sendMessage({
+      action: "future",
+      payload:
+        window.slidesk.currentSlide !== window.slidesk.slides.length - 1
+          ? window.slidesk.slides[
+              window.slidesk.currentSlide + 1
+            ].outerHTML.replace(/data-source="(^["])"/gi, "")
+          : "",
+    });
   }
 
   window.slidesk.slides[window.slidesk.currentSlide]
@@ -114,7 +120,7 @@ window.slidesk.goto = (num) => {
     window.slidesk.currentSlide = num;
     window.slidesk.changeSlide();
   }
-}
+};
 
 window.slidesk.fullscreen = () => {
   if (!document.fullscreenElement) {
@@ -124,7 +130,7 @@ window.slidesk.fullscreen = () => {
       document.exitFullscreen();
     }
   }
-}
+};
 
 window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
@@ -135,15 +141,13 @@ window.onload = () => {
         "data-timer-checkpoint",
       );
     });
-    window.slidesk.sendMessage(
-      JSON.stringify({
-        action: "checkpoints",
-        payload: {
-          timerCheckpoints,
-          nbSlides: window.slidesk.slides.length,
-        },
-      }),
-    );
+    window.slidesk.sendMessage({
+      action: "checkpoints",
+      payload: {
+        timerCheckpoints,
+        nbSlides: window.slidesk.slides.length,
+      },
+    });
   }
   const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
