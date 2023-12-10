@@ -1,4 +1,5 @@
 import readline from "readline";
+import Server from "../core/Server";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -16,3 +17,13 @@ export const question = (query) =>
       resolve(anwser.trim()),
     );
   });
+
+export const getAction = async (present = false) => {
+  const answer = await question("");
+  const i = answer.trim().toLowerCase();
+  removeCurrentLine();
+  if (i === "q") process.exit();
+  else if (i === "p" && present) Server.send("previous");
+  else if (present) Server.send("next");
+  getAction(present);
+};

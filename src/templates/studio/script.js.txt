@@ -1,0 +1,26 @@
+window.slidesk.io = new WebSocket(
+  `ws${window.slidesk.https === "true" ? "s" : ""}://${window.slidesk.domain}:${
+    window.slidesk.port
+  }/ws`,
+);
+
+window.slidesk.sendMessage = (payload) => {
+  window.slidesk.waitForSocketConnection(payload);
+};
+
+window.slidesk.waitForSocketConnection = (payload) => {
+  setTimeout(() => {
+    if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
+    else window.slidesk.waitForSocketConnection(payload);
+  }, 5);
+};
+
+if (window.slidesk.io) {
+  window.slidesk.io.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  window.slidesk.sendMessage({ action: "let the music play!" });
+});

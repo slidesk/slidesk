@@ -9,11 +9,14 @@
       sizes="any"
       type="image/svg+xml"
     />
-    <title>#TITLE#</title>
+    <title>SliDesk/Studio: #TITLE#</title>
     #STYLES#
   </head>
-  <body class="sd-app">
-    #SECTIONS# 
+  <body>
+    <div id="sd-studio">
+      <aside id="sd-film"></aside>
+      <main></main>
+    </div>
     #SCRIPTS#
   </body>
 </html>

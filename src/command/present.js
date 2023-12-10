@@ -1,9 +1,9 @@
-import { watch, existsSync, rmSync, mkdirSync, readdirSync } from "fs";
+import { watch, existsSync, rmSync, readdirSync } from "fs";
 import process from "process";
 import path from "path";
 import Interpreter from "../core/Interpreter";
 import Server from "../core/Server";
-import { question, removeCurrentLine } from "../utils/interactCLI";
+import { getAction } from "../utils/interactCLI";
 
 const { log } = console;
 
@@ -25,7 +25,6 @@ const save = (options, talkdir, files) => {
   // clean
   if (existsSync(options.save))
     rmSync(options.save, { recursive: true, force: true });
-  mkdirSync(options.save);
   readAllFiles(talkdir).forEach((file) => {
     const nfile = file.replace(talkdir, "");
     if (
@@ -34,11 +33,6 @@ const save = (options, talkdir, files) => {
       ) &&
       !nfile.match("^/components/")
     ) {
-      const filePath = `${options.save}/${nfile.substring(
-        0,
-        nfile.lastIndexOf("/"),
-      )}`;
-      mkdirSync(filePath, { recursive: true });
       // eslint-disable-next-line no-undef
       promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
       log(
@@ -51,11 +45,6 @@ const save = (options, talkdir, files) => {
   const excludes = ["/notes.html", "/slidesk-notes.css", "/slidesk-notes.js"];
   Object.entries(files).forEach(([key, value]) => {
     if (!excludes.includes(key)) {
-      const filePath = `${options.save}/${key.substring(
-        0,
-        key.lastIndexOf("/"),
-      )}`;
-      mkdirSync(filePath, { recursive: true });
       // eslint-disable-next-line no-undef
       promises.push(Bun.write(`${options.save}${key}`, value.content));
       log(`📃 ${options.save}${key} generated`);
@@ -81,16 +70,6 @@ const flow = (talkdir, options = {}, init = false) => {
   });
 };
 
-const getAction = async () => {
-  const answer = await question("");
-  const i = answer.trim().toLowerCase();
-  removeCurrentLine();
-  if (i === "q") process.exit();
-  else if (i === "p") Server.send("previous");
-  else Server.send("next");
-  getAction();
-};
-
 const present = (talk, options) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   globalThis.talkdir = talkdir;
@@ -114,7 +93,7 @@ const present = (talk, options) => {
           flow(talkdir, options);
         }
       });
-    getAction();
+    getAction(true);
     process.on("SIGINT", () => {
       process.exit(0);
     });

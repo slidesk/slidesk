@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.3.13",
+  "version": "2.4.0a",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -31,6 +31,7 @@
     "lint": "eslint src",
     "example": "bun src/index.js example",
     "gendocs": "bun src/index.js example --save docs",
-    "tools": "bun tools/pluginGeneration.js"
+    "tools": "bun tools/pluginGeneration.js",
+    "studio": "bun src/index.js studio"
   }
 }
