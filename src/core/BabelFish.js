@@ -37,15 +37,15 @@ class BabelFish {
       error("🤔 main.sdf was not found");
     } else {
       this.mainFile = mainFile;
+      this.sdfPath = `${this.mainFile.substring(
+        0,
+        this.mainFile.lastIndexOf("/"),
+      )}`;
     }
   }
 
   async convert() {
     if (this.mainFile) {
-      this.sdfPath = `${this.mainFile.substring(
-        0,
-        this.mainFile.lastIndexOf("/"),
-      )}`;
       this.#initVariables();
       await this.#loadEnv();
       await this.#loadPlugins();
@@ -53,7 +53,7 @@ class BabelFish {
       const sdf = await this.#prepareSDF(this.mainFile);
       return {
         ...(await this.#generateHTML(
-          await this.#getPresentation(sdf),
+          await this.getPresentation(sdf),
           this.#prepareTPL(),
         )),
         "/slidesk.css": {
@@ -188,7 +188,7 @@ class BabelFish {
     });
   }
 
-  async #getPresentation(sdf) {
+  async getPresentation(sdf) {
     let fusion = sdf;
     // comments
     fusion = comments(fusion);
@@ -202,7 +202,7 @@ class BabelFish {
       }),
     );
     // format text
-    fusion = this.formatting(fusion);
+    fusion = this.#formatting(fusion);
     // image
     fusion = image(fusion);
     return fusion;
@@ -210,11 +210,11 @@ class BabelFish {
 
   #sliceSlides(presentation) {
     return [...presentation.split("\n## ")]
-      .map((slide) => this.treatSlide(slide))
+      .map((slide) => this.#treatSlide(slide))
       .join("\n");
   }
 
-  treatSlide(slide) {
+  #treatSlide(slide) {
     if (slide.trim() === "") return "";
     let classes = "";
     let slug = "";
@@ -286,7 +286,7 @@ class BabelFish {
     return "";
   }
 
-  formatting(data) {
+  #formatting(data) {
     return [...data.split("\n")]
       .map((l) => {
         let nl = l;

@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
-// import BabelFish from "../core/BabelFish";
-import layoutHTML from "../templates/studio/layout.html.txt";
-import scriptJS from "../templates/studio/script.js.txt";
-import stylesCSS from "../templates/studio/styles.css.txt";
+import BabelFish from "../core/BabelFish";
+import { view, script, styles } from "../templates/studio";
 import faviconSVG from "../templates/slidesk.svg.txt";
 import { getAction } from "../utils/interactCLI";
 
@@ -19,8 +17,12 @@ const studio = (talk, options) => {
     return;
   }
 
-  // Interpreter.getRealPath(`${talkdir}/main.sdf`);
-  // Interpreter.loadComponents();
+  globalThis.BabelFish = new BabelFish(`${talkdir}/main.sdf`, {
+    notes: false,
+    timers: false,
+  });
+
+  globalThis.BabelFish.loadComponents();
 
   globalThis.server = Bun.serve({
     port: options.port,
@@ -32,7 +34,7 @@ const studio = (talk, options) => {
             ? undefined
             : new Response("WebSocket upgrade error", { status: 400 });
         case "/":
-          return new Response(layoutHTML, {
+          return new Response(view, {
             headers: {
               "Content-Type": "text/html",
             },
@@ -44,7 +46,7 @@ const studio = (talk, options) => {
             },
           });
         case "/styles.css":
-          return new Response(stylesCSS, {
+          return new Response(styles, {
             headers: {
               "Content-Type": "text/css",
             },
@@ -59,7 +61,7 @@ const studio = (talk, options) => {
                 $action: document.querySelector("#sd-studio > main"),
                 $film: document.getElementById("sd-film")
               };`,
-              scriptJS,
+              script,
             ].join(""),
             {
               headers: { "Content-Type": "application/javascript" },
@@ -81,7 +83,9 @@ const studio = (talk, options) => {
               "slidesk",
               JSON.stringify({
                 action: "initialisation",
-                "main.sdf": await Interpreter.includes(await mainFile.text()),
+                "main.sdf": (
+                  await globalThis.BabelFish.includes(`${talkdir}/main.sdf`)
+                ).replace(/\/::([\s\S]*)::\//m, ""),
               }),
             );
             break;
@@ -90,10 +94,7 @@ const studio = (talk, options) => {
               "slidesk",
               JSON.stringify({
                 action: "babelfished",
-                html: Interpreter.treatSlide(json.sdf, {
-                  notes: false,
-                  timers: false,
-                }),
+                html: await globalThis.BabelFish.getPresentation(json.sdf),
               }),
             );
             break;

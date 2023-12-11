@@ -1,3 +1,20 @@
+const toBinary = (string) => {
+  const codeUnits = new Uint16Array(string.length);
+  for (let i = 0; i < codeUnits.length; i += 1) {
+    codeUnits[i] = string.charCodeAt(i);
+  }
+  return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)));
+};
+
+const fromBinary = (encoded) => {
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint16Array(bytes.buffer));
+};
+
 window.slidesk.io = new WebSocket(
   `ws${window.slidesk.https === "true" ? "s" : ""}://${window.slidesk.domain}:${
     window.slidesk.port
@@ -10,16 +27,39 @@ window.slidesk.sendMessage = (payload) => {
 
 window.slidesk.waitForSocketConnection = (payload) => {
   setTimeout(() => {
-    if (window.slidesk.io?.readyState === 1) window.slidesk.io.send(payload);
+    if (window.slidesk.io?.readyState === 1)
+      window.slidesk.io.send(JSON.stringify(payload));
     else window.slidesk.waitForSocketConnection(payload);
   }, 5);
 };
 
-if (window.slidesk.io) {
-  window.slidesk.io.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-  };
-}
+window.slidesk.addSlide = (content, pos = -1) => {
+  const newSlide = document.createElement("div");
+  newSlide.setAttribute("data-src", toBinary(content));
+  newSlide.addEventListener("click", (e) => {
+    window.slidesk.sendMessage({
+      action: "convert",
+      sdf: fromBinary(e.target.dataset.src),
+    });
+  });
+  window.slidesk.$film.appendChild(newSlide);
+};
+
+window.slidesk.io.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  switch (data.action) {
+    case "initialisation":
+      [...data["main.sdf"].split("## ")].forEach((slide) => {
+        window.slidesk.addSlide(slide);
+      });
+      break;
+    case "babelfished":
+      window.slidesk.$action.innerHTML = `<div class="sd-app"><div class="sd-slide">${data.html}</div></div>`;
+      break;
+    default:
+      break;
+  }
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   window.slidesk.sendMessage({ action: "let the music play!" });

@@ -1,0 +1,55 @@
+:root {
+  font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --sd-studio-primary-color: rgb(37, 186, 146);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#sd-studio {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+#sd-film {
+  border-right: 1px solid var(--sd-studio-primary-color);
+  overflow-y: scroll;
+}
+
+#sd-film > div {
+  display: block;
+  border: 1px solid var(--sd-studio-primary-color);
+  width: 192px;
+  height: 108px;
+  margin: 5px 10px;
+}
+
+#sd-studio main {
+  flex-grow: 1;
+}
