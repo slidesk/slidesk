@@ -14,10 +14,9 @@ import {
   styles as notesStyles,
 } from "../templates/notes";
 import comments from "../components/comments";
+import formatting from "../components/formatting";
 import getSelectLang from "../components/getSelectLang";
-import grammar from "../components/grammar";
 import image from "../components/image";
-import links from "../components/links";
 import list from "../components/list";
 import translate from "../components/translate";
 import pluginsJSON from "../plugins.json";
@@ -41,15 +40,19 @@ class BabelFish {
         0,
         this.mainFile.lastIndexOf("/"),
       )}`;
+      this.#initVariables();
     }
+  }
+
+  async preload() {
+    await this.#loadEnv();
+    await this.#loadPlugins();
+    this.#loadComponents();
   }
 
   async convert() {
     if (this.mainFile) {
-      this.#initVariables();
-      await this.#loadEnv();
-      await this.#loadPlugins();
-      this.loadComponents();
+      await this.preload();
       const sdf = await this.#prepareSDF(this.mainFile);
       return {
         ...(await this.#generateHTML(
@@ -94,14 +97,13 @@ class BabelFish {
     this.plugins = [];
     this.components = [];
     this.cptSlide = 0;
-    this.env = {};
   }
 
   async #loadEnv() {
     const slideskEnvFile = Bun.file(`${this.sdfPath}/.env`);
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
-      this.env = dotenv.parse(buf);
+      globalThis.env = dotenv.parse(buf);
     }
   }
 
@@ -111,8 +113,8 @@ class BabelFish {
   }
 
   #internalPlugins() {
-    if (this.env.PLUGINS) {
-      [...this.env.PLUGINS.split(",")].forEach((p) => {
+    if (globalThis.env.PLUGINS) {
+      [...globalThis.env.PLUGINS.split(",")].forEach((p) => {
         const pl = p.trim();
         if (pl === "source") this.hasPluginSource = true;
         if (pluginsJSON[pl]) {
@@ -151,7 +153,7 @@ class BabelFish {
       );
   }
 
-  loadComponents() {
+  #loadComponents() {
     const componentsDir = `${this.sdfPath}/components`;
     if (existsSync(componentsDir)) {
       this.components = readdirSync(componentsDir)
@@ -202,7 +204,7 @@ class BabelFish {
       }),
     );
     // format text
-    fusion = this.#formatting(fusion);
+    fusion = formatting(fusion);
     // image
     fusion = image(fusion);
     return fusion;
@@ -226,7 +228,7 @@ class BabelFish {
       .map((paragraph, p) => {
         const par = this.#paragraph(paragraph);
         if (p === 0) {
-          const spl = [...par.split(".[")];
+          const spl = [...par.replace(/<(\/?)p>/g, "").split(".[")];
           if (spl.length !== 1) {
             classes = spl[1].replace("]", "");
           }
@@ -284,30 +286,6 @@ class BabelFish {
     if (timer.startsWith("[]")) this.timerSlide = timer.replace("[]", "");
     if (timer.startsWith("<")) this.timerCheckpoint = timer.replace("<", "");
     return "";
-  }
-
-  #formatting(data) {
-    return [...data.split("\n")]
-      .map((l) => {
-        let nl = l;
-        nl = grammar(nl);
-        nl = this.#envVariables(nl);
-        nl = links(nl);
-        return nl;
-      })
-      .join("\n");
-  }
-
-  #envVariables(data) {
-    const splitted = [...data.split("++")];
-    if (splitted.length % 2 && splitted.length > 1)
-      return splitted
-        .map((t, i) => {
-          if (i % 2) return this.env[t] || "";
-          return t;
-        })
-        .join("");
-    return data;
   }
 
   #prepareTPL() {
@@ -435,14 +413,14 @@ class BabelFish {
       onSlideChange: function() {${this.plugins
         .map((p) => p.onSlideChange ?? "")
         .join(";")}},
-      env: ${JSON.stringify(this.env)},
+      env: ${JSON.stringify(globalThis.env)},
       cwd: '${process.cwd()}/',
       lastAction: ""
     };
     ${
       !this.options.save
         ? `window.slidesk.io = new WebSocket(\`ws${
-            this.env.HTTPS === "true" ? "s" : ""
+            globalThis.env.HTTPS === "true" ? "s" : ""
           }://\${window.location.host}/ws\`);`
         : ""
     }
@@ -476,7 +454,7 @@ class BabelFish {
       }
     };
     window.slidesk.io = new WebSocket("ws${
-      this.env.HTTPS === "true" ? "s" : ""
+      globalThis.env.HTTPS === "true" ? "s" : ""
     }://${this.options.domain}:${this.options.port}/ws");
     ${notesScript}
     `;

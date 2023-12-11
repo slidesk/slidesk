@@ -1,13 +1,34 @@
 /* eslint-disable no-undef */
 import BabelFish from "../core/BabelFish";
 import { view, script, styles } from "../templates/studio";
+import { styles as presentationStyles } from "../templates/present";
 import faviconSVG from "../templates/slidesk.svg.txt";
 import { getAction } from "../utils/interactCLI";
 
 const { log } = console;
 
-const studio = (talk, options) => {
+const getFile = (req, options, https) => {
+  const fileurl = req.url.replace(
+    `http${https ? "s" : ""}://${options.domain}:${options.port}`,
+    "",
+  );
+  const file = Bun.file(
+    fileurl.match(/https?:\/\/(\S*)/g)
+      ? fileurl
+      : `${globalThis.path}${fileurl}`,
+  );
+  if (file.size !== 0)
+    return new Response(file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+  return new Response(`${req.url} not found`, { status: 404 });
+};
+
+const studio = async (talk, options) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
+  globalThis.path = talkdir;
   const https = false;
 
   // check if main.sdf file exists
@@ -22,7 +43,7 @@ const studio = (talk, options) => {
     timers: false,
   });
 
-  globalThis.BabelFish.loadComponents();
+  await globalThis.BabelFish.preload();
 
   globalThis.server = Bun.serve({
     port: options.port,
@@ -46,7 +67,7 @@ const studio = (talk, options) => {
             },
           });
         case "/styles.css":
-          return new Response(styles, {
+          return new Response(`${styles}${presentationStyles}`, {
             headers: {
               "Content-Type": "text/css",
             },
@@ -68,7 +89,7 @@ const studio = (talk, options) => {
             },
           );
         default:
-          return "";
+          return getFile(req, options, https);
       }
     },
     websocket: {
@@ -95,6 +116,7 @@ const studio = (talk, options) => {
               JSON.stringify({
                 action: "babelfished",
                 html: await globalThis.BabelFish.getPresentation(json.sdf),
+                destination: json.destination,
               }),
             );
             break;

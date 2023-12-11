@@ -15,6 +15,8 @@ const fromBinary = (encoded) => {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 };
 
+window.slidesk.film_slide_counter = 0;
+
 window.slidesk.io = new WebSocket(
   `ws${window.slidesk.https === "true" ? "s" : ""}://${window.slidesk.domain}:${
     window.slidesk.port
@@ -35,14 +37,23 @@ window.slidesk.waitForSocketConnection = (payload) => {
 
 window.slidesk.addSlide = (content, pos = -1) => {
   const newSlide = document.createElement("div");
-  newSlide.setAttribute("data-src", toBinary(content));
+  const id = `slide_${window.slidesk.film_slide_counter++}`;
+  newSlide.setAttribute("data-source", toBinary(content));
+  newSlide.setAttribute("id", id);
+  newSlide.classList.add("sd-app");
   newSlide.addEventListener("click", (e) => {
     window.slidesk.sendMessage({
       action: "convert",
-      sdf: fromBinary(e.target.dataset.src),
+      sdf: fromBinary(e.target.dataset.source),
+      destination: "crafttable",
     });
   });
   window.slidesk.$film.appendChild(newSlide);
+  window.slidesk.sendMessage({
+    action: "convert",
+    sdf: content,
+    destination: id,
+  });
 };
 
 window.slidesk.io.onmessage = (event) => {
@@ -54,7 +65,11 @@ window.slidesk.io.onmessage = (event) => {
       });
       break;
     case "babelfished":
-      window.slidesk.$action.innerHTML = `<div class="sd-app"><div class="sd-slide">${data.html}</div></div>`;
+      if (data.destination === "crafttable")
+        window.slidesk.$action.innerHTML = `<div class="sd-app">${data.html}</div>`;
+      else {
+        document.getElementById(data.destination).innerHTML = data.html;
+      }
       break;
     default:
       break;
