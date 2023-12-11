@@ -1,7 +1,7 @@
 import { watch, existsSync, rmSync, readdirSync } from "fs";
 import process from "process";
 import path from "path";
-import Interpreter from "../core/Interpreter";
+import BabelFish from "../core/BabelFish";
 import Server from "../core/Server";
 import { getAction } from "../utils/interactCLI";
 
@@ -55,19 +55,19 @@ const save = (options, talkdir, files) => {
   });
 };
 
-const flow = (talkdir, options = {}, init = false) => {
-  Interpreter.convert(`${talkdir}/main.sdf`, options).then(async (files) => {
-    if (files === null) {
-      process.exit();
-    }
-    if (options.save) {
-      save(options, talkdir, files);
-    } else if (init) {
-      Server.create(files, options, talkdir);
-    } else {
-      Server.setFiles(files);
-    }
-  });
+const flow = async (talkdir, options = {}, init = false) => {
+  globalThis.BabelFish = new BabelFish(`${talkdir}/main.sdf`, options);
+  const files = await globalThis.BabelFish.convert();
+  if (files === null) {
+    process.exit();
+  }
+  if (options.save) {
+    save(options, talkdir, files);
+  } else if (init) {
+    Server.create(files, options, talkdir);
+  } else {
+    Server.setFiles(files);
+  }
 };
 
 const present = (talk, options) => {

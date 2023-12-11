@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
-import Interpreter from "../core/Interpreter";
+// import BabelFish from "../core/BabelFish";
 import layoutHTML from "../templates/studio/layout.html.txt";
 import scriptJS from "../templates/studio/script.js.txt";
+import stylesCSS from "../templates/studio/styles.css.txt";
+import faviconSVG from "../templates/slidesk.svg.txt";
 import { getAction } from "../utils/interactCLI";
 
 const { log } = console;
@@ -16,6 +18,9 @@ const studio = (talk, options) => {
     log(`🤔 ${talkdir}/main.sdf not exists`);
     return;
   }
+
+  // Interpreter.getRealPath(`${talkdir}/main.sdf`);
+  // Interpreter.loadComponents();
 
   globalThis.server = Bun.serve({
     port: options.port,
@@ -32,13 +37,27 @@ const studio = (talk, options) => {
               "Content-Type": "text/html",
             },
           });
+        case "/favicon.svg":
+          return new Response(faviconSVG, {
+            headers: {
+              "Content-Type": "image/svg+xml",
+            },
+          });
+        case "/styles.css":
+          return new Response(stylesCSS, {
+            headers: {
+              "Content-Type": "text/css",
+            },
+          });
         case "/script.js":
           return new Response(
             [
               `window.slidesk = {
                 https: "${https ?? "false"}",
                 domain: "${options.domain}",
-                port: "${options.port}"
+                port: "${options.port}",
+                $action: document.querySelector("#sd-studio > main"),
+                $film: document.getElementById("sd-film")
               };`,
               scriptJS,
             ].join(""),
@@ -56,8 +75,32 @@ const studio = (talk, options) => {
       },
       async message(ws, message) {
         const json = JSON.parse(message);
-
-        ws.publish("slidesk", message);
+        switch (json.action) {
+          case "let the music play!":
+            globalThis.server.publish(
+              "slidesk",
+              JSON.stringify({
+                action: "initialisation",
+                "main.sdf": await Interpreter.includes(await mainFile.text()),
+              }),
+            );
+            break;
+          case "convert":
+            globalThis.server.publish(
+              "slidesk",
+              JSON.stringify({
+                action: "babelfished",
+                html: Interpreter.treatSlide(json.sdf, {
+                  notes: false,
+                  timers: false,
+                }),
+              }),
+            );
+            break;
+          default:
+            ws.publish("slidesk", message);
+            break;
+        }
       },
       close(ws) {
         ws.unsubscribe("slidesk");
@@ -72,16 +115,6 @@ const studio = (talk, options) => {
   );
   log();
   getAction();
-
-  // generate html
-  //   const files = Interpreter.convert(mainFile, {
-  //     notes: false,
-  //     transition: 0,
-  //     save: false,
-  //     domain: "localhost",
-  //     port: 1337,
-  //     timers: false,
-  //   });
 };
 
 export default studio;
