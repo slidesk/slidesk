@@ -8,11 +8,11 @@ Write your talk/presentation in a simplified language (SliDeskFormat), generate 
 
 SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
 
-The `example` rendering is visible on [gouz.github.io/slidesk/](https://gouz.github.io/slidesk/).
+The `example` rendering is visible on [slidesk.github.io/slidesk/](https://slidesk.github.io/slidesk/).
 
-Plugins & Components can be found here : https://github.com/gouz/slidesk-extras
+Plugins & Components can be found here : https://github.com/slidesk/slidesk-extras
 
-A VSCode extension is available too : https://github.com/gouz/vscode-sdf-language
+A VSCode extension is available too : https://github.com/slidesk/vscode-sdf-language
 
 ## How to use?
 
@@ -122,7 +122,7 @@ Then you'll have a `exe/slidesk` file created.
 
 You can also use Gitpod :
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/gouz/slidesk/-/tree/main/)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/slidesk/slidesk/-/tree/main/)
 
 ## How to create a presentation
 
