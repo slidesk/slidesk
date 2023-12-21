@@ -209,7 +209,7 @@ h3 {
   }
 
   .sd-slide {
-    position: static;
+    position: relative;
     height: 100%;
     page-break-after: always;
     transform: none !important;
