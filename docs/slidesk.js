@@ -3,7 +3,7 @@
     currentSlide: 0,
     slides: [],
     animationTimer: 300,
-    onSlideChange: function() {window.slidesk.changeSource();window.slidesk.qrcode();  document.getElementById("sd-progress").style.width = (100 * (window.slidesk.currentSlide + 1)) / window.slidesk.slides.length + "%";window.slidesk.autonext();window.slidesk.prepareSteps();console.log("new slide")},
+    onSlideChange: function() {window.slidesk.changeSource();;window.slidesk.qrcode();;window.slidesk.progressActive();;;window.slidesk.autonext();;window.slidesk.prepareSteps();;console.log("new slide");},
     env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext, steps","MYVAR":"Variable env","WIDTH":"1920"},
     cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
     lastAction: ""
@@ -103,6 +103,18 @@ window.slidesk.previous = () => {
     window.slidesk.changeSlide();
   }
 };
+
+window.slidesk.goto = (num) => {
+  if (num >= 0 && num < window.slidesk.slides.length) {
+    window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
+    window.slidesk.slides.forEach((s, i) => {
+      if (i < num) s.classList.add("sd-previous");
+      else s.classList.remove("sd-previous");
+    });
+    window.slidesk.currentSlide = num;
+    window.slidesk.changeSlide();
+  }
+}
 
 window.slidesk.fullscreen = () => {
   if (!document.fullscreenElement) {

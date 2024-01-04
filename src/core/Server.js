@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import axios from "axios";
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
 
@@ -43,19 +44,19 @@ export default class Server {
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            if (json.addRoute || json.addWSRoute) {
+            if (json.addRoutes || json.addWS) {
               let obj = { type: "external", ...json };
-              if (json.addRoute) {
-                const { default: addRoute } = await import(
-                  `${path}/${json.addRoute}`
+              if (json.addRoutes) {
+                const { default: addRoutes } = await import(
+                  `${path}/${json.addRoutes}`
                 );
-                obj = { ...obj, addRoute };
+                obj = { ...obj, addRoutes };
               }
-              if (json.addWSRoute) {
-                const { default: addWSRoute } = await import(
-                  `${path}/${json.addWSRoute}`
+              if (json.addWS) {
+                const { default: addWS } = await import(
+                  `${path}/${json.addWS}`
                 );
-                obj = { ...obj, addWSRoute };
+                obj = { ...obj, addWS };
               }
               globalThis.plugins[plugin] = obj;
             }
@@ -65,8 +66,9 @@ export default class Server {
     const https = env.HTTPS === "true";
     const serverOptions = {
       port: options.port,
-      fetch(req) {
+      async fetch(req) {
         const url = new URL(req.url);
+        let res = null;
         switch (url.pathname) {
           case "/ws":
             return globalThis.server.upgrade(req)
@@ -81,6 +83,14 @@ export default class Server {
               return new Response(globalThis.files[url.pathname].content, {
                 headers: globalThis.files[url.pathname].headers,
               });
+            await Promise.all(
+              [...Object.values(globalThis.plugins)].map(async (plugin) => {
+                if (plugin.addRoutes) {
+                  res = await plugin.addRoutes(req, axios);
+                }
+              }),
+            );
+            if (res !== null) return res;
             return getFile(req, options, https);
         }
       },
@@ -93,14 +103,13 @@ export default class Server {
           if (
             json.plugin &&
             globalThis.plugins[json.plugin] &&
-            globalThis.plugins[json.plugin].addWSRoute
+            globalThis.plugins[json.plugin].addWS
           ) {
             globalThis.server.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response:
-                  await globalThis.plugins[json.plugin].addWSRoute(message),
+                response: await globalThis.plugins[json.plugin].addWS(message),
               }),
             );
           } else {
