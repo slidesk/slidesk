@@ -14,7 +14,8 @@ This json file describes the comportement of the plugin. Each keys of the json c
 - `addSpeakerStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry) but on speaker view
 - `onSlideChange`: javascript code which will be executed after a slide is changed
 - `onSpeakerViewSlideChange`: javascript code which will be executed after a slide is changed
-- `addWSRoute`: a `.mjs` file will be imported on Server launch
+- `addRoutes`: a `.mjs` file will be imported on Server launch
+- `addWS`: a `.mjs` file will be imported on Server launch
 
 This `plugin.json` file is a JSON with looks like:
 

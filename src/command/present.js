@@ -93,6 +93,7 @@ const getAction = async () => {
 
 const present = (talk, options) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
+  globalThis.talkdir = talkdir;
   flow(talkdir, options, true);
   if (!options.save) {
     log(

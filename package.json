@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.3.10",
+  "version": "2.3.11",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -12,6 +12,7 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
+    "axios": "^1.6.4",
     "commander": "^11.0.0",
     "dotenv": "^16.3.1",
     "html-minifier-terser": "^7.2.0",
