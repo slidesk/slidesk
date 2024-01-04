@@ -86,7 +86,7 @@ export default class Server {
             await Promise.all(
               [...Object.values(globalThis.plugins)].map(async (plugin) => {
                 if (plugin.addRoutes) {
-                  res = await plugin.addRoutes(req, axios);
+                  res = await plugin.addRoutes(req, axios, env);
                 }
               }),
             );
