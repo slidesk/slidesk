@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import axios from "axios";
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
 
@@ -86,7 +85,7 @@ export default class Server {
             await Promise.all(
               [...Object.values(globalThis.plugins)].map(async (plugin) => {
                 if (plugin.addRoutes) {
-                  res = await plugin.addRoutes(req, axios, env);
+                  res = await plugin.addRoutes(req, env);
                 }
               }),
             );
