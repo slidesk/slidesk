@@ -313,6 +313,13 @@ export default (data) => {
 
 Then a dynamic call will be done when parsing a slide (at the end of default parsing).
 
+## Add scripts & styles without plugins
+
+In the special header `/:: ::/`, you can specify files to includes (locals or distants), separated with a comma `,`, with the following keys:
+
+- `add_styles`: to add css files, which will be inserted before `custom_css`.
+- `add_scripts`: to add js, which will be inserted before any script tag.
+
 ## HTTPS
 
 SliDesk is per default listening on port 1337 with an HTTP protocol.

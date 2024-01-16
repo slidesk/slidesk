@@ -97,6 +97,10 @@ class BabelFish {
     this.plugins = [];
     this.components = [];
     this.cptSlide = 0;
+    this.customIncludes = {
+      css: [],
+      js: [],
+    };
   }
 
   async #loadEnv() {
@@ -187,6 +191,14 @@ class BabelFish {
         this.customCSS = `<link rel="stylesheet" href="${line
           .replace("custom_css:", "")
           .trim()}" />`;
+      if (line.startsWith("add_styles:"))
+        this.customIncludes.css = [
+          ...line.replace("add_styles:", "").split(","),
+        ].map((n) => `<link rel="stylesheet" href="${n.trim()}" />`);
+      if (line.startsWith("add_scripts:"))
+        this.customIncludes.js = [
+          ...line.replace("add_scripts:", "").split(","),
+        ].map((n) => `<script src="${n.trim()}"></script>`);
     });
   }
 
@@ -290,8 +302,14 @@ class BabelFish {
 
   #prepareTPL() {
     let template = presentationView;
-    const css = ['<link rel="stylesheet" href="slidesk.css" />'];
-    const js = ['<script src="slidesk.js"></script>'];
+    const css = [
+      '<link rel="stylesheet" href="slidesk.css" />',
+      ...this.customIncludes.css,
+    ];
+    const js = [
+      ...this.customIncludes.js,
+      '<script src="slidesk.js"></script>',
+    ];
     this.plugins.forEach((p) => {
       if (p.addStyles) {
         if (p.type === "internal") {

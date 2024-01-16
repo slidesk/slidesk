@@ -1,5 +1,7 @@
 /::
 custom_css: custom.css
+add_styles: test.css, test2.css
+add_scripts: test.js
 ::/
 
 # Example's talk
