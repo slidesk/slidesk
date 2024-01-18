@@ -104,7 +104,7 @@ class BabelFish {
   }
 
   async #loadEnv() {
-    const slideskEnvFile = Bun.file(`${this.sdfPath}/.env`);
+    const slideskEnvFile = Bun.file(`${this.sdfPath}/${this.options.conf}.env`);
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       globalThis.env = dotenv.parse(buf);

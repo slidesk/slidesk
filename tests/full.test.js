@@ -6,6 +6,7 @@ const options = {
   save: false,
   notes: true,
   timers: true,
+  conf: "test",
 };
 
 const file = `${process.cwd()}/example/main.sdf`;

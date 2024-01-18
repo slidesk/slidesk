@@ -3,7 +3,7 @@ const envVariables = (data) => {
   if (splitted.length % 2 && splitted.length > 1)
     return splitted
       .map((t, i) => {
-        if (i % 2) return globalThis.env[t] || "";
+        if (i % 2) return (globalThis.env && globalThis.env[t]) || "";
         return t;
       })
       .join("");

@@ -38,6 +38,7 @@ program
   .option("-a, --transition <int>", "transition timer", 300)
   .option("-w, --watch", "watch modification of files")
   .option("-g, --hidden", "remove help information")
+  .option("-c, --conf <name>", "use a specific .env file", "")
   .action(present);
 
 program.parse();
