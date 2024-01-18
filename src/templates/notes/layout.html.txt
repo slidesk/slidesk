@@ -21,7 +21,7 @@
       <div id="sd-sv-timer">Click to (re)start</div>
       <div id="sd-sv-subtimer"></div>
       <aside id="sd-sv-notes"></aside>
-      <div id="sd-open-presentation"></div>
+      <div id="sd-open-presentation"><button onclick="window.slidesk.createButtons();">Detect</button></div>
     </div>
     #SCRIPTS#
   </body>

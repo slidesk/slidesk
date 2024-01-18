@@ -117,7 +117,7 @@ class BabelFish {
   }
 
   #internalPlugins() {
-    if (globalThis.env.PLUGINS) {
+    if (globalThis.env?.PLUGINS) {
       [...globalThis.env.PLUGINS.split(",")].forEach((p) => {
         const pl = p.trim();
         if (pl === "source") this.hasPluginSource = true;
@@ -438,7 +438,7 @@ class BabelFish {
     ${
       !this.options.save
         ? `window.slidesk.io = new WebSocket(\`ws${
-            globalThis.env.HTTPS === "true" ? "s" : ""
+            globalThis.env?.HTTPS === "true" ? "s" : ""
           }://\${window.location.host}/ws\`);`
         : ""
     }
@@ -472,7 +472,7 @@ class BabelFish {
       }
     };
     window.slidesk.io = new WebSocket("ws${
-      globalThis.env.HTTPS === "true" ? "s" : ""
+      globalThis.env?.HTTPS === "true" ? "s" : ""
     }://${this.options.domain}:${this.options.port}/ws");
     ${notesScript}
     `;

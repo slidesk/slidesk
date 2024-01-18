@@ -14,7 +14,7 @@
   --sd-studio-primary-color: rgb(37, 186, 146);
 
   --sd-studio-thumbnail-zoom: 8%;
-  --sd-studio-crafttable-zoom: 56%;
+  --sd-studio-crafttable-zoom: 75%;
 }
 
 *,
@@ -43,10 +43,11 @@ body {
 #sd-film {
   border-right: 1px solid var(--sd-studio-primary-color);
   overflow-y: scroll;
+  padding: 10px;
 }
 
 #sd-film > div {
-  margin: 5px 10px;
+  margin: 100px 0;
   width: 1920px;
   height: 1080px;
   border: 1px solid var(--sd-studio-primary-color);
@@ -63,9 +64,6 @@ body {
 
 #sd-studio main {
   flex-grow: 1;
-}
-
-#sd-studio main .sd-app {
   height: 100%;
   width: 100%;
   display: flex;
