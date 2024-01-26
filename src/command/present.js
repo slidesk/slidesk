@@ -11,10 +11,19 @@ const readAllFiles = (dir) => {
   const result = [];
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file) => {
-    if (file.isDirectory()) {
-      result.push(...readAllFiles(path.join(dir, file.name)));
-    } else {
-      result.push(path.join(dir, file.name));
+    if (
+      !file.name
+        .toLowerCase()
+        .match(
+          "(.sdf|.env|.lang.json|.ds_store|plugin.json|readme.md|.gitignore|.git)$",
+        ) &&
+      !file.name.match("^/components/")
+    ) {
+      if (file.isDirectory()) {
+        result.push(...readAllFiles(path.join(dir, file.name)));
+      } else {
+        result.push(path.join(dir, file.name));
+      }
     }
   });
   return result;
@@ -22,25 +31,24 @@ const readAllFiles = (dir) => {
 
 const save = (options, talkdir, files) => {
   const promises = [];
+  if (options.save === "." || options.save === talkdir) {
+    log(
+      "=> It is not possible to save to the root of your talk. Try an other path",
+    );
+    process.exit(0);
+  }
   // clean
   if (existsSync(options.save))
     rmSync(options.save, { recursive: true, force: true });
   readAllFiles(talkdir).forEach((file) => {
     const nfile = file.replace(talkdir, "");
-    if (
-      !nfile.match(
-        "(.sdf|.env|.lang.json|.DS_Store|/plugin.json|/README.md)$",
-      ) &&
-      !nfile.match("^/components/")
-    ) {
-      // eslint-disable-next-line no-undef
-      promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
-      log(
-        `📃 ${[...options.save.split("/"), ...nfile.split("/")]
-          .filter((p) => p !== "")
-          .join("/")} generated`,
-      );
-    }
+    // eslint-disable-next-line no-undef
+    promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
+    log(
+      `📃 ${[...options.save.split("/"), ...nfile.split("/")]
+        .filter((p) => p !== "")
+        .join("/")} generated`,
+    );
   });
   const excludes = ["/notes.html", "/slidesk-notes.css", "/slidesk-notes.js"];
   Object.entries(files).forEach(([key, value]) => {
