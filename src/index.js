@@ -39,6 +39,10 @@ program
   .option("-w, --watch", "watch modification of files")
   .option("-g, --hidden", "remove help information")
   .option("-c, --conf <name>", "use a specific .env file", "")
+  .option(
+    "-o, --open <browser>",
+    "open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)",
+  )
   .action(present);
 
 program.parse();

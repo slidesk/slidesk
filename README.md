@@ -41,15 +41,18 @@ Arguments:
   talk                   the directory of your talk
 
 Options:
-  -v, --version           output the version number
-  -d, --domain <string>   domain (default: "localhost")
-  -p, --port <int>        port (default: 1337)
-  -s, --save <path>       save the presentation
-  -n, --notes             open with speakers notes
-  -t, --timers            add checkpoint and slide maximum time on notes view
-  -a, --transition <int>  transition timer (default: 300)
-  -w, --watch             watch modification of files
-  -h, --help              display help for command
+  -v, --version            output the version number
+  -d, --domain <string>    domain (default: "localhost")
+  -p, --port <int>         port (default: 1337)
+  -s, --save <path>        save the presentation
+  -n, --notes              open with speakers notes
+  -t, --timers             add checkpoint and slide maximum time on notes view
+  -a, --transition <int>   transition timer (default: 300)
+  -w, --watch              watch modification of files
+  -g, --hidden             remove help information
+  -c, --conf <name>        use a specific .env file (default: "")
+  -o, --open <browser>     open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)
+  -h, --help               display help for command
 
 Commands:
   create <talk>
@@ -103,6 +106,7 @@ Options:
   -w, --watch              watch modification of files
   -g, --hidden             remove help information
   -c, --conf <name>        use a specific .env file (default: "")
+  -o, --open <browser>     open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)
   -h, --help               display help for command
 
 Commands:

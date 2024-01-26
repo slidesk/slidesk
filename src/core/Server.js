@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
+import open, { apps } from "open";
 
 const { log } = console;
 
@@ -128,17 +129,30 @@ export default class Server {
       };
     }
     globalThis.server = Bun.serve(serverOptions);
-    if (options.notes)
+    if (options.notes) {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
         }://${options.domain}:${options.port}/notes.html\x1b[0m`,
       );
+      if (options.open)
+        await open(
+          `http${https ? "s" : ""}://${options.domain}:${
+            options.port
+          }/notes.html`,
+          { app: { name: apps[options.open] } },
+        );
+    }
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
         https ? "s" : ""
       }://${options.domain}:${options.port}\x1b[0m`,
     );
+    if (options.open && !options.notes)
+      await open(
+        `http${https ? "s" : ""}://${options.domain}:${options.port}`,
+        { app: { name: apps[options.open] } },
+      );
     log();
   }
 
