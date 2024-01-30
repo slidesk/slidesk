@@ -40,6 +40,11 @@ program
   .option("-g, --hidden", "remove help information")
   .option("-c, --conf <name>", "use a specific .env file", "")
   .option(
+    "-i, --interactive",
+    "allow your audience to see your presentation on another device synchronously",
+    false,
+  )
+  .option(
     "-o, --open <browser>",
     "open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)",
   )

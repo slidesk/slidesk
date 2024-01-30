@@ -75,6 +75,11 @@ export default class Server {
               ? undefined
               : new Response("WebSocket upgrade error", { status: 400 });
           case "/":
+            if (
+              req.headers.get("host") !== `${options.domain}:${options.port}` &&
+              !options.interactive
+            )
+              return new Response("");
             return new Response(globalThis.files["/index.html"].content, {
               headers: globalThis.files["/index.html"].headers,
             });
