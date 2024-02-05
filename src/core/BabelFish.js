@@ -246,10 +246,10 @@ class BabelFish {
           }
           if (spl[0].trim() !== "") {
             slug = slugify(spl[0]);
-            return `<h2>${spl[0]} </h2>`;
+            return `<h2>${spl[0]}</h2>`;
           }
         }
-        return par;
+        return par.replace(/<p>\.\[[^\]]+\] <\/p>/g, "");
       })
       .join("\n\n");
     const datas = {};
