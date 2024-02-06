@@ -285,6 +285,8 @@ class BabelFish {
         return this.#timers(par);
       case par.startsWith("# "):
         return `<h1>${par.replace(/^# /, "").trim()}</h1>`;
+      case par.startsWith("// "):
+        return "";
       default:
         break;
     }
