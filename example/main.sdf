@@ -8,6 +8,8 @@ add_scripts: test.js
 
 How to create a talk with SliDesk
 
+// !include(fake.sdf)
+
 ## Slide 1
 
 //@ [] 00:30
