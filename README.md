@@ -4,6 +4,8 @@
 <img src="https://github.com/gouz/slidesk/assets/219936/5cdc9f5c-1b9c-4a9a-9a7f-124043dee8d5" />
 </p>
 
+<center>A complete documentation is available here: https://slidesk.github.io/slidesk-doc/</center>
+
 Write your talk/presentation in a simplified language (SliDeskFormat), generate it and visualize it in Web.
 
 SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
