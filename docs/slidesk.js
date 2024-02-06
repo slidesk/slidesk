@@ -3,7 +3,7 @@
       currentSlide: 0,
       slides: [],
       animationTimer: 300,
-      onSlideChange: function() {window.slidesk.changeSource();;window.slidesk.qrcode();;window.slidesk.progressActive();;;window.slidesk.autonext();;window.slidesk.prepareSteps();;console.log("new slide");},
+      onSlideChange: function() {window.slidesk.changeSource();;window.slidesk.qrcode();;window.slidesk.progressActive();;;window.slidesk.autonext();;window.slidesk.prepareSteps();;;console.log("new slide")},
       env: {"PLUGINS":"source, qrcode, progress, keyboard, autonext, steps","MYVAR":"Variable env","WIDTH":"1920"},
       cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
       lastAction: ""
