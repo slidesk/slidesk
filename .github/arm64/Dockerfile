@@ -1,5 +1,5 @@
 FROM arunvelsriram/utils:latest as build
-RUN curl -s https://api.github.com/repos/gouz/slidesk/releases/latest | grep "/release_mac.tar.gz" | cut -d : -f 2,3 | tr -d \" | wget -qi -
+RUN curl -s https://api.github.com/repos/slidesk/slidesk/releases/latest | grep "/release_mac.tar.gz" | cut -d : -f 2,3 | tr -d \" | wget -qi -
 RUN tar -xzf release_mac.tar.gz && \
     chmod +x exe/slidesk
 
