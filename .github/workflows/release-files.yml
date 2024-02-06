@@ -97,14 +97,14 @@ jobs:
           arch: "amd64"
           package_root: "exe"
           maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
-          version: ${{ github.ref }}
+          version: ${{ github.ref_name }}
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: slidesk_${{ github.ref }}_amd64.deb
+          files: slidesk_${{ github.ref_name }}_amd64.deb
 
   push_docker_hub:
     name: Push on Docker Hub
