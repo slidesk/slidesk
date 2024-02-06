@@ -111,7 +111,6 @@ Options:
 
 Commands:
   create <talk>
-  studio [options] [talk]
 ```
 
 ## How to build SliDesk?

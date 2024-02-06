@@ -3,7 +3,6 @@ import { program } from "commander";
 import packagejson from "../package.json";
 import present from "./command/present";
 import create from "./command/create";
-import studio from "./command/studio";
 
 const { log } = console;
 
@@ -18,14 +17,6 @@ program
 
 // talk's creation command
 program.command("create").argument("<talk>").action(create);
-
-// talk's studio command
-program
-  .command("studio")
-  .argument("[talk]", "the directory of your talk")
-  .option("-d, --domain <string>", "domain", "localhost")
-  .option("-p, --port <int>", "port", 1982)
-  .action(studio);
 
 // talk's presentation command
 program

@@ -31,7 +31,6 @@
     "lint": "eslint src",
     "example": "bun src/index.js example",
     "gendocs": "bun src/index.js example --save docs",
-    "tools": "bun tools/pluginGeneration.js",
-    "studio": "bun src/index.js studio"
+    "tools": "bun tools/pluginGeneration.js"
   }
 }
