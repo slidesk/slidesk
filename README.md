@@ -41,15 +41,18 @@ Arguments:
   talk                   the directory of your talk
 
 Options:
-  -v, --version           output the version number
-  -d, --domain <string>   domain (default: "localhost")
-  -p, --port <int>        port (default: 1337)
-  -s, --save <path>       save the presentation
-  -n, --notes             open with speakers notes
-  -t, --timers            add checkpoint and slide maximum time on notes view
-  -a, --transition <int>  transition timer (default: 300)
-  -w, --watch             watch modification of files
-  -h, --help              display help for command
+  -v, --version            output the version number
+  -d, --domain <string>    domain (default: "localhost")
+  -p, --port <int>         port (default: 1337)
+  -s, --save <path>        save the presentation
+  -n, --notes              open with speakers notes
+  -t, --timers             add checkpoint and slide maximum time on notes view
+  -a, --transition <int>   transition timer (default: 300)
+  -w, --watch              watch modification of files
+  -g, --hidden             remove help information
+  -c, --conf <name>        use a specific .env file (default: "")
+  -o, --open <browser>     open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)
+  -h, --help               display help for command
 
 Commands:
   create <talk>
@@ -89,16 +92,22 @@ Usage: bunx slidesk [options] [command] <talk>
 
 Your presentation companion
 
+Arguments:
+  talk                     the directory of your talk
+
 Options:
-  -v, --version           output the version number
-  -d, --domain <string>   domain (default: "localhost")
-  -p, --port <int>        port (default: 1337)
-  -s, --save <path>       save the presentation
-  -n, --notes             open with speakers notes
-  -t, --timers            add checkpoint and slide maximum time on notes view
-  -a, --transition <int>  transition timer (default: 300)
-  -w, --watch             watch modification of files
-  -h, --help              display help for command
+  -v, --version            output the version number
+  -d, --domain <string>    domain (default: "localhost")
+  -p, --port <int>         port (default: 1337)
+  -s, --save <path>        save the presentation
+  -n, --notes              open with speakers notes
+  -t, --timers             add checkpoint and slide maximum time on notes view
+  -a, --transition <int>   transition timer (default: 300)
+  -w, --watch              watch modification of files
+  -g, --hidden             remove help information
+  -c, --conf <name>        use a specific .env file (default: "")
+  -o, --open <browser>     open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)
+  -h, --help               display help for command
 
 Commands:
   create <talk>
@@ -312,6 +321,13 @@ export default (data) => {
 ```
 
 Then a dynamic call will be done when parsing a slide (at the end of default parsing).
+
+## Add scripts & styles without plugins
+
+In the special header `/:: ::/`, you can specify files to includes (locals or distants), separated with a comma `,`, with the following keys:
+
+- `add_styles`: to add css files, which will be inserted before `custom_css`.
+- `add_scripts`: to add js, which will be inserted before any script tag.
 
 ## HTTPS
 

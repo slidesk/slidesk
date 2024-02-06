@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import { existsSync, mkdirSync } from "node:fs";
 import slugify from "../utils/slugify";
 import { question } from "../utils/interactCLI";
 
@@ -16,7 +15,6 @@ const create = async (talk) => {
     (
       await question("Do you want to customize the presentation? [yN]")
     ).toLowerCase() === "y";
-  if (!existsSync(`./${dirName}`)) mkdirSync(`./${dirName}`);
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (responseCustom) {
