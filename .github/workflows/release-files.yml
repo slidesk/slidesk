@@ -95,7 +95,7 @@ jobs:
           package: "slidesk"
           desc: "Your presentation companion"
           arch: "amd64"
-          package_root: "exe"
+          package_root: ".debpkg"
           maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
           version: ${{ github.ref_name }}
       - name: Release
