@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import slugify from "../utils/slugify";
 import { question } from "../utils/interactCLI";
+import { mkdirSync } from "fs";
 
 const { log } = console;
 
@@ -15,6 +16,7 @@ const create = async (talk) => {
     (
       await question("Do you want to customize the presentation? [yN]")
     ).toLowerCase() === "y";
+  mkdirSync(dirName, { recursive: true });
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (responseCustom) {
