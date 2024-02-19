@@ -1,0 +1,13 @@
+.sd-slide {
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.sd-slide.sd-current {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sd-slide.sd-previous {
+  transform: translateX(0);
+}
