@@ -1,9 +1,0 @@
-{
-  "addHTML": "<div id=\"sd-qrcode\">&nbsp;</div>",
-  "addStyles": ["./plugins/qrcode/qrcode.css"],
-  "addScripts": [
-    "./plugins/qrcode/qrcode.lib.js",
-    "./plugins/qrcode/qrcode.js"
-  ],
-  "onSlideChange": "window.slidesk.qrcode();"
-}
