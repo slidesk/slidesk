@@ -353,7 +353,7 @@ class BabelFish {
             `${this.sdfPath}/${lang}`,
           ).json();
           menuLang.push({
-            value: translationJSON.default ? "/" : `${langSlug}.html`,
+            value: translationJSON.default ? "/" : `/${langSlug}.html`,
             label: langSlug,
           });
           languages[
