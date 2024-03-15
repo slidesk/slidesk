@@ -439,8 +439,8 @@ class BabelFish {
     };
     ${
       !this.options.save
-        ? `window.slidesk.io = new WebSocket(\`ws${
-            globalThis.env?.HTTPS === "true" ? "s" : ""
+        ? `window.slidesk.io = new WebSocket(\`ws\${
+            window.location.protocol.includes('https') ? "s" : ""
           }://\${window.location.host}/ws\`);`
         : ""
     }
