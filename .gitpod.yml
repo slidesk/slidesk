@@ -1,11 +1,9 @@
 image: gitpod/workspace-bun
 
 tasks:
-  - name: Init workspace
-    init: |
-      bun install
-      bun make:exe
+  - name: Execute SliDesk
+    command: bunx slidesk -wi example
 
 ports:
-  - port: 3000
+  - port: 1337
     onOpen: open-preview
