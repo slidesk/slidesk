@@ -5,9 +5,9 @@ import open, { apps } from "open";
 
 const { log } = console;
 
-const getFile = (req, options, https) => {
+const getFile = (req) => {
   const fileurl = req.url.replace(
-    `http${https ? "s" : ""}://${options.domain}:${options.port}`,
+    new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
   const file = Bun.file(
@@ -96,7 +96,7 @@ export default class Server {
               }),
             );
             if (res !== null) return res;
-            return getFile(req, options, https);
+            return getFile(req);
         }
       },
       websocket: {
