@@ -15,7 +15,6 @@ import {
 } from "../templates/notes";
 import comments from "../components/comments";
 import formatting from "../components/formatting";
-import getSelectLang from "../components/getSelectLang";
 import image from "../components/image";
 import list from "../components/list";
 import translate from "../components/translate";
@@ -343,48 +342,35 @@ class BabelFish {
     const langFiles = readdirSync(this.sdfPath).filter((item) =>
       /.lang.json$/gi.test(item),
     );
-    const languages = {};
+    let content = "";
     if (langFiles.length) {
-      const menuLang = [];
+      let translations = null;
       await Promise.all(
         langFiles.map(async (lang) => {
           const langSlug = lang.replace(".lang.json", "");
           const translationJSON = await Bun.file(
             `${this.sdfPath}/${lang}`,
           ).json();
-          menuLang.push({
-            value: translationJSON.default ? "/" : `/${langSlug}.html`,
-            label: langSlug,
-          });
-          languages[
-            `/${translationJSON.default ? "index" : `${langSlug}`}.html`
-          ] = {
-            content: await this.#polish(
-              translate(presentation, translationJSON),
-              template,
-            ),
-            headers: {
-              "Content-Type": "text/html",
-            },
-          };
+          if (this.options.lang === langSlug) translations = translationJSON;
+          else if (translationJSON.default && translations === null)
+            translations = translationJSON;
         }),
       );
-      // add menu lang
-      Object.keys(languages).forEach((key) => {
-        languages[key].content = languages[key].content.replace(
-          "</body>",
-          getSelectLang(menuLang, key),
-        );
-      });
+      content = await this.#polish(
+        translate(presentation, translations),
+        template,
+      );
     } else {
-      languages["/index.html"] = {
-        content: await this.#polish(presentation, template),
+      content = await this.#polish(presentation, template);
+    }
+    return {
+      "/index.html": {
+        content,
         headers: {
           "Content-Type": "text/html",
         },
-      };
-    }
-    return languages;
+      },
+    };
   }
 
   async #polish(presentation, template) {

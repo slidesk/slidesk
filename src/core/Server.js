@@ -76,6 +76,7 @@ export default class Server {
               : new Response("WebSocket upgrade error", { status: 400 });
           case "/":
             if (
+              !req.headers.get("host").startsWith("localhost") &&
               req.headers.get("host") === `${options.domain}:${options.port}` &&
               !options.interactive
             )

@@ -39,6 +39,11 @@ program
     "-o, --open <browser>",
     "open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)",
   )
+  .option(
+    "-l, --lang <string>",
+    "specify the language version (per default, it will use the .lang.json file with default information)",
+    "",
+  )
   .action(present);
 
 program.parse();
