@@ -517,6 +517,7 @@ class BabelFish {
     const css = [
       '<link rel="stylesheet" href="slidesk.css" />',
       '<link rel="stylesheet" href="slidesk-notes.css" />',
+      ...this.customIncludes.css,
     ];
     const js = ['<script src="slidesk-notes.js"></script>'];
     this.plugins.forEach((p) => {

@@ -25,3 +25,9 @@
   background-color: var(--sd-primary-color);
   border-color: var(--sd-primary-color);
 }
+
+@media print {
+  #sd-progress {
+    display: none;
+  }
+}
