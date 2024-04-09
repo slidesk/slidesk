@@ -176,12 +176,6 @@ h3 {
     size: A4 landscape;
     margin: 0;
   }
-  #sd-langs,
-  #sd-progress,
-  #sd-showSource,
-  #sd-source {
-    display: none;
-  }
 
   html {
     height: 100%;
