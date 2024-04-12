@@ -3,12 +3,15 @@ import { program } from "commander";
 import packagejson from "../package.json";
 import present from "./command/present";
 import create from "./command/create";
+import checkVersion from "./utils/checkLastVersion";
 
 const { log } = console;
 
 log(`\x1b[1m ____(•)${Math.round(Math.random()) ? "-" : "<"}
 (\x1b[4mSliDesk\x1b[0m\x1b[1m) v \x1b[36;49m${packagejson.version}\x1b[0m
 `);
+
+await checkVersion(packagejson.version);
 
 program
   .name("slidesk")
