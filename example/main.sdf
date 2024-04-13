@@ -24,9 +24,9 @@ A Slide is define by a line which starts with 2 '#' and a space after
 
 With a ``!````image(path of your image)`` at the beginning of a line will display
 
-!image(slidesk.png, slidesk, 200)
+!image(slidesk.png, slidesk logo, 200,,,true)
 
-and you can specify width, height, and styles,  ``!````image(path, placeholder, 20, 20, float:left;)``
+and you can specify width, height, styles, and if a caption is displayed  ``!````image(path, placeholder, 20, 20, float:left;, true)``
 
 ## List (-) .[steps]
 

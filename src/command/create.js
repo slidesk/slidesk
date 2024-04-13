@@ -35,12 +35,15 @@ const create = async (talk) => {
   --sd-heading2-line-height: 1;
   --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
+  --sd-caption-font-size: 1vw;
+  --sd-caption-line-height: 1;
 
   --sd-background-color: #242424;
   --sd-heading-color: rgba(255, 255, 255, 0.97);
   --sd-text-color: rgba(255, 255, 255, 0.87);
   --sd-primary-color: rgb(37, 186, 146);
-
+  --sd-caption-color: rgba(0, 0, 0, 0.7);
+  --sd-caption-bgcolor: rgba(255, 255, 255, 0.7);
 
   /* SpeakerView */
   --sd-sv-timer-size: 80px;
