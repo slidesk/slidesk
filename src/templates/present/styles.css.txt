@@ -198,7 +198,7 @@ h3 {
     height: 100%;
   }
 
-  body {
+  .sd-app {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     height: 100%;
@@ -209,6 +209,6 @@ h3 {
     position: relative;
     height: 100%;
     page-break-after: always;
-    transform: none !important;
+    transform: translateX(0);
   }
 }

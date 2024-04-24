@@ -4,11 +4,12 @@ import path from "path";
 import BabelFish from "../core/BabelFish";
 import Server from "../core/Server";
 import { getAction } from "../utils/interactCLI";
+import type { PresentOptions } from "../types";
 
 const { log } = console;
 
-const readAllFiles = (dir) => {
-  const result = [];
+const readAllFiles = (dir: string): string[] => {
+  const result: string[] = [];
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file) => {
     if (
@@ -29,8 +30,8 @@ const readAllFiles = (dir) => {
   return result;
 };
 
-const save = (options, talkdir, files) => {
-  const promises = [];
+const save = (options: PresentOptions, talkdir: string, files) => {
+  const promises: Promise<number>[] = [];
   if (options.save === "." || options.save === talkdir) {
     log(
       "=> It is not possible to save to the root of your talk. Try an other path",
@@ -38,17 +39,18 @@ const save = (options, talkdir, files) => {
     process.exit(0);
   }
   // clean
-  if (existsSync(options.save))
+  if (options.save && existsSync(options.save))
     rmSync(options.save, { recursive: true, force: true });
   readAllFiles(talkdir).forEach((file) => {
     const nfile = file.replace(talkdir, "");
     // eslint-disable-next-line no-undef
     promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
-    log(
-      `📃 ${[...options.save.split("/"), ...nfile.split("/")]
-        .filter((p) => p !== "")
-        .join("/")} generated`,
-    );
+    if (options.save)
+      log(
+        `📃 ${[...options.save.split("/"), ...nfile.split("/")]
+          .filter((p) => p !== "")
+          .join("/")} generated`,
+      );
   });
   const excludes = ["/notes.html", "/slidesk-notes.css", "/slidesk-notes.js"];
   Object.entries(files).forEach(([key, value]) => {
@@ -63,24 +65,29 @@ const save = (options, talkdir, files) => {
   });
 };
 
-const flow = async (talkdir, options = {}, init = false) => {
-  globalThis.BabelFish = new BabelFish(`${talkdir}/main.sdf`, options);
-  const files = await globalThis.BabelFish.convert();
+let server: Server;
+
+const flow = async (
+  talkdir: string,
+  options: PresentOptions = {},
+  init = false,
+) => {
+  const files = await new BabelFish(`${talkdir}/main.sdf`, options).convert();
   if (files === null) {
     process.exit();
   }
   if (options.save) {
     save(options, talkdir, files);
   } else if (init) {
-    Server.create(files, options, talkdir);
+    server = new Server();
+    await server.create(files, options, talkdir);
   } else {
-    Server.setFiles(files);
+    server.setFiles(files);
   }
 };
 
-const present = (talk, options) => {
+const present = (talk: string, options: PresentOptions) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
-  globalThis.talkdir = talkdir;
   flow(talkdir, options, true);
   if (!options.save) {
     if (!options.hidden)
@@ -94,7 +101,7 @@ const present = (talk, options) => {
       );
     if (options.watch)
       watch(talkdir, { recursive: true }, (eventType, filename) => {
-        if (!filename.startsWith(".git")) {
+        if (!filename?.startsWith(".git")) {
           log(
             `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
           );

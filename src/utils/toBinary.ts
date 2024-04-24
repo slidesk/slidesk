@@ -1,4 +1,4 @@
-const toBinary = (string) => {
+const toBinary = (string: string): string => {
   const codeUnits = new Uint16Array(string.length);
   for (let i = 0; i < codeUnits.length; i += 1) {
     codeUnits[i] = string.charCodeAt(i);

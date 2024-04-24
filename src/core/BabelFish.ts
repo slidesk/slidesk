@@ -22,24 +22,47 @@ import pluginsJSON from "../plugins.json";
 import replaceAsync from "../utils/replaceAsync";
 import slugify from "../utils/slugify";
 import toBinary from "../utils/toBinary";
+import type {
+  Includes,
+  SliDeskFile,
+  PluginsJSON,
+  PresentOptions,
+  SliDeskPlugin,
+} from "../types";
 
 const { error } = console;
 
 class BabelFish {
-  constructor(mainFile, options) {
-    this.options = options;
-    this.hasNotesView = options.notes;
-    this.mainFile = "";
+  #options: PresentOptions;
+  #hasNotesView: boolean;
+  #hasPluginSource: boolean = false;
+  #mainFile: string;
+  #sdfPath: string = "";
+  #customCSS: string = "";
+  #timerSlide: string = "";
+  #timerCheckpoint: string = "";
+  #plugins: SliDeskPlugin[] = [];
+  #components: string[] = [];
+  #cptSlide: number = 0;
+  #customIncludes: Includes = {
+    css: [],
+    js: [],
+  };
+  #env: any = {};
+
+  constructor(mainFile: string, options: PresentOptions) {
+    this.#options = options;
+    this.#hasNotesView = options.notes ?? false;
+    this.#mainFile = "";
     const sdfMainFile = Bun.file(mainFile);
     if (sdfMainFile.size === 0) {
       error("🤔 main.sdf was not found");
     } else {
-      this.mainFile = mainFile;
-      this.sdfPath = `${this.mainFile.substring(
+      this.#mainFile = mainFile;
+      this.#sdfPath = `${this.#mainFile.substring(
         0,
-        this.mainFile.lastIndexOf("/"),
+        this.#mainFile.lastIndexOf("/"),
       )}`;
-      this.#initVariables();
     }
   }
 
@@ -49,10 +72,10 @@ class BabelFish {
     this.#loadComponents();
   }
 
-  async convert() {
-    if (this.mainFile) {
+  async convert(): Promise<SliDeskFile> {
+    if (this.#mainFile) {
       await this.preload();
-      const sdf = await this.#prepareSDF(this.mainFile);
+      const sdf = await this.#prepareSDF(this.#mainFile);
       return {
         ...(await this.#generateHTML(
           await this.getPresentation(sdf),
@@ -89,24 +112,13 @@ class BabelFish {
     return null;
   }
 
-  #initVariables() {
-    this.customCSS = "";
-    this.timerSlide = "";
-    this.timerCheckpoint = "";
-    this.plugins = [];
-    this.components = [];
-    this.cptSlide = 0;
-    this.customIncludes = {
-      css: [],
-      js: [],
-    };
-  }
-
   async #loadEnv() {
-    const slideskEnvFile = Bun.file(`${this.sdfPath}/${this.options.conf}.env`);
+    const slideskEnvFile = Bun.file(
+      `${this.#sdfPath}/${this.#options.conf}.env`,
+    );
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
-      globalThis.env = dotenv.parse(buf);
+      this.#env = dotenv.parse(buf);
     }
   }
 
@@ -116,22 +128,20 @@ class BabelFish {
   }
 
   #internalPlugins() {
-    if (globalThis.env?.PLUGINS) {
-      [...globalThis.env.PLUGINS.split(",")].forEach((p) => {
-        const pl = p.trim();
-        if (pl === "source") this.hasPluginSource = true;
-        if (pluginsJSON[pl]) {
-          this.plugins.push({
-            type: "internal",
-            ...pluginsJSON[pl],
-          });
-        }
-      });
-    }
+    [...this.#env.PLUGINS?.split(",")].forEach((p) => {
+      const pl = p.trim();
+      if (pl === "source") this.#hasPluginSource = true;
+      if ((pluginsJSON as PluginsJSON)[pl]) {
+        this.#plugins.push({
+          type: "internal",
+          ...pluginsJSON[pl],
+        });
+      }
+    });
   }
 
   async #externalPlugins() {
-    const pluginsDir = `${this.sdfPath}/plugins`;
+    const pluginsDir = `${this.#sdfPath}/plugins`;
     if (existsSync(pluginsDir))
       await Promise.all(
         readdirSync(pluginsDir).map(async (plugin) => {
@@ -143,29 +153,29 @@ class BabelFish {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
-                files.forEach((s) => {
-                  json[t][s] = readFileSync(`${this.sdfPath}/${s}`, {
+                files.forEach((s: string) => {
+                  json[t][s] = readFileSync(`${this.#sdfPath}/${s}`, {
                     encoding: "utf8",
                   });
                 });
               }
             });
-            this.plugins.push({ type: "external", ...json });
+            this.#plugins.push({ type: "external", ...json });
           }
         }),
       );
   }
 
   #loadComponents() {
-    const componentsDir = `${this.sdfPath}/components`;
+    const componentsDir = `${this.#sdfPath}/components`;
     if (existsSync(componentsDir)) {
-      this.components = readdirSync(componentsDir)
+      this.#components = readdirSync(componentsDir)
         .filter((item) => /.mjs$/gi.test(item))
         .map((c) => `${componentsDir}/${c}`);
     }
   }
 
-  async #prepareSDF(mainFile) {
+  async #prepareSDF(mainFile: string) {
     let fusion = await this.includes(mainFile);
     // get Custom configuration
     const m = /\/::([\s\S]*)::\//m.exec(fusion);
@@ -176,32 +186,32 @@ class BabelFish {
     return fusion;
   }
 
-  async includes(file) {
+  async includes(file: string): Promise<string> {
     const data = await Bun.file(file).text();
     return replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) =>
       this.includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`),
     );
   }
 
-  #config(data) {
+  #config(data: string) {
     const lines = [...data.split("\n")].filter((l) => l.length);
     lines.forEach((line) => {
       if (line.startsWith("custom_css:"))
-        this.customCSS = `<link rel="stylesheet" href="${line
+        this.#customCSS = `<link rel="stylesheet" href="${line
           .replace("custom_css:", "")
           .trim()}" />`;
       if (line.startsWith("add_styles:"))
-        this.customIncludes.css = [
+        this.#customIncludes.css = [
           ...line.replace("add_styles:", "").split(","),
         ].map((n) => `<link rel="stylesheet" href="${n.trim()}" />`);
       if (line.startsWith("add_scripts:"))
-        this.customIncludes.js = [
+        this.#customIncludes.js = [
           ...line.replace("add_scripts:", "").split(","),
         ].map((n) => `<script src="${n.trim()}"></script>`);
     });
   }
 
-  async getPresentation(sdf) {
+  async getPresentation(sdf: string) {
     let fusion = sdf;
     // comments
     fusion = comments(fusion);
@@ -209,30 +219,30 @@ class BabelFish {
     fusion = this.#sliceSlides(fusion);
     // custom components
     await Promise.all(
-      this.components.map(async (c) => {
+      this.#components.map(async (c) => {
         const { default: comp } = await import(c);
         fusion = comp(fusion);
       }),
     );
     // format text
-    fusion = formatting(fusion);
+    fusion = formatting(fusion, this.#env);
     // image
     fusion = image(fusion);
     return fusion;
   }
 
-  #sliceSlides(presentation) {
+  #sliceSlides(presentation: string) {
     return [...presentation.split("\n## ")]
       .map((slide) => this.#treatSlide(slide))
       .join("\n");
   }
 
-  #treatSlide(slide) {
+  #treatSlide(slide: string) {
     if (slide.trim() === "") return "";
     let classes = "";
     let slug = "";
-    this.timerSlide = "";
-    this.timerCheckpoint = "";
+    this.#timerSlide = "";
+    this.#timerCheckpoint = "";
     const content = slide
       .replace(/\\r/g, "")
       .split("\n\n")
@@ -251,27 +261,31 @@ class BabelFish {
         return par.replace(/<p>\.\[[^\]]+\] <\/p>/g, "");
       })
       .join("\n\n");
-    const datas = {};
-    const slideSlug = this.cptSlide ? `!slide-${this.cptSlide}` : "";
-    datas.num = this.cptSlide;
-    this.cptSlide += 1;
-    datas.slug = slug || slideSlug;
-    if (this.hasPluginSource) datas.source = toBinary(slide);
-    if (this.options.timers) {
-      if (this.timerSlide !== "") datas["timer-slide"] = this.timerSlide;
-      if (this.timerCheckpoint !== "")
-        datas["timer-checkpoint"] = this.timerCheckpoint;
+    const slideSlug = this.#cptSlide ? `!slide-${this.#cptSlide}` : "";
+    const datas = {
+      num: this.#cptSlide,
+      slug: slug || slideSlug,
+      source: "",
+      ["timer-slide"]: "",
+      ["timer-checkpoint"]: "",
+    };
+    this.#cptSlide += 1;
+    if (this.#hasPluginSource) datas.source = toBinary(slide);
+    if (this.#options.timers) {
+      if (this.#timerSlide !== "") datas["timer-slide"] = this.#timerSlide;
+      if (this.#timerCheckpoint !== "")
+        datas["timer-checkpoint"] = this.#timerCheckpoint;
     }
-    const dataset = [];
+    const dataset: string[] = [];
     Object.entries(datas).forEach(([key, val]) => {
-      dataset.push(`data-${key}="${val}"`);
+      if (val !== "") dataset.push(`data-${key}="${val}"`);
     });
     return `<section class="sd-slide ${classes}" ${dataset.join(
       " ",
     )}>${content}</section>`;
   }
 
-  #paragraph(paragraph) {
+  #paragraph(paragraph: string) {
     const par = paragraph.trimStart();
     switch (true) {
       case par.startsWith("- "):
@@ -293,11 +307,11 @@ class BabelFish {
     return "";
   }
 
-  #timers(data) {
+  #timers(data: string) {
     // timers
     const timer = data.replace("//@", "").replaceAll(" ", "");
-    if (timer.startsWith("[]")) this.timerSlide = timer.replace("[]", "");
-    if (timer.startsWith("<")) this.timerCheckpoint = timer.replace("<", "");
+    if (timer.startsWith("[]")) this.#timerSlide = timer.replace("[]", "");
+    if (timer.startsWith("<")) this.#timerCheckpoint = timer.replace("<", "");
     return "";
   }
 
@@ -305,20 +319,20 @@ class BabelFish {
     let template = presentationView;
     const css = [
       '<link rel="stylesheet" href="slidesk.css" />',
-      ...this.customIncludes.css,
+      ...this.#customIncludes.css,
     ];
     const js = [
-      ...this.customIncludes.js,
+      ...this.#customIncludes.js,
       '<script src="slidesk.js"></script>',
     ];
-    this.plugins.forEach((p) => {
+    this.#plugins.forEach((p) => {
       if (p.addStyles) {
         if (p.type === "internal") {
           Object.keys(p.addStyles).forEach((k) =>
             css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         } else {
-          p.addStyles.forEach((k) =>
+          p.addStyles.forEach((k: string) =>
             css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         }
@@ -329,30 +343,37 @@ class BabelFish {
             js.push(`<script src="${k}"></script>`),
           );
         } else {
-          p.addScripts.forEach((k) => js.push(`<script src="${k}"></script>`));
+          p.addScripts.forEach((k: string) =>
+            js.push(`<script src="${k}"></script>`),
+          );
         }
       }
     });
-    template = template.replace("#STYLES#", `${css.join("")}${this.customCSS}`);
+    template = template.replace(
+      "#STYLES#",
+      `${css.join("")}${this.#customCSS}`,
+    );
     template = template.replace("#SCRIPTS#", `${js.join("")}`);
     return template;
   }
 
-  async #generateHTML(presentation, template) {
-    const langFiles = readdirSync(this.sdfPath).filter((item) =>
+  async #generateHTML(presentation: string, template: string) {
+    const langFiles = readdirSync(this.#sdfPath).filter((item) =>
       /.lang.json$/gi.test(item),
     );
     let content = "";
     if (langFiles.length) {
-      let translations = null;
+      let translations: any = null;
       await Promise.all(
         langFiles.map(async (lang) => {
           const langSlug = lang.replace(".lang.json", "");
           const translationJSON = await Bun.file(
-            `${this.sdfPath}/${lang}`,
+            `${this.#sdfPath}/${lang}`,
           ).json();
-          if (this.options.lang === langSlug) translations = translationJSON;
-          else if (translationJSON.default && translations === null)
+          if (
+            this.#options.lang === langSlug ||
+            (translationJSON.default && translations === null)
+          )
             translations = translationJSON;
         }),
       );
@@ -373,7 +394,7 @@ class BabelFish {
     };
   }
 
-  async #polish(presentation, template) {
+  async #polish(presentation: string, template: string) {
     let tpl = template;
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title) => {
       tpl = tpl.replace("#TITLE#", title[1]);
@@ -390,24 +411,25 @@ class BabelFish {
       removeAttributeQuotes: true,
     });
 
-    return tpl
-      .replace(
-        "</body>",
-        `${this.plugins.map((p) => p.addHTML ?? "").join("")}${this.plugins
-          .map((p) =>
-            p.addHTMLFromFiles
-              ? Object.keys(p.addHTMLFromFiles)
-                  .map((k) => p.addHTMLFromFiles[k])
-                  .join("")
-              : "",
-          )
-          .join("")}</body>`,
-      )
-      .replace("#PLUGINSSCRIPTS#", this.#getPluginsJS());
+    return tpl.replace(
+      "</body>",
+      `${this.#plugins.map((p) => p.addHTML ?? "").join("")}${this.#plugins
+        .map((p) =>
+          p.addHTMLFromFiles
+            ? Object.keys(p.addHTMLFromFiles)
+                .map((k) => p.addHTMLFromFiles[k])
+                .join("")
+            : "",
+        )
+        .join("")}</body>`,
+    );
   }
 
   #getCSS() {
-    return `:root { --animationTimer: ${this.options.transition}ms; }${presentationStyles}`;
+    return presentationStyles.replace(
+      ":root {",
+      `:root { --animationTimer: ${this.#options.transition}ms; `,
+    );
   }
 
   #getJS() {
@@ -415,23 +437,23 @@ class BabelFish {
     window.slidesk = {
       currentSlide: 0,
       slides: [],
-      animationTimer: ${this.options.transition},
-      onSlideChange: function() {${this.plugins
+      animationTimer: ${this.#options.transition},
+      onSlideChange: function() {${this.#plugins
         .map((p) => p.onSlideChange ?? "")
         .join(";")}},
-      env: ${JSON.stringify(globalThis.env)},
+      env: ${JSON.stringify(this.#env)},
       cwd: '${process.cwd()}/',
       lastAction: ""
     };
     ${
-      !this.options.save
+      !this.#options.save
         ? `window.slidesk.io = new WebSocket(\`ws\${
             window.location.protocol.includes('https') ? "s" : ""
           }://\${window.location.host}/ws\`);`
         : ""
     }
     ${
-      !this.hasNotesView
+      !this.#hasNotesView
         ? `
       document.addEventListener("keydown", (e) => {
         if (e.key === "ArrowLeft") {
@@ -456,19 +478,19 @@ class BabelFish {
       cwd: '${process.cwd()}/',
       onSpeakerViewSlideChange: () => {
         window.slidesk.scrollPosition = 0;
-        ${this.plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";")}
+        ${this.#plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";")}
       }
     };
     window.slidesk.io = new WebSocket("ws${
-      globalThis.env?.HTTPS === "true" ? "s" : ""
-    }://${this.options.domain}:${this.options.port}/ws");
+      this.#env?.HTTPS === "true" ? "s" : ""
+    }://${this.#options.domain}:${this.#options.port}/ws");
     ${notesScript}
     `;
   }
 
   #getPluginCSS() {
-    const css = {};
-    this.plugins.forEach((p) => {
+    const css: SliDeskFile = {};
+    this.#plugins.forEach((p) => {
       if (p.type === "internal") {
         if (p.addStyles)
           Object.keys(p.addStyles).forEach((k) => {
@@ -477,7 +499,7 @@ class BabelFish {
               headers: { "Content-type": "text/css" },
             };
           });
-        if (this.hasNotesView && p.addSpeakerStyles)
+        if (this.#hasNotesView && p.addSpeakerStyles)
           Object.keys(p.addSpeakerStyles).forEach((k) => {
             css[k.replace("./", "/")] = {
               content: p.addSpeakerStyles[k],
@@ -490,17 +512,17 @@ class BabelFish {
   }
 
   #getPluginsJS() {
-    const js = {};
-    this.plugins.forEach((p) => {
+    const js: SliDeskFile = {};
+    this.#plugins.forEach((p) => {
       if (p.type === "internal") {
         if (p.addScripts)
-          Object.keys(p.addScripts).forEach((k) => {
+          Object.keys(p.addScripts).forEach((k: string) => {
             js[k.replace("./", "/")] = {
               content: p.addScripts[k],
               headers: { "Content-type": "application/javascript" },
             };
           });
-        if (this.hasNotesView && p.addSpeakerScripts)
+        if (this.#hasNotesView && p.addSpeakerScripts)
           Object.keys(p.addSpeakerScripts).forEach((k) => {
             js[k.replace("./", "/")] = {
               content: p.addSpeakerScripts[k],
@@ -517,17 +539,17 @@ class BabelFish {
     const css = [
       '<link rel="stylesheet" href="slidesk.css" />',
       '<link rel="stylesheet" href="slidesk-notes.css" />',
-      ...this.customIncludes.css,
+      ...this.#customIncludes.css,
     ];
     const js = ['<script src="slidesk-notes.js"></script>'];
-    this.plugins.forEach((p) => {
+    this.#plugins.forEach((p) => {
       if (p.addSpeakerStyles) {
         if (p.type === "internal") {
           Object.keys(p.addSpeakerStyles).forEach((k) =>
             css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         } else {
-          p.addSpeakerStyles.forEach((k) =>
+          p.addSpeakerStyles.forEach((k: string) =>
             css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         }
@@ -538,13 +560,16 @@ class BabelFish {
             js.push(`<script src="${k}"></script>`),
           );
         } else {
-          p.addSpeakerScripts.forEach((k) =>
+          p.addSpeakerScripts.forEach((k: string) =>
             js.push(`<script src="${k}"></script>`),
           );
         }
       }
     });
-    template = template.replace("#STYLES#", `${css.join("")}${this.customCSS}`);
+    template = template.replace(
+      "#STYLES#",
+      `${css.join("")}${this.#customCSS}`,
+    );
     template = template.replace("#SCRIPTS#", `${js.join("")}`);
     return template;
   }

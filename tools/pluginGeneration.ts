@@ -1,12 +1,16 @@
 /* eslint-disable no-undef */
 import { existsSync, readdirSync, readFileSync } from "fs";
 
+type json = {
+  [key: string]: any;
+};
+
 const parsePluginDir = async () => {
-  const pluginsJSON = {};
+  const pluginsJSON: json = {};
   const pluginsDir = `./plugins`;
   if (existsSync(pluginsDir)) {
     await Promise.all(
-      readdirSync(pluginsDir).map(async (plugin) => {
+      readdirSync(pluginsDir).map(async (plugin: string) => {
         const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
         const pluginFile = Bun.file(pluginPath);
         const exists = await pluginFile.exists();

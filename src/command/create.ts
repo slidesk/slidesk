@@ -5,7 +5,7 @@ import { mkdirSync } from "fs";
 
 const { log } = console;
 
-const create = async (talk) => {
+const create = async (talk: string) => {
   log(`Creation of your talk: ${talk}`);
   let dirName = slugify(talk);
   if (dirName === "create") {
@@ -14,7 +14,9 @@ const create = async (talk) => {
   const responseTitle = await question("What is the title of talk?");
   const responseCustom =
     (
-      await question("Do you want to customize the presentation? [yN]")
+      (await question(
+        "Do you want to customize the presentation? [yN]",
+      )) as string
     ).toLowerCase() === "y";
   mkdirSync(dirName, { recursive: true });
   const file = Bun.file(`./${dirName}/main.sdf`);

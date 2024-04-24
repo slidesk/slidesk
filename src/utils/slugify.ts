@@ -1,4 +1,4 @@
-const slugify = (data) =>
+const slugify = (data: string): string =>
   data
     .toLowerCase()
     .trim()

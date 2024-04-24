@@ -2,18 +2,23 @@
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
 import open, { apps } from "open";
+import type {
+  SliDeskFile,
+  ServerOptions,
+  SliDeskPlugin,
+  PluginsJSON,
+} from "../types";
+import { Serve } from "bun";
 
 const { log } = console;
 
-const getFile = (req) => {
+const getFile = (req: Request, path: string) => {
   const fileurl = req.url.replace(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
   const file = Bun.file(
-    fileurl.match(/https?:\/\/(\S*)/g)
-      ? fileurl
-      : `${globalThis.path}${fileurl}`,
+    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
   if (file.size !== 0)
     return new Response(file, {
@@ -24,17 +29,30 @@ const getFile = (req) => {
   return new Response(`${req.url} not found`, { status: 404 });
 };
 
+interface BunServer {
+  publish(
+    topic: string,
+    data: string | ArrayBufferView | ArrayBuffer,
+    compress?: boolean,
+  ): number;
+}
+
+let serverFiles: SliDeskFile = {};
+let serverPlugins: PluginsJSON = {};
+let serverPath: string = "";
+
 export default class Server {
-  static async create(files, options, path) {
-    globalThis.files = files;
-    globalThis.path = path;
+  server: BunServer;
+
+  async create(files: SliDeskFile, options: ServerOptions, path: string) {
+    serverFiles = files;
+    serverPath = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env = {};
+    let env: any = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
     }
-    globalThis.plugins = {};
     const pluginsDir = `${path}/plugins`;
     if (existsSync(pluginsDir))
       await Promise.all(
@@ -58,7 +76,7 @@ export default class Server {
                 );
                 obj = { ...obj, addWS };
               }
-              globalThis.plugins[plugin] = obj;
+              serverPlugins[plugin] = obj;
             }
           }
         }),
@@ -71,7 +89,7 @@ export default class Server {
         let res = null;
         switch (url.pathname) {
           case "/ws":
-            return globalThis.server.upgrade(req)
+            return this.upgrade(req)
               ? undefined
               : new Response("WebSocket upgrade error", { status: 400 });
           case "/":
@@ -81,23 +99,23 @@ export default class Server {
               !options.interactive
             )
               return new Response("");
-            return new Response(globalThis.files["/index.html"].content, {
-              headers: globalThis.files["/index.html"].headers,
+            return new Response(serverFiles["/index.html"].content, {
+              headers: serverFiles["/index.html"].headers,
             });
           default:
-            if (Object.keys(files).includes(url.pathname))
-              return new Response(globalThis.files[url.pathname].content, {
-                headers: globalThis.files[url.pathname].headers,
+            if (Object.keys(serverFiles).includes(url.pathname))
+              return new Response(serverFiles[url.pathname].content, {
+                headers: serverFiles[url.pathname].headers,
               });
             await Promise.all(
-              [...Object.values(globalThis.plugins)].map(async (plugin) => {
-                if (plugin.addRoutes) {
-                  res = await plugin.addRoutes(req, env);
+              [...Object.values(serverPlugins)].map(async (plugin) => {
+                if ((plugin as SliDeskPlugin).addRoutes) {
+                  res = await (plugin as SliDeskPlugin).addRoutes(req, env);
                 }
               }),
             );
             if (res !== null) return res;
-            return getFile(req);
+            return getFile(req, serverPath);
         }
       },
       websocket: {
@@ -106,16 +124,12 @@ export default class Server {
         },
         async message(ws, message) {
           const json = JSON.parse(message);
-          if (
-            json.plugin &&
-            globalThis.plugins[json.plugin] &&
-            globalThis.plugins[json.plugin].addWS
-          ) {
-            globalThis.server.publish(
+          if (json.plugin && serverPlugins[json.plugin]?.addWS) {
+            this.server.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await globalThis.plugins[json.plugin].addWS(message),
+                response: await serverPlugins[json.plugin].addWS(message),
               }),
             );
           } else {
@@ -126,6 +140,7 @@ export default class Server {
           ws.unsubscribe("slidesk");
         },
       },
+      tls: {},
     };
     if (https) {
       serverOptions.tls = {
@@ -134,7 +149,7 @@ export default class Server {
         passphrase: env.PASSPHRASE ? Bun.file(env.PASSPHRASE) : "",
       };
     }
-    globalThis.server = Bun.serve(serverOptions);
+    this.server = Bun.serve(serverOptions);
     if (options.notes) {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
@@ -162,12 +177,12 @@ export default class Server {
     log();
   }
 
-  static setFiles(files) {
-    globalThis.files = files;
-    globalThis.server.publish("slidesk", JSON.stringify({ action: "reload" }));
+  setFiles(files: SliDeskFile) {
+    serverFiles = files;
+    this.server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
-  static send(action) {
-    globalThis.server.publish("slidesk", JSON.stringify({ action }));
+  send(action) {
+    this.server.publish("slidesk", JSON.stringify({ action }));
   }
 }
