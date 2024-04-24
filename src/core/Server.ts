@@ -52,12 +52,14 @@ const getPlugins = async (pluginsDir: string) => {
           let obj = { type: "external", ...json };
           if (json.addRoutes) {
             const { default: addRoutes } = await import(
-              `${path}/${json.addRoutes}`
+              `${serverPath}/${json.addRoutes}`
             );
             obj = { ...obj, addRoutes };
           }
           if (json.addWS) {
-            const { default: addWS } = await import(`${path}/${json.addWS}`);
+            const { default: addWS } = await import(
+              `${serverPath}/${json.addWS}`
+            );
             obj = { ...obj, addWS };
           }
           serverPlugins[plugin] = obj;
