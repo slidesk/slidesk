@@ -16,7 +16,6 @@ import {
 import comments from "../components/comments";
 import formatting from "../components/formatting";
 import image from "../components/image";
-import list from "../components/list";
 import translate from "../components/translate";
 import pluginsJSON from "../plugins.json";
 import replaceAsync from "../utils/replaceAsync";
