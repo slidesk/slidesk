@@ -84,15 +84,15 @@ p {
 }
 
 a,
-.b {
+b {
   color: var(--sd-primary-color);
 }
 
-.b {
+b {
   font-weight: bold;
 }
 
-.i {
+em {
   font-style: italic;
 }
 
@@ -100,14 +100,6 @@ a,
 pre {
   font-family: monospace;
   white-space: pre;
-}
-
-.s {
-  text-decoration-line: line-through;
-}
-
-.u {
-  text-decoration-line: underline;
 }
 
 .sd-slide {
