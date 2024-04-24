@@ -1,5 +1,3 @@
-import { BunFile } from "bun";
-
 export type PresentOptions = {
   domain?: string;
   port?: string;

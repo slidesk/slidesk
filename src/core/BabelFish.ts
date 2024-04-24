@@ -128,16 +128,17 @@ class BabelFish {
   }
 
   #internalPlugins() {
-    [...this.#env.PLUGINS?.split(",")].forEach((p) => {
-      const pl = p.trim();
-      if (pl === "source") this.#hasPluginSource = true;
-      if ((pluginsJSON as PluginsJSON)[pl]) {
-        this.#plugins.push({
-          type: "internal",
-          ...pluginsJSON[pl],
-        });
-      }
-    });
+    if (this.#env.PLUGINS)
+      [...this.#env.PLUGINS.split(",")].forEach((p) => {
+        const pl = p.trim();
+        if (pl === "source") this.#hasPluginSource = true;
+        if ((pluginsJSON as PluginsJSON)[pl]) {
+          this.#plugins.push({
+            type: "internal",
+            ...pluginsJSON[pl],
+          });
+        }
+      });
   }
 
   async #externalPlugins() {

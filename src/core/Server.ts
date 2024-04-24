@@ -8,7 +8,6 @@ import type {
   SliDeskPlugin,
   PluginsJSON,
 } from "../types";
-import { Serve } from "bun";
 
 const { log } = console;
 
@@ -41,12 +40,41 @@ let serverFiles: SliDeskFile = {};
 let serverPlugins: PluginsJSON = {};
 let serverPath: string = "";
 
+const getPlugins = async (pluginsDir: string) => {
+  await Promise.all(
+    readdirSync(pluginsDir).map(async (plugin) => {
+      const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
+      const pluginFile = Bun.file(pluginPath);
+      const exists = await pluginFile.exists();
+      if (exists) {
+        const json = await pluginFile.json();
+        if (json.addRoutes || json.addWS) {
+          let obj = { type: "external", ...json };
+          if (json.addRoutes) {
+            const { default: addRoutes } = await import(
+              `${path}/${json.addRoutes}`
+            );
+            obj = { ...obj, addRoutes };
+          }
+          if (json.addWS) {
+            const { default: addWS } = await import(`${path}/${json.addWS}`);
+            obj = { ...obj, addWS };
+          }
+          serverPlugins[plugin] = obj;
+        }
+      }
+    }),
+  );
+};
+
 export default class Server {
-  server: BunServer;
+  #server: BunServer;
+  #options: ServerOptions;
 
   async create(files: SliDeskFile, options: ServerOptions, path: string) {
     serverFiles = files;
     serverPath = path;
+    this.#options = options;
     const slideskEnvFile = Bun.file(`${path}/.env`);
     let env: any = {};
     if (slideskEnvFile.size !== 0) {
@@ -54,34 +82,7 @@ export default class Server {
       env = dotenv.parse(buf);
     }
     const pluginsDir = `${path}/plugins`;
-    if (existsSync(pluginsDir))
-      await Promise.all(
-        readdirSync(pluginsDir).map(async (plugin) => {
-          const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
-          const pluginFile = Bun.file(pluginPath);
-          const exists = await pluginFile.exists();
-          if (exists) {
-            const json = await pluginFile.json();
-            if (json.addRoutes || json.addWS) {
-              let obj = { type: "external", ...json };
-              if (json.addRoutes) {
-                const { default: addRoutes } = await import(
-                  `${path}/${json.addRoutes}`
-                );
-                obj = { ...obj, addRoutes };
-              }
-              if (json.addWS) {
-                const { default: addWS } = await import(
-                  `${path}/${json.addWS}`
-                );
-                obj = { ...obj, addWS };
-              }
-              serverPlugins[plugin] = obj;
-            }
-          }
-        }),
-      );
-    const https = env.HTTPS === "true";
+    if (existsSync(pluginsDir)) await getPlugins(pluginsDir);
     const serverOptions = {
       port: options.port,
       async fetch(req) {
@@ -125,7 +126,7 @@ export default class Server {
         async message(ws, message) {
           const json = JSON.parse(message);
           if (json.plugin && serverPlugins[json.plugin]?.addWS) {
-            this.server.publish(
+            ws.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
@@ -142,47 +143,51 @@ export default class Server {
       },
       tls: {},
     };
-    if (https) {
+    if (env.HTTPS === "true") {
       serverOptions.tls = {
         key: Bun.file(env.KEY),
         cert: Bun.file(env.CERT),
         passphrase: env.PASSPHRASE ? Bun.file(env.PASSPHRASE) : "",
       };
     }
-    this.server = Bun.serve(serverOptions);
-    if (options.notes) {
+    this.#server = Bun.serve(serverOptions);
+    await this.#display(env.HTTPS === "true");
+  }
+
+  async #display(https: boolean) {
+    if (this.#options.notes) {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
+        }://${this.#options.domain}:${this.#options.port}/notes.html\x1b[0m`,
       );
-      if (options.open)
+      if (this.#options.open)
         await open(
-          `http${https ? "s" : ""}://${options.domain}:${
-            options.port
+          `http${https ? "s" : ""}://${this.#options.domain}:${
+            this.#options.port
           }/notes.html`,
-          { app: { name: apps[options.open] } },
+          { app: { name: apps[this.#options.open] } },
         );
     }
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
         https ? "s" : ""
-      }://${options.domain}:${options.port}\x1b[0m`,
+      }://${this.#options.domain}:${this.#options.port}\x1b[0m`,
     );
-    if (options.open && !options.notes)
+    if (this.#options.open && !this.#options.notes)
       await open(
-        `http${https ? "s" : ""}://${options.domain}:${options.port}`,
-        { app: { name: apps[options.open] } },
+        `http${https ? "s" : ""}://${this.#options.domain}:${this.#options.port}`,
+        { app: { name: apps[this.#options.open] } },
       );
     log();
   }
 
   setFiles(files: SliDeskFile) {
     serverFiles = files;
-    this.server.publish("slidesk", JSON.stringify({ action: "reload" }));
+    this.#server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
   send(action) {
-    this.server.publish("slidesk", JSON.stringify({ action }));
+    this.#server.publish("slidesk", JSON.stringify({ action }));
   }
 }
