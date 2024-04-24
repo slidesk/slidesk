@@ -29,6 +29,7 @@ import type {
   PresentOptions,
   SliDeskPlugin,
 } from "../types";
+import { marked } from "marked";
 
 const { error } = console;
 
@@ -109,7 +110,7 @@ class BabelFish {
         },
       };
     }
-    return null;
+    return {};
   }
 
   async #loadEnv() {
@@ -289,22 +290,14 @@ class BabelFish {
   #paragraph(paragraph: string) {
     const par = paragraph.trimStart();
     switch (true) {
-      case par.startsWith("- "):
-        return list(par, 1, "ul");
-      case par.startsWith(". "):
-        return list(par, 1, "ol");
-      case par.startsWith("<"):
-        return par;
       case par.startsWith("//@"):
         return this.#timers(par);
-      case par.startsWith("# "):
-        return `<h1>${par.replace(/^# /, "").trim()}</h1>`;
       case par.startsWith("// "):
         return "";
       default:
         break;
     }
-    if (par.length) return `<p>${par} </p>`;
+    if (par.length) return marked.parse(par);
     return "";
   }
 
