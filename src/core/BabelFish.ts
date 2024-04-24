@@ -250,16 +250,16 @@ class BabelFish {
       .map((paragraph, p) => {
         const par = this.#paragraph(paragraph);
         if (p === 0) {
-          const spl = [...par.replace(/<(\/?)p>/g, "").split(".[")];
+          const spl = [...(par as string).replace(/<(\/?)p>/g, "").split(".[")];
           if (spl.length !== 1) {
-            classes = spl[1].replace("]", "");
+            classes = spl[1].replace("]", "").trim();
           }
           if (spl[0].trim() !== "") {
             slug = slugify(spl[0]);
             return `<h2>${spl[0]}</h2>`;
           }
         }
-        return par.replace(/<p>\.\[[^\]]+\] <\/p>/g, "");
+        return (par as string).replace(/<p>\.\[[^\]]+\]<\/p>/g, "");
       })
       .join("\n\n");
     const slideSlug = this.#cptSlide ? `!slide-${this.#cptSlide}` : "";
