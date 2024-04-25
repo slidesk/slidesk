@@ -39,6 +39,7 @@ interface BunServer {
 let serverFiles: SliDeskFile = {};
 let serverPlugins: PluginsJSON = {};
 let serverPath: string = "";
+let server;
 
 const getPlugins = async (pluginsDir: string) => {
   await Promise.all(
@@ -70,13 +71,9 @@ const getPlugins = async (pluginsDir: string) => {
 };
 
 export default class Server {
-  #server: BunServer;
-  #options: ServerOptions;
-
   async create(files: SliDeskFile, options: ServerOptions, path: string) {
     serverFiles = files;
     serverPath = path;
-    this.#options = options;
     const slideskEnvFile = Bun.file(`${path}/.env`);
     let env: any = {};
     if (slideskEnvFile.size !== 0) {
@@ -85,7 +82,7 @@ export default class Server {
     }
     const pluginsDir = `${path}/plugins`;
     if (existsSync(pluginsDir)) await getPlugins(pluginsDir);
-    const serverOptions = {
+    server = Bun.serve({
       port: options.port,
       async fetch(req) {
         const url = new URL(req.url);
@@ -97,7 +94,7 @@ export default class Server {
               : new Response("WebSocket upgrade error", { status: 400 });
           case "/":
             if (
-              !req.headers.get("host").startsWith("localhost") &&
+              !req.headers.get("host")?.startsWith("localhost") &&
               req.headers.get("host") === `${options.domain}:${options.port}` &&
               !options.interactive
             )
@@ -125,10 +122,10 @@ export default class Server {
         open(ws) {
           ws.subscribe("slidesk");
         },
-        async message(ws, message) {
+        async message(ws, message: string) {
           const json = JSON.parse(message);
           if (json.plugin && serverPlugins[json.plugin]?.addWS) {
-            ws.publish(
+            server.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
@@ -143,53 +140,49 @@ export default class Server {
           ws.unsubscribe("slidesk");
         },
       },
-      tls: {},
-    };
-    if (env.HTTPS === "true") {
-      serverOptions.tls = {
-        key: Bun.file(env.KEY),
-        cert: Bun.file(env.CERT),
-        passphrase: env.PASSPHRASE ? Bun.file(env.PASSPHRASE) : "",
-      };
-    }
-    this.#server = Bun.serve(serverOptions);
-    await this.#display(env.HTTPS === "true");
+      tls: {
+        key: env.KEY ? Bun.file(env.KEY) : undefined,
+        cert: env.CERT ? Bun.file(env.CERT) : undefined,
+        passphrase: env.PASSPHRASE ?? undefined,
+      },
+    });
+    await this.#display(env.HTTPS === "true", options);
   }
 
-  async #display(https: boolean) {
-    if (this.#options.notes) {
+  async #display(https: boolean, options: ServerOptions) {
+    if (options.notes) {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${this.#options.domain}:${this.#options.port}/notes.html\x1b[0m`,
+        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
       );
-      if (this.#options.open)
+      if (options.open)
         await open(
-          `http${https ? "s" : ""}://${this.#options.domain}:${
-            this.#options.port
+          `http${https ? "s" : ""}://${options.domain}:${
+            options.port
           }/notes.html`,
-          { app: { name: apps[this.#options.open] } },
+          { app: { name: apps[options.open] } },
         );
     }
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
         https ? "s" : ""
-      }://${this.#options.domain}:${this.#options.port}\x1b[0m`,
+      }://${options.domain}:${options.port}\x1b[0m`,
     );
-    if (this.#options.open && !this.#options.notes)
+    if (options.open && !options.notes)
       await open(
-        `http${https ? "s" : ""}://${this.#options.domain}:${this.#options.port}`,
-        { app: { name: apps[this.#options.open] } },
+        `http${https ? "s" : ""}://${options.domain}:${options.port}`,
+        { app: { name: apps[options.open] } },
       );
     log();
   }
 
   setFiles(files: SliDeskFile) {
     serverFiles = files;
-    this.#server.publish("slidesk", JSON.stringify({ action: "reload" }));
+    server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
   send(action) {
-    this.#server.publish("slidesk", JSON.stringify({ action }));
+    server.publish("slidesk", JSON.stringify({ action }));
   }
 }
