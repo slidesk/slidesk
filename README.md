@@ -6,7 +6,7 @@
 
 <p align="center">A complete documentation is available here: https://slidesk.github.io/slidesk-doc/</p>
 
-Write your talk/presentation in a simplified language (SliDeskFormat), generate it and visualize it in Web.
+Write your talk/presentation in Markdown, generate it and visualize it in Web.
 
 SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
 
