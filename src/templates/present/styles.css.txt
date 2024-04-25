@@ -84,11 +84,11 @@ p {
 }
 
 a,
-b {
+strong {
   color: var(--sd-primary-color);
 }
 
-b {
+strong {
   font-weight: bold;
 }
 
