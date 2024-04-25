@@ -65,7 +65,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
   });
 };
 
-let server: Server;
+let server: Server = new Server();
 
 const flow = async (
   talkdir: string,
@@ -79,7 +79,6 @@ const flow = async (
   if (options.save) {
     save(options, talkdir, files);
   } else if (init) {
-    server = new Server();
     await server.create(files, options, talkdir);
   } else {
     server.setFiles(files);
@@ -108,7 +107,7 @@ const present = (talk: string, options: PresentOptions) => {
           flow(talkdir, options);
         }
       });
-    getAction(true);
+    getAction(true, server);
     process.on("SIGINT", () => {
       process.exit(0);
     });
