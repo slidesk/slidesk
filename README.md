@@ -153,28 +153,6 @@ will convert the `main.sdf` into a HTML file and serve it, it will open the defa
 
 A livereload is activated per default.
 
-## sdf Syntax
-
-```
-# Main title
-
-## Title of a new slide
-
-!include(another_file)
-
-__italic__
-
-**bold**
-
-!image(path or url, placeholder, width (in vw), height (in vh), styles)
-
-- list
--- sublist
--- sub
-- end of a list
-
-```
-
 See the example directory to understand how it works or run
 
 ```
