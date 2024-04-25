@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,9 @@
       <div id="sd-sv-timer">Click to (re)start</div>
       <div id="sd-sv-subtimer"></div>
       <aside id="sd-sv-notes"></aside>
-      <div id="sd-open-presentation"><button onclick="window.slidesk.createButtons();">Detect</button></div>
+      <div id="sd-open-presentation">
+        <button onclick="window.slidesk.createButtons();">Detect</button>
+      </div>
     </div>
     #SCRIPTS#
   </body>

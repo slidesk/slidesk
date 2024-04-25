@@ -1,10 +1,12 @@
 export default function image(data) {
   let newData = data;
   [...newData.matchAll(/!image\((.*)\)/g)].forEach((match) => {
-    const [src, alt, width, height, optionals] = [...match[1].split(",")];
+    const [src, alt, width, height, optionals, caption] = [
+      ...match[1].split(","),
+    ];
     newData = newData.replace(
       match[0],
-      `<div class="sd-img"${
+      `<figure class="sd-img"${
         optionals && optionals.trim() !== "" ? ` style="${optionals}"` : ""
       } >
         <img src="${src.trim()}" loading="lazy" alt="${alt?.trim()}"${
@@ -12,7 +14,8 @@ export default function image(data) {
         }${
           height && height.trim() !== "" ? ` height="${height.trim()}"` : ""
         } />
-      </div>`,
+        <figcaption ${caption?.trim() === "true" ? "" : "style='display: none;'"}>${alt?.trim()}</figcaption>
+      </figure>`,
     );
   });
   return newData;

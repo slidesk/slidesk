@@ -5,7 +5,7 @@ import { mkdirSync } from "fs";
 
 const { log } = console;
 
-const create = async (talk) => {
+const create = async (talk: string) => {
   log(`Creation of your talk: ${talk}`);
   let dirName = slugify(talk);
   if (dirName === "create") {
@@ -14,7 +14,9 @@ const create = async (talk) => {
   const responseTitle = await question("What is the title of talk?");
   const responseCustom =
     (
-      await question("Do you want to customize the presentation? [yN]")
+      (await question(
+        "Do you want to customize the presentation? [yN]",
+      )) as string
     ).toLowerCase() === "y";
   mkdirSync(dirName, { recursive: true });
   const file = Bun.file(`./${dirName}/main.sdf`);
@@ -35,12 +37,15 @@ const create = async (talk) => {
   --sd-heading2-line-height: 1;
   --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
+  --sd-caption-font-size: 1vw;
+  --sd-caption-line-height: 1;
 
   --sd-background-color: #242424;
   --sd-heading-color: rgba(255, 255, 255, 0.97);
   --sd-text-color: rgba(255, 255, 255, 0.87);
   --sd-primary-color: rgb(37, 186, 146);
-
+  --sd-caption-color: rgba(0, 0, 0, 0.7);
+  --sd-caption-bgcolor: rgba(255, 255, 255, 0.7);
 
   /* SpeakerView */
   --sd-sv-timer-size: 80px;

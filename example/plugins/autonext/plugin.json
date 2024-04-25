@@ -1,0 +1,7 @@
+{
+  "onSlideChange": "window.slidesk.autonext();",
+  "onSpeakerSlideChange": "window.slidesk.autonextNotes();",
+  "addScripts": ["./plugins/autonext/autonext.js"],
+  "addSpeakerScripts": ["./plugins/autonext/autonext.js"],
+  "addSpeakerStyles": ["./plugins/autonext/autonext.css"]
+}

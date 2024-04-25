@@ -17,11 +17,15 @@
   --sd-heading2-line-height: 1;
   --sd-text-size: 2.2vw;
   --sd-text-line-height: 1.2;
+  --sd-caption-font-size: 1vw;
+  --sd-caption-line-height: 1;
 
   --sd-background-color: #242424;
   --sd-heading-color: rgba(255, 255, 255, 0.97);
   --sd-text-color: rgba(255, 255, 255, 0.87);
   --sd-primary-color: rgb(37, 186, 146);
+  --sd-caption-color: rgba(0, 0, 0, 0.7);
+  --sd-caption-bgcolor: rgba(255, 255, 255, 0.7);
 }
 
 *,
@@ -80,15 +84,15 @@ p {
 }
 
 a,
-.b {
+strong {
   color: var(--sd-primary-color);
 }
 
-.b {
+strong {
   font-weight: bold;
 }
 
-.i {
+em {
   font-style: italic;
 }
 
@@ -96,14 +100,6 @@ a,
 pre {
   font-family: monospace;
   white-space: pre;
-}
-
-.s {
-  text-decoration-line: line-through;
-}
-
-.u {
-  text-decoration-line: underline;
 }
 
 .sd-slide {
@@ -164,6 +160,19 @@ h3 {
 .sd-img {
   display: inline-block;
   max-width: 90vw;
+  position: relative;
+}
+
+.sd-img figcaption {
+  font-size: var(--sd-caption-font-size);
+  line-height: var(--sd-caption-line-height);
+  text-align: center;
+  color: var(--sd-caption-color);
+  background-color: var(--sd-caption-bgcolor);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 @media print {
@@ -181,7 +190,7 @@ h3 {
     height: 100%;
   }
 
-  body {
+  .sd-app {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     height: 100%;
@@ -192,6 +201,6 @@ h3 {
     position: relative;
     height: 100%;
     page-break-after: always;
-    transform: none !important;
+    transform: translateX(0);
   }
 }

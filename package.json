@@ -2,10 +2,10 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.5.1",
-  "main": "bin/index.js",
+  "version": "2.6.0",
+  "main": "bin/index.ts",
   "bin": {
-    "slidesk": "./bin/index.js"
+    "slidesk": "./bin/index.ts"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,11 @@
     "commander": "^12.0.0",
     "dotenv": "^16.3.1",
     "html-minifier-terser": "^7.2.0",
+    "marked": "^12.0.2",
     "open": "^10.0.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^9.0.0",
@@ -23,14 +27,16 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "@types/bun": "latest",
+    "@types/html-minifier-terser": "^7.0.2"
   },
   "scripts": {
-    "make": "bun build src/index.js --outdir bin --minify --target bun --sourcemap=none",
-    "make:exe": "bun build src/index.js --outfile exe/slidesk --compile --minify --sourcemap=none",
+    "make": "bun build src/index.ts --outdir bin --minify --target bun --sourcemap=none",
+    "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify --sourcemap=none",
     "lint": "eslint src",
-    "example": "bun src/index.js example",
-    "gendocs": "bun src/index.js example --save docs",
-    "tools": "bun tools/pluginGeneration.js"
+    "example": "bun src/index.ts example",
+    "gendocs": "bun src/index.ts example --save docs",
+    "tools": "bun tools/pluginGeneration.ts"
   }
 }

@@ -1,36 +1,24 @@
 ## Syntaxic words
 
-SliDesk allows to change the font style
+SliDesk use markdown syntax.
 
 ## 
 
-A word/phrase wrapped by "``_````_``" will display in italic.
+A word/phrase wrapped by "*" will display in italic.
 
-An __italic__ word can be in a phrase
+An *italic* word can be in a phrase
 
 ## 
 
-Wrapped with a "``*````*``" will display in bold
+Wrapped with a ** will display in bold
 
 **bold**
 
 ## 
 
-Wrapped with a double "`" will display as code
+Wrapped with a "`" will display as code
 
-``console.log("test")``
-
-## 
-
-Wrapped with a "``˜````˜``" will display as underlined
-
-˜˜underline˜˜
-
-## 
-
-Wrapped with a "``=````=``" will display as line through
-
-==line through==
+`console.log("test")`
 
 ## 
 
