@@ -1,0 +1,11 @@
+changelog:
+  categories:
+    - title: ✨ Features
+      labels:
+        - 'feature'
+    - title: 🐛 Bugs fix
+        - 'bug'
+    - title: 📝 Documentation
+        - 'documentation'
+    - title: 💥 Breaking changes
+        - 'Breaking changes'
