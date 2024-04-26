@@ -254,7 +254,7 @@ class BabelFish {
           if (spl.length !== 1) {
             classes = spl[1].replace("]", "").trim();
           }
-          if (spl[0].trim() !== "") {
+          if (spl[0].trim() !== "" && !spl[0].trim().startsWith("<")) {
             slug = slugify(spl[0]);
             return `<h2>${spl[0]}</h2>`;
           }
