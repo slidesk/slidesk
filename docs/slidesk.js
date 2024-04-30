@@ -3,21 +3,12 @@
       currentSlide: 0,
       slides: [],
       animationTimer: 300,
-      onSlideChange: function() {window.slidesk.progressActive();;;window.slidesk.prepareSteps();;;window.slidesk.changeSource();;console.log("new slide")},
+      onSlideChange: function() {window.slidesk.progressActive();;;window.slidesk.prepareSteps();;;console.log("new slide");window.slidesk.autonext();},
       env: {"PLUGINS":"progress, keyboard, steps","MYVAR":"Variable env","WIDTH":"1920"},
       cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
       lastAction: ""
     };
     
-    
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") {
-          window.slidesk.previous();
-        } else if (e.key === "ArrowRight") {
-          window.slidesk.next();
-        }
-      });
-      
     window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
@@ -58,7 +49,7 @@ window.slidesk.changeSlide = () => {
       action: "current",
       payload: window.slidesk.slides[
         window.slidesk.currentSlide
-      ].outerHTML.replace(/data-source="(^["])"/gi, ""),
+      ].outerHTML.replace(/data-source="(^")"/gi, ""),
     });
     window.slidesk.sendMessage({
       action: "future",
@@ -66,7 +57,7 @@ window.slidesk.changeSlide = () => {
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
           ? window.slidesk.slides[
               window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^["])"/gi, "")
+            ].outerHTML.replace(/data-source="(^")"/gi, "")
           : "",
     });
   }
@@ -116,10 +107,8 @@ window.slidesk.goto = (num) => {
 window.slidesk.fullscreen = () => {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen();
   }
 };
 
@@ -205,3 +194,13 @@ window.onload = () => {
     }, 250);
   });
 };
+
+document.addEventListener("keydown", (e) => {
+  if (window.location.hostname === "localhost") {
+    if (e.key === "ArrowLeft") {
+      window.slidesk.previous();
+    } else if (e.key === "ArrowRight") {
+      window.slidesk.next();
+    }
+  }
+});
