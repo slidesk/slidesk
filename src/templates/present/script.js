@@ -38,7 +38,7 @@ window.slidesk.changeSlide = () => {
       action: "current",
       payload: window.slidesk.slides[
         window.slidesk.currentSlide
-      ].outerHTML.replace(/data-source="(^["])"/gi, ""),
+      ].outerHTML.replace(/data-source="(^")"/gi, ""),
     });
     window.slidesk.sendMessage({
       action: "future",
@@ -46,7 +46,7 @@ window.slidesk.changeSlide = () => {
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
           ? window.slidesk.slides[
               window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^["])"/gi, "")
+            ].outerHTML.replace(/data-source="(^")"/gi, "")
           : "",
     });
   }

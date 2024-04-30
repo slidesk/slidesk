@@ -18,12 +18,12 @@ export const question = (query: string) =>
     );
   });
 
-export const getAction = async (present = false, server: Server) => {
+export const getAction = async (server: Server, present: boolean = false) => {
   const answer = await question("");
   const i = (answer as string).trim().toLowerCase();
   removeCurrentLine();
   if (i === "q") process.exit();
   else if (i === "p" && present) server.send("previous");
   else if (present) server.send("next");
-  getAction(present, server);
+  getAction(server, present);
 };

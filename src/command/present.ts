@@ -107,7 +107,7 @@ const present = (talk: string, options: PresentOptions) => {
           flow(talkdir, options);
         }
       });
-    getAction(true, server);
+    getAction(server, true);
     process.on("SIGINT", () => {
       process.exit(0);
     });
