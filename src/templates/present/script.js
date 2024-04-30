@@ -183,3 +183,13 @@ window.onload = () => {
     }, 250);
   });
 };
+
+document.addEventListener("keydown", (e) => {
+  if (window.location.origin === "localhost") {
+    if (e.key === "ArrowLeft") {
+      window.slidesk.previous();
+    } else if (e.key === "ArrowRight") {
+      window.slidesk.next();
+    }
+  }
+});
