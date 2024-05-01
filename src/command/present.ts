@@ -94,6 +94,7 @@ const present = (talk: string, options: PresentOptions) => {
         "\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
         "\n",
         `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
+        `\nWrite \x1b[1ma number\x1b[0m and Press \x1b[1mEnter\x1b[0m to go to a specific slide.`,
         `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
         `\nPress \x1b[1mQ\x1b[0m to quit the program.`,
         "\n",
