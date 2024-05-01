@@ -22,6 +22,7 @@ Wrapped with a "`" will display as code
 
 ## 
 
-Wrapped with a double "$" will allow you to internationalize your presentation
+Wrapped with a double DOLLAR will allow you to internationalize your presentation
 
 $$myVar$$ is in the language we want
+x
