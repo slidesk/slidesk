@@ -52,24 +52,9 @@ and you can specify width, height, styles, and if a caption is displayed  `!`ima
 - list
     - test
 
-
-## Notes for speakers
-
-With conventional comments `/``*` end `*``/`, you can write your speaker note for each slide
-
-/*
-My notes will be displayed on speaker view only
-
-It can be multiline now
-*/
-
-/*
-Multiple comments available
-*/
-
 ## Components
 
-With a `componenents/myComponent.mjs` file, you can create custom component like `!``test(my test)` giving this:
+With a `componenents/myComponent.mjs` file, you can create custom component like `!test(my test)` giving this:
 
 !test(my test)
 
@@ -79,7 +64,7 @@ This slide is controled by a plugin `autonext`. It will go next in 4s
 
 ## Env Variables
 
-Wrapped with a "`+``+`" will replace the variable by its value
+Wrapped with a double `+` will replace the variable by its value
 
 ++MYVAR++
 

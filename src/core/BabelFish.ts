@@ -2,7 +2,7 @@
 import dotenv from "dotenv";
 import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync, readFileSync } from "node:fs";
-import faviconSVG from "../templates/slidesk.svg.txt";
+import faviconSVG from "../templates/slidesk.svg" with { type: "text" };
 import {
   view as presentationView,
   script as presentationScript,
@@ -443,19 +443,6 @@ class BabelFish {
         ? `window.slidesk.io = new WebSocket(\`ws\${
             window.location.protocol.includes('https') ? "s" : ""
           }://\${window.location.host}/ws\`);`
-        : ""
-    }
-    ${
-      !this.#hasNotesView
-        ? `
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") {
-          window.slidesk.previous();
-        } else if (e.key === "ArrowRight") {
-          window.slidesk.next();
-        }
-      });
-      `
         : ""
     }
     ${presentationScript}`;

@@ -38,7 +38,7 @@ window.slidesk.changeSlide = () => {
       action: "current",
       payload: window.slidesk.slides[
         window.slidesk.currentSlide
-      ].outerHTML.replace(/data-source="(^["])"/gi, ""),
+      ].outerHTML.replace(/data-source="(^")"/gi, ""),
     });
     window.slidesk.sendMessage({
       action: "future",
@@ -46,7 +46,7 @@ window.slidesk.changeSlide = () => {
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
           ? window.slidesk.slides[
               window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^["])"/gi, "")
+            ].outerHTML.replace(/data-source="(^")"/gi, "")
           : "",
     });
   }
@@ -82,13 +82,14 @@ window.slidesk.previous = () => {
 };
 
 window.slidesk.goto = (num) => {
-  if (num >= 0 && num < window.slidesk.slides.length) {
+  let n = num.data ?? num;
+  if (n >= 0 && n < window.slidesk.slides.length) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides.forEach((s, i) => {
-      if (i < num) s.classList.add("sd-previous");
+      if (i < n) s.classList.add("sd-previous");
       else s.classList.remove("sd-previous");
     });
-    window.slidesk.currentSlide = num;
+    window.slidesk.currentSlide = n;
     window.slidesk.changeSlide();
   }
 };
@@ -183,3 +184,13 @@ window.onload = () => {
     }, 250);
   });
 };
+
+document.addEventListener("keydown", (e) => {
+  if (window.location.hostname === "localhost") {
+    if (e.key === "ArrowLeft") {
+      window.slidesk.previous();
+    } else if (e.key === "ArrowRight") {
+      window.slidesk.next();
+    }
+  }
+});
