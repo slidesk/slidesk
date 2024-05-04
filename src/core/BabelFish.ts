@@ -39,8 +39,6 @@ class BabelFish {
   #mainFile: string;
   #sdfPath: string = "";
   #customCSS: string = "";
-  #timerSlide: string = "";
-  #timerCheckpoint: string = "";
   #plugins: SliDeskPlugin[] = [];
   #components: string[] = [];
   #cptSlide: number = 0;
@@ -217,7 +215,7 @@ class BabelFish {
     // comments
     fusion = comments(fusion);
     // slice & treatment
-    fusion = this.#sliceSlides(fusion);
+    fusion = await this.#sliceSlides(fusion);
     // custom components
     await Promise.all(
       this.#components.map(async (c) => {
@@ -232,36 +230,50 @@ class BabelFish {
     return fusion;
   }
 
-  #sliceSlides(presentation: string) {
-    return [...presentation.split("\n## ")]
-      .map((slide) => this.#treatSlide(slide))
-      .join("\n");
+  async #sliceSlides(presentation: string) {
+    const promises: Promise<string>[] = [];
+    [...presentation.split("\n## ")].forEach((slide) => {
+      promises.push(new Promise((resolve) => resolve(this.#treatSlide(slide))));
+    });
+    return (await Promise.all(promises)).join("\n");
   }
 
-  #treatSlide(slide: string) {
+  async #treatSlide(slide: string) {
     if (slide.trim() === "") return "";
     let classes = "";
     let slug = "";
-    this.#timerSlide = "";
-    this.#timerCheckpoint = "";
-    const content = slide
-      .replace(/\\r/g, "")
-      .split("\n\n")
-      .map((paragraph, p) => {
-        const par = this.#paragraph(paragraph);
-        if (p === 0) {
-          const spl = [...(par as string).replace(/<(\/?)p>/g, "").split(".[")];
-          if (spl.length !== 1) {
-            classes = spl[1].replace("]", "").trim();
-          }
-          if (spl[0].trim() !== "" && !spl[0].trim().startsWith("<")) {
-            slug = slugify(spl[0]);
-            return `<h2>${spl[0]}</h2>`;
-          }
-        }
-        return (par as string).replace(/<p>\.\[[^\]]+\]<\/p>/g, "");
-      })
-      .join("\n\n");
+    let timerSlide = "";
+    let timerCheckpoint = "";
+    let content = (
+      await marked.parse(
+        `## ${slide
+          .replace(/\\r/g, "")
+          .split("\n\n")
+          .map((p) => {
+            const par = p.trimStart();
+            if (par.startsWith("//@")) {
+              const timer = par.replace("//@", "").replaceAll(" ", "");
+              if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
+              if (timer.startsWith("<"))
+                timerCheckpoint = timer.replace("<", "");
+              return "";
+            }
+            return par;
+          })
+          .join("\n\n")}`.replace("## #", "#"),
+      )
+    ).toString();
+    const slideTitle = content.match("<h2>(.*)</h2>");
+    if (slideTitle?.length) {
+      const spl = slideTitle[1].toString().split(".[");
+      if (spl.length !== 1) {
+        classes = spl[1].replace("]", "").trim();
+      }
+      if (spl[0].trim() !== "") {
+        slug = slugify(spl[0]);
+      }
+      content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
+    }
     const slideSlug = this.#cptSlide ? `!slide-${this.#cptSlide}` : "";
     const datas = {
       num: this.#cptSlide,
@@ -273,9 +285,8 @@ class BabelFish {
     this.#cptSlide += 1;
     if (this.#hasPluginSource) datas.source = toBinary(slide);
     if (this.#options.timers) {
-      if (this.#timerSlide !== "") datas["timer-slide"] = this.#timerSlide;
-      if (this.#timerCheckpoint !== "")
-        datas["timer-checkpoint"] = this.#timerCheckpoint;
+      if (timerSlide !== "") datas["timer-slide"] = timerSlide;
+      if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
     }
     const dataset: string[] = [];
     Object.entries(datas).forEach(([key, val]) => {
@@ -284,28 +295,6 @@ class BabelFish {
     return `<section class="sd-slide ${classes}" ${dataset.join(
       " ",
     )}>${content}</section>`;
-  }
-
-  #paragraph(paragraph: string) {
-    const par = paragraph.trimStart();
-    switch (true) {
-      case par.startsWith("//@"):
-        return this.#timers(par);
-      case par.startsWith("// "):
-        return "";
-      default:
-        break;
-    }
-    if (par.length) return marked.parse(par);
-    return "";
-  }
-
-  #timers(data: string) {
-    // timers
-    const timer = data.replace("//@", "").replaceAll(" ", "");
-    if (timer.startsWith("[]")) this.#timerSlide = timer.replace("[]", "");
-    if (timer.startsWith("<")) this.#timerCheckpoint = timer.replace("<", "");
-    return "";
   }
 
   #prepareTPL() {
