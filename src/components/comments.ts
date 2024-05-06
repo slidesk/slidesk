@@ -1,6 +1,6 @@
 export default function comments(data) {
   let newData = data;
-  [...newData.matchAll(/\/\*([^*]|(\*+[^*/]))*\*\//gm)].forEach((match) => {
+  [...newData.matchAll(/\n\/\*([^*]|(\*+[^*/]))*\n\*\//gm)].forEach((match) => {
     newData = newData.replace(
       match[0],
       `<aside class="sd-notes">${match[0]

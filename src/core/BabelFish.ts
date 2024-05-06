@@ -248,7 +248,7 @@ class BabelFish {
       await marked.parse(
         `## ${slide
           .replace(/\\r/g, "")
-          .split("\n\n")
+          .split("\n")
           .map((p) => {
             const par = p.trimStart();
             if (par.startsWith("//@")) {
@@ -257,10 +257,12 @@ class BabelFish {
               if (timer.startsWith("<"))
                 timerCheckpoint = timer.replace("<", "");
               return "";
+            } else if (par.startsWith("//")) {
+              return "";
             }
             return par;
           })
-          .join("\n\n")}`.replace("## #", "#"),
+          .join("\n")}`.replace("## #", "#"),
       )
     ).toString();
     const slideTitle = content.match("<h2>(.*)</h2>");
