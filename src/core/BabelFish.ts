@@ -32,7 +32,16 @@ import showdown from "showdown";
 
 const { error } = console;
 
-const sd = new showdown.Converter();
+const sd = new showdown.Converter({
+  simplifiedAutoLink: true,
+  excludeTrailingPunctuationFromURLs: true,
+  strikethrough: true,
+  tables: true,
+  ghCodeBlocks: true,
+  tasklists: true,
+  emoji: true,
+  underline: true,
+});
 
 class BabelFish {
   #options: PresentOptions;
@@ -252,17 +261,16 @@ class BabelFish {
           .replace(/\\r/g, "")
           .split("\n")
           .map((p) => {
-            const par = p.trimStart();
-            if (par.startsWith("//@")) {
-              const timer = par.replace("//@", "").replaceAll(" ", "");
+            if (p.trimStart().startsWith("//@")) {
+              const timer = p.replace("//@", "").replaceAll(" ", "");
               if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
               if (timer.startsWith("<"))
                 timerCheckpoint = timer.replace("<", "");
               return "";
-            } else if (par.startsWith("//")) {
+            } else if (p.trimStart().startsWith("//")) {
               return "";
             }
-            return par;
+            return p;
           })
           .join("\n")}`.replace("## #", "#"),
       )
