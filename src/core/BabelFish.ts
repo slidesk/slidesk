@@ -189,7 +189,7 @@ class BabelFish {
 
   async includes(file: string): Promise<string> {
     const data = await Bun.file(file).text();
-    return replaceAsync(data, /\n!include\(([^()]+)\)/g, async (_, p1) =>
+    return replaceAsync(`${data}\n`, /\n!include\(([^()]+)\)/g, async (_, p1) =>
       this.includes(`${file.substring(0, file.lastIndexOf("/"))}/${p1}`),
     );
   }
