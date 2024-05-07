@@ -146,6 +146,8 @@ class BabelFish {
             type: "internal",
             ...pluginsJSON[pl],
           });
+        } else {
+          error(`Plugin ${pl} not found`);
         }
       });
   }
