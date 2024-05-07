@@ -276,7 +276,7 @@ class BabelFish {
       }
       content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
     }
-    const slideSlug = this.#cptSlide ? `!slide-${this.#cptSlide}` : "";
+    const slideSlug = `!slide-${this.#cptSlide}`;
     const datas = {
       num: this.#cptSlide,
       slug: slug || slideSlug,
