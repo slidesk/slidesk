@@ -247,7 +247,7 @@ class BabelFish {
   async #sliceSlides(presentation: string) {
     const promises: Promise<string>[] = [];
     [...presentation.split("\n## ")].forEach((slide) => {
-      promises.push(new Promise((resolve) => resolve(this.#treatSlide(slide))));
+      promises.push(Promise.resolve(this.#treatSlide(slide)));
     });
     return (await Promise.all(promises)).join("\n");
   }
