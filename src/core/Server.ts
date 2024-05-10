@@ -110,7 +110,11 @@ export default class Server {
             await Promise.all(
               [...Object.values(serverPlugins)].map(async (plugin) => {
                 if ((plugin as SliDeskPlugin).addRoutes) {
-                  res = await (plugin as SliDeskPlugin).addRoutes(req, env);
+                  res = await (plugin as SliDeskPlugin).addRoutes(
+                    req,
+                    env,
+                    serverPath,
+                  );
                 }
               }),
             );

@@ -41,6 +41,7 @@ const sd = new showdown.Converter({
   tasklists: true,
   emoji: true,
   underline: true,
+  noHeaderId: true,
 });
 
 class BabelFish {
@@ -246,7 +247,7 @@ class BabelFish {
   async #sliceSlides(presentation: string) {
     const promises: Promise<string>[] = [];
     [...presentation.split("\n## ")].forEach((slide) => {
-      promises.push(new Promise((resolve) => resolve(this.#treatSlide(slide))));
+      promises.push(Promise.resolve(this.#treatSlide(slide)));
     });
     return (await Promise.all(promises)).join("\n");
   }
@@ -276,20 +277,19 @@ class BabelFish {
           })
           .join("\n")}`.replace("## #", "#"),
       )
-    ).toString();
-    const slideTitle = content.match('<h2 id="(.*)">(.*)</h2>');
+    )
+      .toString()
+      .replace("<h2> </h2>", "");
+    const slideTitle = content.match("<h2>(.*)</h2>");
     if (slideTitle?.length) {
-      const spl = slideTitle[2].toString().split(".[");
+      const spl = slideTitle[1].toString().split(".[");
       if (spl.length !== 1) {
         classes = spl[1].replace("]", "").trim();
       }
       if (spl[0].trim() !== "") {
         slug = slugify(spl[0]);
       }
-      content = content.replace(
-        slideTitle[0],
-        `<h2 id="${slideTitle[1]}">${spl[0]}</h2>`,
-      );
+      content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
     }
     const slideSlug = `!slide-${this.#cptSlide}`;
     const datas = {
