@@ -186,7 +186,7 @@ window.onload = () => {
 };
 
 document.addEventListener("keydown", (e) => {
-  if (window.location.hostname === "localhost") {
+  if (window.location.hostname === "localhost" || window.slidesk.save) {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();
     } else if (e.key === "ArrowRight") {

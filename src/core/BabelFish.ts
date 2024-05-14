@@ -449,7 +449,7 @@ class BabelFish {
         ? `window.slidesk.io = new WebSocket(\`ws\${
             window.location.protocol.includes('https') ? "s" : ""
           }://\${window.location.host}/ws\`);`
-        : ""
+        : "window.slidesk.save = true;"
     }
     ${presentationScript}`;
   }
