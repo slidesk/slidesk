@@ -4,6 +4,8 @@ import packagejson from "../package.json";
 import present from "./command/present";
 import create from "./command/create";
 import checkVersion from "./utils/checkLastVersion";
+import component from "./command/component";
+import plugin from "./command/plugin";
 
 const { log } = console;
 
@@ -20,6 +22,20 @@ program
 
 // talk's creation command
 program.command("create").argument("<talk>").action(create);
+
+// components
+program
+  .command("component")
+  .argument("<action>")
+  .argument("[name]")
+  .action(component);
+
+// plugins
+program
+  .command("plugin")
+  .argument("<action>")
+  .argument("[name]")
+  .action(plugin);
 
 // talk's presentation command
 program
