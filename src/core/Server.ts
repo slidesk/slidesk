@@ -28,14 +28,6 @@ const getFile = (req: Request, path: string) => {
   return new Response(`${req.url} not found`, { status: 404 });
 };
 
-interface BunServer {
-  publish(
-    topic: string,
-    data: string | ArrayBufferView | ArrayBuffer,
-    compress?: boolean,
-  ): number;
-}
-
 let serverFiles: SliDeskFile = {};
 let serverPlugins: PluginsJSON = {};
 let serverPath: string = "";
