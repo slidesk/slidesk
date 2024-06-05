@@ -20,14 +20,19 @@ const pluginInstall = async (
   const promises: Promise<void>[] = [];
   for (const file of files) {
     promises.push(
-      new Promise(async (resolve) => {
-        const f = await fetch(
+      new Promise((resolve) => {
+        fetch(
           `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/${name}/${file}`,
-        );
-        await Bun.write(`plugins/${name}/${file}`, await f.text(), {
-          createPath: true,
-        });
-        resolve();
+        )
+          .then((response) => response.text())
+          .then((text) =>
+            Bun.write(`plugins/${name}/${file}`, text, {
+              createPath: true,
+            }),
+          )
+          .then(() => {
+            resolve();
+          });
       }),
     );
   }
