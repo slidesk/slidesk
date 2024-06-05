@@ -3,9 +3,10 @@ name: Quality
 on: push
 
 jobs:
-  quality:
+  sonarqube:
     name: sonarqube
     runs-on: ubuntu-latest
+    environment: quality
     steps:
       - uses: oven-sh/setup-bun@v1
       - uses: actions/checkout@v4
@@ -15,10 +16,9 @@ jobs:
         run: bun test --coverage
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: -Dsonar.projectKey=SliDesk
             -Dsonar.sources=src/
             -Dsonar.tests=test
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
