@@ -13,7 +13,7 @@ const file = `${process.cwd()}/example/main.sdf`;
 
 test("not found", async () => {
   const b = new BabelFish("", options);
-  expect(await b.convert()).toBeNull();
+  expect(await b.convert()).toEqual({});
 });
 
 test("minimal", async () => {
