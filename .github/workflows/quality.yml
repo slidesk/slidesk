@@ -19,6 +19,6 @@ jobs:
         with:
           args: -Dsonar.projectKey=SliDesk
             -Dsonar.sources=src/
-            -Dsonar.tests=test
+            -Dsonar.tests=tests
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
