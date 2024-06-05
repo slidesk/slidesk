@@ -38,8 +38,8 @@ const componentList = async () => {
   const list = await fetch(
     "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/components/list.json",
   );
-  const json = await list.json();
-  return `Availables components:\n${json.map((c: string) => `  ${c}`).join("\n")}`;
+  const json = (await list.json()).map((c: string) => `  ${c}`);
+  return `Availables components:\n${json.join("\n")}`;
 };
 
 const component = (action: string, name: string = "") => {

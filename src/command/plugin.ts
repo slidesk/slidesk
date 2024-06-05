@@ -55,8 +55,8 @@ const pluginList = async () => {
   const list = await fetch(
     "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/list.json",
   );
-  const json = await list.json();
-  return `Availables plugins:\n${json.map((c: string) => `  ${c}`).join("\n")}`;
+  const json = (await list.json()).map((p: string) => `  ${p}`);
+  return `Availables plugins:\n${json.join("\n")}`;
 };
 
 const plugin = (action: string, name: string = "") => {
