@@ -1,0 +1,24 @@
+name: Quality
+
+on: push
+
+jobs:
+  sonarqube:
+    name: sonarqube
+    runs-on: ubuntu-latest
+    environment: quality
+    steps:
+      - uses: oven-sh/setup-bun@v1
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: bun install
+      - name: Test and coverage
+        run: bun test --coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        with:
+          args: -Dsonar.projectKey=SliDesk
+            -Dsonar.sources=src/
+            -Dsonar.tests=tests
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}

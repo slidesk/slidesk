@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
 import open, { apps } from "open";
@@ -7,7 +6,10 @@ import type {
   ServerOptions,
   SliDeskPlugin,
   PluginsJSON,
+  SlideskPluginAddRoute,
+  SlideskPluginAddWS,
 } from "../types";
+import type { Server } from "bun";
 
 const { log } = console;
 
@@ -28,18 +30,10 @@ const getFile = (req: Request, path: string) => {
   return new Response(`${req.url} not found`, { status: 404 });
 };
 
-interface BunServer {
-  publish(
-    topic: string,
-    data: string | ArrayBufferView | ArrayBuffer,
-    compress?: boolean,
-  ): number;
-}
-
 let serverFiles: SliDeskFile = {};
-let serverPlugins: PluginsJSON = {};
-let serverPath: string = "";
-let server;
+const serverPlugins: PluginsJSON = {};
+let serverPath = "";
+let server: Server;
 
 const getPlugins = async (pluginsDir: string) => {
   await Promise.all(
@@ -70,12 +64,12 @@ const getPlugins = async (pluginsDir: string) => {
   );
 };
 
-export default class Server {
+export default class SlideskServer {
   async create(files: SliDeskFile, options: ServerOptions, path: string) {
     serverFiles = files;
     serverPath = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env: any = {};
+    let env: { [key: string]: string } = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
@@ -86,7 +80,7 @@ export default class Server {
       port: options.port,
       async fetch(req) {
         const url = new URL(req.url);
-        let res = null;
+        let res: Response | null = null;
         switch (url.pathname) {
           case "/ws":
             return this.upgrade(req)
@@ -110,11 +104,9 @@ export default class Server {
             await Promise.all(
               [...Object.values(serverPlugins)].map(async (plugin) => {
                 if ((plugin as SliDeskPlugin).addRoutes) {
-                  res = await (plugin as SliDeskPlugin).addRoutes(
-                    req,
-                    env,
-                    serverPath,
-                  );
+                  res = await (
+                    (plugin as SliDeskPlugin).addRoutes as SlideskPluginAddRoute
+                  )(req, env, serverPath);
                 }
               }),
             );
@@ -133,7 +125,9 @@ export default class Server {
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await serverPlugins[json.plugin].addWS(message),
+                response: await (
+                  serverPlugins[json.plugin].addWS as SlideskPluginAddWS
+                )(message),
               }),
             );
           } else {
@@ -186,7 +180,7 @@ export default class Server {
     server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
-  send(action) {
-    server.publish("slidesk", JSON.stringify({ action }));
+  send(action: string, data?: object | number | string) {
+    server.publish("slidesk", JSON.stringify({ action, data }));
   }
 }

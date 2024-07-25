@@ -2,7 +2,7 @@
 import { test, expect } from "bun:test";
 import image from "../../src/components/image";
 
-const data = `!image(myimage.png, alt text, 13, 12, float: left;)`;
+const data = "!image(myimage.png, alt text, 13, 12, float: left;)";
 
 test("image", () => {
   expect(image(data)).toEqual(

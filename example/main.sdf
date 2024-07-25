@@ -75,6 +75,10 @@ C++
 https://sylvain.gougouzian/en.html
 <a href="https://gouz.dev">gouz</a>
 
+## test include dir
+
+!include(include)
+
 ## Final
 
 /*

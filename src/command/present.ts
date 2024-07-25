@@ -1,17 +1,17 @@
-import { watch, existsSync, rmSync, readdirSync } from "fs";
-import process from "process";
-import path from "path";
+import { watch, existsSync, rmSync, readdirSync } from "node:fs";
+import process from "node:process";
+import path from "node:path";
 import BabelFish from "../core/BabelFish";
-import Server from "../core/Server";
 import { getAction } from "../utils/interactCLI";
 import type { PresentOptions } from "../types";
+import SlideskServer from "../core/Server";
 
 const { log } = console;
 
 const readAllFiles = (dir: string): string[] => {
   const result: string[] = [];
   const files = readdirSync(dir, { withFileTypes: true });
-  files.forEach((file) => {
+  files.forEach((file, _) => {
     if (
       !file.name
         .toLowerCase()
@@ -41,7 +41,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
   // clean
   if (options.save && existsSync(options.save))
     rmSync(options.save, { recursive: true, force: true });
-  readAllFiles(talkdir).forEach((file) => {
+  readAllFiles(talkdir).forEach((file, _) => {
     const nfile = file.replace(talkdir, "");
     // eslint-disable-next-line no-undef
     promises.push(Bun.write(`${options.save}/${nfile}`, Bun.file(file)));
@@ -53,7 +53,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
       );
   });
   const excludes = ["/notes.html", "/slidesk-notes.css", "/slidesk-notes.js"];
-  Object.entries(files).forEach(([key, value]) => {
+  Object.entries(files).forEach(([key, value], _) => {
     if (!excludes.includes(key)) {
       // eslint-disable-next-line no-undef
       promises.push(Bun.write(`${options.save}${key}`, value.content));
@@ -65,7 +65,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
   });
 };
 
-let server: Server = new Server();
+const server: SlideskServer = new SlideskServer();
 
 const flow = async (
   talkdir: string,
@@ -93,10 +93,10 @@ const present = (talk: string, options: PresentOptions) => {
       log(
         "\x1b[4mTake the control of your presentation direct from here.\x1b[24m",
         "\n",
-        `\nPress \x1b[1mEnter\x1b[0m to go to the next slide.`,
-        `\nWrite \x1b[1ma number\x1b[0m and Press \x1b[1mEnter\x1b[0m to go to a specific slide.`,
-        `\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.`,
-        `\nPress \x1b[1mQ\x1b[0m to quit the program.`,
+        "\nPress \x1b[1mEnter\x1b[0m to go to the next slide.",
+        "\nWrite \x1b[1ma number\x1b[0m and Press \x1b[1mEnter\x1b[0m to go to a specific slide.",
+        "\nPress \x1b[1mP + Enter\x1b[0m to go to the previous slide.",
+        "\nPress \x1b[1mQ\x1b[0m to quit the program.",
         "\n",
       );
     if (options.watch)

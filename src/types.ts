@@ -24,8 +24,27 @@ export type ServerOptions = {
 export type PluginsJSON = {
   [key: string]: SliDeskPlugin;
 };
+export type SlideskPluginAddRoute = (
+  req: Request,
+  env: object,
+  path: string,
+) => Promise<Response | null>;
 
-export type SliDeskPlugin = { [key: string]: any };
+export type SlideskPluginAddWS = (message: string) => object;
+
+export type SliDeskPlugin = {
+  type?: string;
+  addRoutes: string | SlideskPluginAddRoute;
+  addWS: string | SlideskPluginAddWS;
+  addHTML: string;
+  addHTMLFromFiles: string[];
+  addScripts: string[];
+  addStyles: string[];
+  addSpeakerScripts: string[];
+  addSpeakerStyles: string[];
+  onSlideChange: string;
+  onSpeakerViewSlideChange: string;
+};
 
 export type SliDeskFile = {
   [key: string]: {

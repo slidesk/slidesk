@@ -1,5 +1,5 @@
-import readline from "readline";
-import Server from "../core/Server";
+import readline from "node:readline";
+import type Server from "../core/Server";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -18,7 +18,7 @@ export const question = (query: string) =>
     );
   });
 
-export const getAction = async (server: Server, present: boolean = false) => {
+export const getAction = async (server: Server, present = false) => {
   const answer = await question("");
   const i = (answer as string).trim().toLowerCase();
   removeCurrentLine();

@@ -1,9 +1,6 @@
 import { unlinkSync } from "node:fs";
 
-const componentInstall = async (
-  name: string = "",
-  update: boolean = false,
-): Promise<string> => {
+const componentInstall = async (name = "", update = false): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the component";
   }
@@ -21,7 +18,7 @@ const componentInstall = async (
   return `Component ${name} ${update ? "updated" : "installed"}`;
 };
 
-const componentRemove = async (name: string = "") => {
+const componentRemove = async (name = "") => {
   if (name === "") {
     return "Please provide a name for the component";
   }
@@ -38,11 +35,11 @@ const componentList = async () => {
   const list = await fetch(
     "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/components/list.json",
   );
-  const json = await list.json();
-  return `Availables components:\n${json.map((c: string) => `  ${c}`).join("\n")}`;
+  const json = (await list.json()).map((c: string) => `  ${c}`);
+  return `Availables components:\n${json.join("\n")}`;
 };
 
-const component = (action: string, name: string = "") => {
+const component = (action: string, name = "") => {
   if (action === "install")
     componentInstall(name).then((res) => {
       console.log(res);

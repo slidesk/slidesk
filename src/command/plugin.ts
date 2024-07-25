@@ -1,9 +1,6 @@
 import { rmSync } from "node:fs";
 
-const pluginInstall = async (
-  name: string = "",
-  update: boolean = false,
-): Promise<string> => {
+const pluginInstall = async (name = "", update = false): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the plugin";
   }
@@ -20,14 +17,19 @@ const pluginInstall = async (
   const promises: Promise<void>[] = [];
   for (const file of files) {
     promises.push(
-      new Promise(async (resolve) => {
-        const f = await fetch(
+      new Promise((resolve) => {
+        fetch(
           `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/${name}/${file}`,
-        );
-        await Bun.write(`plugins/${name}/${file}`, await f.text(), {
-          createPath: true,
-        });
-        resolve();
+        )
+          .then((response) => response.text())
+          .then((text) =>
+            Bun.write(`plugins/${name}/${file}`, text, {
+              createPath: true,
+            }),
+          )
+          .then(() => {
+            resolve();
+          });
       }),
     );
   }
@@ -35,7 +37,7 @@ const pluginInstall = async (
   return `Plugin ${name} ${update ? "updated" : "installed"}`;
 };
 
-const pluginRemove = async (name: string = "") => {
+const pluginRemove = async (name = "") => {
   if (name === "") {
     return "Please provide a name for the plugin";
   }
@@ -55,11 +57,11 @@ const pluginList = async () => {
   const list = await fetch(
     "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/list.json",
   );
-  const json = await list.json();
-  return `Availables plugins:\n${json.map((c: string) => `  ${c}`).join("\n")}`;
+  const json = (await list.json()).map((p: string) => `  ${p}`);
+  return `Availables plugins:\n${json.join("\n")}`;
 };
 
-const plugin = (action: string, name: string = "") => {
+const plugin = (action: string, name = "") => {
   if (action === "install")
     pluginInstall(name).then((res) => {
       console.log(res);

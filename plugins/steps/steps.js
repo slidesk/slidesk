@@ -11,7 +11,9 @@ window.slidesk.prepareSteps = () => {
     window.slidesk.$lis =
       window.slidesk.slides[window.slidesk.currentSlide].querySelectorAll("li");
     window.slidesk.maxSteps = window.slidesk.$lis.length;
-    [...window.slidesk.$lis].forEach((li) => li.classList.remove("step-shown"));
+    [...window.slidesk.$lis].forEach((li, _) =>
+      li.classList.remove("step-shown"),
+    );
   }
 };
 

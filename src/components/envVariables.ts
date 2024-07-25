@@ -1,4 +1,4 @@
-const envVariables = (data: string, env: any) => {
+const envVariables = (data: string, env: object) => {
   const splitted = [...data.split("++")];
   if (splitted.length % 2 && splitted.length > 1)
     return splitted
