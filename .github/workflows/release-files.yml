@@ -110,10 +110,6 @@ jobs:
     name: Push on Docker Hub
     strategy:
       matrix:
-        #os: [ubuntu-latest, macos-latest]
-        #include:
-        #  - os: ubuntu-latest
-        #  - os: macos-latest
         os: [ubuntu-latest]
         include:
           - os: ubuntu-latest

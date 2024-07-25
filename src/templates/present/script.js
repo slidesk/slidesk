@@ -53,7 +53,7 @@ window.slidesk.changeSlide = () => {
 
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll(".sd-img img")
-    .forEach((i) => {
+    .forEach((i, _) => {
       i.setAttribute("style", "");
       i.setAttribute("src", i.getAttribute("src"));
     });
@@ -82,7 +82,7 @@ window.slidesk.previous = () => {
 };
 
 window.slidesk.goto = (num) => {
-  let n = num.data ?? num;
+  const n = num.data ?? num;
   if (n >= 0 && n < window.slidesk.slides.length) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides.forEach((s, i) => {
@@ -106,7 +106,7 @@ window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
     const timerCheckpoints = {};
-    window.slidesk.slides.forEach((slide) => {
+    window.slidesk.slides.forEach((slide, _) => {
       timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(
         "data-timer-checkpoint",
       );
@@ -121,7 +121,7 @@ window.onload = () => {
   }
   const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
-  window.slidesk.slides.forEach((slide, i) => {
+  window.slidesk.slides.forEach((slide, _) => {
     slugs.push(slide.getAttribute("data-slug"));
   });
   window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
@@ -142,13 +142,13 @@ window.onload = () => {
     "sd-current",
     "no-sd-animation",
   );
-  document.querySelectorAll(".sd-img img").forEach((img) =>
+  document.querySelectorAll(".sd-img img").forEach((img, _) =>
     img.addEventListener("load", () => {
       let ratio = 1;
       if (Number(window.slidesk.env.WIDTH))
         ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
-      const newW = ratio * img.width + "px";
-      const newH = ratio * img.height + "px";
+      const newW = `${ratio * img.width}px`;
+      const newH = `${ratio * img.height}px`;
       img.parentElement.style.width = newW;
       img.parentElement.style.height = newH;
       img.style.width = newW;
@@ -156,7 +156,7 @@ window.onload = () => {
     }),
   );
   window.slidesk.changeSlide();
-  document.querySelectorAll(".sd-slide").forEach((slide) => {
+  document.querySelectorAll(".sd-slide").forEach((slide, _) => {
     slide.addEventListener("touchstart", (e) => {
       e.preventDefault();
       window.slidesk.touchStart = e.touches[0].pageX;
@@ -165,7 +165,7 @@ window.onload = () => {
     slide.addEventListener("touchmove", (e) => {
       window.slidesk.touchMove = e.touches[0].pageX;
     });
-    slide.addEventListener("touchend", (e) => {
+    slide.addEventListener("touchend", (_) => {
       if (
         Math.abs(window.slidesk.touchMove - window.slidesk.touchStart) > 100
       ) {

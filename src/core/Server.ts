@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import dotenv from "dotenv";
 import { readdirSync, existsSync } from "node:fs";
 import open, { apps } from "open";
@@ -8,6 +7,7 @@ import type {
   SliDeskPlugin,
   PluginsJSON,
 } from "../types";
+import type { Server } from "bun";
 
 const { log } = console;
 
@@ -29,9 +29,9 @@ const getFile = (req: Request, path: string) => {
 };
 
 let serverFiles: SliDeskFile = {};
-let serverPlugins: PluginsJSON = {};
-let serverPath: string = "";
-let server;
+const serverPlugins: PluginsJSON = {};
+let serverPath = "";
+let server: Server;
 
 const getPlugins = async (pluginsDir: string) => {
   await Promise.all(
@@ -62,12 +62,12 @@ const getPlugins = async (pluginsDir: string) => {
   );
 };
 
-export default class Server {
+export default class SlideskServer {
   async create(files: SliDeskFile, options: ServerOptions, path: string) {
     serverFiles = files;
     serverPath = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env: any = {};
+    let env: object = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);

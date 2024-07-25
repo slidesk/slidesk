@@ -1,7 +1,7 @@
 const replaceAsync = async (
   str: string,
   regex: RegExp,
-  asyncFn: (_: any, ...args: any[]) => Promise<string>,
+  asyncFn: (_: string, ...args: object[]) => Promise<string>,
 ): Promise<string> => {
   const promises: Promise<string>[] = [];
   str.replace(regex, (match, ...args) => {

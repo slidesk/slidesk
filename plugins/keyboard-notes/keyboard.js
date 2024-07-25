@@ -5,7 +5,7 @@ const fetchMapping = async () => {
     const response = await fetch("./keyboard.json");
     const json = await response.json();
     mapping = json;
-  } catch (erreur) {
+  } catch (_) {
     mapping = {
       f: "fullscreen",
     };

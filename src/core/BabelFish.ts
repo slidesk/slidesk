@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import dotenv from "dotenv";
 import { minify } from "html-minifier-terser";
 import { readdirSync, existsSync, readFileSync } from "node:fs";
@@ -24,7 +23,6 @@ import toBinary from "../utils/toBinary";
 import type {
   Includes,
   SliDeskFile,
-  PluginsJSON,
   PresentOptions,
   SliDeskPlugin,
 } from "../types";
@@ -47,18 +45,18 @@ const sd = new showdown.Converter({
 class BabelFish {
   #options: PresentOptions;
   #hasNotesView: boolean;
-  #hasPluginSource: boolean = false;
+  #hasPluginSource = false;
   #mainFile: string;
-  #sdfPath: string = "";
-  #customCSS: string = "";
+  #sdfPath = "";
+  #customCSS = "";
   #plugins: SliDeskPlugin[] = [];
   #components: string[] = [];
-  #cptSlide: number = 0;
+  #cptSlide = 0;
   #customIncludes: Includes = {
     css: [],
     js: [],
   };
-  #env: any = {};
+  #env: { [key: string]: object | string } = {};
 
   constructor(mainFile: string, options: PresentOptions) {
     this.#options = options;
@@ -139,10 +137,10 @@ class BabelFish {
 
   #internalPlugins() {
     if (this.#env.PLUGINS)
-      [...this.#env.PLUGINS.split(",")].forEach((p) => {
+      [...(this.#env.PLUGINS as string).split(",")].forEach((p, _) => {
         const pl = p.trim();
         if (pl === "source") this.#hasPluginSource = true;
-        if ((pluginsJSON as PluginsJSON)[pl]) {
+        if (pluginsJSON[pl]) {
           this.#plugins.push({
             type: "internal",
             ...pluginsJSON[pl],
@@ -162,11 +160,11 @@ class BabelFish {
           const exists = await pluginFile.exists();
           if (exists) {
             const json = await pluginFile.json();
-            ["addHTMLFromFiles"].forEach((t) => {
+            ["addHTMLFromFiles"].forEach((t, _) => {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
-                files.forEach((s: string) => {
+                files.forEach((s: string, _) => {
                   json[t][s] = readFileSync(`${this.#sdfPath}/${s}`, {
                     encoding: "utf8",
                   });
@@ -208,7 +206,7 @@ class BabelFish {
 
   #config(data: string) {
     const lines = [...data.split("\n")].filter((l) => l.length);
-    lines.forEach((line) => {
+    lines.forEach((line, _) => {
       if (line.startsWith("custom_css:"))
         this.#customCSS = `<link rel="stylesheet" href="${line
           .replace("custom_css:", "")
@@ -246,7 +244,7 @@ class BabelFish {
 
   async #sliceSlides(presentation: string) {
     const promises: Promise<string>[] = [];
-    [...presentation.split("\n## ")].forEach((slide) => {
+    [...presentation.split("\n## ")].forEach((slide, _) => {
       promises.push(Promise.resolve(this.#treatSlide(slide)));
     });
     return (await Promise.all(promises)).join("\n");
@@ -270,7 +268,8 @@ class BabelFish {
               if (timer.startsWith("<"))
                 timerCheckpoint = timer.replace("<", "");
               return "";
-            } else if (p.trimStart().startsWith("//")) {
+            }
+            if (p.trimStart().startsWith("//")) {
               return "";
             }
             return p;
@@ -296,8 +295,8 @@ class BabelFish {
       num: this.#cptSlide,
       slug: slug || slideSlug,
       source: "",
-      ["timer-slide"]: "",
-      ["timer-checkpoint"]: "",
+      "timer-slide": "",
+      "timer-checkpoint": "",
     };
     this.#cptSlide += 1;
     if (this.#hasPluginSource) datas.source = toBinary(slide);
@@ -306,7 +305,7 @@ class BabelFish {
       if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
     }
     const dataset: string[] = [];
-    Object.entries(datas).forEach(([key, val]) => {
+    Object.entries(datas).forEach(([key, val], _) => {
       if (val !== "") dataset.push(`data-${key}="${val}"`);
     });
     return `<section class="sd-slide ${classes}" ${dataset.join(
@@ -324,25 +323,25 @@ class BabelFish {
       ...this.#customIncludes.js,
       '<script src="slidesk.js"></script>',
     ];
-    this.#plugins.forEach((p) => {
+    this.#plugins.forEach((p, _) => {
       if (p.addStyles) {
         if (p.type === "internal") {
-          Object.keys(p.addStyles).forEach((k) =>
+          Object.keys(p.addStyles).forEach((k, _) =>
             css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         } else {
-          p.addStyles.forEach((k: string) =>
+          p.addStyles.forEach((k: string, _) =>
             css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         }
       }
       if (p.addScripts) {
         if (p.type === "internal") {
-          Object.keys(p.addScripts).forEach((k) =>
+          Object.keys(p.addScripts).forEach((k, _) =>
             js.push(`<script src="${k}"></script>`),
           );
         } else {
-          p.addScripts.forEach((k: string) =>
+          p.addScripts.forEach((k: string, _) =>
             js.push(`<script src="${k}"></script>`),
           );
         }
@@ -362,7 +361,7 @@ class BabelFish {
     );
     let content = "";
     if (langFiles.length) {
-      let translations: any = null;
+      let translations: object | null = null;
       await Promise.all(
         langFiles.map(async (lang) => {
           const langSlug = lang.replace(".lang.json", "");
@@ -395,7 +394,7 @@ class BabelFish {
 
   async #polish(presentation: string, template: string) {
     let tpl = template;
-    [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title) => {
+    [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
       tpl = tpl.replace("#TITLE#", title[1]);
     });
     tpl = tpl.replace("#TITLE#", "SliDesk");
@@ -476,17 +475,17 @@ class BabelFish {
 
   #getPluginCSS() {
     const css: SliDeskFile = {};
-    this.#plugins.forEach((p) => {
+    this.#plugins.forEach((p, _) => {
       if (p.type === "internal") {
         if (p.addStyles)
-          Object.keys(p.addStyles).forEach((k) => {
+          Object.keys(p.addStyles).forEach((k, _) => {
             css[k.replace("./", "/")] = {
               content: p.addStyles[k],
               headers: { "Content-type": "text/css" },
             };
           });
         if (this.#hasNotesView && p.addSpeakerStyles)
-          Object.keys(p.addSpeakerStyles).forEach((k) => {
+          Object.keys(p.addSpeakerStyles).forEach((k, _) => {
             css[k.replace("./", "/")] = {
               content: p.addSpeakerStyles[k],
               headers: { "Content-type": "text/css" },
@@ -499,17 +498,17 @@ class BabelFish {
 
   #getPluginsJS() {
     const js: SliDeskFile = {};
-    this.#plugins.forEach((p) => {
+    this.#plugins.forEach((p, _) => {
       if (p.type === "internal") {
         if (p.addScripts)
-          Object.keys(p.addScripts).forEach((k: string) => {
+          Object.keys(p.addScripts).forEach((k: string, _) => {
             js[k.replace("./", "/")] = {
               content: p.addScripts[k],
               headers: { "Content-type": "application/javascript" },
             };
           });
         if (this.#hasNotesView && p.addSpeakerScripts)
-          Object.keys(p.addSpeakerScripts).forEach((k) => {
+          Object.keys(p.addSpeakerScripts).forEach((k, _) => {
             js[k.replace("./", "/")] = {
               content: p.addSpeakerScripts[k],
               headers: { "Content-type": "application/javascript" },
@@ -528,25 +527,25 @@ class BabelFish {
       ...this.#customIncludes.css,
     ];
     const js = ['<script src="slidesk-notes.js"></script>'];
-    this.#plugins.forEach((p) => {
+    this.#plugins.forEach((p, _) => {
       if (p.addSpeakerStyles) {
         if (p.type === "internal") {
-          Object.keys(p.addSpeakerStyles).forEach((k) =>
+          Object.keys(p.addSpeakerStyles).forEach((k, _) =>
             css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         } else {
-          p.addSpeakerStyles.forEach((k: string) =>
+          p.addSpeakerStyles.forEach((k: string, _) =>
             css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         }
       }
       if (p.addSpeakerScripts) {
         if (p.type === "internal") {
-          Object.keys(p.addSpeakerScripts).forEach((k) =>
+          Object.keys(p.addSpeakerScripts).forEach((k, _) =>
             js.push(`<script src="${k}"></script>`),
           );
         } else {
-          p.addSpeakerScripts.forEach((k: string) =>
+          p.addSpeakerScripts.forEach((k: string, _) =>
             js.push(`<script src="${k}"></script>`),
           );
         }

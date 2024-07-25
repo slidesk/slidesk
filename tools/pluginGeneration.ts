@@ -1,13 +1,8 @@
-/* eslint-disable no-undef */
-import { existsSync, readdirSync, readFileSync } from "fs";
-
-type json = {
-  [key: string]: any;
-};
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 const parsePluginDir = async () => {
-  const pluginsJSON: json = {};
-  const pluginsDir = `./plugins`;
+  const pluginsJSON: object = {};
+  const pluginsDir = "./plugins";
   if (existsSync(pluginsDir)) {
     await Promise.all(
       readdirSync(pluginsDir).map(async (plugin: string) => {
@@ -32,7 +27,7 @@ const parsePluginDir = async () => {
             if (json[t]) {
               pluginsJSON[plugin][t] = {};
               await Promise.all(
-                json[t].map((s) => {
+                json[t].map((s: string) => {
                   pluginsJSON[plugin][t][s] = readFileSync(s, {
                     encoding: "utf8",
                   });

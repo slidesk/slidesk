@@ -1,5 +1,5 @@
 const toHHMMSS = (secs) => {
-  const secnum = parseInt(Math.abs(secs), 10);
+  const secnum = Number.parseInt(Math.abs(secs), 10);
   return [Math.floor(secnum / 3600), Math.floor(secnum / 60) % 60, secnum % 60]
     .map((v) => v.toString().padStart(2, "0"))
     .filter((v, i) => v !== "00" || i > 0)
@@ -10,12 +10,12 @@ const fromHHMMSS = (time) => {
   const hhmmss = time.split(":");
   if (hhmmss.length === 3) {
     return (
-      3600 * parseInt(hhmmss[0], 10) +
-      60 * parseInt(hhmmss[1], 10) +
-      parseInt(hhmmss[2], 10)
+      3600 * Number.parseInt(hhmmss[0], 10) +
+      60 * Number.parseInt(hhmmss[1], 10) +
+      Number.parseInt(hhmmss[2], 10)
     );
   }
-  return 60 * parseInt(hhmmss[0], 10) + parseInt(hhmmss[1], 10);
+  return 60 * Number.parseInt(hhmmss[0], 10) + Number.parseInt(hhmmss[1], 10);
 };
 
 const timerCheckpoints = [];
@@ -91,7 +91,7 @@ window.slidesk.createButtons = async () => {
   const $screenWrapper = document.getElementById("sd-open-presentation");
   $screenWrapper.innerHTML = "";
   const { screens } = await window.getScreenDetails();
-  [...screens].forEach((screen) => {
+  [...screens].forEach((screen, _) => {
     const button = document.createElement("button");
     button.innerHTML = `${svgOpen}<span>Open presentation on <b>${screen.label}</b></span>`;
     button.addEventListener("click", () => viewOpen(screen));
@@ -114,7 +114,9 @@ window.slidesk.notes_down = () => {
     .scroll({ top: window.slidesk.scrollPosition });
 };
 
-window.slidesk.start_timer = () => (startTime = Date.now());
+window.slidesk.start_timer = () => {
+  startTime = Date.now();
+};
 
 setInterval(() => {
   if (startTime) {

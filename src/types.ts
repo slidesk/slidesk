@@ -25,7 +25,19 @@ export type PluginsJSON = {
   [key: string]: SliDeskPlugin;
 };
 
-export type SliDeskPlugin = { [key: string]: any };
+export type SliDeskPlugin = {
+  type?: string;
+  addRoutes: string;
+  addWS: string;
+  addHTML: string;
+  addHTMLFromFiles: string[];
+  addScripts: string[];
+  addStyles: string[];
+  addSpeakerScripts: string[];
+  addSpeakerStyles: string[];
+  onSlideChange: string;
+  onSpeakerViewSlideChange: string;
+};
 
 export type SliDeskFile = {
   [key: string]: {

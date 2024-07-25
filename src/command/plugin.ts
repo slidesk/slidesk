@@ -1,9 +1,6 @@
 import { rmSync } from "node:fs";
 
-const pluginInstall = async (
-  name: string = "",
-  update: boolean = false,
-): Promise<string> => {
+const pluginInstall = async (name = "", update = false): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the plugin";
   }
@@ -40,7 +37,7 @@ const pluginInstall = async (
   return `Plugin ${name} ${update ? "updated" : "installed"}`;
 };
 
-const pluginRemove = async (name: string = "") => {
+const pluginRemove = async (name = "") => {
   if (name === "") {
     return "Please provide a name for the plugin";
   }
@@ -64,7 +61,7 @@ const pluginList = async () => {
   return `Availables plugins:\n${json.join("\n")}`;
 };
 
-const plugin = (action: string, name: string = "") => {
+const plugin = (action: string, name = "") => {
   if (action === "install")
     pluginInstall(name).then((res) => {
       console.log(res);

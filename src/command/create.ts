@@ -1,7 +1,6 @@
-/* eslint-disable no-undef */
 import slugify from "../utils/slugify";
 import { question } from "../utils/interactCLI";
-import { mkdirSync } from "fs";
+import { mkdirSync } from "node:fs";
 
 const { log } = console;
 
@@ -22,7 +21,7 @@ const create = async (talk: string) => {
   const file = Bun.file(`./${dirName}/main.sdf`);
   const writer = file.writer();
   if (responseCustom) {
-    writer.write(`/::\ncustom_css: custom.css\n::/\n\n`);
+    writer.write("/::\ncustom_css: custom.css\n::/\n\n");
   }
   writer.write(`# ${responseTitle} \n\n## My first Slide`);
   writer.end();

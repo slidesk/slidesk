@@ -1,15 +1,23 @@
+window.slidesk = {
+  currentSlide: 0,
+  slides: [],
+  animationTimer: 300,
+  onSlideChange: () => {
+    window.slidesk.progressActive();
+    window.slidesk.prepareSteps();
+    console.log("new slide");
+    window.slidesk.autonext();
+  },
+  env: {
+    PLUGINS: "progress, keyboard, steps",
+    MYVAR: "Variable env",
+    WIDTH: "1920",
+  },
+  cwd: "/Users/sylvaingougouzian/Dev/Perso/slidesk/",
+  lastAction: "",
+};
 
-    window.slidesk = {
-      currentSlide: 0,
-      slides: [],
-      animationTimer: 300,
-      onSlideChange: function() {window.slidesk.progressActive();;;window.slidesk.prepareSteps();;;console.log("new slide");window.slidesk.autonext();},
-      env: {"PLUGINS":"progress, keyboard, steps","MYVAR":"Variable env","WIDTH":"1920"},
-      cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
-      lastAction: ""
-    };
-    
-    window.slidesk.sendMessage = (payload) => {
+window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
 
@@ -35,14 +43,14 @@ window.slidesk.cleanOldSlide = (id) => {
 
 window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
-    "sd-previous",
+    "sd-previous"
   );
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-    "sd-current",
+    "sd-current"
   );
   window.location.hash =
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-slug",
+      "data-slug"
     );
   if (window.slidesk.io) {
     window.slidesk.sendMessage({
@@ -64,7 +72,7 @@ window.slidesk.changeSlide = () => {
 
   window.slidesk.slides[window.slidesk.currentSlide]
     .querySelectorAll(".sd-img img")
-    .forEach((i) => {
+    .forEach((i, _) => {
       i.setAttribute("style", "");
       i.setAttribute("src", i.getAttribute("src"));
     });
@@ -76,7 +84,7 @@ window.slidesk.next = () => {
     window.slidesk.lastAction = "next";
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-      "sd-previous",
+      "sd-previous"
     );
     window.slidesk.currentSlide += 1;
     window.slidesk.changeSlide();
@@ -118,7 +126,7 @@ window.onload = () => {
     const timerCheckpoints = {};
     window.slidesk.slides.forEach((slide) => {
       timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(
-        "data-timer-checkpoint",
+        "data-timer-checkpoint"
       );
     });
     window.slidesk.sendMessage({
@@ -150,7 +158,7 @@ window.onload = () => {
   }
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "sd-current",
-    "no-sd-animation",
+    "no-sd-animation"
   );
   document.querySelectorAll(".sd-img img").forEach((img) =>
     img.addEventListener("load", () => {
@@ -163,7 +171,7 @@ window.onload = () => {
       img.parentElement.style.height = newH;
       img.style.width = newW;
       img.style.height = newH;
-    }),
+    })
   );
   window.slidesk.changeSlide();
   document.querySelectorAll(".sd-slide").forEach((slide) => {

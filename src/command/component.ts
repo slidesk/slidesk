@@ -1,9 +1,6 @@
 import { unlinkSync } from "node:fs";
 
-const componentInstall = async (
-  name: string = "",
-  update: boolean = false,
-): Promise<string> => {
+const componentInstall = async (name = "", update = false): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the component";
   }
@@ -21,7 +18,7 @@ const componentInstall = async (
   return `Component ${name} ${update ? "updated" : "installed"}`;
 };
 
-const componentRemove = async (name: string = "") => {
+const componentRemove = async (name = "") => {
   if (name === "") {
     return "Please provide a name for the component";
   }
@@ -42,7 +39,7 @@ const componentList = async () => {
   return `Availables components:\n${json.join("\n")}`;
 };
 
-const component = (action: string, name: string = "") => {
+const component = (action: string, name = "") => {
   if (action === "install")
     componentInstall(name).then((res) => {
       console.log(res);
