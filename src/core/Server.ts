@@ -6,6 +6,8 @@ import type {
   ServerOptions,
   SliDeskPlugin,
   PluginsJSON,
+  SlideskPluginAddRoute,
+  SlideskPluginAddWS,
 } from "../types";
 import type { Server } from "bun";
 
@@ -14,10 +16,10 @@ const { log } = console;
 const getFile = (req: Request, path: string) => {
   const fileurl = req.url.replace(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
-    "",
+    ""
   );
   const file = Bun.file(
-    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
+    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`
   );
   if (file.size !== 0)
     return new Response(file, {
@@ -58,7 +60,7 @@ const getPlugins = async (pluginsDir: string) => {
           serverPlugins[plugin] = obj;
         }
       }
-    }),
+    })
   );
 };
 
@@ -67,7 +69,7 @@ export default class SlideskServer {
     serverFiles = files;
     serverPath = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env: object = {};
+    let env: { [key: string]: string } = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
@@ -78,7 +80,7 @@ export default class SlideskServer {
       port: options.port,
       async fetch(req) {
         const url = new URL(req.url);
-        let res = null;
+        let res: Response | null = null;
         switch (url.pathname) {
           case "/ws":
             return this.upgrade(req)
@@ -102,13 +104,11 @@ export default class SlideskServer {
             await Promise.all(
               [...Object.values(serverPlugins)].map(async (plugin) => {
                 if ((plugin as SliDeskPlugin).addRoutes) {
-                  res = await (plugin as SliDeskPlugin).addRoutes(
-                    req,
-                    env,
-                    serverPath,
-                  );
+                  res = await (
+                    (plugin as SliDeskPlugin).addRoutes as SlideskPluginAddRoute
+                  )(req, env, serverPath);
                 }
-              }),
+              })
             );
             if (res !== null) return res;
             return getFile(req, serverPath);
@@ -125,8 +125,10 @@ export default class SlideskServer {
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await serverPlugins[json.plugin].addWS(message),
-              }),
+                response: await (
+                  serverPlugins[json.plugin].addWS as SlideskPluginAddWS
+                )(message),
+              })
             );
           } else {
             ws.publish("slidesk", message);
@@ -150,25 +152,25 @@ export default class SlideskServer {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
+        }://${options.domain}:${options.port}/notes.html\x1b[0m`
       );
       if (options.open)
         await open(
           `http${https ? "s" : ""}://${options.domain}:${
             options.port
           }/notes.html`,
-          { app: { name: apps[options.open] } },
+          { app: { name: apps[options.open] } }
         );
     }
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
         https ? "s" : ""
-      }://${options.domain}:${options.port}\x1b[0m`,
+      }://${options.domain}:${options.port}\x1b[0m`
     );
     if (options.open && !options.notes)
       await open(
         `http${https ? "s" : ""}://${options.domain}:${options.port}`,
-        { app: { name: apps[options.open] } },
+        { app: { name: apps[options.open] } }
       );
     log();
   }
@@ -178,7 +180,7 @@ export default class SlideskServer {
     server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
-  send(action) {
-    server.publish("slidesk", JSON.stringify({ action }));
+  send(action: string, data?: object | number | string) {
+    server.publish("slidesk", JSON.stringify({ action, data }));
   }
 }
