@@ -16,10 +16,10 @@ const { log } = console;
 const getFile = (req: Request, path: string) => {
   const fileurl = req.url.replace(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
-    ""
+    "",
   );
   const file = Bun.file(
-    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`
+    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
   if (file.size !== 0)
     return new Response(file, {
@@ -60,7 +60,7 @@ const getPlugins = async (pluginsDir: string) => {
           serverPlugins[plugin] = obj;
         }
       }
-    })
+    }),
   );
 };
 
@@ -108,7 +108,7 @@ export default class SlideskServer {
                     (plugin as SliDeskPlugin).addRoutes as SlideskPluginAddRoute
                   )(req, env, serverPath);
                 }
-              })
+              }),
             );
             if (res !== null) return res;
             return getFile(req, serverPath);
@@ -128,7 +128,7 @@ export default class SlideskServer {
                 response: await (
                   serverPlugins[json.plugin].addWS as SlideskPluginAddWS
                 )(message),
-              })
+              }),
             );
           } else {
             ws.publish("slidesk", message);
@@ -152,25 +152,25 @@ export default class SlideskServer {
       log(
         `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${options.domain}:${options.port}/notes.html\x1b[0m`
+        }://${options.domain}:${options.port}/notes.html\x1b[0m`,
       );
       if (options.open)
         await open(
           `http${https ? "s" : ""}://${options.domain}:${
             options.port
           }/notes.html`,
-          { app: { name: apps[options.open] } }
+          { app: { name: apps[options.open] } },
         );
     }
     log(
       `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
         https ? "s" : ""
-      }://${options.domain}:${options.port}\x1b[0m`
+      }://${options.domain}:${options.port}\x1b[0m`,
     );
     if (options.open && !options.notes)
       await open(
         `http${https ? "s" : ""}://${options.domain}:${options.port}`,
-        { app: { name: apps[options.open] } }
+        { app: { name: apps[options.open] } },
       );
     log();
   }

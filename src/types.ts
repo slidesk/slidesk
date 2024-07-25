@@ -27,7 +27,7 @@ export type PluginsJSON = {
 export type SlideskPluginAddRoute = (
   req: Request,
   env: object,
-  path: string
+  path: string,
 ) => Promise<Response | null>;
 
 export type SlideskPluginAddWS = (message: string) => object;
