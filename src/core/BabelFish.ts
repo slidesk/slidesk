@@ -57,6 +57,11 @@ class BabelFish {
     js: [],
   };
   #env: { [key: string]: object | string } = {};
+  #favicon: { name: string; content: string; type: string } = {
+    name: "/favicon.svg",
+    content: faviconSVG,
+    type: "image/svg+xml",
+  };
 
   constructor(mainFile: string, options: PresentOptions) {
     this.#options = options;
@@ -69,14 +74,32 @@ class BabelFish {
       this.#mainFile = mainFile;
       this.#sdfPath = `${this.#mainFile.substring(
         0,
-        this.#mainFile.lastIndexOf("/")
+        this.#mainFile.lastIndexOf("/"),
       )}`;
+    }
+  }
+
+  async #loadFavicon() {
+    const ftypes = [
+      { name: "/favicon.svg", type: "image/svg+xml" },
+      { name: "/favicon.ico", type: "image/x-icon" },
+      { name: "/favicon.png", type: "image/png" },
+    ];
+    for await (const f of ftypes) {
+      if (Bun.file(`${this.#sdfPath}${f.name}`).size > 0) {
+        this.#favicon = {
+          name: f.name,
+          content: await Bun.file(`${this.#sdfPath}${f.name}`).text(),
+          type: f.type,
+        };
+      }
     }
   }
 
   async preload() {
     await this.#loadEnv();
     await this.#loadPlugins();
+    await this.#loadFavicon();
     this.#loadComponents();
   }
 
@@ -87,7 +110,7 @@ class BabelFish {
       return {
         ...(await this.#generateHTML(
           await this.getPresentation(sdf),
-          this.#prepareTPL()
+          this.#prepareTPL(),
         )),
         "/slidesk.css": {
           content: this.#getCSS(),
@@ -105,9 +128,9 @@ class BabelFish {
           content: this.#getNotesJS(),
           headers: { "Content-type": "application/javascript" },
         },
-        "/favicon.svg": {
-          content: faviconSVG,
-          headers: { "Content-Type": "image/svg+xml" },
+        [this.#favicon.name]: {
+          content: this.#favicon.content,
+          headers: { "Content-Type": this.#favicon.type },
         },
         ...this.#getPluginCSS(),
         ...this.#getPluginsJS(),
@@ -122,7 +145,7 @@ class BabelFish {
 
   async #loadEnv() {
     const slideskEnvFile = Bun.file(
-      `${this.#sdfPath}/${this.#options.conf}.env`
+      `${this.#sdfPath}/${this.#options.conf}.env`,
     );
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
@@ -173,7 +196,7 @@ class BabelFish {
             });
             this.#plugins.push({ type: "external", ...json });
           }
-        })
+        }),
       );
   }
 
@@ -205,25 +228,25 @@ class BabelFish {
       async (_, p1) => {
         if (
           lstatSync(
-            `${file.substring(0, file.lastIndexOf("/"))}/${p1}`
+            `${file.substring(0, file.lastIndexOf("/"))}/${p1}`,
           ).isDirectory()
         ) {
           const files = readdirSync(
-            `${file.substring(0, file.lastIndexOf("/"))}/${p1}`
+            `${file.substring(0, file.lastIndexOf("/"))}/${p1}`,
           ).sort();
           const res: string[] = [];
           for await (const f of files)
             res.push(
               await this.includes(
-                `${file.substring(0, file.lastIndexOf("/"))}/${p1}/${f}`
-              )
+                `${file.substring(0, file.lastIndexOf("/"))}/${p1}/${f}`,
+              ),
             );
           return res.join("\n");
         }
         return this.includes(
-          `${file.substring(0, file.lastIndexOf("/"))}/${p1}`
+          `${file.substring(0, file.lastIndexOf("/"))}/${p1}`,
         );
-      }
+      },
     );
   }
 
@@ -256,7 +279,7 @@ class BabelFish {
       this.#components.map(async (c) => {
         const { default: comp } = await import(c);
         fusion = comp(fusion);
-      })
+      }),
     );
     // format text
     fusion = formatting(fusion, this.#env);
@@ -297,7 +320,7 @@ class BabelFish {
             }
             return p;
           })
-          .join("\n")}`.replace("## #", "#")
+          .join("\n")}`.replace("## #", "#"),
       )
     )
       .toString()
@@ -332,7 +355,7 @@ class BabelFish {
       if (val !== "") dataset.push(`data-${key}="${val}"`);
     });
     return `<section class="sd-slide ${classes}" ${dataset.join(
-      " "
+      " ",
     )}>${content}</section>`;
   }
 
@@ -350,37 +373,39 @@ class BabelFish {
       if (p.addStyles) {
         if (p.type === "internal") {
           Object.keys(p.addStyles).forEach((k, _) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`)
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         } else {
           p.addStyles.forEach((k: string, _) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`)
+            css.push(`<link href="${k}" rel="stylesheet"/>`),
           );
         }
       }
       if (p.addScripts) {
         if (p.type === "internal") {
           Object.keys(p.addScripts).forEach((k, _) =>
-            js.push(`<script src="${k}"></script>`)
+            js.push(`<script src="${k}"></script>`),
           );
         } else {
           p.addScripts.forEach((k: string, _) =>
-            js.push(`<script src="${k}"></script>`)
+            js.push(`<script src="${k}"></script>`),
           );
         }
       }
     });
     template = template.replace(
       "#STYLES#",
-      `${css.join("")}${this.#customCSS}`
+      `${css.join("")}${this.#customCSS}`,
     );
     template = template.replace("#SCRIPTS#", `${js.join("")}`);
+    template = template.replace("#FAVICON#", this.#favicon.name);
+    template = template.replace("#FAVICON_TYPE#", this.#favicon.type);
     return template;
   }
 
   async #generateHTML(presentation: string, template: string) {
     const langFiles = readdirSync(this.#sdfPath).filter((item) =>
-      /.lang.json$/gi.test(item)
+      /.lang.json$/gi.test(item),
     );
     let content = "";
     if (langFiles.length) {
@@ -389,18 +414,18 @@ class BabelFish {
         langFiles.map(async (lang) => {
           const langSlug = lang.replace(".lang.json", "");
           const translationJSON = await Bun.file(
-            `${this.#sdfPath}/${lang}`
+            `${this.#sdfPath}/${lang}`,
           ).json();
           if (
             this.#options.lang === langSlug ||
             (translationJSON.default && translations === null)
           )
             translations = translationJSON;
-        })
+        }),
       );
       content = await this.#polish(
         translate(presentation, translations),
-        template
+        template,
       );
     } else {
       content = await this.#polish(presentation, template);
@@ -440,16 +465,16 @@ class BabelFish {
             ? Object.keys(p.addHTMLFromFiles)
                 .map((k) => p.addHTMLFromFiles[k])
                 .join("")
-            : ""
+            : "",
         )
-        .join("")}</body>`
+        .join("")}</body>`,
     );
   }
 
   #getCSS() {
     return presentationStyles.replace(
       ":root {",
-      `:root { --animationTimer: ${this.#options.transition}ms; `
+      `:root { --animationTimer: ${this.#options.transition}ms; `,
     );
   }
 
@@ -554,29 +579,29 @@ class BabelFish {
       if (p.addSpeakerStyles) {
         if (p.type === "internal") {
           Object.keys(p.addSpeakerStyles).forEach((k, _) =>
-            css.push(`<link href="${k}" rel="stylesheet" />`)
+            css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         } else {
           p.addSpeakerStyles.forEach((k: string, _) =>
-            css.push(`<link href="${k}" rel="stylesheet" />`)
+            css.push(`<link href="${k}" rel="stylesheet" />`),
           );
         }
       }
       if (p.addSpeakerScripts) {
         if (p.type === "internal") {
           Object.keys(p.addSpeakerScripts).forEach((k, _) =>
-            js.push(`<script src="${k}"></script>`)
+            js.push(`<script src="${k}"></script>`),
           );
         } else {
           p.addSpeakerScripts.forEach((k: string, _) =>
-            js.push(`<script src="${k}"></script>`)
+            js.push(`<script src="${k}"></script>`),
           );
         }
       }
     });
     template = template.replace(
       "#STYLES#",
-      `${css.join("")}${this.#customCSS}`
+      `${css.join("")}${this.#customCSS}`,
     );
     template = template.replace("#SCRIPTS#", `${js.join("")}`);
     return template;
