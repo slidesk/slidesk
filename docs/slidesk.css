@@ -51,6 +51,8 @@ body {
   color: var(--sd-text-color);
   font-size: var(--sd-text-size);
   line-height: var(--sd-text-line-height);
+  width: 100%;
+  height: 100%;
 }
 
 img,

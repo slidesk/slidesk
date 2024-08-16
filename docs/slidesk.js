@@ -1,23 +1,15 @@
-window.slidesk = {
-  currentSlide: 0,
-  slides: [],
-  animationTimer: 300,
-  onSlideChange: () => {
-    window.slidesk.progressActive();
-    window.slidesk.prepareSteps();
-    console.log("new slide");
-    window.slidesk.autonext();
-  },
-  env: {
-    PLUGINS: "progress, keyboard, steps",
-    MYVAR: "Variable env",
-    WIDTH: "1920",
-  },
-  cwd: "/Users/sylvaingougouzian/Dev/Perso/slidesk/",
-  lastAction: "",
-};
 
-window.slidesk.sendMessage = (payload) => {
+    window.slidesk = {
+      currentSlide: 0,
+      slides: [],
+      animationTimer: 300,
+      onSlideChange: function() {window.slidesk.progressActive();;;window.slidesk.prepareSteps();;window.slidesk.autonext();;;console.log("new slide")},
+      env: {"PLUGINS":"progress, keyboard, steps","MYVAR":"Variable env","WIDTH":"1920"},
+      cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
+      lastAction: ""
+    };
+    window.slidesk.save = true;
+    window.slidesk.sendMessage = (payload) => {
   window.slidesk.waitForSocketConnection(payload);
 };
 
@@ -43,14 +35,14 @@ window.slidesk.cleanOldSlide = (id) => {
 
 window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
-    "sd-previous"
+    "sd-previous",
   );
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-    "sd-current"
+    "sd-current",
   );
   window.location.hash =
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-slug"
+      "data-slug",
     );
   if (window.slidesk.io) {
     window.slidesk.sendMessage({
@@ -84,7 +76,7 @@ window.slidesk.next = () => {
     window.slidesk.lastAction = "next";
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides[window.slidesk.currentSlide].classList.add(
-      "sd-previous"
+      "sd-previous",
     );
     window.slidesk.currentSlide += 1;
     window.slidesk.changeSlide();
@@ -101,13 +93,14 @@ window.slidesk.previous = () => {
 };
 
 window.slidesk.goto = (num) => {
-  if (num >= 0 && num < window.slidesk.slides.length) {
+  const n = num.data ?? num;
+  if (n >= 0 && n < window.slidesk.slides.length) {
     window.slidesk.cleanOldSlide(window.slidesk.currentSlide);
     window.slidesk.slides.forEach((s, i) => {
-      if (i < num) s.classList.add("sd-previous");
+      if (i < n) s.classList.add("sd-previous");
       else s.classList.remove("sd-previous");
     });
-    window.slidesk.currentSlide = num;
+    window.slidesk.currentSlide = n;
     window.slidesk.changeSlide();
   }
 };
@@ -124,9 +117,9 @@ window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
     const timerCheckpoints = {};
-    window.slidesk.slides.forEach((slide) => {
+    window.slidesk.slides.forEach((slide, _) => {
       timerCheckpoints[slide.getAttribute("data-num")] = slide.getAttribute(
-        "data-timer-checkpoint"
+        "data-timer-checkpoint",
       );
     });
     window.slidesk.sendMessage({
@@ -139,7 +132,7 @@ window.onload = () => {
   }
   const loadingHash = window.location.hash.replace("#", "").split("+");
   const slugs = [];
-  window.slidesk.slides.forEach((slide, i) => {
+  window.slidesk.slides.forEach((slide, _) => {
     slugs.push(slide.getAttribute("data-slug"));
   });
   window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
@@ -158,23 +151,23 @@ window.onload = () => {
   }
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "sd-current",
-    "no-sd-animation"
+    "no-sd-animation",
   );
-  document.querySelectorAll(".sd-img img").forEach((img) =>
+  document.querySelectorAll(".sd-img img").forEach((img, _) =>
     img.addEventListener("load", () => {
       let ratio = 1;
       if (Number(window.slidesk.env.WIDTH))
         ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
-      const newW = ratio * img.width + "px";
-      const newH = ratio * img.height + "px";
+      const newW = `${ratio * img.width}px`;
+      const newH = `${ratio * img.height}px`;
       img.parentElement.style.width = newW;
       img.parentElement.style.height = newH;
       img.style.width = newW;
       img.style.height = newH;
-    })
+    }),
   );
   window.slidesk.changeSlide();
-  document.querySelectorAll(".sd-slide").forEach((slide) => {
+  document.querySelectorAll(".sd-slide").forEach((slide, _) => {
     slide.addEventListener("touchstart", (e) => {
       e.preventDefault();
       window.slidesk.touchStart = e.touches[0].pageX;
@@ -183,7 +176,7 @@ window.onload = () => {
     slide.addEventListener("touchmove", (e) => {
       window.slidesk.touchMove = e.touches[0].pageX;
     });
-    slide.addEventListener("touchend", (e) => {
+    slide.addEventListener("touchend", (_) => {
       if (
         Math.abs(window.slidesk.touchMove - window.slidesk.touchStart) > 100
       ) {
@@ -204,7 +197,7 @@ window.onload = () => {
 };
 
 document.addEventListener("keydown", (e) => {
-  if (window.location.hostname === "localhost") {
+  if (window.location.hostname === "localhost" || window.slidesk.save) {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();
     } else if (e.key === "ArrowRight") {
