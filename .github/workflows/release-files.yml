@@ -44,6 +44,11 @@ jobs:
             release_suffix: ubuntu
           - os: macos-latest
             release_suffix: mac
+          - os: macos-latest
+            release_suffix: mac
+          - os: macos-12
+            release_suffix: macX86-64
+            platform: x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: oven-sh/setup-bun@v1
@@ -119,13 +124,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-
-      - name: install docker if mac
-        if: matrix.os == 'macos-latest'
-        run: brew install docker
-      - name: execute colima
-        if: matrix.os == 'macos-latest'
-        run: colima start
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
