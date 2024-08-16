@@ -44,10 +44,8 @@ jobs:
             release_suffix: ubuntu
           - os: macos-latest
             release_suffix: mac
-          - os: macos-latest
-            release_suffix: mac
           - os: macos-12
-            release_suffix: macX86-64
+            release_suffix: mac_intel
             platform: x64
     runs-on: ${{ matrix.os }}
     steps:
@@ -71,6 +69,9 @@ jobs:
       - name: Run Mac Build
         if: matrix.os == 'macos-latest'
         run: cat ./slidesk.tar.gz > release_mac.tar.gz
+      - name: Run Mac Build
+        if: matrix.os == 'macos-12'
+        run: cat ./slidesk.tar.gz > release_mac_intel.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
