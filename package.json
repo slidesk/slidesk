@@ -27,8 +27,8 @@
     "@types/html-minifier-terser": "^7.0.2"
   },
   "scripts": {
-    "make": "bun build src/index.ts --outdir bin --minify --target bun --sourcemap=none",
-    "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify --sourcemap=none",
+    "make": "bun build src/index.ts --outdir bin --minify --target bun",
+    "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify",
     "example": "bun src/index.ts example",
     "gendocs": "bun src/index.ts example --save docs",
     "tools": "bun tools/pluginGeneration.ts",
