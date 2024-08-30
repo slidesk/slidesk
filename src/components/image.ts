@@ -5,7 +5,7 @@ export default function image(data) {
       ...match[1].split(","),
     ];
     let classc = "";
-    if (optionals.indexOf(" ") === -1) classc = optionals;
+    if (optionals?.indexOf(" ") === -1) classc = optionals;
     newData = newData.replace(
       match[0],
       `<figure class="sd-img ${classc}"${
