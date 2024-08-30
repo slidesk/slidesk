@@ -4,10 +4,14 @@ export default function image(data) {
     const [src, alt, width, height, optionals, caption] = [
       ...match[1].split(","),
     ];
+    let classc = "";
+    if (optionals.indexOf(" ") === -1) classc = optionals;
     newData = newData.replace(
       match[0],
-      `<figure class="sd-img"${
-        optionals && optionals.trim() !== "" ? ` style="${optionals}"` : ""
+      `<figure class="sd-img ${classc}"${
+        optionals && classc === "" && optionals.trim() !== ""
+          ? ` style="${optionals}"`
+          : ""
       } >
         <img src="${src.trim()}" loading="lazy" alt="${alt?.trim()}"${
           width && width.trim() !== "" ? ` width="${width.trim()}"` : ""
