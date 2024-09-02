@@ -57,7 +57,7 @@ class BabelFish {
     js: [],
   };
   #env: { [key: string]: object | string } = {};
-  #favicon: { name: string; content: string; type: string } = {
+  #favicon: { name: string; content: Uint8Array; type: string } = {
     name: "/favicon.svg",
     content: faviconSVG,
     type: "image/svg+xml",
@@ -89,7 +89,7 @@ class BabelFish {
       if (Bun.file(`${this.#sdfPath}${f.name}`).size > 0) {
         this.#favicon = {
           name: f.name,
-          content: await Bun.file(`${this.#sdfPath}${f.name}`).text(),
+          content: await Bun.file(`${this.#sdfPath}${f.name}`).bytes(),
           type: f.type,
         };
       }
