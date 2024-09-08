@@ -1,12 +1,15 @@
-export default function image(data) {
+export default function image(data: string) {
   let newData = data;
   [...newData.matchAll(/!image\((.*)\)/g)].forEach((match, _) => {
     const [src, alt, width, height, optionals, caption] = [
       ...match[1].split(","),
     ];
     let classc = "";
-    if (optionals?.indexOf(" ") === -1 || optionals?.indexOf("["))
-      classc = optionals.replace("[", "").replace("]", "");
+    if (
+      optionals?.trim().indexOf("[") !== -1 ||
+      optionals?.trim().indexOf(" ") === -1
+    )
+      classc = optionals.trim().replace("[", "").replace("]", "");
     newData = newData.replace(
       match[0],
       `<figure class="sd-img ${classc}"${
