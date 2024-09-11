@@ -442,9 +442,12 @@ class BabelFish {
 
   async #polish(presentation: string, template: string) {
     let tpl = template;
-    [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
-      tpl = tpl.replace("#TITLE#", title[1]);
-    });
+    if (this.#env.TITLE)
+      tpl = tpl.replace("#TITLE#", this.#env.TITLE.toString());
+    else
+      [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
+        tpl = tpl.replace("#TITLE#", title[1]);
+      });
     tpl = tpl.replace("#TITLE#", "SliDesk");
     tpl = tpl.replace("#SECTIONS#", presentation);
 
