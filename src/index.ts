@@ -21,7 +21,11 @@ program
   .version(packagejson.version, "-v, --version");
 
 // talk's creation command
-program.command("create").argument("<talk>").action(create);
+program
+  .command("create")
+  .argument("<talk>")
+  .option("--theme <string>", "theme", "none")
+  .action(create);
 
 // components
 program
