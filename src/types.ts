@@ -21,6 +21,10 @@ export type ServerOptions = {
   open?: string;
 };
 
+export type CreateOptions = {
+  theme?: string;
+};
+
 export type PluginsJSON = {
   [key: string]: SliDeskPlugin;
 };
