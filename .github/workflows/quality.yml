@@ -16,9 +16,5 @@ jobs:
         run: bun test --coverage
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
-        with:
-          args: -Dsonar.projectKey=SliDesk
-            -Dsonar.sources=src/
-            -Dsonar.tests=tests
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        env: 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
