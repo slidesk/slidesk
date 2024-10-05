@@ -1,3 +1,5 @@
+import type { Server } from "bun";
+
 export type PresentOptions = {
   domain?: string;
   port?: string;
@@ -34,7 +36,7 @@ export type SlideskPluginAddRoute = (
   path: string,
 ) => Promise<Response | null>;
 
-export type SlideskPluginAddWS = (message: string) => object;
+export type SlideskPluginAddWS = (message: string, server: Server) => object;
 
 export type SliDeskPlugin = {
   type?: string;

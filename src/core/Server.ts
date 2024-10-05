@@ -127,7 +127,7 @@ export default class SlideskServer {
                 action: `${json.plugin}_response`,
                 response: await (
                   serverPlugins[json.plugin].addWS as SlideskPluginAddWS
-                )(message),
+                )(message, server),
               }),
             );
           } else {
