@@ -59,7 +59,6 @@ const create = async (talk: string, options: CreateOptions) => {
     dirName = `${dirName}_`;
   }
   const responseTitle = await question("What is the title of talk?");
-  console.log(options);
   if (options.theme !== "none") {
     const list = await fetch(
       "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/list.json",

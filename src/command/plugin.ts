@@ -21,7 +21,7 @@ const pluginInstall = async (name = "", update = false): Promise<string> => {
         fetch(
           `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/${name}/${file}`,
         )
-          .then((response) => response.text())
+          .then((response) => response.blob())
           .then((text) =>
             Bun.write(`plugins/${name}/${file}`, text, {
               createPath: true,
