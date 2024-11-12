@@ -47,6 +47,7 @@ class BabelFish {
   #hasNotesView: boolean;
   #hasPluginSource = false;
   #mainFile: string;
+  #common_dir = "";
   #sdfPath = "";
   #customCSS = "";
   #plugins: SliDeskPlugin[] = [];
@@ -151,6 +152,7 @@ class BabelFish {
       const buf = await slideskEnvFile.text();
       this.#env = dotenv.parse(buf);
     }
+    if (this.#env.COMMON_DIR) this.#common_dir = this.#env.COMMON_DIR as string;
   }
 
   async #loadPlugins() {
@@ -174,8 +176,7 @@ class BabelFish {
       });
   }
 
-  async #externalPlugins() {
-    const pluginsDir = `${this.#sdfPath}/plugins`;
+  async #loadExternalPlugins(pluginsDir: string) {
     if (existsSync(pluginsDir))
       await Promise.all(
         readdirSync(pluginsDir).map(async (plugin) => {
@@ -187,7 +188,7 @@ class BabelFish {
               if (json[t]) {
                 const files = json[t];
                 json[t] = {};
-                files.forEach((s: string, _) => {
+                files.forEach((s: string, _: number) => {
                   json[t][s] = readFileSync(`${this.#sdfPath}/${s}`, {
                     encoding: "utf8",
                   });
@@ -197,6 +198,14 @@ class BabelFish {
             this.#plugins.push({ type: "external", ...json });
           }
         }),
+      );
+  }
+
+  async #externalPlugins() {
+    await this.#loadExternalPlugins(`${this.#sdfPath}/plugins`);
+    if (this.#common_dir !== "")
+      await this.#loadExternalPlugins(
+        `${this.#sdfPath}/${this.#common_dir}/plugins`,
       );
   }
 
