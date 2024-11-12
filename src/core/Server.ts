@@ -14,13 +14,19 @@ import type { Server } from "bun";
 const { log } = console;
 
 const getFile = (req: Request, path: string) => {
-  const fileurl = req.url.replace(
+  let fileurl = req.url.replace(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
-  const file = Bun.file(
+  if (fileurl.startsWith("/-=[COMMON]=-"))
+    fileurl = fileurl.replace("-=[COMMON]=-", env.COMMON_DIR);
+  let file = Bun.file(
     fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
+  if (fileurl.startsWith("/plugins") && file.size === 0 && env.COMMON_DIR) {
+    fileurl = fileurl.replace("/plugins", `/${env.COMMON_DIR}/plugins`);
+    file = Bun.file(`${path}${fileurl}`);
+  }
   if (file.size !== 0)
     return new Response(file, {
       headers: {
@@ -34,6 +40,7 @@ let serverFiles: SliDeskFile = {};
 const serverPlugins: PluginsJSON = {};
 let serverPath = "";
 let server: Server;
+let env: { [key: string]: string } = {};
 
 const getPlugins = async (pluginsDir: string) => {
   await Promise.all(
@@ -69,13 +76,14 @@ export default class SlideskServer {
     serverFiles = files;
     serverPath = path;
     const slideskEnvFile = Bun.file(`${path}/.env`);
-    let env: { [key: string]: string } = {};
     if (slideskEnvFile.size !== 0) {
       const buf = await slideskEnvFile.text();
       env = dotenv.parse(buf);
     }
     const pluginsDir = `${path}/plugins`;
     if (existsSync(pluginsDir)) await getPlugins(pluginsDir);
+    if (env.COMMON_DIR && existsSync(`${path}/${env.COMMON_DIR}/plugins`))
+      await getPlugins(`${path}/${env.COMMON_DIR}/plugins`);
     server = Bun.serve({
       port: options.port,
       async fetch(req) {
