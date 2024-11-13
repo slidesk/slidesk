@@ -18,8 +18,8 @@ export default function image(data: string) {
           : ""
       } >
         <img src="${src.trim()}" loading="lazy" alt="${alt?.trim()}"${
-          width && width.trim() !== "" ? ` data-width="${width.trim()}"` : ""
-        }${height && height.trim() !== "" ? ` data-height="${height.trim()}"` : ""} />
+          width && width.trim() !== "" ? ` width="${width.trim()}"` : ""
+        }${height && height.trim() !== "" ? ` height="${height.trim()}"` : ""} />
         <figcaption ${caption?.trim() === "true" ? "" : "style='display: none;'"}>${alt?.trim()}</figcaption>
       </figure>`,
     );
