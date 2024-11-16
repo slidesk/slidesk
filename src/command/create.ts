@@ -61,19 +61,19 @@ const create = async (talk: string, options: CreateOptions) => {
   const responseTitle = await question("What is the title of talk?");
   if (options.theme !== "none") {
     const list = await fetch(
-      "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/list.json",
+      "https://raw.githubusercontent.com/slidesk/slidesk-extras/refs/heads/main/themes/list.json",
     );
     const json = await list.json();
     if ([...json].includes(options.theme)) {
       const files = await (
         await fetch(
-          `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/${options.theme}/files.json`,
+          `https://raw.githubusercontent.com/slidesk/slidesk-extras/refs/heads/main/themes/${options.theme}/files.json`,
         )
       ).json();
       for await (const file of [...files]) {
         let content = await (
           await fetch(
-            `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/${options.theme}/${file}`,
+            `https://raw.githubusercontent.com/slidesk/slidesk-extras/refs/heads/main/themes/${options.theme}/${file}`,
           )
         ).text();
         if (file === "main.sdf")
