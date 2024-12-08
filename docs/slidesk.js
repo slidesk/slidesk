@@ -3,8 +3,8 @@
       currentSlide: 0,
       slides: [],
       animationTimer: 300,
-      onSlideChange: function() {window.slidesk.progressActive();;;window.slidesk.prepareSteps();;;window.slidesk.autonext();;console.log("new slide")},
-      env: {"PLUGINS":"progress, keyboard, steps","MYVAR":"Variable env","WIDTH":"1920","TITLE":"Title of my slide"},
+      onSlideChange: function() {window.slidesk.progressActive();;window.slidesk.prepareSteps();;window.slidesk.progressActive();;;window.slidesk.autonext();;window.slidesk.prepareSteps();;console.log("new slide")},
+      env: {"PLUGINS":"progress, steps","MYVAR":"Variable env","WIDTH":"1920","TITLE":"Title of my slide"},
       cwd: '/Users/sylvaingougouzian/Dev/Perso/slidesk/',
       lastAction: ""
     };

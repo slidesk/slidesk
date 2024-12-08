@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.9.2",
+  "version": "2.10.0",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -14,7 +14,7 @@
   "dependencies": {
     "@types/showdown": "^2.0.6",
     "commander": "^12.1.0",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "html-minifier-terser": "^7.2.0",
     "open": "^10.1.0",
     "showdown": "^2.1.0"
@@ -31,7 +31,6 @@
     "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify",
     "example": "bun src/index.ts example",
     "gendocs": "bun src/index.ts example --save docs",
-    "tools": "bun tools/pluginGeneration.ts",
     "format": "bunx @biomejs/biome format ./ --write",
     "lint": "bunx @biomejs/biome lint ./ --write"
   }
