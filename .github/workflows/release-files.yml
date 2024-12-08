@@ -44,7 +44,7 @@ jobs:
             release_suffix: ubuntu
           - os: macos-latest
             release_suffix: mac
-          - os: macos-latest
+          - os: macos-15
             release_suffix: mac_intel
             platform: x64
     runs-on: ${{ matrix.os }}
