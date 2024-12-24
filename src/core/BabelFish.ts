@@ -16,7 +16,6 @@ import comments from "../components/comments";
 import formatting from "../components/formatting";
 import image from "../components/image";
 import translate from "../components/translate";
-import pluginsJSON from "../plugins.json";
 import replaceAsync from "../utils/replaceAsync";
 import slugify from "../utils/slugify";
 import toBinary from "../utils/toBinary";
@@ -156,24 +155,11 @@ class BabelFish {
   }
 
   async #loadPlugins() {
-    this.#internalPlugins();
-    await this.#externalPlugins();
-  }
-
-  #internalPlugins() {
-    if (this.#env.PLUGINS)
-      [...(this.#env.PLUGINS as string).split(",")].forEach((p, _) => {
-        const pl = p.trim();
-        if (pl === "source") this.#hasPluginSource = true;
-        if (pluginsJSON[pl]) {
-          this.#plugins.push({
-            type: "internal",
-            ...pluginsJSON[pl],
-          });
-        } else {
-          error(`Plugin ${pl} not found`);
-        }
-      });
+    await this.#loadExternalPlugins(`${this.#sdfPath}/plugins`);
+    if (this.#common_dir !== "")
+      await this.#loadExternalPlugins(
+        `${this.#sdfPath}/${this.#common_dir}/plugins`,
+      );
   }
 
   async #loadExternalPlugins(pluginsDir: string) {
@@ -198,14 +184,6 @@ class BabelFish {
             this.#plugins.push({ type: "external", ...json });
           }
         }),
-      );
-  }
-
-  async #externalPlugins() {
-    await this.#loadExternalPlugins(`${this.#sdfPath}/plugins`);
-    if (this.#common_dir !== "")
-      await this.#loadExternalPlugins(
-        `${this.#sdfPath}/${this.#common_dir}/plugins`,
       );
   }
 

@@ -71,15 +71,36 @@ const create = async (talk: string, options: CreateOptions) => {
         )
       ).json();
       for await (const file of [...files]) {
-        let content = await (
+        const content = await (
           await fetch(
             `https://raw.githubusercontent.com/slidesk/slidesk-extras/refs/heads/main/themes/${options.theme}/${file}`,
           )
-        ).text();
-        if (file === "main.sdf")
-          content = content.replace("# TITLE", responseTitle as string);
+        ).blob();
         await Bun.write(`${dirName}/${file}`, content, { createPath: true });
       }
+      let mainContent = await Bun.file(`${dirName}/main.sdf`).text();
+      mainContent = mainContent.replace(
+        "# TITLE",
+        ` ${responseTitle as string}`,
+      );
+      await Bun.write(`${dirName}/main.sdf`, mainContent);
+    } else if (
+      options.theme?.startsWith("http") &&
+      options.theme?.endsWith("/files.json")
+    ) {
+      const files = await (await fetch(`${options.theme}`)).json();
+      for await (const file of [...files]) {
+        const content = await (
+          await fetch(`${options.theme.replace("/files.json", "")}/${file}`)
+        ).blob();
+        await Bun.write(`${dirName}/${file}`, content, { createPath: true });
+      }
+      let mainContent = await Bun.file(`${dirName}/main.sdf`).text();
+      mainContent = mainContent.replace(
+        "# TITLE",
+        ` ${responseTitle as string}`,
+      );
+      await Bun.write(`${dirName}/main.sdf`, mainContent);
     } else error("Theme not found");
   } else await createDefault(dirName, responseTitle as string);
   process.exit();
