@@ -42,18 +42,21 @@ jobs:
         include:
           - os: ubuntu-latest
             release_suffix: ubuntu
+            compile_options: --target=bun-linux-x64-modern
           - os: macos-latest
             release_suffix: mac
+            compile_options: --target=bun-darwin-arm64
           - os: macos-15
             release_suffix: mac_intel
             platform: x64
+            compile_options: --target=bun-darwin-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
         uses: actions/checkout@v4
       - run: bun install
-      - run: bun make:exe
+      - run: bun make:exe ${{compile_options}}
       - name: Compress action step
         uses: a7ul/tar-action@v1.2.0
         id: compress
