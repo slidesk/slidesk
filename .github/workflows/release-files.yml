@@ -42,18 +42,21 @@ jobs:
         include:
           - os: ubuntu-latest
             release_suffix: ubuntu
+            compile_options: --target=bun-linux-x64-modern
           - os: macos-latest
             release_suffix: mac
+            compile_options: --target=bun-darwin-arm64
           - os: macos-15
             release_suffix: mac_intel
             platform: x64
+            compile_options: --target=bun-darwin-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: oven-sh/setup-bun@v1
       - name: Checkout code
         uses: actions/checkout@v4
       - run: bun install
-      - run: bun make:exe
+      - run: bun make:exe ${{ matrix.compile_options }}
       - name: Compress action step
         uses: a7ul/tar-action@v1.2.0
         id: compress
@@ -62,15 +65,8 @@ jobs:
           files: |
             ./exe
           outPath: slidesk.tar.gz
-      - name: Run Linux Build
-        if: matrix.os == 'ubuntu-latest'
-        run: cat ./slidesk.tar.gz > release_ubuntu.tar.gz
-      - name: Run Mac Build
-        if: matrix.os == 'macos-latest'
-        run: cat ./slidesk.tar.gz > release_mac.tar.gz
-      - name: Run Mac Build
-        if: matrix.os == 'macos-15'
-        run: cat ./slidesk.tar.gz > release_mac_intel.tar.gz
+      - name: Rename release package
+        run: cat ./slidesk.tar.gz > release_${{ matrix.release_suffix }}.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
