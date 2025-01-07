@@ -44,7 +44,7 @@ jobs:
             release_suffix: ubuntu
             compile_options: --target=bun-linux-x64-modern
           - os: macos-latest
-            release_suffix: Darwin_arm64
+            release_suffix: mac
             compile_options: --target=bun-darwin-arm64
           - os: macos-15
             release_suffix: mac_intel
@@ -65,15 +65,8 @@ jobs:
           files: |
             ./exe
           outPath: slidesk.tar.gz
-      - name: Run Linux Build
-        if: matrix.os == 'ubuntu-latest'
-        run: cat ./slidesk.tar.gz > release_ubuntu.tar.gz
-      - name: Run Mac Build
-        if: matrix.os == 'macos-latest'
+      - name: Rename release package
         run: cat ./slidesk.tar.gz > release_${{ matrix.release_suffix }}.tar.gz
-      - name: Run Mac Build
-        if: matrix.os == 'macos-15'
-        run: cat ./slidesk.tar.gz > release_mac_intel.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
