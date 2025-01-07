@@ -44,7 +44,7 @@ jobs:
             release_suffix: ubuntu
             compile_options: --target=bun-linux-x64-modern
           - os: macos-latest
-            release_suffix: mac
+            release_suffix: Darwin_arm64
             compile_options: --target=bun-darwin-arm64
           - os: macos-15
             release_suffix: mac_intel
