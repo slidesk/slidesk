@@ -1,9 +1,24 @@
-FROM arunvelsriram/utils:latest as build
-RUN curl -s https://api.github.com/repos/slidesk/slidesk/releases/latest | grep "/release_ubuntu.tar.gz" | cut -d : -f 2,3 | tr -d \" | wget -qi -
-RUN tar -xzf release_ubuntu.tar.gz && \
-    chmod +x exe/slidesk
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS base
+WORKDIR /usr/src/app
+
+# install with --production (exclude devDependencies)
+FROM base AS install
+RUN mkdir -p /temp/prod
+COPY package.json bun.lockb /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
+
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+WORKDIR /usr/src/app
+COPY --from=install /temp/prod/node_modules node_modules
+COPY . .
+RUN bun make:exe --target=bun-linux-x64-modern
+RUN chmod +x exe/slidesk
 
 FROM ubuntu:jammy
-COPY --from=build /home/utils/exe/slidesk /bin/slidesk
+COPY --from=prerelease /usr/src/app/exe/slidesk /bin/slidesk
 WORKDIR /slidesk
 CMD slidesk

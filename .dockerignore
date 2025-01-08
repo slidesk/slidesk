@@ -5,11 +5,9 @@ sonar-project.properties
 .scannerwork
 
 .*
-*.json
-bun.*
 docs
 example
+exe/
 plugins
-src
 test
 tools
