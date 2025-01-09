@@ -30,7 +30,7 @@ jobs:
           name: ${{ github.ref_name }}
           draft: false
           prerelease: false
-          generate_release_notes: false
+          generate_release_notes: true
 
   build_release:
     name: Build Release
@@ -60,16 +60,14 @@ jobs:
       - run: bun install
       - run: bun make:exe ${{ matrix.compile_options }}
       - name: Rename release package
-        run: |
-          mkdir ${{ matrix.release_suffix }}
-          cat ./exe/slidesk > ./${{ matrix.release_suffix }}/slidesk
+        run: cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: ${{ matrix.release_suffix }}/slidesk
+          files: slidesk_${{ matrix.release_suffix }}
 
   push_docker_hub:
     name: Push on Docker Hub
