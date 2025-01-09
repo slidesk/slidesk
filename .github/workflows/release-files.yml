@@ -61,7 +61,7 @@ jobs:
       - run: bun install
       - run: bun make:exe ${{ matrix.compile_options }}
       - name: Rename release package
-        run: cat ./slidesk > release_${{ matrix.release_suffix }}
+        run: cat ./exe/slidesk > release_${{ matrix.release_suffix }}
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
