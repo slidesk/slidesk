@@ -38,7 +38,6 @@ jobs:
     environment: build
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-15]
         include:
           - os: ubuntu-latest
             release_suffix: ubuntu-amd
