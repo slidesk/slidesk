@@ -42,16 +42,20 @@ jobs:
           - os: ubuntu-latest
             release_suffix: ubuntu-amd
             compile_options: --target=bun-linux-x64-modern
+            sha_field: LINUX_AMD_SHA
           - os: ubuntu-latest
             release_suffix: ubuntu-arm
             compile_options: --target=bun-linux-arm64
+            sha_field: LINUX_ARM_SHA
           - os: macos-latest
             release_suffix: mac
             compile_options: --target=bun-darwin-arm64
+            sha_field: MAC_ARM_SHA
           - os: macos-15
             release_suffix: mac_intel
             platform: x64
             compile_options: --target=bun-darwin-x64
+            sha_field: MAC_AMD_SHA
     runs-on: ${{ matrix.os }}
     steps:
       - uses: oven-sh/setup-bun@v1
@@ -60,7 +64,11 @@ jobs:
       - run: bun install
       - run: bun make:exe ${{ matrix.compile_options }}
       - name: Rename release package
-        run: cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
+        id: release_package
+        run: |
+          cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
+          echo "SHA_VALUE=$(shasum -a 256 ./exe/slidesk)"
+          echo $SHA_VALUE
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
@@ -68,6 +76,16 @@ jobs:
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
           files: slidesk_${{ matrix.release_suffix }}
+      - name: Update formula
+        uses: yodamad-actions/brew-formula-update@0.1
+        with:
+          file: slidesk.rb
+          owner: gouz
+          repo: homebrew-tools
+          version: ${{ github.ref_name }}
+          field: ${{ matrix.sha_field }}
+          sha256: ${{ steps.release_package.outputs.SHA_VALUE }}
+          token: ${{ secrets.GITHUB_TOKEN }}          
 
   push_docker_hub:
     name: Push on Docker Hub
