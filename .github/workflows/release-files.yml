@@ -101,12 +101,12 @@ jobs:
       - uses: yodamad-actions/brew-formula-update@0.1
         with:
           file: slidesk.rb
-          owner: gouz
+          owner: yodamad
           repo: homebrew-tools
           version: ${{ github.ref_name }}
           field: ${{ matrix.sha_field }}
           sha256: ${{ matrix.sha_value }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BREW_TOKEN }}
 
   push_docker_hub:
     name: Push on Docker Hub
