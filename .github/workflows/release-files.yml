@@ -90,14 +90,18 @@ jobs:
       
   update_brew_formula:
     name: Update formula
-    uses: yodamad-actions/brew-formula-update@0.2
-    with:
-      file: slidesk.rb
-      owner: yodamad
-      repo: homebrew-tools
-      version: ${{ github.ref_name }}
-      fields: ${{ toJSON(needs.build_release.outputs) }}
-      token: ${{ secrets.BREW_TOKEN }}
+    runs-on: ubuntu-latest
+    needs: build_release
+    steps:
+      - name: Update formula
+        uses: yodamad-actions/brew-formula-update@0.2
+        with:
+          file: slidesk.rb
+          owner: yodamad
+          repo: homebrew-tools
+          version: ${{ github.ref_name }}
+          fields: ${{ toJSON(needs.build_release.outputs) }}
+          token: ${{ secrets.BREW_TOKEN }}
 
   push_docker_hub:
     name: Push on Docker Hub
