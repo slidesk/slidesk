@@ -37,10 +37,10 @@ jobs:
     needs: create_release
     environment: build
     outputs:
-      output_linux_amd: LINUX_AMD_SHA:${{ steps.release_package.outputs.ubuntu-amd-LINUX_AMD_SHA_VALUE }}
-      output_linux_arm: LINUX_ARM_SHA:${{ steps.release_package.outputs.ubuntu-arm-LINUX_ARM_SHA_VALUE }}
-      output_mac_amd: MAC_AMD_SHA:${{ steps.release_package.outputs.mac_intel-MAC_AMD_SHA_VALUE }}
-      output_mac_arm: MAC_ARM_SHA:${{ steps.release_package.outputs.mac-MAC_ARM_SHA_VALUE }}
+      output_linux_amd: LINUX_AMD_SHA:${{ steps.release_package.outputs.output_ubuntu-amd-LINUX_AMD_SHA_VALUE }}
+      output_linux_arm: LINUX_ARM_SHA:${{ steps.release_package.outputs.output_ubuntu-arm-LINUX_ARM_SHA_VALUE }}
+      output_mac_amd: MAC_AMD_SHA:${{ steps.release_package.outputs.output_mac_intel-MAC_AMD_SHA_VALUE }}
+      output_mac_arm: MAC_ARM_SHA:${{ steps.release_package.outputs.output_mac-MAC_ARM_SHA_VALUE }}
     strategy:
       matrix:
         include:
@@ -74,8 +74,8 @@ jobs:
         run: |
           cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
           sha=($(shasum -a 256 ./exe/slidesk))
-          sha_value=${{matrix.release_suffix}}-${{ matrix.sha_var_value }}
-          echo "$(sha_value)=$sha" >> "$GITHUB_OUTPUT"
+          sha_value="${{ matrix.release_suffix }}-${{ matrix.sha_var_value }}"
+          echo "output_${sha_value}=$sha" >> "$GITHUB_OUTPUT"
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
