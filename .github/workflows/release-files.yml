@@ -79,7 +79,7 @@ jobs:
           cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
           sha=($(shasum -a 256 ./exe/slidesk))
           sha_value="${{ matrix.sha_field }}"
-          echo "output_${sha_value}=${{ matrix.sha_field }}:$sha" >> "$GITHUB_OUTPUT"
+          echo "output_${sha_value}=${{ matrix.sha_field }}-$sha" >> "$GITHUB_OUTPUT"
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
