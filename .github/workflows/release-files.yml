@@ -90,10 +90,14 @@ jobs:
       
   update_brew_formula:
     name: Update formula
-    runs-on: ubuntu-latest
-    needs: build_release
-    steps:
-      - run: echo '${{ toJSON(needs.build_release.outputs) }}'
+    uses: yodamad-actions/brew-formula-update@0.2
+    with:
+      file: slidesk.rb
+      owner: yodamad
+      repo: homebrew-tools
+      version: ${{ github.ref_name }}
+      fields: ${{ toJSON(needs.build_release.outputs) }}
+      token: ${{ secrets.BREW_TOKEN }}
 
   push_docker_hub:
     name: Push on Docker Hub
