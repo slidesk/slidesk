@@ -101,7 +101,7 @@ const present = (talk: string, options: PresentOptions) => {
       );
     if (options.watch)
       watch(talkdir, { recursive: true }, (eventType, filename) => {
-        if (!filename?.startsWith(".git")) {
+        if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
           log(
             `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
           );
