@@ -45,8 +45,8 @@ window.slidesk.changeSlide = () => {
       payload:
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
           ? window.slidesk.slides[
-              window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^")"/gi, "")
+            window.slidesk.currentSlide + 1
+          ].outerHTML.replace(/data-source="(^")"/gi, "")
           : "",
     });
   }
@@ -193,4 +193,15 @@ document.addEventListener("keydown", (e) => {
       window.slidesk.next();
     }
   }
+});
+
+let timeoutMouse = null;
+const hideMouse = () => { document.querySelector(".sd-app").style.cursor = "none"; };
+
+document.addEventListener("mousemove", () => {
+  clearTimeout(timeoutMouse);
+  timeoutMouse = setTimeout(() => {
+    hideMouse();
+  }, 250);
+  document.querySelector(".sd-app").style.cursor = "default";
 });

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@types/showdown": "^2.0.6",
-    "commander": "^13.0.0",
+    "commander": "^13.1.0",
     "dotenv": "^16.4.7",
     "html-minifier-terser": "^7.2.0",
     "open": "^10.1.0",
