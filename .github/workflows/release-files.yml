@@ -45,11 +45,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            release_suffix: ubuntu-amd
+            release_suffix: linux-amd
             compile_options: --target=bun-linux-x64-modern
             sha_field: LINUX_AMD_SHA
           - os: ubuntu-latest
-            release_suffix: ubuntu-arm
+            release_suffix: linux-arm
             compile_options: --target=bun-linux-arm64
             sha_field: LINUX_ARM_SHA
           - os: macos-latest
