@@ -25,20 +25,15 @@ import type {
   PresentOptions,
   SliDeskPlugin,
 } from "../types";
-import showdown from "showdown";
+import markdownit from "markdown-it";
 
 const { error } = console;
 
-const sd = new showdown.Converter({
-  simplifiedAutoLink: true,
-  excludeTrailingPunctuationFromURLs: true,
-  strikethrough: true,
-  tables: true,
-  ghCodeBlocks: true,
-  tasklists: true,
-  emoji: true,
-  underline: true,
-  noHeaderId: true,
+const md = markdownit({
+  html: true,
+  xhtmlOut: true,
+  linkify: true,
+  typographer: true,
 });
 
 class BabelFish {
@@ -290,7 +285,7 @@ class BabelFish {
     let timerSlide = "";
     let timerCheckpoint = "";
     let content = (
-      await sd.makeHtml(
+      await md.render(
         `## ${slide
           .replace(/\\r/g, "")
           .split("\n")
