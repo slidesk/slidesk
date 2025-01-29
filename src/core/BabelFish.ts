@@ -24,6 +24,7 @@ import type {
   SliDeskFile,
   PresentOptions,
   SliDeskPlugin,
+  SliDeskTemplate,
 } from "../types";
 import markdownit from "markdown-it";
 
@@ -46,6 +47,7 @@ class BabelFish {
   #customCSS = "";
   #plugins: SliDeskPlugin[] = [];
   #components: string[] = [];
+  #templates: SliDeskTemplate = {};
   #cptSlide = 0;
   #customIncludes: Includes = {
     css: [],
@@ -91,9 +93,26 @@ class BabelFish {
     }
   }
 
+  async #loadTemplates() {
+    if (existsSync(`${this.#sdfPath}/templates`))
+      await Promise.all(
+        readdirSync(`${this.#sdfPath}/templates`).map((template) => {
+          if (template.endsWith(".sdt")) {
+            this.#templates[template.replace(".sdt", "")] = readFileSync(
+              `${this.#sdfPath}/templates/${template}`,
+              {
+                encoding: "utf-8",
+              },
+            );
+          }
+        }),
+      );
+  }
+
   async preload() {
     await this.#loadEnv();
     await this.#loadPlugins();
+    await this.#loadTemplates();
     await this.#loadFavicon();
     this.#loadComponents();
   }
@@ -278,6 +297,12 @@ class BabelFish {
     return (await Promise.all(promises)).join("\n");
   }
 
+  #replaceWithTemplate(tpl: string, content: string, title: string) {
+    return this.#templates[tpl]
+      .replace("<sd-title />", `<h2>${title}</h2>`)
+      .replace("<sd-content />", content.replace(/<h2>(.*)<\/h2>/g, ""));
+  }
+
   async #treatSlide(slide: string) {
     if (slide.trim() === "") return "";
     let classes = "";
@@ -316,7 +341,15 @@ class BabelFish {
       if (spl[0].trim() !== "") {
         slug = slugify(spl[0]);
       }
-      content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
+      // # in classes means template
+      const tpl = classes
+        .split(" ")
+        .filter((c) => c.startsWith("#"))[0]
+        .replace(/.sdt$/g, "")
+        .replace(/^#/g, "");
+      if (tpl && this.#templates[tpl])
+        content = this.#replaceWithTemplate(tpl, content, spl[0]);
+      else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
     }
     const slideSlug = `!slide-${this.#cptSlide}`;
     const datas = {
@@ -336,9 +369,10 @@ class BabelFish {
     Object.entries(datas).forEach(([key, val], _) => {
       if (val !== "") dataset.push(`data-${key}="${val}"`);
     });
-    return `<section class="sd-slide ${classes}" ${dataset.join(
-      " ",
-    )}>${content}</section>`;
+    return `<section class="sd-slide ${classes
+      .split(" ")
+      .filter((c) => !c.startsWith("#"))
+      .join(" ")}" ${dataset.join(" ")}>${content}</section>`;
   }
 
   #prepareTPL() {

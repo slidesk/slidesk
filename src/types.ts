@@ -65,3 +65,7 @@ export type Includes = {
   css: string[];
   js: string[];
 };
+
+export type SliDeskTemplate = {
+  [key: string]: string;
+};
