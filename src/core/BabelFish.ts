@@ -273,8 +273,10 @@ class BabelFish {
     let fusion = sdf;
     // comments
     fusion = comments(fusion);
-    // slice & treatment
-    fusion = await this.#sliceSlides(fusion);
+    // image
+    fusion = image(fusion);
+    // format text
+    fusion = formatting(fusion, this.#env);
     // custom components
     await Promise.all(
       this.#components.map(async (c) => {
@@ -282,10 +284,8 @@ class BabelFish {
         fusion = comp(fusion);
       }),
     );
-    // format text
-    fusion = formatting(fusion, this.#env);
-    // image
-    fusion = image(fusion);
+    // slice & treatment
+    fusion = await this.#sliceSlides(fusion);
     return fusion;
   }
 
