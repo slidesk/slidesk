@@ -297,10 +297,36 @@ class BabelFish {
     return (await Promise.all(promises)).join("\n");
   }
 
+  #parseText(text: string): { [key: string]: string } {
+    const result: { [key: string]: string } = {};
+    const regex = /<p>\[\[(\w+)\]\]<\/p>(.|\n)*?<p>\[\[(\/\1)\]\]<\/p>/g;
+    let m: RegExpExecArray | null;
+    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+    while ((m = regex.exec(text)) !== null) {
+      if (m.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+      result[m[1]] = m[0]
+        .replace(`<p>[[${m[1]}]]</p>`, "")
+        .replace(`<p>[[/${m[1]}]]</p>`, "");
+    }
+    return result;
+  }
+
   #replaceWithTemplate(tpl: string, content: string, title: string) {
-    return this.#templates[tpl]
-      .replace("<sd-title />", `<h2>${title}</h2>`)
-      .replace("<sd-content />", content.replace(/<h2>(.*)<\/h2>/g, ""));
+    let text = this.#templates[tpl];
+    let newContent = content;
+    const blocs = this.#parseText(content);
+    Object.keys(blocs).forEach((key, _) => {
+      text = text.replace(`<sd-${key} />`, blocs[key]);
+      newContent = newContent.replace(
+        `<p>[[${key}]]</p>${blocs[key]}<p>[[/${key}]]</p>`,
+        "",
+      );
+    });
+    return text
+      .replace(/<sd\-title \/>/g, `<h2>${title}</h2>`)
+      .replace(/<sd\-content \/>/g, newContent.replace(/<h2>(.*)<\/h2>/g, ""));
   }
 
   async #treatSlide(slide: string) {
