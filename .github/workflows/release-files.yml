@@ -75,13 +75,22 @@ jobs:
           sha=($(shasum -a 256 ./exe/slidesk))
           sha_value="${{ matrix.sha_field }}"
           echo "output_${sha_value}=${{ matrix.sha_field }}-$sha" >> "$GITHUB_OUTPUT"
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: .
+          files: |
+            slidesk_${{ matrix.release_suffix }}
+          outPath: slidesk_${{ matrix.release_suffix }}.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: slidesk_${{ matrix.release_suffix }}
+          files: slidesk_${{ matrix.release_suffix }}.tar.gz
       
   update_brew_formula:
     name: Update formula
