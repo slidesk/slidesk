@@ -98,7 +98,7 @@ jobs:
     needs: build_release
     steps:
       - name: Update formula
-        uses: yodamad-actions/brew-formula-update@0.2
+        uses: yodamad-actions/brew-formula-update@0.4
         with:
           file: slidesk.rb
           owner: gouz
@@ -106,6 +106,7 @@ jobs:
           version: ${{ github.ref_name }}
           fields: ${{ toJSON(needs.build_release.outputs) }}
           token: ${{ secrets.BREW_TOKEN }}
+          auto_merge: true
 
   push_docker_hub:
     name: Push on Docker Hub
