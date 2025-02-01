@@ -152,3 +152,34 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  generate_deb:
+    name: Build packages file
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: oven-sh/setup-bun@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: bun install
+      - run: bun make:exe
+      - name: create sample script
+        run: |
+          mkdir -p .debpkg/usr/bin
+          cp -p exe/* .debpkg/usr/bin/
+      - name: build-deb-action
+        uses: jiro4989/build-deb-action@v3
+        with:
+          package: "slidesk"
+          desc: "Your presentation companion"
+          arch: "amd64"
+          package_root: ".debpkg"
+          maintainer: "Sylvain Gougouzian <sylvain@gougouzian.fr>"
+          version: ${{ github.ref_name }}
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ needs.create_release.outputs.tag-name }}
+          files: slidesk_${{ github.ref_name }}_amd64.deb
