@@ -6,6 +6,7 @@ import {
   view as presentationView,
   script as presentationScript,
   styles as presentationStyles,
+  manifest as presentationManifest,
 } from "../templates/present";
 import {
   view as notesView,
@@ -145,6 +146,10 @@ class BabelFish {
         [this.#favicon.name]: {
           content: this.#favicon.content,
           headers: { "Content-Type": this.#favicon.type },
+        },
+        "/manifest.json": {
+          content: JSON.stringify(presentationManifest),
+          headers: { "Content-Type": "application/json" },
         },
         ...this.#getPluginCSS(),
         ...this.#getPluginsJS(),

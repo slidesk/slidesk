@@ -45,8 +45,8 @@ window.slidesk.changeSlide = () => {
       payload:
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
           ? window.slidesk.slides[
-              window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^")"/gi, "")
+            window.slidesk.currentSlide + 1
+          ].outerHTML.replace(/data-source="(^")"/gi, "")
           : "",
     });
   }

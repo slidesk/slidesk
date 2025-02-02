@@ -207,3 +207,31 @@ h3 {
     transform: translateX(0);
   }
 }
+
+
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+
+  body::before {
+    content: 'Please rotate ⟳ your device to view this presentation.';
+    position: absolute;
+    font-size: 5vw;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vh;
+    height: 100vw;
+    background-color: #fff;
+    z-index: 1000;
+  }
+}
