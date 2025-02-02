@@ -68,6 +68,10 @@ jobs:
         uses: actions/checkout@v4
       - run: bun install
       - run: bun make:exe ${{ matrix.compile_options }}
+      - name: Rename release package
+        id: release_package
+        run: |
+            cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
@@ -77,11 +81,10 @@ jobs:
           files: |
             slidesk_${{ matrix.release_suffix }}
           outPath: slidesk_${{ matrix.release_suffix }}.tar.gz
-      - name: Rename release package
-        id: release_package
+      - name: Compute sha
+        id: compute_sha
         run: |
-            cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
-            sha=($(shasum -a 256 ./exe/slidesk))
+            sha=($(shasum -a 256 slidesk_${{ matrix.release_suffix }}.tar.gz))
             sha_value="${{ matrix.sha_field }}"
             echo "output_${sha_value}=${{ matrix.sha_field }}-$sha" >> "$GITHUB_OUTPUT"
       - name: Release
