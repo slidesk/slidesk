@@ -94,6 +94,7 @@ jobs:
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
           files: slidesk_${{ matrix.release_suffix }}.tar.gz
+          generate_release_notes: true
       
   update_brew_formula:
     name: Update formula
