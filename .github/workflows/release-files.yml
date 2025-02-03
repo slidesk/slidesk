@@ -115,9 +115,9 @@ jobs:
     name: Push on Docker Hub
     strategy:
       matrix:
-        os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
+          - os: macos-latest
     runs-on: ${{ matrix.os }}
     environment: build
     needs: build_release
