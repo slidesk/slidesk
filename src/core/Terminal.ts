@@ -1,5 +1,6 @@
 import TurndownService from "turndown";
 import type { SliDeskFile } from "../types";
+import chalk from "chalk";
 
 class Terminal {
   #slides: string[] = [];
@@ -17,11 +18,23 @@ class Terminal {
         bulletListMarker: "-",
       });
       const md = turndown.turndown(html);
-      this.#slides.push(...md.split("\n## ").map((s, i) => (i ? `# ${s}` : s)));
+      this.#slides.push(
+        ...md.split("\n## ").map((s, i) => this.#styles(i ? `# ${s}` : s)),
+      );
       this.#show();
     } else {
       console.error("No index.html file found.");
     }
+  }
+
+  #styles(markdown: string) {
+    let conv = markdown;
+    conv = conv.replace(/# (.+)/g, chalk.bold.underline("$1"));
+    conv = conv.replace(/_([^*]+)_/g, chalk.italic("$1"));
+    conv = conv.replace(/\*\*(.+?)\*\*/g, chalk.bold("$1"));
+    conv = conv.replace(/^##/g, "");
+    // Todo images
+    return conv;
   }
 
   send(action: string, data?: object | number | string) {
