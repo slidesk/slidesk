@@ -205,9 +205,9 @@ h3 {
     height: 100%;
     page-break-after: always;
     transform: translateX(0);
+    opacity: 1;
   }
 }
-
 
 @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
   html {
@@ -222,7 +222,7 @@ h3 {
   }
 
   body::before {
-    content: 'Please rotate ⟳ your device to view this presentation.';
+    content: "Please rotate ⟳ your device to view this presentation.";
     position: absolute;
     font-size: 5vw;
     color: #333;
