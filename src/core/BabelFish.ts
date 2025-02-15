@@ -239,7 +239,9 @@ class BabelFish {
         ) {
           const files = readdirSync(
             `${file.substring(0, file.lastIndexOf("/"))}/${p1}`,
-          ).sort();
+          )
+            .filter((f) => f.endsWith(".sdf"))
+            .sort();
           const res: string[] = [];
           for await (const f of files)
             res.push(
