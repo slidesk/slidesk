@@ -1,12 +1,14 @@
 import TurndownService from "turndown";
 import type { SliDeskFile } from "../types";
 import chalk from "chalk";
+import terminalImage from "terminal-image";
+import replaceAsync from "../utils/replaceAsync";
 
 class Terminal {
   #slides: string[] = [];
   #talkdir = "";
   #currentSlideIndex = 0;
-  create(files: SliDeskFile, _: object, talkdir: string) {
+  async create(files: SliDeskFile, _: object, talkdir: string) {
     this.#talkdir = talkdir;
     if (files["/index.html"]) {
       const html =
@@ -19,7 +21,11 @@ class Terminal {
       });
       const md = turndown.turndown(html);
       this.#slides.push(
-        ...md.split("\n## ").map((s, i) => this.#styles(i ? `# ${s}` : s)),
+        ...(await Promise.all(
+          [...md.split("\n## ")].map(
+            async (s, i) => await this.#styles(i ? `# ${s}` : s),
+          ),
+        )),
       );
       this.#show();
     } else {
@@ -27,13 +33,21 @@ class Terminal {
     }
   }
 
-  #styles(markdown: string) {
+  async #styles(markdown: string) {
     let conv = markdown;
     conv = conv.replace(/# (.+)/g, chalk.bold.underline("$1"));
     conv = conv.replace(/_([^*]+)_/g, chalk.italic("$1"));
     conv = conv.replace(/\*\*(.+?)\*\*/g, chalk.bold("$1"));
-    conv = conv.replace(/^##/g, "");
-    // Todo images
+    conv = conv.replace(/##/g, "");
+    conv = conv.replace(/\\/g, "");
+    // Todo images extract path from markdown syntax
+    conv = await replaceAsync(
+      conv,
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      async (_, _title, src) => {
+        return await terminalImage.file(`${this.#talkdir}/${src}`);
+      },
+    );
     return conv;
   }
 
