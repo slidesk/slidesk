@@ -67,6 +67,7 @@ program
     "specify the language version (per default, it will use the .lang.json file with default information)",
     "",
   )
+  .option("-x, --terminal", "present in a terminal window instead of a browser")
   .action(present);
 
 program.parse();

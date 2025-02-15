@@ -17,10 +17,10 @@ export default function image(data: string) {
           ? ` style="${optionals}"`
           : ""
       } >
-        <img src="${src.trim()}" loading="lazy" alt="${alt?.trim()}"${
+        <img src="${src.trim()}" loading="lazy" alt="${alt?.trim() ?? ""}"${
           width && width.trim() !== "" ? ` width="${width.trim()}"` : ""
         }${height && height.trim() !== "" ? ` height="${height.trim()}"` : ""} />
-        <figcaption ${caption?.trim() === "true" ? "" : "style='display: none;'"}>${alt?.trim()}</figcaption>
+        <figcaption ${caption?.trim() === "true" ? "" : "style='display: none;'"}>${alt?.trim() ?? ""}</figcaption>
       </figure>`,
     );
   });
