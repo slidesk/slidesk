@@ -13,6 +13,7 @@ export type PresentOptions = {
   interactive?: boolean;
   open?: string;
   lang?: string;
+  terminal?: boolean;
 };
 
 export type ServerOptions = {

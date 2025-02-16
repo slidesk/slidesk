@@ -5,6 +5,7 @@ import BabelFish from "../core/BabelFish";
 import { getAction } from "../utils/interactCLI";
 import type { PresentOptions } from "../types";
 import SlideskServer from "../core/Server";
+import Terminal from "../core/Terminal";
 
 const { log } = console;
 
@@ -65,7 +66,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
   });
 };
 
-const server: SlideskServer = new SlideskServer();
+let server: SlideskServer | Terminal = new SlideskServer();
 
 const flow = async (
   talkdir: string,
@@ -78,7 +79,8 @@ const flow = async (
   }
   if (options.save) {
     save(options, talkdir, files);
-  } else if (init) {
+  }
+  if (init) {
     await server.create(files, options, talkdir);
   } else {
     server.setFiles(files);
@@ -87,6 +89,9 @@ const flow = async (
 
 const present = (talk: string, options: PresentOptions) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
+  if (options.terminal) {
+    server = new Terminal();
+  }
   flow(talkdir, options, true);
   if (!options.save) {
     if (!options.hidden)
