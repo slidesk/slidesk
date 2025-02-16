@@ -35,19 +35,15 @@ class Terminal {
 
   async #styles(markdown: string) {
     let conv = markdown;
+    const replacer = (_: string, _p1: string, p2: string) => {
+      return `::img::${btoa(p2)}::`;
+    };
+    conv = conv.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, replacer);
     conv = conv.replace(/# (.+)/g, chalk.bold.underline("$1"));
-    conv = conv.replace(/_([^*]+)_/g, chalk.italic("$1"));
+    conv = conv.replace(/_([^_]+)_/g, chalk.italic("$1"));
     conv = conv.replace(/\*\*(.+?)\*\*/g, chalk.bold("$1"));
     conv = conv.replace(/##/g, "");
     conv = conv.replace(/\\/g, "");
-    // Todo images extract path from markdown syntax
-    conv = await replaceAsync(
-      conv,
-      /!\[([^\]]*)\]\(([^)]+)\)/g,
-      async (_, _title, src) => {
-        return await terminalImage.file(`${this.#talkdir}/${src}`);
-      },
-    );
     return conv;
   }
 
@@ -68,9 +64,25 @@ class Terminal {
     this.#show();
   }
 
-  #show() {
+  async #show() {
     console.clear();
-    console.log(this.#slides[this.#currentSlideIndex]);
+    console.log(
+      await replaceAsync(
+        this.#slides[this.#currentSlideIndex],
+        /::img::([^:]+)::/g,
+        async (_, src) => {
+          const file = atob(String(src));
+          if (String(file).endsWith(".svg")) return "";
+          // if (String(file).endsWith(".gif"))
+          //   await terminalImage.gifFile(`${this.#talkdir}/${file}`, {
+          //     height: "50%",
+          //   });
+          return await terminalImage.file(`${this.#talkdir}/${file}`, {
+            height: "50%",
+          });
+        },
+      ),
+    );
   }
 }
 
