@@ -37,10 +37,10 @@ jobs:
     needs: create_release
     environment: build
     outputs:
-      output_linux_amd: ${{ steps.release_package.outputs.output_LINUX_AMD_SHA }}
-      output_linux_arm: ${{ steps.release_package.outputs.output_LINUX_ARM_SHA }}
-      output_mac_amd: ${{ steps.release_package.outputs.output_MAC_AMD_SHA }}
-      output_mac_arm: ${{ steps.release_package.outputs.output_MAC_ARM_SHA }}
+      output_linux_amd: ${{ steps.compute_sha.outputs.output_LINUX_AMD_SHA }}
+      output_linux_arm: ${{ steps.compute_sha.outputs.output_LINUX_ARM_SHA }}
+      output_mac_amd: ${{ steps.compute_sha.outputs.output_MAC_AMD_SHA }}
+      output_mac_arm: ${{ steps.compute_sha.outputs.output_MAC_ARM_SHA }}
     strategy:
       matrix:
         include:
@@ -79,12 +79,12 @@ jobs:
           command: c
           cwd: .
           files: |
-            slidesk_${{ matrix.release_suffix }}
-          outPath: slidesk_${{ matrix.release_suffix }}.tar.gz
+            ./slidesk_${{ matrix.release_suffix }}
+          outPath: ./slidesk_${{ matrix.release_suffix }}.tar.gz
       - name: Compute sha
         id: compute_sha
         run: |
-            sha=($(shasum -a 256 slidesk_${{ matrix.release_suffix }}.tar.gz))
+            sha=($(shasum -a 256 ./slidesk_${{ matrix.release_suffix }}.tar.gz))
             sha_value="${{ matrix.sha_field }}"
             echo "output_${sha_value}=${{ matrix.sha_field }}-$sha" >> "$GITHUB_OUTPUT"
       - name: Release
