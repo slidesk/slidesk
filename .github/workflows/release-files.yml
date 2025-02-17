@@ -79,12 +79,12 @@ jobs:
           command: c
           cwd: .
           files: |
-            slidesk_${{ matrix.release_suffix }}
-          outPath: slidesk_${{ matrix.release_suffix }}.tar.gz
+            ./slidesk_${{ matrix.release_suffix }}
+          outPath: ./slidesk_${{ matrix.release_suffix }}.tar.gz
       - name: Compute sha
         id: compute_sha
         run: |
-            sha=($(shasum -a 256 slidesk_${{ matrix.release_suffix }}.tar.gz))
+            sha=($(shasum -a 256 ./slidesk_${{ matrix.release_suffix }}.tar.gz))
             sha_value="${{ matrix.sha_field }}"
             echo "output_${sha_value}=${{ matrix.sha_field }}-$sha" >> "$GITHUB_OUTPUT"
       - name: Release
