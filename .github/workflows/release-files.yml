@@ -118,7 +118,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-          - os: macos-latest
+          - os: ubuntu-22.04-arm
     runs-on: ${{ matrix.os }}
     environment: build
     needs: build_release
@@ -148,7 +148,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Build and push Docker image (Arm64)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'ubuntu-22.04-arm'
         uses: docker/build-push-action@v5
         with:
           context: .
