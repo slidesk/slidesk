@@ -1,4 +1,4 @@
-export default function comments(data) {
+export default function comments(data: string) {
   let newData = data;
   [...newData.matchAll(/\n\/\*([^*]|(\*+[^*/]))*\n\*\//gm)].forEach(
     (match, _) => {
