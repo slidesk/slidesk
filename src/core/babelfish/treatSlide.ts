@@ -15,40 +15,43 @@ const md = markdownIt({
   typographer: true,
 });
 
-export default async (
-  slide: string,
-  cptSlide: number,
-  options: SliDeskPresentOptions,
-  templates: SliDeskTemplate,
-  plugins: SliDeskPlugin[],
-) => {
-  if (slide.trim() === "") return "";
-  let classes = "";
-  let slug = "";
+const prepareHTML = (slide: string) => {
   let timerSlide = "";
   let timerCheckpoint = "";
-  let content = md
-    .render(
-      `## ${slide
-        .replace(/\\r/g, "")
-        .split("\n")
-        .map((p) => {
-          if (p.trimStart().startsWith("//@")) {
-            const timer = p.replace("//@", "").replaceAll(" ", "");
-            if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
-            if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
-            return "";
-          }
-          if (p.trimStart().startsWith("//")) {
-            return "";
-          }
-          return p;
-        })
-        .join("\n")}`.replace("## #", "#"),
-    )
-    .toString()
-    .replace("<h2> </h2>", "");
-  const slideTitle = content.match("<h2>(.*)</h2>");
+  const content = `## ${slide
+    .replace(/\\r/g, "")
+    .split("\n")
+    .map((p) => {
+      if (p.trimStart().startsWith("//@")) {
+        const timer = p.replace("//@", "").replaceAll(" ", "");
+        if (timer.startsWith("[]")) timerSlide = timer.replace("[]", "");
+        if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
+        return "";
+      }
+      if (p.trimStart().startsWith("//")) {
+        return "";
+      }
+      return p;
+    })
+    .join("\n")}`.replace("## #", "#");
+  return { timerSlide, timerCheckpoint, content };
+};
+
+const render = (slide: string) => {
+  const {
+    timerSlide,
+    timerCheckpoint,
+    content: preparedHTML,
+  } = prepareHTML(slide);
+  const content = md.render(preparedHTML).toString().replace("<h2> </h2>", "");
+  return { timerSlide, timerCheckpoint, content };
+};
+
+const treatTitle = (slide: string, templates: SliDeskTemplate) => {
+  let content = slide;
+  let classes = "";
+  let slug = "";
+  const slideTitle = slide.match("<h2>(.*)</h2>");
   if (slideTitle?.length) {
     const spl = slideTitle[1].toString().split(".[");
     if (spl.length !== 1) {
@@ -65,6 +68,20 @@ export default async (
       content = replaceWithTemplate(tpl, content, spl[0], templates);
     else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
   }
+  return { content, slug, classes };
+};
+
+export default async (
+  slide: string,
+  cptSlide: number,
+  options: SliDeskPresentOptions,
+  templates: SliDeskTemplate,
+  plugins: SliDeskPlugin[],
+) => {
+  if (slide.trim() === "") return "";
+
+  const { timerSlide, timerCheckpoint, content: renderContent } = render(slide);
+  const { content, slug, classes } = treatTitle(renderContent, templates);
   const slideSlug = `!slide-${cptSlide}`;
   const datas = {
     num: cptSlide,

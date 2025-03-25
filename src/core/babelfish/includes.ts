@@ -13,7 +13,7 @@ const includes = async (file: string): Promise<string> => {
         `${file.substring(0, file.lastIndexOf("/"))}/${p1}`,
       )
         .filter((f) => f.endsWith(".sdf"))
-        .sort();
+        .sort((a, b) => a.localeCompare(b));
       const res: string[] = [];
       for await (const f of files)
         res.push(

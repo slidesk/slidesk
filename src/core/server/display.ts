@@ -1,5 +1,5 @@
 import open, { apps } from "open";
-import type { ServerOptions } from "../../types";
+import type { SliDeskServerOptions } from "../../types";
 
 const { log } = console;
 
@@ -10,7 +10,7 @@ const getBrowser = (open: string) => {
   return apps.browser;
 };
 
-export default async (https: boolean, options: ServerOptions) => {
+export default async (https: boolean, options: SliDeskServerOptions) => {
   if (options.notes) {
     log(
       `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
@@ -32,16 +32,8 @@ export default async (https: boolean, options: ServerOptions) => {
     }://${options.domain}:${options.port}\x1b[0m`,
   );
   if (options.open && !options.notes) {
-    const br =
-      options.open === "firefox"
-        ? apps.firefox
-        : options.open === "chrome"
-          ? apps.chrome
-          : options.open === "edge"
-            ? apps.edge
-            : apps.browser;
     await open(`http${https ? "s" : ""}://${options.domain}:${options.port}`, {
-      app: { name: br },
+      app: { name: getBrowser(options.open) },
     });
   }
   log();
