@@ -55,7 +55,7 @@ class BabelFish {
     js: [],
   };
   #env: { [key: string]: object | string } = {};
-  #favicon: { name: string; content: Uint8Array; type: string } = {
+  #favicon: { name: string; content: Uint8Array | string; type: string } = {
     name: "/favicon.svg",
     content: faviconSVG,
     type: "image/svg+xml",
@@ -200,7 +200,7 @@ class BabelFish {
                 });
               }
             });
-            this.#plugins.push({ type: "external", ...json });
+            this.#plugins.push({ ...json });
           }
         }),
       );
@@ -285,12 +285,10 @@ class BabelFish {
     // format text
     fusion = formatting(fusion, this.#env);
     // custom components
-    await Promise.all(
-      this.#components.map(async (c) => {
-        const { default: comp } = await import(c);
-        fusion = comp(fusion);
-      }),
-    );
+    for await (const c of this.#components) {
+      const { default: comp } = await import(c);
+      fusion = await comp(fusion);
+    }
     // slice & treatment
     fusion = await this.#sliceSlides(fusion);
     return fusion;
@@ -342,8 +340,8 @@ class BabelFish {
     let slug = "";
     let timerSlide = "";
     let timerCheckpoint = "";
-    let content = (
-      await md.render(
+    let content = md
+      .render(
         `## ${slide
           .replace(/\\r/g, "")
           .split("\n")
@@ -362,7 +360,6 @@ class BabelFish {
           })
           .join("\n")}`.replace("## #", "#"),
       )
-    )
       .toString()
       .replace("<h2> </h2>", "");
     const slideTitle = content.match("<h2>(.*)</h2>");
@@ -418,26 +415,14 @@ class BabelFish {
     ];
     this.#plugins.forEach((p, _) => {
       if (p.addStyles) {
-        if (p.type === "internal") {
-          Object.keys(p.addStyles).forEach((k, _) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`),
-          );
-        } else {
-          p.addStyles.forEach((k: string, _) =>
-            css.push(`<link href="${k}" rel="stylesheet"/>`),
-          );
-        }
+        (p.addStyles as string[]).forEach((k: string, _) =>
+          css.push(`<link href="${k}" rel="stylesheet"/>`),
+        );
       }
       if (p.addScripts) {
-        if (p.type === "internal") {
-          Object.keys(p.addScripts).forEach((k, _) =>
-            js.push(`<script src="${k}"></script>`),
-          );
-        } else {
-          p.addScripts.forEach((k: string, _) =>
-            js.push(`<script src="${k}"></script>`),
-          );
-        }
+        (p.addScripts as string[]).forEach((k: string, _) =>
+          js.push(`<script src="${k}"></script>`),
+        );
       }
     });
     template = template.replace(
@@ -506,14 +491,15 @@ class BabelFish {
       removeComments: true,
       removeAttributeQuotes: true,
     });
-
     return tpl.replace(
       "</body>",
       `${this.#plugins.map((p) => p.addHTML ?? "").join("")}${this.#plugins
         .map((p) =>
           p.addHTMLFromFiles
             ? Object.keys(p.addHTMLFromFiles)
-                .map((k) => p.addHTMLFromFiles[k])
+                .map(
+                  (k) => (p.addHTMLFromFiles as { [key: string]: string })[k],
+                )
                 .join("")
             : "",
         )
@@ -578,14 +564,14 @@ class BabelFish {
         if (p.addStyles)
           Object.keys(p.addStyles).forEach((k, _) => {
             css[k.replace("./", "/")] = {
-              content: p.addStyles[k],
+              content: (p.addStyles as { [key: string]: string })[k],
               headers: { "Content-type": "text/css" },
             };
           });
         if (this.#hasNotesView && p.addSpeakerStyles)
           Object.keys(p.addSpeakerStyles).forEach((k, _) => {
             css[k.replace("./", "/")] = {
-              content: p.addSpeakerStyles[k],
+              content: (p.addSpeakerStyles as { [key: string]: string })[k],
               headers: { "Content-type": "text/css" },
             };
           });
@@ -601,14 +587,14 @@ class BabelFish {
         if (p.addScripts)
           Object.keys(p.addScripts).forEach((k: string, _) => {
             js[k.replace("./", "/")] = {
-              content: p.addScripts[k],
+              content: (p.addScripts as { [key: string]: string })[k],
               headers: { "Content-type": "application/javascript" },
             };
           });
         if (this.#hasNotesView && p.addSpeakerScripts)
           Object.keys(p.addSpeakerScripts).forEach((k, _) => {
             js[k.replace("./", "/")] = {
-              content: p.addSpeakerScripts[k],
+              content: (p.addSpeakerScripts as { [key: string]: string })[k],
               headers: { "Content-type": "application/javascript" },
             };
           });
@@ -627,26 +613,15 @@ class BabelFish {
     const js = ['<script src="slidesk-notes.js"></script>'];
     this.#plugins.forEach((p, _) => {
       if (p.addSpeakerStyles) {
-        if (p.type === "internal") {
-          Object.keys(p.addSpeakerStyles).forEach((k, _) =>
-            css.push(`<link href="${k}" rel="stylesheet" />`),
-          );
-        } else {
-          p.addSpeakerStyles.forEach((k: string, _) =>
-            css.push(`<link href="${k}" rel="stylesheet" />`),
-          );
-        }
+        (p.addSpeakerStyles as string[]).forEach((k: string, _) =>
+          css.push(`<link href="${k}" rel="stylesheet" />`),
+        );
       }
+
       if (p.addSpeakerScripts) {
-        if (p.type === "internal") {
-          Object.keys(p.addSpeakerScripts).forEach((k, _) =>
-            js.push(`<script src="${k}"></script>`),
-          );
-        } else {
-          p.addSpeakerScripts.forEach((k: string, _) =>
-            js.push(`<script src="${k}"></script>`),
-          );
-        }
+        (p.addSpeakerScripts as string[]).forEach((k: string, _) =>
+          js.push(`<script src="${k}"></script>`),
+        );
       }
     });
     template = template.replace(

@@ -27,7 +27,8 @@
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
-		"@types/html-minifier-terser": "^7.0.2"
+		"@types/html-minifier-terser": "^7.0.2",
+		"@types/markdown-it": "^14.1.2"
 	},
 	"scripts": {
 		"make": "bun build src/index.ts --outdir bin --minify --target bun",

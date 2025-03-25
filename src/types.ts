@@ -44,11 +44,11 @@ export type SliDeskPlugin = {
   addRoutes: string | SlideskPluginAddRoute;
   addWS: string | SlideskPluginAddWS;
   addHTML: string;
-  addHTMLFromFiles: string[];
-  addScripts: string[];
-  addStyles: string[];
-  addSpeakerScripts: string[];
-  addSpeakerStyles: string[];
+  addHTMLFromFiles: string[] | { [key: string]: string };
+  addScripts: string[] | { [key: string]: string };
+  addStyles: string[] | { [key: string]: string };
+  addSpeakerScripts: string[] | { [key: string]: string };
+  addSpeakerStyles: string[] | { [key: string]: string };
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
 };
