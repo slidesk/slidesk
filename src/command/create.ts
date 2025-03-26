@@ -1,7 +1,7 @@
 import slugify from "../utils/slugify";
 import { question } from "../utils/interactCLI";
 import { mkdirSync } from "node:fs";
-import type { CreateOptions } from "../types";
+import type { SliDeskCreateOptions } from "../types";
 
 const { log, error } = console;
 
@@ -52,7 +52,7 @@ const createDefault = async (dirName: string, responseTitle: string) => {
   }
 };
 
-const create = async (talk: string, options: CreateOptions) => {
+const create = async (talk: string, options: SliDeskCreateOptions) => {
   log(`Creation of your talk: ${talk}`);
   let dirName = slugify(talk);
   if (dirName === "create") {
