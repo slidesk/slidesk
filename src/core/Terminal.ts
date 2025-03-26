@@ -1,32 +1,40 @@
-import TurndownService from "turndown";
-import type { SliDeskFile } from "../types";
+import type { DotenvParseOutput } from "dotenv";
+import type { SliDeskFile, SliDeskServerOptions } from "../types";
+import loadEnv from "../utils/loadEnv";
 import show from "./terminal/show";
-import styles from "./terminal/styles";
-
 class Terminal {
   readonly #slides: string[] = [];
+  #env: DotenvParseOutput = {};
   #talkdir = "";
   #currentSlideIndex = 0;
-  async create(files: SliDeskFile, _: object, talkdir: string) {
+  async create(
+    files: SliDeskFile,
+    options: SliDeskServerOptions,
+    talkdir: string,
+  ) {
     this.#talkdir = talkdir;
+    this.#env = await loadEnv(talkdir, options);
     if (files["/index.html"]) {
       const html =
         /<body class=sd-app>([\s\S]*?)<\/body>/
           .exec(files["/index.html"].content ?? "")
           ?.shift() ?? "";
-      const turndown = new TurndownService({
-        headingStyle: "atx",
-        bulletListMarker: "-",
-      });
-      const md = turndown.turndown(html);
+      const replacer = (_: string, src: string, data: string) =>
+        `::img::${btoa(JSON.stringify({ src, data }))}::`;
       this.#slides.push(
-        ...(await Promise.all(
-          [...md.split("\n## ")].map(
-            async (s, i) => await styles(i ? `# ${s}` : s),
+        ...html
+          .split(/<section class=["]?sd-slide /)
+          .map((t) =>
+            t.substring(0, 1) === "d"
+              ? `<section class=sd-slide ${t}`
+              : `<section class="sd-slide ${t}`,
+          )
+          .map((h) =>
+            h.replace(/<img src=(.+) loading=lazy([^>]*)>/g, replacer),
           ),
-        )),
       );
-      show(this.#talkdir, this.#slides, this.#currentSlideIndex);
+      this.#slides.shift();
+      show(this.#talkdir, this.#slides, this.#currentSlideIndex, this.#env);
     } else {
       console.error("No index.html file found.");
     }
@@ -46,7 +54,7 @@ class Terminal {
         Math.min(this.#slides.length - 1, Number(data)),
       );
     }
-    show(this.#talkdir, this.#slides, this.#currentSlideIndex);
+    show(this.#talkdir, this.#slides, this.#currentSlideIndex, this.#env);
   }
 }
 

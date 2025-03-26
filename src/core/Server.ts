@@ -1,42 +1,37 @@
-import dotenv from "dotenv";
 import { existsSync } from "node:fs";
 import type {
   SliDeskFile,
-  ServerOptions,
-  PluginsJSON,
-  SlideskPluginAddWS,
+  SliDeskServerOptions,
+  SliDeskPlugin,
+  SliDeskPluginAddWS,
 } from "../types";
 import type { Server } from "bun";
 import getPlugins from "./server/getPlugins";
 import display from "./server/display";
 import fetch from "./server/fetch";
+import loadEnv from "../utils/loadEnv";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
 let server: Server;
-let env: { [key: string]: string } = {};
 
 export default class SlideskServer {
-  async create(files: SliDeskFile, options: ServerOptions, path: string) {
+  async create(
+    files: SliDeskFile,
+    options: SliDeskServerOptions,
+    path: string,
+  ) {
     serverFiles = files;
     serverPath = path;
-    let serverPlugins: PluginsJSON = {};
-    const slideskEnvFile = Bun.file(`${path}/.env`);
-    if (slideskEnvFile.size !== 0) {
-      const buf = await slideskEnvFile.text();
-      env = dotenv.parse(buf);
-    }
+    const serverPlugins: SliDeskPlugin[] = [];
+    const env = await loadEnv(path, options);
     const pluginsDir = `${path}/plugins`;
     if (existsSync(pluginsDir))
-      serverPlugins = {
-        ...serverPlugins,
-        ...(await getPlugins(pluginsDir, serverPath)),
-      };
+      serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
     if (env.COMMON_DIR && existsSync(`${path}/${env.COMMON_DIR}/plugins`))
-      serverPlugins = {
-        ...serverPlugins,
+      serverPlugins.push(
         ...(await getPlugins(`${path}/${env.COMMON_DIR}/plugins`, serverPath)),
-      };
+      );
     server = Bun.serve({
       port: options.port,
       async fetch(req) {
@@ -56,13 +51,17 @@ export default class SlideskServer {
         },
         async message(ws, message: string) {
           const json = JSON.parse(message);
-          if (json.plugin && serverPlugins[json.plugin]?.addWS) {
+          if (
+            json.plugin &&
+            serverPlugins.find((p) => p.name === json.plugin)?.addWS
+          ) {
             server.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
                 response: await (
-                  serverPlugins[json.plugin].addWS as SlideskPluginAddWS
+                  serverPlugins.find((p) => p.name === json.plugin)
+                    ?.addWS as SliDeskPluginAddWS
                 )(message, server),
               }),
             );

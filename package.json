@@ -12,15 +12,15 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
-    "@types/turndown": "^5.0.5",
     "chalk": "^5.4.1",
+    "cli-html": "^4.2.0",
     "commander": "^13.1.0",
     "dotenv": "^16.4.7",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
     "open": "^10.1.0",
     "terminal-image": "^3.1.1",
-    "turndown": "^7.2.0"
+    "terminal-size": "^4.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.4.5"
