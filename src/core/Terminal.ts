@@ -23,9 +23,9 @@ class Terminal {
         `::img::${btoa(JSON.stringify({ src, data }))}::`;
       this.#slides.push(
         ...html
-          .split(/<section class=["]?sd-slide /)
+          .split(/<section class="?sd-slide /)
           .map((t) =>
-            t.substring(0, 1) === "d"
+            t.startsWith("d")
               ? `<section class=sd-slide ${t}`
               : `<section class="sd-slide ${t}`,
           )
