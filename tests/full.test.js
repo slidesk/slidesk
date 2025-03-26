@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { test, expect } from "bun:test";
-import babelfish from "../src/core/babelfish";
+import Convert from "../src/core/Convert";
 
 const options = {
   save: false,
@@ -12,15 +12,15 @@ const options = {
 const file = `${process.cwd()}/example/main.sdf`;
 
 test("not found", async () => {
-  expect(await babelfish("", options)).toEqual({});
+  expect(await Convert("", options)).toEqual({});
 });
 
 test("minimal", async () => {
   expect(
-    await babelfish(`${process.cwd()}/tests/main.sdf`, options),
+    await Convert(`${process.cwd()}/tests/main.sdf`, options),
   ).not.toBeNull();
 });
 
 test("snap full", async () => {
-  expect(await babelfish(file, options)).not.toBeNull();
+  expect(await Convert(file, options)).not.toBeNull();
 });

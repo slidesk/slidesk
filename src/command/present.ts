@@ -5,7 +5,7 @@ import { getAction } from "../utils/interactCLI";
 import type { SliDeskPresentOptions, SliDeskFile } from "../types";
 import SlideskServer from "../core/Server";
 import Terminal from "../core/Terminal";
-import babelfish from "../core/babelfish";
+import Convert from "../core/Convert";
 
 const { log } = console;
 
@@ -75,7 +75,7 @@ const flow = async (
   options: SliDeskPresentOptions = {},
   init = false,
 ) => {
-  const files = await babelfish(`${talkdir}/main.sdf`, options);
+  const files = await Convert(`${talkdir}/main.sdf`, options);
   if (files === null) {
     process.exit();
   }
