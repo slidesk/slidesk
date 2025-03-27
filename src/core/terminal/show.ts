@@ -1,8 +1,39 @@
-import cliHtml from "cli-html";
 import replaceAsync from "../../utils/replaceAsync";
 import terminalImage from "terminal-image";
 import terminalSize from "terminal-size";
 import type { DotenvParseOutput } from "dotenv";
+import TurndownService from "turndown";
+import { gfm } from "turndown-plugin-gfm";
+import chalk from "chalk";
+
+const td = new TurndownService({
+  headingStyle: "atx",
+})
+  .use(gfm)
+  .addRule("joliHeading", {
+    filter: ["h1", "h2"],
+    replacement: (content) => chalk.bold.blue(content),
+  })
+  .addRule("joliCode", {
+    filter: ["code"],
+    replacement: (content) => chalk.bold.green(content),
+  })
+  .addRule("joliBold", {
+    filter: ["b", "strong"],
+    replacement: (content) => chalk.bold(content),
+  })
+  .addRule("joliUnderline", {
+    filter: ["u"],
+    replacement: (content) => chalk.underline(content),
+  })
+  .addRule("joliItalic", {
+    filter: ["em", "i"],
+    replacement: (content) => chalk.italic(content),
+  })
+  .addRule("joliLink", {
+    filter: ["a"],
+    replacement: (content) => chalk.blue.underline(content),
+  });
 
 export default async (
   talkdir: string,
@@ -15,7 +46,7 @@ export default async (
   clear();
   log(
     await replaceAsync(
-      cliHtml(slides[currentSlideIndex]),
+      td.turndown(slides[currentSlideIndex]),
       /::img::([^:]+)::/g,
       async (_, source) => {
         try {
@@ -32,7 +63,6 @@ export default async (
             opts.width = (columns * width) / Number(env.WIDTH ?? "1920");
           if (height !== -1)
             opts.height = (rows * height) / Number(env.HEIGHT ?? "1080");
-          console.log(opts);
           if (String(src).toLowerCase().endsWith(".gif")) {
             terminalImage.gifFile(`${talkdir}/${src}`, opts);
             return "";

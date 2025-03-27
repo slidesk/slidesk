@@ -22,4 +22,4 @@ declare module "*.svg" {
   export default content;
 }
 
-declare module "cli-html";
+declare module "turndown-plugin-gfm";
