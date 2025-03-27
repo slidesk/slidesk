@@ -25,7 +25,8 @@ export const getAction = async (server: Server | Terminal, present = false) => {
   removeCurrentLine();
   if (i === "q") process.exit();
   else if (i === "p" && present) server.send("previous");
-  else if (i.match(/^\d+$/) && present) server.send("goto", Number(i) - 1);
+  else if (/^\d+$/.exec(i) !== null && present)
+    server.send("goto", Number(i) - 1);
   else if (present) server.send("next");
   getAction(server, present);
 };

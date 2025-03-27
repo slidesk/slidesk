@@ -1,6 +1,6 @@
 const translate = (
   presentation: string,
-  json: { translations: object } | null,
+  json: { translations: { [key: string]: string } } | null,
 ) => {
   let pres = presentation;
   [...pres.matchAll(/\${2}(\w+)\${2}/g)].forEach((match, _) => {

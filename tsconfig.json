@@ -23,6 +23,5 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
-  },
-  "files": ["src/globals.d.ts"]
+  }
 }

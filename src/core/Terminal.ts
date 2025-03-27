@@ -1,50 +1,43 @@
-import TurndownService from "turndown";
-import type { SliDeskFile } from "../types";
-import chalk from "chalk";
-import terminalImage from "terminal-image";
-import replaceAsync from "../utils/replaceAsync";
-
+import type { DotenvParseOutput } from "dotenv";
+import type { SliDeskFile, SliDeskServerOptions } from "../types";
+import loadEnv from "../utils/loadEnv";
+import show from "./terminal/show";
 class Terminal {
-  #slides: string[] = [];
+  readonly #slides: string[] = [];
+  #env: DotenvParseOutput = {};
   #talkdir = "";
   #currentSlideIndex = 0;
-  async create(files: SliDeskFile, _: object, talkdir: string) {
+  async create(
+    files: SliDeskFile,
+    options: SliDeskServerOptions,
+    talkdir: string,
+  ) {
     this.#talkdir = talkdir;
+    this.#env = await loadEnv(talkdir, options);
     if (files["/index.html"]) {
       const html =
-        (files["/index.html"].content || "")
-          .match(/<body class=sd-app>([\s\S]*?)<\/body>/)
+        /<body class=sd-app>([\s\S]*?)<\/body>/
+          .exec(files["/index.html"].content ?? "")
           ?.shift() ?? "";
-      const turndown = new TurndownService({
-        headingStyle: "atx",
-        bulletListMarker: "-",
-      });
-      const md = turndown.turndown(html);
+      const replacer = (_: string, src: string, data: string) =>
+        `::img::${btoa(JSON.stringify({ src, data }))}::`;
       this.#slides.push(
-        ...(await Promise.all(
-          [...md.split("\n## ")].map(
-            async (s, i) => await this.#styles(i ? `# ${s}` : s),
+        ...html
+          .split(/<section class="?sd-slide /)
+          .map((t) =>
+            t.startsWith("d")
+              ? `<section class=sd-slide ${t}`
+              : `<section class="sd-slide ${t}`,
+          )
+          .map((h) =>
+            h.replace(/<img src=(.+) loading=lazy([^>]*)>/g, replacer),
           ),
-        )),
       );
-      this.#show();
+      this.#slides.shift();
+      show(this.#talkdir, this.#slides, this.#currentSlideIndex, this.#env);
     } else {
       console.error("No index.html file found.");
     }
-  }
-
-  async #styles(markdown: string) {
-    let conv = markdown;
-    const replacer = (_: string, _p1: string, p2: string) => {
-      return `::img::${btoa(p2)}::`;
-    };
-    conv = conv.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, replacer);
-    conv = conv.replace(/# (.+)/g, chalk.bold.underline("$1"));
-    conv = conv.replace(/_([^_]+)_/g, chalk.italic("$1"));
-    conv = conv.replace(/\*\*(.+?)\*\*/g, chalk.bold("$1"));
-    conv = conv.replace(/##/g, "");
-    conv = conv.replace(/\\/g, "");
-    return conv;
   }
 
   send(action: string, data?: object | number | string) {
@@ -61,28 +54,7 @@ class Terminal {
         Math.min(this.#slides.length - 1, Number(data)),
       );
     }
-    this.#show();
-  }
-
-  async #show() {
-    console.clear();
-    console.log(
-      await replaceAsync(
-        this.#slides[this.#currentSlideIndex],
-        /::img::([^:]+)::/g,
-        async (_, src) => {
-          const file = atob(String(src));
-          if (String(file).endsWith(".svg")) return "";
-          // if (String(file).endsWith(".gif"))
-          //   await terminalImage.gifFile(`${this.#talkdir}/${file}`, {
-          //     height: "50%",
-          //   });
-          return await terminalImage.file(`${this.#talkdir}/${file}`, {
-            height: "50%",
-          });
-        },
-      ),
-    );
+    show(this.#talkdir, this.#slides, this.#currentSlideIndex, this.#env);
   }
 }
 

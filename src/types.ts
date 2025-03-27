@@ -1,6 +1,6 @@
 import type { Server } from "bun";
 
-export type PresentOptions = {
+export type SliDeskPresentOptions = {
   domain?: string;
   port?: string;
   save?: string;
@@ -16,7 +16,7 @@ export type PresentOptions = {
   terminal?: boolean;
 };
 
-export type ServerOptions = {
+export type SliDeskServerOptions = {
   port?: string;
   domain?: string;
   interactive?: boolean;
@@ -24,31 +24,32 @@ export type ServerOptions = {
   open?: string;
 };
 
-export type CreateOptions = {
+export type SliDeskCreateOptions = {
   theme?: string;
 };
 
-export type PluginsJSON = {
-  [key: string]: SliDeskPlugin;
-};
-export type SlideskPluginAddRoute = (
+export type SliDeskPluginAddRoute = (
   req: Request,
   env: object,
   path: string,
 ) => Promise<Response | null>;
 
-export type SlideskPluginAddWS = (message: string, server: Server) => object;
+export type SliDeskPluginAddWS = (
+  _message: string,
+  _server: Server,
+) => Promise<object>;
 
 export type SliDeskPlugin = {
+  name: string;
   type?: string;
-  addRoutes: string | SlideskPluginAddRoute;
-  addWS: string | SlideskPluginAddWS;
+  addRoutes: string | SliDeskPluginAddRoute;
+  addWS: string | SliDeskPluginAddWS;
   addHTML: string;
-  addHTMLFromFiles: string[];
-  addScripts: string[];
-  addStyles: string[];
-  addSpeakerScripts: string[];
-  addSpeakerStyles: string[];
+  addHTMLFromFiles: string[] | { [key: string]: string };
+  addScripts: string[] | { [key: string]: string };
+  addStyles: string[] | { [key: string]: string };
+  addSpeakerScripts: string[] | { [key: string]: string };
+  addSpeakerStyles: string[] | { [key: string]: string };
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
 };
@@ -62,11 +63,17 @@ export type SliDeskFile = {
   };
 };
 
-export type Includes = {
-  css: string[];
-  js: string[];
-};
-
 export type SliDeskTemplate = {
   [key: string]: string;
+};
+
+export type SliDeskConfig = {
+  customCSS: string;
+  customIncludes: { css: string[]; js: string[] };
+};
+
+export type SliDeskFavicon = {
+  name: string;
+  content: string | Uint8Array;
+  type: string;
 };

@@ -1,11 +1,11 @@
 import { watch, existsSync, rmSync, readdirSync } from "node:fs";
 import process from "node:process";
 import path from "node:path";
-import BabelFish from "../core/BabelFish";
 import { getAction } from "../utils/interactCLI";
-import type { PresentOptions } from "../types";
+import type { SliDeskPresentOptions, SliDeskFile } from "../types";
 import SlideskServer from "../core/Server";
 import Terminal from "../core/Terminal";
+import Convert from "../core/Convert";
 
 const { log } = console;
 
@@ -14,12 +14,10 @@ const readAllFiles = (dir: string): string[] => {
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file, _) => {
     if (
-      !file.name
-        .toLowerCase()
-        .match(
-          "(.sdf|.env|.lang.json|.ds_store|plugin.json|readme.md|.gitignore|.git)$",
-        ) &&
-      !file.name.match("^/components/")
+      /(.sdf|.env|.lang.json|.ds_store|plugin.json|readme.md|.gitignore|.git)$/.exec(
+        file.name.toLowerCase(),
+      ) === null &&
+      /^\/components\//.exec(file.name) === null
     ) {
       if (file.isDirectory()) {
         result.push(...readAllFiles(path.join(dir, file.name)));
@@ -31,7 +29,11 @@ const readAllFiles = (dir: string): string[] => {
   return result;
 };
 
-const save = (options: PresentOptions, talkdir: string, files) => {
+const save = (
+  options: SliDeskPresentOptions,
+  talkdir: string,
+  files: SliDeskFile,
+) => {
   const promises: Promise<number>[] = [];
   if (options.save === "." || options.save === talkdir) {
     log(
@@ -57,7 +59,7 @@ const save = (options: PresentOptions, talkdir: string, files) => {
   Object.entries(files).forEach(([key, value], _) => {
     if (!excludes.includes(key)) {
       // eslint-disable-next-line no-undef
-      promises.push(Bun.write(`${options.save}${key}`, value.content));
+      promises.push(Bun.write(`${options.save}${key}`, value.content ?? ""));
       log(`📃 ${options.save}${key} generated`);
     }
   });
@@ -70,10 +72,10 @@ let server: SlideskServer | Terminal = new SlideskServer();
 
 const flow = async (
   talkdir: string,
-  options: PresentOptions = {},
+  options: SliDeskPresentOptions = {},
   init = false,
 ) => {
-  const files = await new BabelFish(`${talkdir}/main.sdf`, options).convert();
+  const files = await Convert(`${talkdir}/main.sdf`, options);
   if (files === null) {
     process.exit();
   }
@@ -83,11 +85,11 @@ const flow = async (
   if (init) {
     await server.create(files, options, talkdir);
   } else {
-    server.setFiles(files);
+    (server as SlideskServer).setFiles(files);
   }
 };
 
-const present = (talk: string, options: PresentOptions) => {
+const present = (talk: string, options: SliDeskPresentOptions) => {
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   if (options.terminal) {
     server = new Terminal();
