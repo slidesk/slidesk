@@ -58,10 +58,7 @@ program
     "allow your audience to see your presentation on another device synchronously",
     false,
   )
-  .option(
-    "-o, --open <browser>",
-    "open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)",
-  )
+  .option("-o, --open", "open a browser with the presentation or notes view")
   .option(
     "-l, --lang <string>",
     "specify the language version (per default, it will use the .lang.json file with default information)",
