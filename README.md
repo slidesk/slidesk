@@ -80,7 +80,7 @@ Options:
   -w, --watch              watch modification of files
   -g, --hidden             remove help information
   -c, --conf <name>        use a specific .env file (default: "")
-  -o, --open <browser>     open a browser with the presentation or notes view (browser is : chrome, edge, firefox, browser, browserPrivate)
+  -o, --open               open a browser with the presentation or notes view
   -h, --help               display help for command
 
 Commands:
