@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.12.1",
+  "version": "2.12.2",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -17,7 +17,6 @@
     "dotenv": "^16.4.7",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
-    "open": "^10.1.0",
     "terminal-image": "^3.1.1",
     "terminal-size": "^4.0.0",
     "turndown": "^7.2.0",

@@ -10,7 +10,6 @@ export type SliDeskPresentOptions = {
   watch?: boolean;
   hidden?: boolean;
   conf?: string;
-  interactive?: boolean;
   open?: string;
   lang?: string;
   terminal?: boolean;
@@ -19,7 +18,6 @@ export type SliDeskPresentOptions = {
 export type SliDeskServerOptions = {
   port?: string;
   domain?: string;
-  interactive?: boolean;
   notes?: boolean;
   open?: string;
 };

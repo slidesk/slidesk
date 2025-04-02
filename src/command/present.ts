@@ -1,6 +1,7 @@
 import { watch, existsSync, rmSync, readdirSync } from "node:fs";
 import process from "node:process";
 import path from "node:path";
+import { networkInterfaces } from "node:os";
 import { getAction } from "../utils/interactCLI";
 import type { SliDeskPresentOptions, SliDeskFile } from "../types";
 import SlideskServer from "../core/Server";
@@ -90,6 +91,10 @@ const flow = async (
 };
 
 const present = (talk: string, options: SliDeskPresentOptions) => {
+  const nets = networkInterfaces();
+  options.domain =
+    nets.en0?.filter((e) => e.family === "IPv4").shift()?.address ??
+    options.domain;
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   if (options.terminal) {
     server = new Terminal();

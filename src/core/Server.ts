@@ -35,15 +35,7 @@ export default class SlideskServer {
     server = Bun.serve({
       port: options.port,
       async fetch(req) {
-        return fetch(
-          req,
-          this,
-          options,
-          serverFiles,
-          serverPlugins,
-          serverPath,
-          env,
-        );
+        return fetch(req, this, serverFiles, serverPlugins, serverPath, env);
       },
       websocket: {
         open(ws) {
