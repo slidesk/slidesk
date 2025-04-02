@@ -47,17 +47,12 @@ program
   .option("-d, --domain <string>", "domain", "localhost")
   .option("-p, --port <int>", "port", "1337")
   .option("-s, --save <path>", "save the presentation")
-  .option("-n, --notes", "open with speakers notes")
+  .option("-n, --notes [notes]", "open with speakers notes")
   .option("-t, --timers", "add checkpoint and slide maximum time on notes view")
   .option("-a, --transition <int>", "transition timer", "300")
   .option("-w, --watch", "watch modification of files")
   .option("-g, --hidden", "remove help information")
   .option("-c, --conf <name>", "use a specific .env file", "")
-  .option(
-    "-i, --interactive",
-    "allow your audience to see your presentation on another device synchronously",
-    false,
-  )
   .option("-o, --open", "open a browser with the presentation or notes view")
   .option(
     "-l, --lang <string>",
