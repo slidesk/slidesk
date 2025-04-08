@@ -1,4 +1,5 @@
 import type { SliDeskServerOptions } from "../../types";
+import { toString as QRCODE } from "qrcode";
 
 const { log } = console;
 
@@ -11,10 +12,16 @@ const start =
 
 export default async (https: boolean, options: SliDeskServerOptions) => {
   if (options.notes) {
-    log(
-      `Your speaker view is available on: \x1b[1m\x1b[36;49mhttp${
-        https ? "s" : ""
-      }://${options.domain}:${options.port}/${options.notes === true ? "notes.html" : options.notes}\x1b[0m`,
+    const url = `http${
+      https ? "s" : ""
+    }://${options.domain}:${options.port}/${options.notes === true ? "notes.html" : options.notes}`;
+    log(`Your speaker view is available on: \x1b[1m\x1b[36;49m${url}\x1b[0m`);
+    QRCODE(
+      url,
+      { type: "terminal", errorCorrectionLevel: "L", small: true },
+      (_, url) => {
+        log(url);
+      },
     );
     if (options.open) {
       Bun.spawn([
