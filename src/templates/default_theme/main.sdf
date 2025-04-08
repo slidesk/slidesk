@@ -1,0 +1,7 @@
+/::
+add_styles: assets/theme.css
+::/
+
+## TITRE
+
+!include(slides)

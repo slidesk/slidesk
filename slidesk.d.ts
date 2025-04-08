@@ -22,4 +22,14 @@ declare module "*.svg" {
   export default content;
 }
 
+declare module "*.sdf" {
+  const content: string;
+  export default content;
+}
+
+declare module "*.sdt" {
+  const content: string;
+  export default content;
+}
+
 declare module "turndown-plugin-gfm";

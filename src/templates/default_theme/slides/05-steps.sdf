@@ -1,0 +1,11 @@
+## Slide with steps .[steps]
+
+- it
+- works
+- only
+- if
+- plugin `steps`
+- is
+- installed
+
+`slidesk plugin install steps`
