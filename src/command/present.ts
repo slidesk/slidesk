@@ -93,8 +93,10 @@ const flow = async (
 const present = (talk: string, options: SliDeskPresentOptions) => {
   const nets = networkInterfaces();
   options.domain =
-    nets.en0?.filter((e) => e.family === "IPv4").shift()?.address ??
-    options.domain;
+    Object.values(nets)
+      .flat()
+      .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
+      .shift()?.address ?? options.domain;
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   if (options.terminal) {
     server = new Terminal();
