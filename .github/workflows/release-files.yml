@@ -73,7 +73,7 @@ jobs:
         run: |
             cat ./exe/slidesk > slidesk_${{ matrix.release_suffix }}
       - name: Compress action step
-        uses: a7ul/tar-action@v1.1.0
+        uses: a7ul/tar-action@v1.2.0
         id: compress
         with:
           command: c
@@ -102,7 +102,7 @@ jobs:
     needs: build_release
     steps:
       - name: Update formula
-        uses: yodamad-actions/brew-formula-update@0.4
+        uses: yodamad-actions/brew-formula-update@0.5
         with:
           file: slidesk.rb
           owner: gouz
