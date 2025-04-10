@@ -114,12 +114,7 @@ jobs:
 
   push_docker_hub:
     name: Push on Docker Hub
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: ubuntu-22.04-arm
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     environment: build
     needs: build_release
     steps:
@@ -132,30 +127,19 @@ jobs:
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build and push
+        uses: docker/bake-action@v6
+        env:
+          Docker_image: gouz/slidesk
         with:
-          images: gouz/slidesk
-
-      - name: Build and push Docker image (Amd64)
-        if: matrix.os == 'ubuntu-latest'
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./.github/amd64/Dockerfile
+          files: .github/docker/docker-bake.hcl
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image (Arm64)
-        if: matrix.os == 'ubuntu-22.04-arm'
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./.github/arm64/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          set: |
+            amd64.tags=$Docker_image:latest-amd64,$Docker_image:${{ github.ref_name }}-amd64
+            arm64.tags=$Docker_image:latest-arm64,$Docker_image:${{ github.ref_name }}-arm64
 
   generate_deb:
     name: Build packages file
