@@ -16,7 +16,7 @@ export default (
   env: ${JSON.stringify(env)},
   cwd: '${process.cwd()}/',
   lastAction: "",
-  domain: ${options.domain}
+  domain: "${options.domain}"
 };
 ${
   !options.save
