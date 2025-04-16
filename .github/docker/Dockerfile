@@ -12,10 +12,11 @@ RUN cd /temp/prod && bun install --frozen-lockfile --production
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
 FROM base AS prerelease
+ARG BUN_TARGET
 WORKDIR /usr/src/app
 COPY --from=install /temp/prod/node_modules node_modules
 COPY . .
-RUN bun make:exe --target=bun-linux-x64-modern
+RUN bun make:exe --target=bun-${BUN_TARGET}
 RUN chmod +x exe/slidesk
 
 FROM ubuntu:jammy
