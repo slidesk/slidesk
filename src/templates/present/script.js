@@ -14,7 +14,10 @@ if (window.slidesk.io) {
   window.slidesk.io.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if (data.action === "reload") window.location.reload();
-    else if (data.action === "goto" && window.location.hostname !== "localhost")
+    else if (
+      data.action === "goto" &&
+      window.location.hostname !== window.slidesk.domain
+    )
       window.slidesk.goto(data.payload);
     else if (window.slidesk[data.action]) window.slidesk[data.action](data);
   };
@@ -35,7 +38,7 @@ window.slidesk.changeSlide = () => {
     window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
       "data-slug",
     );
-  if (window.slidesk.io && window.location.hostname === "localhost") {
+  if (window.slidesk.io && window.location.hostname === window.slidesk.domain) {
     window.slidesk.sendMessage({
       action: "current",
       payload: window.slidesk.slides[
@@ -192,7 +195,10 @@ window.onload = () => {
 };
 
 document.addEventListener("keydown", (e) => {
-  if (window.location.hostname === "localhost" || window.slidesk.save) {
+  if (
+    window.location.hostname === window.slidesk.domain ||
+    window.slidesk.save
+  ) {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();
     } else if (e.key === "ArrowRight") {

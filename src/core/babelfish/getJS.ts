@@ -15,7 +15,8 @@ export default (
     .join(";")}},
   env: ${JSON.stringify(env)},
   cwd: '${process.cwd()}/',
-  lastAction: ""
+  lastAction: "",
+  domain: ${options.domain}
 };
 ${
   !options.save
