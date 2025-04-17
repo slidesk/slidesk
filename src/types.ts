@@ -13,6 +13,7 @@ export type SliDeskPresentOptions = {
   open?: string;
   lang?: string;
   terminal?: boolean;
+  ip?: string;
 };
 
 export type SliDeskServerOptions = {
@@ -20,6 +21,7 @@ export type SliDeskServerOptions = {
   domain?: string;
   notes?: boolean;
   open?: string;
+  ip?: string;
 };
 
 export type SliDeskCreateOptions = {
