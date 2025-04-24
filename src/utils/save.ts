@@ -46,7 +46,7 @@ export default async (
   });
   Object.entries(files).forEach(([key, value], _) => {
     // eslint-disable-next-line no-undef
-    promises.push(Bun.write(`${savePath}${key}`, value.content ?? ""));
+    promises.push(Bun.write(`${savePath}/${key}`, value.content ?? ""));
   });
   await Promise.all(promises);
 };
