@@ -34,7 +34,7 @@ const sendToSlideskLink = async (
   });
   const uuid = await response.text();
   log("Your presentation is available for 24h:");
-  log(`https://slidesk.link/s/${uuid}`);
+  log(`https://slidesk.link/s/${uuid}/`);
   if (options.notes) log(`https://slidesk.link/s/${uuid}/${options.notes}`);
   await file.unlink();
   process.exit(0);

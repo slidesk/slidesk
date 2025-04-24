@@ -2,9 +2,9 @@ import faviconSVG from "../../templates/slidesk.svg" with { type: "text" };
 
 export default async (sdfPath: string) => {
   const ftypes = [
-    { name: "/favicon.svg", type: "image/svg+xml" },
-    { name: "/favicon.ico", type: "image/x-icon" },
-    { name: "/favicon.png", type: "image/png" },
+    { name: "favicon.svg", type: "image/svg+xml" },
+    { name: "favicon.ico", type: "image/x-icon" },
+    { name: "favicon.png", type: "image/png" },
   ];
   for await (const f of ftypes) {
     if (await Bun.file(`${sdfPath}${f.name}`).exists()) {
@@ -16,7 +16,7 @@ export default async (sdfPath: string) => {
     }
   }
   return {
-    name: "/favicon.svg",
+    name: "favicon.svg",
     content: faviconSVG,
     type: "image/svg+xml",
   };
