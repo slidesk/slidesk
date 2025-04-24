@@ -4,7 +4,7 @@ export type SliDeskPresentOptions = {
   domain?: string;
   port?: string;
   save?: string;
-  notes?: boolean;
+  notes?: string;
   timers?: boolean;
   transition?: string;
   watch?: boolean;
@@ -19,13 +19,20 @@ export type SliDeskPresentOptions = {
 export type SliDeskServerOptions = {
   port?: string;
   domain?: string;
-  notes?: boolean;
+  notes?: string;
   open?: string;
   ip?: string;
 };
 
 export type SliDeskCreateOptions = {
   theme?: string;
+};
+
+export type SliDeskPublishOptions = {
+  notes?: string;
+  timers?: boolean;
+  transition?: string;
+  lang?: string;
 };
 
 export type SliDeskPluginAddRoute = (

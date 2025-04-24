@@ -64,7 +64,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
       content: JSON.stringify(manifest),
       headers: { "Content-Type": "application/json" },
     },
-    [`/${options.notes === true ? "notes.html" : options.notes}`]: {
+    [`/${options.notes === undefined ? "notes.html" : options.notes}`]: {
       content: getNotesView(config, plugins),
       headers: { "Content-Type": "text/html" },
     },

@@ -10,9 +10,7 @@ export default (
   currentSlide: 0,
   slides: [],
   animationTimer: ${options.transition},
-  onSlideChange: function() {${plugins
-    .map((p) => p.onSlideChange ?? "")
-    .join(";")}},
+  onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(env)},
   cwd: '${process.cwd()}/',
   lastAction: "",
