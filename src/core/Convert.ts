@@ -40,31 +40,31 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
       env,
       plugins,
     )),
-    "/slidesk.css": {
+    "slidesk.css": {
       content: getCSS(options),
       headers: { "Content-type": "text/css" },
     },
-    "/slidesk-notes.css": {
+    "slidesk-notes.css": {
       content: styles,
       headers: { "Content-type": "text/css" },
     },
-    "/slidesk.js": {
+    "slidesk.js": {
       content: getJS(options, plugins, env),
       headers: { "Content-type": "application/javascript" },
     },
-    "/slidesk-notes.js": {
-      content: getNotesJS(options, plugins, env),
+    "slidesk-notes.js": {
+      content: getNotesJS(plugins),
       headers: { "Content-type": "application/javascript" },
     },
     [favicon.name]: {
       content: favicon.content,
       headers: { "Content-Type": favicon.type },
     },
-    "/manifest.json": {
+    "manifest.json": {
       content: JSON.stringify(manifest),
       headers: { "Content-Type": "application/json" },
     },
-    [`/${options.notes === undefined ? "notes.html" : options.notes}`]: {
+    [`${options.notes === undefined ? "notes.html" : options.notes}`]: {
       content: getNotesView(config, plugins),
       headers: { "Content-Type": "text/html" },
     },

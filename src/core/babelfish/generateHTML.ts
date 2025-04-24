@@ -39,7 +39,7 @@ export default async (
     content = await polish(presentation, template, env, plugins);
   }
   return {
-    "/index.html": {
+    "index.html": {
       content,
       headers: {
         "Content-Type": "text/html",

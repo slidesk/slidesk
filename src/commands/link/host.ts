@@ -53,28 +53,24 @@ linkHostCmd
       type: "string",
       description: "open with speakers notes",
       default: "notes.html",
-      optional: true,
     },
     timers: {
       short: "t",
       type: "boolean",
       description: "add checkpoint and slide maximum time on notes view",
       default: false,
-      optional: true,
     },
     transition: {
       short: "a",
       type: "string",
       description: "transition timer",
       default: "300",
-      optional: true,
     },
     conf: {
       short: "c",
       type: "string",
       description: "use a specific .env file",
       default: "",
-      optional: true,
     },
     lang: {
       short: "l",
@@ -82,7 +78,6 @@ linkHostCmd
       description:
         "specify the language version (per default, it will use the .lang.json file with default information)",
       default: "",
-      optional: true,
     },
   })
   .action(async (a, o) => {
