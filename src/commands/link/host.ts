@@ -28,14 +28,15 @@ const sendToSlideskLink = async (
   const file = Bun.file("link.tgz");
   const data = new FormData();
   data.set("file", file);
-  const response = await fetch("https://slidesk.link/upload", {
+  const slURL = "https://slidesk.link";
+  const response = await fetch(`${slURL}/upload`, {
     method: "POST",
     body: data,
   });
   const uuid = await response.text();
   log("Your presentation is available for 24h:");
-  log(`https://slidesk.link/s/${uuid}/`);
-  if (options.notes) log(`https://slidesk.link/s/${uuid}/${options.notes}`);
+  log(`${slURL}/s/${uuid}/`);
+  if (options.notes) log(`${slURL}/s/${uuid}/${options.notes}`);
   await file.unlink();
   process.exit(0);
 };
