@@ -28,7 +28,7 @@ const sendToSlideskLink = async (
   const file = Bun.file("link.tgz");
   const data = new FormData();
   data.set("file", file);
-  const response = await fetch("http://localhost:3000/upload", {
+  const response = await fetch("https://slidesk.link/upload", {
     method: "POST",
     body: data,
   });
