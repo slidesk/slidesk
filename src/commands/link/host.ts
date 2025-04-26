@@ -1,16 +1,27 @@
 import { Clipse } from "clipse";
 import { rmSync } from "node:fs";
+import { homedir } from "node:os";
 import { create } from "tar";
 import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
 import save from "../../utils/save";
 
-const { log } = console;
+const { log, error } = console;
 
 const sendToSlideskLink = async (
   talk: string,
   options: SliDeskPublishOptions,
 ) => {
+  const slideskTokenFile = Bun.file(`${homedir()}/.slidesk`);
+  if (!(await slideskTokenFile.exists())) {
+    log("You must be logged, use 'slidesk link login' first.");
+    process.exit(1);
+  }
+  const slideskToken = await slideskTokenFile.text();
+  if (slideskToken === "") {
+    log("Your token is corrupted, use 'slidesk link login --force' first.");
+    process.exit(1);
+  }
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   const files = await Convert(`${talkdir}/main.sdf`, {
     ...options,
@@ -32,9 +43,16 @@ const sendToSlideskLink = async (
   const response = await fetch(`${slURL}/upload`, {
     method: "POST",
     body: data,
+    headers: {
+      "x-slidesk": slideskToken,
+    },
   });
   const uuid = await response.text();
-  log("Your presentation is available for 24h:");
+  if (uuid.startsWith("err:")) {
+    error(uuid);
+    process.exit(1);
+  }
+  log("Your presentation is available for 72h:");
   log(`${slURL}/s/${uuid}/`);
   if (options.notes) log(`${slURL}/s/${uuid}/${options.notes}`);
   await file.unlink();
@@ -81,6 +99,7 @@ linkHostCmd
     },
   })
   .action(async (a, o) => {
+    // check logged user
     await sendToSlideskLink(a.talk ?? "", o);
   });
 
