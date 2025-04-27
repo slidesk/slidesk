@@ -3,6 +3,7 @@ import { question } from "../utils/interactCLI";
 import { mkdirSync } from "node:fs";
 import type { SliDeskCreateOptions } from "../types";
 import defaultThemeFiles from "../templates/default_theme";
+import { Clipse } from "clipse";
 
 const { log, error } = console;
 
@@ -70,7 +71,24 @@ const create = async (talk: string, options: SliDeskCreateOptions) => {
   log("Presentation created");
   log();
   log(`cd ${dirName} && slidesk`);
-  process.exit();
 };
 
-export default create;
+const createCmd = new Clipse(
+  "create",
+  "tool to help you to instanciate a talk",
+);
+createCmd
+  .addArguments([{ name: "talk", description: "name of your talk/directory" }])
+  .addOptions({
+    theme: {
+      type: "string",
+      description: "specify a theme from a catalog or url",
+      default: "none",
+    },
+  })
+  .action((args, options) => {
+    create(args.talk ?? "", options);
+    process.exit(0);
+  });
+
+export default createCmd;

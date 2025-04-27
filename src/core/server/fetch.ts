@@ -22,13 +22,17 @@ export default async (
         ? undefined
         : new Response("WebSocket upgrade error", { status: 400 });
     case "/":
-      return new Response(serverFiles["/index.html"].content, {
-        headers: serverFiles["/index.html"].headers,
+      return new Response(serverFiles["index.html"].content, {
+        headers: serverFiles["index.html"].headers,
       });
     default:
-      if (Object.keys(serverFiles).includes(url.pathname))
-        return new Response(serverFiles[url.pathname].content, {
-          headers: serverFiles[url.pathname].headers,
+      if (
+        Object.keys(serverFiles)
+          .map((s) => `/${s}`)
+          .includes(url.pathname)
+      )
+        return new Response(serverFiles[url.pathname.substring(1)].content, {
+          headers: serverFiles[url.pathname.substring(1)].headers,
         });
       for await (const plugin of [...Object.values(serverPlugins)]) {
         if (plugin.addRoutes) {

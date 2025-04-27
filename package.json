@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.12.3",
+  "version": "2.13.0",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -13,11 +13,12 @@
   },
   "dependencies": {
     "chalk": "^5.4.1",
-    "commander": "^13.1.0",
-    "dotenv": "^16.4.7",
+    "clipse": "^0.0.7",
+    "dotenv": "^16.5.0",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
     "qrcode": "^1.5.4",
+    "tar": "^7.4.3",
     "terminal-image": "^3.1.1",
     "terminal-size": "^4.0.0",
     "turndown": "^7.2.0",
@@ -31,7 +32,8 @@
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
     "@types/qrcode": "^1.5.5",
-    "@types/turndown": "^5.0.5"
+    "@types/turndown": "^5.0.5",
+    "biome": "^0.3.3"
   },
   "scripts": {
     "make": "bun build src/index.ts --outdir bin --minify --target bun",
