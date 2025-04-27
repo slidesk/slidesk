@@ -32,7 +32,8 @@
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
     "@types/qrcode": "^1.5.5",
-    "@types/turndown": "^5.0.5"
+    "@types/turndown": "^5.0.5",
+    "biome": "^0.3.3"
   },
   "scripts": {
     "make": "bun build src/index.ts --outdir bin --minify --target bun",

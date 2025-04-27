@@ -1,10 +1,10 @@
 import { Clipse } from "clipse";
 import { rmSync } from "node:fs";
-import { homedir } from "node:os";
 import { create } from "tar";
 import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
 import save from "../../utils/save";
+import getLinkToken from "../../utils/getLinkToken";
 
 const { log, error } = console;
 
@@ -12,16 +12,7 @@ const sendToSlideskLink = async (
   talk: string,
   options: SliDeskPublishOptions,
 ) => {
-  const slideskTokenFile = Bun.file(`${homedir()}/.slidesk`);
-  if (!(await slideskTokenFile.exists())) {
-    log("You must be logged, use 'slidesk link login' first.");
-    process.exit(1);
-  }
-  const slideskToken = await slideskTokenFile.text();
-  if (slideskToken === "") {
-    log("Your token is corrupted, use 'slidesk link login --force' first.");
-    process.exit(1);
-  }
+  const slideskToken = await getLinkToken();
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   const files = await Convert(`${talkdir}/main.sdf`, {
     ...options,
