@@ -138,9 +138,8 @@ jobs:
           files: .github/docker/docker-bake.hcl
           push: true
           set: |
-            amd64.tags=$Docker_image:latest-amd64,$Docker_image:${{ github.ref_name }}-amd64
-            arm64.tags=$Docker_image:latest-arm64,$Docker_image:${{ github.ref_name }}-arm64
-
+            *.tags=${{ env.Docker_image }}:latest,${{ env.Docker_image }}:${{ github.ref_name }}
+            
   generate_deb:
     name: Build packages file
     needs: create_release

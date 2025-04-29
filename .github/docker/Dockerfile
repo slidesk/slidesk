@@ -9,17 +9,19 @@ RUN mkdir -p /temp/prod
 COPY package.json bun.lockb /temp/prod/
 RUN cd /temp/prod && bun install --frozen-lockfile --production
 
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
+# Stage for amd64
 FROM base AS prerelease
-ARG BUN_TARGET
+ARG TARGETARCH
 WORKDIR /usr/src/app
 COPY --from=install /temp/prod/node_modules node_modules
 COPY . .
-RUN bun make:exe --target=bun-${BUN_TARGET}
+RUN if [ "${TARGETARCH}" = 'arm64' ]; then bun make:exe --target=bun-linux-arm64; \
+    elif [ "${TARGETARCH}" = 'amd64' ]; then bun make:exe --target=bun-linux-x64-modern; \
+    fi
 RUN chmod +x exe/slidesk
 
+# Final stage
 FROM ubuntu:jammy
 COPY --from=prerelease /usr/src/app/exe/slidesk /bin/slidesk
 WORKDIR /slidesk
-CMD slidesk
+CMD ["slidesk"]

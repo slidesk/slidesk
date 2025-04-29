@@ -1,27 +1,12 @@
 group "default" {
-  targets = ["amd64", "arm64"]
+  targets = ["all"]
 }
 
-target "amd64" {
+target "all" {
   context = "../.."
   dockerfile = ".github/docker/Dockerfile"
-  args = {
-    BUN_TARGET = "linux-x64-modern"
-  }
   platforms = [
-    "linux/amd64"
+    "linux/amd64", "linux/arm64"
   ]
-  tags = ["gouz/slidesk:latest-amd64"]
-}
-
-target "arm64" {
-  context = "../.."
-  dockerfile = ".github/docker/Dockerfile"
-  args = {
-    BUN_TARGET = "linux-arm64"
-  }
-  platforms = [
-    "linux/arm64"
-  ]
-  tags = ["gouz/slidesk:latest-arm64"]
+  tags = [ "yodamad/slidesk:latest" ]
 }
