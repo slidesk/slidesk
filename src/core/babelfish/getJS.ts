@@ -9,7 +9,7 @@ export default (
 ) => `window.slidesk = {
   currentSlide: 0,
   slides: [],
-  animationTimer: ${Number(options.transition)},
+  animationTimer: ${Number(env.ANIMATION_TIMER ?? options.transition ?? 300)},
   onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(env)},
   lastAction: "",
