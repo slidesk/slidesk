@@ -138,7 +138,7 @@ jobs:
           files: .github/docker/docker-bake.hcl
           push: true
           set: |
-            *.tags=$Docker_image:latest,$Docker_image:${{ github.ref_name }}
+            *.tags=${{ env.Docker_image }}:latest,${{ env.Docker_image }}:${{ github.ref_name }}
             
   generate_deb:
     name: Build packages file
