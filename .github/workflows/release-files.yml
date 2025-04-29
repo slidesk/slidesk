@@ -132,13 +132,11 @@ jobs:
       
       - name: Build and push
         uses: docker/bake-action@v6
-        env:
-          Docker_image: gouz/slidesk
         with:
           files: .github/docker/docker-bake.hcl
           push: true
           set: |
-            *.tags=${{ env.Docker_image }}:latest,${{ env.Docker_image }}:${{ github.ref_name }}
+            *.tags=gouz/slidesk:latest,gouz/slidesk:${{ github.ref_name }}
             
   generate_deb:
     name: Build packages file
