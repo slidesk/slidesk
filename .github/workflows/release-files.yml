@@ -130,13 +130,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
+      - uses: docker/metadata-action@v5
+        id: metadata
+
       - name: Build and push
         uses: docker/bake-action@v6
+        env:
+          TAG_VERSION: ${{ github.ref_name }}
         with:
           files: .github/docker/docker-bake.hcl
           push: true
-          set: |
-            *.tags=gouz/slidesk:latest,gouz/slidesk:${{ github.ref_name }}
             
   generate_deb:
     name: Build packages file
