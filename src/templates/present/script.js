@@ -69,7 +69,7 @@ window.slidesk.changeSlide = () => {
     .querySelectorAll(".sd-img img")
     .forEach((i, _) => {
       i.setAttribute("style", "");
-      i.setAttribute("src", i.getAttribute("src"));
+      i.setAttribute("src", i.getAttribute("data-src"));
     });
   window.slidesk.onSlideChange();
 };

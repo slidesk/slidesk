@@ -16,7 +16,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
   const sdfMainFile = Bun.file(mainFile);
   if (!(await sdfMainFile.exists())) {
     error("🤔 main.sdf was not found");
-    return {};
+    process.exit(1);
   }
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   const { env, plugins, templates, favicon, components } = await preload(
@@ -41,7 +41,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
       plugins,
     )),
     "slidesk.css": {
-      content: getCSS(options),
+      content: getCSS(options, env),
       headers: { "Content-type": "text/css" },
     },
     "slidesk-notes.css": {
