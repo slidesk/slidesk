@@ -86,8 +86,8 @@ createCmd
       default: "none",
     },
   })
-  .action((args, options) => {
-    create(args.talk ?? "", options);
+  .action(async (args, options) => {
+    await create(args.talk ?? "", options);
     process.exit(0);
   });
 
