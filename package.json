@@ -14,7 +14,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "clipse": "^0.0.12",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.1",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
     "qrcode": "^1.5.4",
