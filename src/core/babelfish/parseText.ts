@@ -2,7 +2,7 @@ export default (text: string): { [key: string]: string } => {
   const result: { [key: string]: string } = {};
   const regex = /<p>\[\[(\w+)\]\]<\/p>(.|\n)*?<p>\[\[(\/\1)\]\]<\/p>/g;
   let m: RegExpExecArray | null;
-  // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+  // biome-ignore lint/suspicious/noAssignInExpressions: easier to code
   while ((m = regex.exec(text)) !== null) {
     if (m.index === regex.lastIndex) {
       regex.lastIndex++;

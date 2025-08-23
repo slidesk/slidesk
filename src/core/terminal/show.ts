@@ -7,33 +7,33 @@ import { gfm } from "turndown-plugin-gfm";
 import pc from "picocolors";
 
 const td = new TurndownService({
-	headingStyle: "atx",
+  headingStyle: "atx",
 })
-	.use(gfm)
-	.addRule("joliHeading", {
-		filter: ["h1", "h2"],
-		replacement: (content) => pc.bold(pc.blue(content)),
-	})
-	.addRule("joliCode", {
-		filter: ["code"],
-		replacement: (content) => pc.bold(pc.green(content)),
-	})
-	.addRule("joliBold", {
-		filter: ["b", "strong"],
-		replacement: (content) => pc.bold(content),
-	})
-	.addRule("joliUnderline", {
-		filter: ["u"],
-		replacement: (content) => pc.underline(content),
-	})
-	.addRule("joliItalic", {
-		filter: ["em", "i"],
-		replacement: (content) => pc.italic(content),
-	})
-	.addRule("joliLink", {
-		filter: ["a"],
-		replacement: (content) => pc.blue(pc.underline(content)),
-	});
+  .use(gfm)
+  .addRule("joliHeading", {
+    filter: ["h1", "h2"],
+    replacement: (content) => pc.bold(pc.blue(content)),
+  })
+  .addRule("joliCode", {
+    filter: ["code"],
+    replacement: (content) => pc.bold(pc.green(content)),
+  })
+  .addRule("joliBold", {
+    filter: ["b", "strong"],
+    replacement: (content) => pc.bold(content),
+  })
+  .addRule("joliUnderline", {
+    filter: ["u"],
+    replacement: (content) => pc.underline(content),
+  })
+  .addRule("joliItalic", {
+    filter: ["em", "i"],
+    replacement: (content) => pc.italic(content),
+  })
+  .addRule("joliLink", {
+    filter: ["a"],
+    replacement: (content) => pc.blue(pc.underline(content)),
+  });
 
 export default async (
   talkdir: string,
