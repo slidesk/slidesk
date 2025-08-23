@@ -1,0 +1,12 @@
+example
+.github
+test
+biome.json
+build.test
+bun.lock
+node_modules
+bunfig.toml
+tsconfig.json
+coverage
+biome.json
+sonar-project.properties
