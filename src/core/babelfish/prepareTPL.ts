@@ -23,7 +23,9 @@ export default (
     }
     if (p.addScripts) {
       (p.addScripts as string[]).forEach((k: string, _) =>
-        js.push(`<script src="${k}"></script>`),
+        js.push(
+          `<script src="${k}" ${p.loadAsModule ? 'type="module"' : ""}></script>`,
+        ),
       );
     }
   });
