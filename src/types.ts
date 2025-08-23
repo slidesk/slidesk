@@ -59,6 +59,7 @@ export type SliDeskPlugin = {
   addSpeakerStyles: string[] | { [key: string]: string };
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
+  loadAsModule?: string;
 };
 
 export type SliDeskFile = {
