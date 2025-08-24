@@ -2,6 +2,7 @@ import type { DotenvParseOutput } from "dotenv";
 import type { SliDeskFile, SliDeskServerOptions } from "../types";
 import loadEnv from "../utils/loadEnv";
 import show from "./terminal/show";
+
 class Terminal {
   readonly #slides: string[] = [];
   #env: DotenvParseOutput = {};

@@ -1,12 +1,12 @@
 import { view } from "../../templates/present";
-import type { SliDeskPlugin, SliDeskConfig, SliDeskFavicon } from "../../types";
+import type { SliDeskConfig, SliDeskFavicon, SliDeskPlugin } from "../../types";
 
 export default (
   config: SliDeskConfig,
   plugins: SliDeskPlugin[],
   favicon: SliDeskFavicon,
 ) => {
-  let template = view;
+  let template = String(view);
   const css = [
     '<link rel="stylesheet" href="slidesk.css" />',
     ...config.customIncludes.css,
@@ -23,9 +23,12 @@ export default (
     }
     if (p.addScripts) {
       (p.addScripts as string[]).forEach((k: string, _) =>
-        js.push(
-          `<script src="${k}" ${p.loadAsModule ? 'type="module"' : ""}></script>`,
-        ),
+        js.push(`<script src="${k}"></script>`),
+      );
+    }
+    if (p.addScriptModules) {
+      (p.addScriptModules as string[]).forEach((k: string, _) =>
+        js.push(`<script src="${k}" type="module"></script>`),
       );
     }
   });

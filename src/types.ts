@@ -33,6 +33,7 @@ export type SliDeskPublishOptions = {
   timers?: boolean;
   transition?: string;
   lang?: string;
+  "slidesk-link-url": string;
 };
 
 export type SliDeskPluginAddRoute = (
@@ -59,7 +60,7 @@ export type SliDeskPlugin = {
   addSpeakerStyles: string[] | { [key: string]: string };
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
-  loadAsModule?: string;
+  addScriptModules?: string[] | { [key: string]: string };
 };
 
 export type SliDeskFile = {

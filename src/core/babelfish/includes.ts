@@ -1,4 +1,4 @@
-import { readdirSync, lstatSync } from "node:fs";
+import { lstatSync, readdirSync } from "node:fs";
 import replaceAsync from "../../utils/replaceAsync";
 
 const includeDir = async (file_or_dir: string, p1: string) => {

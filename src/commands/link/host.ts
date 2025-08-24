@@ -1,5 +1,5 @@
-import { Clipse } from "clipse";
 import { rmSync } from "node:fs";
+import { Clipse } from "clipse";
 import { create } from "tar";
 import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
@@ -16,7 +16,7 @@ const sendToSlideskLink = async (
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   const files = await Convert(`${talkdir}/main.sdf`, {
     ...options,
-    domain: "slidesk.link",
+    domain: options["slidesk-link-url"],
   });
   if (files === null) {
     process.exit();

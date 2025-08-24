@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 import { Clipse } from "clipse";
 import packagejson from "../package.json";
-import checkVersion from "./utils/checkLastVersion";
-import createCmd from "./commands/create";
-import present from "./commands/present";
-import pluginCmd from "./commands/plugin";
 import componentCmd from "./commands/component";
+import createCmd from "./commands/create";
 import linkCmd from "./commands/link";
+import pluginCmd from "./commands/plugin";
+import present from "./commands/present";
+import checkVersion from "./utils/checkLastVersion";
 
 const { log } = console;
 

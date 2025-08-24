@@ -1,15 +1,15 @@
 import { existsSync } from "node:fs";
+import type { Server } from "bun";
 import type {
   SliDeskFile,
-  SliDeskServerOptions,
   SliDeskPlugin,
   SliDeskPluginAddWS,
+  SliDeskServerOptions,
 } from "../types";
-import type { Server } from "bun";
-import getPlugins from "./server/getPlugins";
+import loadEnv from "../utils/loadEnv";
 import display from "./server/display";
 import fetch from "./server/fetch";
-import loadEnv from "../utils/loadEnv";
+import getPlugins from "./server/getPlugins";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";

@@ -1,6 +1,6 @@
 import type { SliDeskPresentOptions } from "../../types";
-import loadComponents from "./loadComponents";
 import loadEnv from "../../utils/loadEnv";
+import loadComponents from "./loadComponents";
 import loadFavicon from "./loadFavicon";
 import loadPlugins from "./loadPlugins";
 import loadTemplates from "./loadTemplates";

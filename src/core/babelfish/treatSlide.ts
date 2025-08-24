@@ -1,11 +1,11 @@
 import markdownIt from "markdown-it";
-import slugify from "../../utils/slugify";
-import toBinary from "../../utils/toBinary";
 import type {
   SliDeskPlugin,
   SliDeskPresentOptions,
   SliDeskTemplate,
 } from "../../types";
+import slugify from "../../utils/slugify";
+import toBinary from "../../utils/toBinary";
 import replaceWithTemplate from "./replaceWithTemplate";
 
 const md = markdownIt({

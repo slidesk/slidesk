@@ -1,5 +1,5 @@
-import type { SliDeskServerOptions } from "../../types";
 import { toString as QRCODE } from "qrcode";
+import type { SliDeskServerOptions } from "../../types";
 import start from "../../utils/start";
 
 const { log } = console;

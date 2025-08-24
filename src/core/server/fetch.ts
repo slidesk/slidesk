@@ -1,10 +1,10 @@
 import type { Server } from "bun";
-import getFile from "./getFile";
 import type {
-  SliDeskPlugin,
   SliDeskFile,
+  SliDeskPlugin,
   SliDeskPluginAddRoute,
 } from "../../types";
+import getFile from "./getFile";
 
 export default async (
   req: Request,

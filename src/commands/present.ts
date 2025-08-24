@@ -1,11 +1,11 @@
 import { watch } from "node:fs";
-import process from "node:process";
 import { networkInterfaces } from "node:os";
-import { getAction } from "../utils/interactCLI";
-import type { SliDeskPresentOptions } from "../types";
+import process from "node:process";
+import Convert from "../core/Convert";
 import SlideskServer from "../core/Server";
 import Terminal from "../core/Terminal";
-import Convert from "../core/Convert";
+import type { SliDeskPresentOptions } from "../types";
+import { getAction } from "../utils/interactCLI";
 import save from "../utils/save";
 
 const { log } = console;

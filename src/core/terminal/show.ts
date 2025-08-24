@@ -1,10 +1,10 @@
-import replaceAsync from "../../utils/replaceAsync";
+import type { DotenvParseOutput } from "dotenv";
+import pc from "picocolors";
 import terminalImage from "terminal-image";
 import terminalSize from "terminal-size";
-import type { DotenvParseOutput } from "dotenv";
 import TurndownService from "turndown";
 import { gfm } from "turndown-plugin-gfm";
-import pc from "picocolors";
+import replaceAsync from "../../utils/replaceAsync";
 
 const td = new TurndownService({
   headingStyle: "atx",
