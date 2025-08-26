@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "chalk": "^5.6.0",
-    "clipse": "^0.0.12",
+    "clipse": "^0.0.13",
     "dotenv": "^17.2.1",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
