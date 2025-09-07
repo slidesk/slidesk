@@ -29,7 +29,7 @@ window.slidesk.io.onmessage = (event) => {
     timerSlide = "";
     startSlideTime = null;
     const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = data.payload;
+    current.innerHTML = data.payload.replaceAll("img data-src=", "img src=");
     document.querySelector("#sd-sv-notes").innerHTML = [
       ...current.querySelectorAll("aside.sd-notes"),
     ]
@@ -46,7 +46,10 @@ window.slidesk.io.onmessage = (event) => {
     }
     window.slidesk.onSpeakerViewSlideChange();
   } else if (data.action === "future") {
-    document.querySelector("#sd-sv-future").innerHTML = data.payload;
+    document.querySelector("#sd-sv-future").innerHTML = data.payload.replaceAll(
+      "img data-src=",
+      "img src=",
+    );
   } else if (data.action === "checkpoints") {
     let lastCheckpoint = null;
     for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {
