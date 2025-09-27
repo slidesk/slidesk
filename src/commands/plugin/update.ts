@@ -1,6 +1,6 @@
 import { Clipse } from "clipse";
-import { pluginRemove } from "./remove";
 import { pluginInstall } from "./install";
+import { pluginRemove } from "./remove";
 
 const pluginUpdateCmd = new Clipse("update", "slidesk plugin updater");
 pluginUpdateCmd

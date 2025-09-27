@@ -6,5 +6,6 @@
   "addStyles": ["./plugins/highlightjs/default.min.css"],
   "addSpeakerScripts": ["./plugins/highlightjs/highlight.min.js"],
   "addSpeakerStyles": ["./plugins/highlightjs/default.min.css"],
-  "onSpeakerViewSlideChange": "if (hljs) hljs.highlightAll();"
+  "onSpeakerViewSlideChange": "if (hljs) hljs.highlightAll();",
+  "tags": ["highlight", "code"]
 }

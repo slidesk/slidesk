@@ -1,8 +1,9 @@
 import { Clipse } from "clipse";
 import pluginInstallCmd from "./plugin/install";
+import pluginListCmd from "./plugin/list";
+import pluginPushCmd from "./plugin/push";
 import pluginRemoveCmd from "./plugin/remove";
 import pluginUpdateCmd from "./plugin/update";
-import pluginListCmd from "./plugin/list";
 
 const pluginCmd = new Clipse("plugin", "slidesk plugin management");
 pluginCmd.addSubcommands([
@@ -10,6 +11,7 @@ pluginCmd.addSubcommands([
   pluginRemoveCmd,
   pluginUpdateCmd,
   pluginListCmd,
+  pluginPushCmd,
 ]);
 
 export default pluginCmd;

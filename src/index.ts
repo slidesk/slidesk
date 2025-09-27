@@ -115,5 +115,11 @@ slidesk
       description: "directory of your talk",
     },
   ])
+  .addGlobalOptions({
+    "slidesk-link-url": {
+      type: "string",
+      default: "https://slidesk.link",
+    },
+  })
   .action((args, opts) => present(args.talk ?? "", opts))
   .ready();
