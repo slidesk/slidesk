@@ -3,8 +3,8 @@ import { Clipse } from "clipse";
 import { create } from "tar";
 import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
-import save from "../../utils/save";
 import getLinkToken from "../../utils/getLinkToken";
+import save from "../../utils/save";
 
 const { log, error } = console;
 
@@ -30,8 +30,7 @@ const sendToSlideskLink = async (
   const file = Bun.file("link.tgz");
   const data = new FormData();
   data.set("file", file);
-  const slURL = "https://slidesk.link";
-  const response = await fetch(`${slURL}/upload`, {
+  const response = await fetch(`${options["slidesk-link-url"]}/upload`, {
     method: "POST",
     body: data,
     headers: {
@@ -44,8 +43,9 @@ const sendToSlideskLink = async (
     process.exit(1);
   }
   log("Your presentation is available for 72h:");
-  log(`${slURL}/s/${uuid}/`);
-  if (options.notes) log(`${slURL}/s/${uuid}/${options.notes}`);
+  log(`${options["slidesk-link-url"]}/s/${uuid}/`);
+  if (options.notes)
+    log(`${options["slidesk-link-url"]}/s/${uuid}/${options.notes}`);
   await file.unlink();
   process.exit(0);
 };
@@ -90,7 +90,6 @@ linkHostCmd
     },
   })
   .action(async (a, o) => {
-    // check logged user
     await sendToSlideskLink(a.talk ?? "", o);
   });
 

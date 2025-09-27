@@ -147,3 +147,8 @@ setInterval(() => {
 window.slidesk.timer.addEventListener("click", () => {
   window.slidesk.start_timer();
 });
+
+if (!window.getScreenDetails) {
+  const $screenWrapper = document.getElementById("sd-open-presentation");
+  $screenWrapper.innerHTML = "";
+}

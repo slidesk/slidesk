@@ -8,7 +8,7 @@ linkCmd.addSubcommands([linkHostCmd, linkLoginCmd, linkPushCmd]);
 linkCmd.addGlobalOptions({
   "slidesk-link-url": {
     type: "string",
-    default: "slidesk.link",
+    default: "https://slidesk.link",
   },
 });
 

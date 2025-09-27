@@ -33,7 +33,7 @@ export type SliDeskPublishOptions = {
   timers?: boolean;
   transition?: string;
   lang?: string;
-  "slidesk-link-url": string;
+  "slidesk-link-url"?: string;
 };
 
 export type SliDeskPluginAddRoute = (
