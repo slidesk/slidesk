@@ -1,51 +1,60 @@
+import { rm } from "node:fs/promises";
 import { Clipse } from "clipse";
+import { extract } from "tar";
+
+const { log, error } = console;
 
 export const pluginInstall = async (
   name = "",
+  urlLink = "https://slidesk.link",
   update = false,
 ): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the plugin";
   }
-  // fetch on github if the plugin is available
-  const result = await fetch(
-    `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/${name}/plugin.json`,
+  const [user, ...plugin] = name.split("__");
+  const pluginTarballResponse = await fetch(
+    `${urlLink}/addons/download/plugin/${user.replace("@", "")}/${plugin.join("__")}`,
   );
-  if (result.status !== 200) {
-    return "Plugin not found";
+  if (pluginTarballResponse.status === 404) {
+    error(`Plugin ${name.replace("__", "/")} not found`);
+    return "";
   }
-  const json = await result.json();
-  const files: string[] = ["plugin.json"];
-  files.push(...(json.files || []));
-  const promises: Promise<void>[] = [];
-  for (const file of files) {
-    promises.push(
-      new Promise((resolve) => {
-        fetch(
-          `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/plugins/${name}/${file}`,
-        )
-          .then((response) => response.blob())
-          .then((text) =>
-            Bun.write(`plugins/${name}/${file}`, text, {
-              createPath: true,
-            }),
-          )
-          .then(() => {
-            resolve();
-          });
-      }),
+  const pluginTarball = await pluginTarballResponse.blob();
+  const tmp = `${process.cwd()}/plugins/${name}/link.tgz`;
+  await Bun.write(tmp, pluginTarball);
+  await extract({
+    file: tmp,
+    C: `${process.cwd()}/plugins/${name}`,
+  });
+  const glob = new Bun.Glob("**/*");
+  for await (const file of glob.scan(
+    `${process.cwd()}/plugins/${name}/${plugin.join("__")}`,
+  )) {
+    await Bun.write(
+      `${process.cwd()}/plugins/${name}/${file}`,
+      await Bun.file(
+        `${process.cwd()}/plugins/${name}/${plugin.join("__")}/${file}`,
+      ).arrayBuffer(),
     );
   }
-  await Promise.all(promises);
-  return `Plugin ${name} ${update ? "updated" : "installed"}`;
+  await rm(`${process.cwd()}/plugins/${name}/${plugin.join("__")}`, {
+    recursive: true,
+  });
+  await Bun.file(tmp).unlink();
+  return `Plugin ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
 
 const pluginInstallCmd = new Clipse("install", "slidesk plugin installer");
 pluginInstallCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
-  .action(async (args) => {
-    const res = await pluginInstall(args.name ?? "", false);
-    console.log(res);
+  .action(async (args, opts) => {
+    const res = await pluginInstall(
+      args.name ?? "",
+      opts["slidesk-link-url"] as string,
+      false,
+    );
+    log(res);
     process.exit(0);
   });
 

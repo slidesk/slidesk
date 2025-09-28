@@ -12,6 +12,7 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
+    "@clack/prompts": "^0.11.0",
     "clipse": "^0.0.13",
     "dotenv": "^17.2.1",
     "html-minifier-terser": "^7.2.0",
