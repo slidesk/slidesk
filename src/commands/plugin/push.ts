@@ -32,6 +32,9 @@ pluginPushCmd
       data.set("type", "plugin");
       data.set("name", slugify(args.plugin));
       data.set("json", JSON.stringify(await pluginJSON.json()));
+      const readme = Bun.file(`${pluginPath}/README.md`);
+      if (await readme.exists()) data.set("desc", await readme.text());
+      else data.set("desc", "");
       const response = await fetch(`${options["slidesk-link-url"]}/addons`, {
         method: "post",
         body: data,
@@ -39,6 +42,7 @@ pluginPushCmd
           "x-slidesk": slideskToken,
         },
       });
+      await file.unlink();
       if (response.status === 201) {
         log("Your addon has been added or updated into the hub, thanks");
       } else {

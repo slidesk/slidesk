@@ -41,7 +41,6 @@ export const pluginInstall = async (
   await rm(`${process.cwd()}/plugins/${name}/${plugin.join("__")}`, {
     recursive: true,
   });
-  await Bun.file(tmp).unlink();
   return `Plugin ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
 
@@ -50,7 +49,7 @@ pluginInstallCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
   .action(async (args, opts) => {
     const res = await pluginInstall(
-      args.name ?? "",
+      (args.name ?? "").replace("/", "__"),
       opts["slidesk-link-url"] as string,
       false,
     );
