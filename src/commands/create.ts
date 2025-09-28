@@ -1,9 +1,9 @@
-import slugify from "../utils/slugify";
-import { question } from "../utils/interactCLI";
 import { mkdirSync } from "node:fs";
-import type { SliDeskCreateOptions } from "../types";
-import defaultThemeFiles from "../templates/default_theme";
 import { Clipse } from "clipse";
+import defaultThemeFiles from "../templates/default_theme";
+import type { SliDeskCreateOptions } from "../types";
+import { question } from "../utils/interactCLI";
+import slugify from "../utils/slugify";
 
 const { log, error } = console;
 

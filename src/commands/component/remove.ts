@@ -1,5 +1,5 @@
-import { Clipse } from "clipse";
 import { unlinkSync } from "node:fs";
+import { Clipse } from "clipse";
 
 export const componentRemove = async (name = "") => {
   if (name === "") {
