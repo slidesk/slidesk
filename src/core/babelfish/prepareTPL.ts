@@ -18,17 +18,23 @@ export default (
   plugins.forEach((p, _) => {
     if (p.addStyles) {
       (p.addStyles as string[]).forEach((k: string, _) =>
-        css.push(`<link href="${k}" rel="stylesheet"/>`),
+        css.push(
+          `<link href="${k.replace(/plugins\/([^/]+)\//g, `plugins/${p.name}/`)}" rel="stylesheet"/>`,
+        ),
       );
     }
     if (p.addScripts) {
       (p.addScripts as string[]).forEach((k: string, _) =>
-        js.push(`<script src="${k}"></script>`),
+        js.push(
+          `<script src="${k.replace(/plugins\/([^/]+)\//g, `plugins/${p.name}/`)}"></script>`,
+        ),
       );
     }
     if (p.addScriptModules) {
       (p.addScriptModules as string[]).forEach((k: string, _) =>
-        js.push(`<script src="${k}" type="module"></script>`),
+        js.push(
+          `<script src="${k.replace(/plugins\/([^/]+)\//g, `plugins/${p.name}/`)}" type="module"></script>`,
+        ),
       );
     }
   });
