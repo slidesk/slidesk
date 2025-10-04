@@ -24,10 +24,6 @@ export type SliDeskServerOptions = {
   ip?: string;
 };
 
-export type SliDeskCreateOptions = {
-  theme?: string;
-};
-
 export type SliDeskPublishOptions = {
   notes?: string;
   timers?: boolean;

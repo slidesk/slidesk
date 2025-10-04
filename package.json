@@ -14,7 +14,7 @@
   "dependencies": {
     "@clack/prompts": "^0.11.0",
     "clipse": "^0.0.13",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
     "picocolors": "^1.1.1",
