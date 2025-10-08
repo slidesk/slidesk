@@ -6,12 +6,19 @@ import componentSearchCmd from "./component/search";
 import componentUpdateCmd from "./component/update";
 
 const componentCmd = new Clipse("component", "slidesk component management");
-componentCmd.addSubcommands([
-  componentInstallCmd,
-  componentRemoveCmd,
-  componentUpdateCmd,
-  componentSearchCmd,
-  componentPushCmd,
-]);
+componentCmd
+  .addGlobalOptions({
+    "slidesk-link-url": {
+      type: "string",
+      default: "https://slidesk.link",
+    },
+  })
+  .addSubcommands([
+    componentInstallCmd,
+    componentRemoveCmd,
+    componentUpdateCmd,
+    componentSearchCmd,
+    componentPushCmd,
+  ]);
 
 export default componentCmd;

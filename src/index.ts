@@ -23,7 +23,6 @@ const slidesk = new Clipse(
 );
 
 slidesk
-  .addSubcommands([createCmd, pluginCmd, componentCmd, linkCmd])
   .addOptions({
     domain: {
       short: "d",
@@ -115,11 +114,6 @@ slidesk
       description: "directory of your talk",
     },
   ])
-  .addGlobalOptions({
-    "slidesk-link-url": {
-      type: "string",
-      default: "https://slidesk.link",
-    },
-  })
+  .addSubcommands([createCmd, pluginCmd, componentCmd, linkCmd])
   .action((args, opts) => present(args.talk ?? "", opts))
   .ready();
