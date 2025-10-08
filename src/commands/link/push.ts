@@ -7,7 +7,7 @@ const linkPushCmd = new Clipse(
   "push",
   "push talk to your user page on slidesk.link",
 );
-linkPushCmd.action(async () => {
+linkPushCmd.action(async (_, options) => {
   const linkYML = Bun.file(`${process.cwd()}/link.yml`);
   if (!(await linkYML.exists())) {
     error("link.yml not found");
@@ -16,7 +16,7 @@ linkPushCmd.action(async () => {
   const slideskToken = await getLinkToken();
   const data = new FormData();
   data.set("file", linkYML);
-  const response = await fetch("https://slidesk.link/pushtotalk", {
+  const response = await fetch(`${options["slidesk-link-url"]}/pushtotalk`, {
     method: "post",
     body: data,
     headers: {

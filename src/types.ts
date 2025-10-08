@@ -24,15 +24,12 @@ export type SliDeskServerOptions = {
   ip?: string;
 };
 
-export type SliDeskCreateOptions = {
-  theme?: string;
-};
-
 export type SliDeskPublishOptions = {
   notes?: string;
   timers?: boolean;
   transition?: string;
   lang?: string;
+  "slidesk-link-url"?: string;
 };
 
 export type SliDeskPluginAddRoute = (
@@ -59,6 +56,7 @@ export type SliDeskPlugin = {
   addSpeakerStyles: string[] | { [key: string]: string };
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
+  addScriptModules?: string[] | { [key: string]: string };
 };
 
 export type SliDeskFile = {

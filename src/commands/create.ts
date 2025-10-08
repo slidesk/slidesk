@@ -1,11 +1,10 @@
-import slugify from "../utils/slugify";
-import { question } from "../utils/interactCLI";
 import { mkdirSync } from "node:fs";
-import type { SliDeskCreateOptions } from "../types";
-import defaultThemeFiles from "../templates/default_theme";
 import { Clipse } from "clipse";
+import defaultThemeFiles from "../templates/default_theme";
+import { question } from "../utils/interactCLI";
+import slugify from "../utils/slugify";
 
-const { log, error } = console;
+const { log } = console;
 
 const createDefault = async (dirName: string, responseTitle: string) => {
   mkdirSync(dirName, { recursive: true });
@@ -17,57 +16,14 @@ const createDefault = async (dirName: string, responseTitle: string) => {
   }
 };
 
-const create = async (talk: string, options: SliDeskCreateOptions) => {
+const create = async (talk: string) => {
   log(`Creation of your talk: ${talk}`);
   let dirName = slugify(talk);
   if (dirName === "create") {
     dirName = `${dirName}_`;
   }
   const responseTitle = await question("What is the title of talk?");
-  if (options.theme !== "none") {
-    const list = await fetch(
-      "https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/list.json",
-    );
-    const json = await list.json();
-    if ([...json].includes(options.theme)) {
-      const files = await (
-        await fetch(
-          `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/${options.theme}/files.json`,
-        )
-      ).json();
-      for await (const file of [...files]) {
-        const content = await (
-          await fetch(
-            `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/themes/${options.theme}/${file}`,
-          )
-        ).blob();
-        await Bun.write(`${dirName}/${file}`, content, { createPath: true });
-      }
-      let mainContent = await Bun.file(`${dirName}/main.sdf`).text();
-      mainContent = mainContent.replace(
-        "# TITLE",
-        ` ${responseTitle as string}`,
-      );
-      await Bun.write(`${dirName}/main.sdf`, mainContent);
-    } else if (
-      options.theme?.startsWith("http") &&
-      options.theme?.endsWith("/files.json")
-    ) {
-      const files = await (await fetch(`${options.theme}`)).json();
-      for await (const file of [...files]) {
-        const content = await (
-          await fetch(`${options.theme.replace("/files.json", "")}/${file}`)
-        ).blob();
-        await Bun.write(`${dirName}/${file}`, content, { createPath: true });
-      }
-      let mainContent = await Bun.file(`${dirName}/main.sdf`).text();
-      mainContent = mainContent.replace(
-        "# TITLE",
-        ` ${responseTitle as string}`,
-      );
-      await Bun.write(`${dirName}/main.sdf`, mainContent);
-    } else error("Theme not found");
-  } else await createDefault(dirName, responseTitle as string);
+  await createDefault(dirName, responseTitle as string);
   log("Presentation created");
   log();
   log(`cd ${dirName} && slidesk`);
@@ -79,15 +35,8 @@ const createCmd = new Clipse(
 );
 createCmd
   .addArguments([{ name: "talk", description: "name of your talk/directory" }])
-  .addOptions({
-    theme: {
-      type: "string",
-      description: "specify a theme from a catalog or url",
-      default: "none",
-    },
-  })
-  .action(async (args, options) => {
-    await create(args.talk ?? "", options);
+  .action(async (args) => {
+    await create(args.talk ?? "");
     process.exit(0);
   });
 

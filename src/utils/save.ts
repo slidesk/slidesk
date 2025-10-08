@@ -1,4 +1,4 @@
-import { existsSync, rmSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import type { SliDeskFile } from "../types";
 

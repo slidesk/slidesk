@@ -1,8 +1,8 @@
 import { readdirSync } from "node:fs";
+import type { DotenvParseOutput } from "dotenv";
+import translate from "../../components/translate";
 import type { SliDeskPlugin, SliDeskPresentOptions } from "../../types";
 import polish from "./polish";
-import translate from "../../components/translate";
-import type { DotenvParseOutput } from "dotenv";
 
 export default async (
   presentation: string,

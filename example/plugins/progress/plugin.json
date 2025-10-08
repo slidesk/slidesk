@@ -2,5 +2,6 @@
   "addHTML": "<div id=\"sd-progress\"></div>",
   "onSlideChange": "window.slidesk.progressActive();",
   "addStyles": ["./plugins/progress/progress.css"],
-  "addScripts": ["./plugins/progress/progress.js"]
+  "addScripts": ["./plugins/progress/progress.js"],
+  "tags": ["progress"]
 }

@@ -1,5 +1,5 @@
-import { Clipse } from "clipse";
 import { homedir } from "node:os";
+import { Clipse } from "clipse";
 import start from "../../utils/start";
 
 const linkLoginCmd = new Clipse("login", "login to slidesk.link")
@@ -43,7 +43,7 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
         },
       },
     });
-    Bun.spawn([start, "https://slidesk.link/auth"]);
+    Bun.spawn([start(), `${o["slidesk-link-url"]}/auth`]);
   });
 
 export default linkLoginCmd;

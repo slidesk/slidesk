@@ -1,5 +1,5 @@
-import { Clipse } from "clipse";
 import { rmSync } from "node:fs";
+import { Clipse } from "clipse";
 
 export const pluginRemove = async (name = "") => {
   if (name === "") {

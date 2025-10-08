@@ -1,10 +1,10 @@
-import replaceAsync from "../../utils/replaceAsync";
+import type { DotenvParseOutput } from "dotenv";
+import pc from "picocolors";
 import terminalImage from "terminal-image";
 import terminalSize from "terminal-size";
-import type { DotenvParseOutput } from "dotenv";
 import TurndownService from "turndown";
 import { gfm } from "turndown-plugin-gfm";
-import chalk from "chalk";
+import replaceAsync from "../../utils/replaceAsync";
 
 const td = new TurndownService({
   headingStyle: "atx",
@@ -12,27 +12,27 @@ const td = new TurndownService({
   .use(gfm)
   .addRule("joliHeading", {
     filter: ["h1", "h2"],
-    replacement: (content) => chalk.bold.blue(content),
+    replacement: (content) => pc.bold(pc.blue(content)),
   })
   .addRule("joliCode", {
     filter: ["code"],
-    replacement: (content) => chalk.bold.green(content),
+    replacement: (content) => pc.bold(pc.green(content)),
   })
   .addRule("joliBold", {
     filter: ["b", "strong"],
-    replacement: (content) => chalk.bold(content),
+    replacement: (content) => pc.bold(content),
   })
   .addRule("joliUnderline", {
     filter: ["u"],
-    replacement: (content) => chalk.underline(content),
+    replacement: (content) => pc.underline(content),
   })
   .addRule("joliItalic", {
     filter: ["em", "i"],
-    replacement: (content) => chalk.italic(content),
+    replacement: (content) => pc.italic(content),
   })
   .addRule("joliLink", {
     filter: ["a"],
-    replacement: (content) => chalk.blue.underline(content),
+    replacement: (content) => pc.blue(pc.underline(content)),
   });
 
 export default async (

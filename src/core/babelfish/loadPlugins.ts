@@ -15,9 +15,12 @@ const loadExternalPlugins = async (pluginsDir: string, sdfPath: string) => {
             const files = json[t];
             json[t] = {};
             files.forEach((s: string, _: number) => {
-              json[t][s] = readFileSync(`${sdfPath}/${s}`, {
-                encoding: "utf8",
-              });
+              json[t][s] = readFileSync(
+                `${sdfPath}/${s.replace(/plugins\/([^/]+)\//g, `plugins/${plugin}/`)}`,
+                {
+                  encoding: "utf8",
+                },
+              );
             });
           }
         });

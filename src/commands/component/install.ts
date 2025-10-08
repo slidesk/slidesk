@@ -1,24 +1,33 @@
 import { Clipse } from "clipse";
+import { extract } from "tar";
+
+const { log, error } = console;
 
 export const componentInstall = async (
   name = "",
+  urlLink = "https://slidesk.link",
   update = false,
 ): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the component";
   }
-  // fetch on github if the component is available
-  const result = await fetch(
-    `https://raw.githubusercontent.com/slidesk/slidesk-extras/main/components/${name}.mjs`,
+  const [user, ...component] = name.split("__");
+  const componentTarballResponse = await fetch(
+    `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__")}`,
   );
-  if (result.status !== 200) {
-    return "Component not found";
+  if (componentTarballResponse.status === 404) {
+    error(`Component ${name.replace("__", "/")} not found`);
+    return "";
   }
-  const text = await result.text();
-  await Bun.write(`components/${name}.mjs`, text, {
-    createPath: true,
+  const componentTarball = await componentTarballResponse.blob();
+  const tmp = `${process.cwd()}/components/link.tgz`;
+  await Bun.write(tmp, componentTarball);
+  await extract({
+    file: tmp,
+    C: `${process.cwd()}/components/`,
   });
-  return `Component ${name} ${update ? "updated" : "installed"}`;
+  await Bun.file(tmp).unlink();
+  return `component ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
 
 const componentInstallCmd = new Clipse(
@@ -27,9 +36,13 @@ const componentInstallCmd = new Clipse(
 );
 componentInstallCmd
   .addArguments([{ name: "name", description: "name of the component" }])
-  .action(async (args) => {
-    const res = await componentInstall(args.name ?? "", false);
-    console.log(res);
+  .action(async (args, opts) => {
+    const res = await componentInstall(
+      (args.name ?? "").replace("/", "__"),
+      opts["slidesk-link-url"] as string,
+      false,
+    );
+    log(res);
     process.exit(0);
   });
 

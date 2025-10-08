@@ -2,12 +2,12 @@ import type { DotenvParseOutput } from "dotenv";
 import comments from "../../components/comments";
 import formatting from "../../components/formatting";
 import image from "../../components/image";
-import treatSlide from "./treatSlide";
 import type {
   SliDeskPlugin,
   SliDeskPresentOptions,
   SliDeskTemplate,
 } from "../../types";
+import treatSlide from "./treatSlide";
 
 export default async (
   sdf: string,

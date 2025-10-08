@@ -2,7 +2,7 @@ import { view } from "../../templates/notes";
 import type { SliDeskConfig, SliDeskPlugin } from "../../types";
 
 export default (config: SliDeskConfig, plugins: SliDeskPlugin[]) => {
-  let template = view;
+  let template = `${view}`;
   const css = [
     '<link rel="stylesheet" href="slidesk.css" />',
     '<link rel="stylesheet" href="slidesk-notes.css" />',
