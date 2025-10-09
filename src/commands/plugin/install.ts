@@ -27,6 +27,7 @@ export const pluginInstall = async (
     file: tmp,
     C: `${process.cwd()}/plugins/${name}`,
   });
+  await Bun.file(tmp).unlink();
   const glob = new Bun.Glob("**/*");
   for await (const file of glob.scan(
     `${process.cwd()}/plugins/${name}/${plugin.join("__")}`,
