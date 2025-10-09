@@ -42,9 +42,28 @@ export const pluginInstall = async (
   await rm(`${process.cwd()}/plugins/${name}/${plugin.join("__")}`, {
     recursive: true,
   });
+  const pluginJSON = await Bun.file(
+    `${process.cwd()}/plugins/${name}/plugin.json`,
+  ).json();
+  [
+    "addStyles",
+    "addScripts",
+    "addWS",
+    "addSpeakerScripts",
+    "addSpeakerStyles",
+  ].forEach((p, _) => {
+    if (pluginJSON[p]) {
+      pluginJSON[p] = pluginJSON[p].map((f: string) =>
+        f.replace(`plugins/${plugin.join("__")}/`, `plugins/${name}/`),
+      );
+    }
+  });
+  await Bun.write(
+    `${process.cwd()}/plugins/${name}/plugin.json`,
+    JSON.stringify(pluginJSON),
+  );
   return `Plugin ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
-
 const pluginInstallCmd = new Clipse("install", "slidesk plugin installer");
 pluginInstallCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
