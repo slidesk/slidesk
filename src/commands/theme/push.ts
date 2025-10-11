@@ -31,11 +31,9 @@ themePushCmd
       try {
         for await (const img of globImages.scan(`${themePath}/preview`)) {
           images.push(
-            Bun.gzipSync(
-              Buffer.from(
-                await Bun.file(`${themePath}/preview/${img}`).arrayBuffer(),
-              ).toString("base64"),
-            ) as string,
+            Buffer.from(
+              await Bun.file(`${themePath}/preview/${img}`).arrayBuffer(),
+            ).toString("base64"),
           );
         }
       } catch (_) {}
