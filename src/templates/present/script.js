@@ -156,7 +156,7 @@ window.onload = () => {
     "sd-current",
     "no-sd-animation",
   );
-  document.querySelectorAll(".sd-img img").forEach((img, _) =>
+  document.querySelectorAll(".sd-img img").forEach((img, _) => {
     img.addEventListener("load", () => {
       let ratio = 1;
       if (Number(window.slidesk.env.WIDTH))
@@ -167,8 +167,8 @@ window.onload = () => {
       img.parentElement.style.height = newH;
       img.style.width = newW;
       img.style.height = newH;
-    }),
-  );
+    });
+  });
   window.slidesk.changeSlide();
   document.querySelectorAll(".sd-slide").forEach((slide, _) => {
     slide.addEventListener("touchstart", (e) => {

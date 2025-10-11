@@ -7,7 +7,7 @@ const { log, error } = console;
 
 const pluginPushCmd = new Clipse(
   "push",
-  "push talk to your user page on slidesk.link",
+  "push plugin to your user page on slidesk.link",
 );
 pluginPushCmd
   .addArguments([
@@ -35,7 +35,6 @@ pluginPushCmd
       const readme = Bun.file(`${pluginPath}/README.md`);
       if (await readme.exists()) data.set("desc", await readme.text());
       else data.set("desc", "");
-      console.log(`${options["slidesk-link-url"]}/addons`);
       const response = await fetch(`${options["slidesk-link-url"]}/addons`, {
         method: "post",
         body: data,

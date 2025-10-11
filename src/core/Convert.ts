@@ -34,7 +34,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
         templates,
         plugins,
       ),
-      prepareTPL(config, plugins, favicon),
+      prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
       env,

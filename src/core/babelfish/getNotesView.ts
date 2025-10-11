@@ -11,15 +11,15 @@ export default (config: SliDeskConfig, plugins: SliDeskPlugin[]) => {
   const js = ['<script src="slidesk-notes.js"></script>'];
   plugins.forEach((p, _) => {
     if (p.addSpeakerStyles) {
-      (p.addSpeakerStyles as string[]).forEach((k: string, _) =>
-        css.push(`<link href="${k}" rel="stylesheet" />`),
-      );
+      (p.addSpeakerStyles as string[]).forEach((k: string, _) => {
+        css.push(`<link href="${k}" rel="stylesheet" />`);
+      });
     }
 
     if (p.addSpeakerScripts) {
-      (p.addSpeakerScripts as string[]).forEach((k: string, _) =>
-        js.push(`<script src="${k}"></script>`),
-      );
+      (p.addSpeakerScripts as string[]).forEach((k: string, _) => {
+        js.push(`<script src="${k}"></script>`);
+      });
     }
   });
   template = template.replace("#STYLES#", `${css.join("")}${config.customCSS}`);
