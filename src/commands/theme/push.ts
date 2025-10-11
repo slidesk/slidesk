@@ -35,7 +35,7 @@ themePushCmd
               Buffer.from(
                 await Bun.file(`${themePath}/preview/${img}`).arrayBuffer(),
               ).toString("base64"),
-            ),
+            ) as string,
           );
         }
       } catch (_) {}
