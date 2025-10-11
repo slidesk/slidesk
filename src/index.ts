@@ -6,6 +6,8 @@ import createCmd from "./commands/create";
 import linkCmd from "./commands/link";
 import pluginCmd from "./commands/plugin";
 import present from "./commands/present";
+import templateCmd from "./commands/template";
+import themeCmd from "./commands/theme";
 import checkVersion from "./utils/checkLastVersion";
 
 const { log } = console;
@@ -114,6 +116,13 @@ slidesk
       description: "directory of your talk",
     },
   ])
-  .addSubcommands([createCmd, pluginCmd, componentCmd, linkCmd])
+  .addSubcommands([
+    createCmd,
+    pluginCmd,
+    componentCmd,
+    linkCmd,
+    templateCmd,
+    themeCmd,
+  ])
   .action((args, opts) => present(args.talk ?? "", opts))
   .ready();
