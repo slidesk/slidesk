@@ -1,0 +1,11 @@
+title: Your title
+abstract: |
+  Your abstract
+url: https://www.host.tld/path/to/your/slides
+sessions:
+  - date: 2025-03-12
+    location: A nice meetup
+    link: https://www.your-event.tld/path/to/your/program
+    slides: https://your.hosted.slides.tld
+    video: https://www.your-video-provider.tld/path/to/your/video
+    status: accepted | rejected | declined | pending

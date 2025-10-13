@@ -1,0 +1,19 @@
+name: Deploy with Slidesk
+on:
+  push:
+    branches: ["main"]
+
+## Very important
+permissions:
+  contents: read
+  pages: write # required by deploy-pages
+  id-token: write # required by deploy-pages
+
+jobs:
+  slidesk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & Deploy
+        uses: yodamad-actions/slidesk@1.0.0

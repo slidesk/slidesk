@@ -1,0 +1,5 @@
+stages:
+  - deploy
+
+include:
+  - component: $CI_SERVER_FQDN/fun_with/fun-with-gitlab/components/slidesk/slidesk@1.0.1
