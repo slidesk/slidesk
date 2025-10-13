@@ -4,11 +4,14 @@ import process from "node:process";
 import Convert from "../core/Convert";
 import SlideskServer from "../core/Server";
 import Terminal from "../core/Terminal";
+import gitlabYML from "../templates/ci/gitlab-ci.yml" with { type: "text" };
+import githubYML from "../templates/ci/github.yml" with { type: "text" };
+import linkYML from "../templates/ci/link.yml" with { type: "text" };
 import type { SliDeskPresentOptions } from "../types";
 import { getAction } from "../utils/interactCLI";
 import save from "../utils/save";
 
-const { log } = console;
+const { log, error } = console;
 
 let server: SlideskServer | Terminal = new SlideskServer();
 
@@ -32,7 +35,7 @@ const flow = async (
   }
 };
 
-const present = (talk: string, options: SliDeskPresentOptions) => {
+const present = async (talk: string, options: SliDeskPresentOptions) => {
   const nets = networkInterfaces();
   options.ip =
     Object.values(nets)
@@ -40,6 +43,31 @@ const present = (talk: string, options: SliDeskPresentOptions) => {
       .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
       .shift()?.address ?? "127.0.0.1";
   const talkdir = `${process.cwd()}/${talk}`;
+  if (options.deploy) {
+    const depls = ["github", "gitlab", "link"];
+    if (!depls.includes(options.deploy)) {
+      error(
+        `${options.deploy} is not a valid deploy option (${depls.join(", ")})`,
+      );
+      process.exit(1);
+    } else {
+      switch (options.deploy) {
+        case "github":
+          await Bun.write(
+            `${talkdir}/.github/workflows/slidesk.yml`,
+            githubYML,
+          );
+          break;
+        case "gitlab":
+          await Bun.write(`${talkdir}/.gitlab-ci.yml`, gitlabYML);
+          break;
+        case "link":
+          await Bun.write(`${talkdir}/link.yml`, linkYML);
+          break;
+      }
+      process.exit(0);
+    }
+  }
   if (options.terminal) {
     server = new Terminal();
   }
