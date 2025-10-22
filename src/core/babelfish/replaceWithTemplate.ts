@@ -19,5 +19,6 @@ export default (
   });
   return text
     .replace(/<sd-title \/>/g, `<h2>${title}</h2>`)
-    .replace(/<sd-content \/>/g, newContent.replace(/<h2>(.*)<\/h2>/g, ""));
+    .replace(/<sd-content \/>/g, newContent.replace(/<h2>(.*)<\/h2>/g, ""))
+    .replaceAll(/<sd-[^>]+\s*\/>/g, "");
 };
