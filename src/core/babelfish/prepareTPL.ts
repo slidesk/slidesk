@@ -16,19 +16,25 @@ export default (
     ...config.customIncludes.js,
     '<script src="slidesk.js"></script>',
   ];
+  const globCSS = new Bun.Glob("**/*.css");
+  const globJS = new Bun.Glob("**/*.js");
   try {
-    const globCSS = new Bun.Glob("**/*.css");
     for (const file of globCSS.scanSync(`${sdfPath}templates`)) {
       css.push(`<link href="templates/${file}" rel="stylesheet"/>`);
     }
+  } catch (_) {}
+  try {
     for (const file of globCSS.scanSync(`${sdfPath}themes`)) {
       if (!file.includes("/plugins/"))
         css.push(`<link href="themes/${file}" rel="stylesheet"/>`);
     }
-    const globJS = new Bun.Glob("**/*.js");
+  } catch (_) {}
+  try {
     for (const file of globJS.scanSync(`${sdfPath}templates`)) {
       js.push(`<script src="templates/${file}"></script>`);
     }
+  } catch (_) {}
+  try {
     for (const file of globJS.scanSync(`${sdfPath}themes`)) {
       if (!file.includes("/plugins/"))
         js.push(`<script src="themes/${file}"></script>`);
