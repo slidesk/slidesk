@@ -109,6 +109,14 @@ slidesk
       default: false,
       optional: true,
     },
+    deploy: {
+      short: "y",
+      type: "string",
+      description:
+        "generate a deploy file for 'github', 'gitlab' or 'link' (slidesk.link)",
+      default: "",
+      optional: true,
+    },
   })
   .addArguments([
     {
@@ -124,5 +132,5 @@ slidesk
     templateCmd,
     themeCmd,
   ])
-  .action((args, opts) => present(args.talk ?? "", opts))
+  .action(async (args, opts) => await present(args.talk ?? "", opts))
   .ready();

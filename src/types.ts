@@ -14,6 +14,7 @@ export type SliDeskPresentOptions = {
   lang?: string;
   terminal?: boolean;
   ip?: string;
+  deploy?: string;
 };
 
 export type SliDeskServerOptions = {
