@@ -26,7 +26,7 @@ export default (
         css.push(`<link href="themes/${file}" rel="stylesheet"/>`);
     }
     const globJS = new Bun.Glob("**/*.js");
-    for (const file of globCSS.scanSync(`${sdfPath}templates`)) {
+    for (const file of globJS.scanSync(`${sdfPath}templates`)) {
       js.push(`<script src="templates/${file}"></script>`);
     }
     for (const file of globJS.scanSync(`${sdfPath}themes`)) {
