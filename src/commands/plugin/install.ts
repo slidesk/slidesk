@@ -45,19 +45,21 @@ export const pluginInstall = async (
   const pluginJSON = await Bun.file(
     `${process.cwd()}/plugins/${name}/plugin.json`,
   ).json();
-  [
-    "addStyles",
-    "addScripts",
-    "addWS",
-    "addSpeakerScripts",
-    "addSpeakerStyles",
-  ].forEach((p, _) => {
-    if (pluginJSON[p]) {
-      pluginJSON[p] = pluginJSON[p].map((f: string) =>
-        f.replace(`plugins/${plugin.join("__")}/`, `plugins/${name}/`),
-      );
-    }
-  });
+  ["addStyles", "addScripts", "addSpeakerScripts", "addSpeakerStyles"].forEach(
+    (p, _) => {
+      if (pluginJSON[p]) {
+        pluginJSON[p] = pluginJSON[p].map((f: string) =>
+          f.replace(`plugins/${plugin.join("__")}/`, `plugins/${name}/`),
+        );
+      }
+    },
+  );
+  if (pluginJSON["addWS"]) {
+    pluginJSON["addWS"] = pluginJSON["addWS"].replace(
+      `plugins/${plugin.join("__")}/`,
+      `plugins/${name}/`,
+    );
+  }
   await Bun.write(
     `${process.cwd()}/plugins/${name}/plugin.json`,
     JSON.stringify(pluginJSON),
