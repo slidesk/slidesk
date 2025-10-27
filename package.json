@@ -33,7 +33,7 @@
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
-    "@types/qrcode": "^1.5.5",
+    "@types/qrcode": "^1.5.6",
     "@types/turndown": "^5.0.5"
   },
   "scripts": {
