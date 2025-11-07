@@ -2,6 +2,6 @@
 add_styles: assets/theme.css
 ::/
 
-## TITRE
+## TITLE
 
 !include(slides)
