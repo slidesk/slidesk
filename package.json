@@ -19,22 +19,22 @@
     "markdown-it": "^14.1.0",
     "picocolors": "^1.1.1",
     "qrcode": "^1.5.4",
-    "tar": "^7.5.1",
+    "tar": "^7.5.2",
     "terminal-image": "^4.1.0",
     "terminal-size": "^4.0.0",
-    "turndown": "^7.2.1",
+    "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "peerDependencies": {
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.7",
+    "@biomejs/biome": "^2.3.4",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
-    "@types/qrcode": "^1.5.5",
-    "@types/turndown": "^5.0.5"
+    "@types/qrcode": "^1.5.6",
+    "@types/turndown": "^5.0.6"
   },
   "scripts": {
     "make": "bun build src/index.ts --outdir bin --minify --target bun",
