@@ -16,7 +16,7 @@ const sendToSlideskLink = async (
   const talkdir = `${process.cwd()}/${talk ?? ""}`;
   const files = await Convert(`${talkdir}/main.sdf`, {
     ...options,
-    domain: options["slidesk-link-url"],
+    domain: options["slidesk-link-url"]!.replace(/^https?:\/\/(www\.)?/, ""),
   });
   if (files === null) {
     process.exit();
