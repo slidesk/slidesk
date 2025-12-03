@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",
-    "clipse": "^0.0.14",
+    "clipse": "^0.0.15",
     "dotenv": "^17.2.3",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
@@ -29,7 +29,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.7",
+    "@biomejs/biome": "^2.3.8",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
