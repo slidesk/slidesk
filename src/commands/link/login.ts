@@ -9,6 +9,12 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
       default: false,
       description: "force token refresh",
     },
+    "with-token": {
+      type: "string",
+      default: "",
+      description: "token to use, you can fetch it into your profile page",
+      optional: true,
+    },
   })
   .action(async (_, o) => {
     const home = homedir();
@@ -18,6 +24,10 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
       globalSlidesk.size !== 0 &&
       !o.force
     ) {
+      process.exit(0);
+    }
+    if (o["with-token"]) {
+      await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
       process.exit(0);
     }
     Bun.serve({
