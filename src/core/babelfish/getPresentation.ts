@@ -34,5 +34,10 @@ export default async (
   let cpt = 0;
   for await (const slide of [...fusion.split("\n## ")])
     slides.push(await treatSlide(slide, cpt++, options, templates, plugins));
-  return slides.join("");
+  return slides
+    .join("")
+    .replaceAll(
+      "#PRESENTATION_URL#",
+      `http${env.HTTPS === "true" ? "s" : ""}://${options.ip ?? ""}:${options.port ?? ""}`,
+    );
 };

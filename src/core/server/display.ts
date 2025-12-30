@@ -33,7 +33,7 @@ export default async (https: boolean, options: SliDeskServerOptions) => {
       );
   });
   if (options.open && !options.notes) {
-    Bun.spawn([start(), `http://localhost:${options.port}`]);
+    Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${options.port}`]);
   }
   log();
 };
