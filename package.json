@@ -19,8 +19,8 @@
     "markdown-it": "^14.1.0",
     "picocolors": "^1.1.1",
     "qrcode": "^1.5.4",
-    "tar": "^7.5.2",
-    "terminal-image": "^4.1.0",
+    "tar": "^7.5.3",
+    "terminal-image": "^4.2.0",
     "terminal-size": "^4.0.0",
     "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2"
@@ -29,7 +29,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
+    "@biomejs/biome": "^2.3.11",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
