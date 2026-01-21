@@ -4,12 +4,16 @@ export default function comments(data: string) {
     (match, _) => {
       newData = newData.replace(
         match[0],
-        `<aside class="sd-notes">${match[0]
-          .replace("/*", "")
-          .replace("*/", "")
-          .split("\n")
-          .slice(1)
-          .join("<br/>")}</aside>`,
+        `<aside class="sd-notes">${btoa(
+          match[0]
+            .replace("/*", "")
+            .replace("*/", "")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .split("\n")
+            .slice(1)
+            .join("<br/>"),
+        )}</aside>`,
       );
     },
   );
