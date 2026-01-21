@@ -1,7 +1,7 @@
 import { watch } from "node:fs";
 import { networkInterfaces } from "node:os";
 import process from "node:process";
-import Convert from "../core/Convert";
+import Convert, { errorContent } from "../core/Convert";
 import SlideskServer from "../core/Server";
 import Terminal from "../core/Terminal";
 import gitlabYML from "../templates/ci/gitlab-ci.yml" with { type: "text" };
@@ -20,7 +20,12 @@ const flow = async (
   options: SliDeskPresentOptions = {},
   init = false,
 ) => {
-  const files = await Convert(`${talkdir}/main.sdf`, options);
+  let files = {};
+  try {
+    files = await Convert(`${talkdir}/main.sdf`, options);
+  } catch (_) {
+    files = await errorContent(options);
+  }
   if (files === null) {
     process.exit();
   }
@@ -83,7 +88,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
         "\nPress \x1b[1mQ\x1b[0m to quit the program.",
         "\n",
       );
-    if (options.watch)
+    if (options.watch) {
       watch(talkdir, { recursive: true }, (eventType, filename) => {
         if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
           log(
@@ -92,6 +97,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
           flow(talkdir, options);
         }
       });
+    }
     getAction(server, true);
     process.on("SIGINT", () => {
       process.exit(0);
