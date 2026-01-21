@@ -28,7 +28,7 @@ const prepareHTML = (slide: string) => {
         if (timer.startsWith("<")) timerCheckpoint = timer.replace("<", "");
         return "";
       }
-      if (p.trimStart().startsWith("//")) {
+      if (p.trimStart().startsWith("////")) {
         return "";
       }
       return p;
