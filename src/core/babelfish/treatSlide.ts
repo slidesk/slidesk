@@ -4,7 +4,6 @@ import type {
   SliDeskPresentOptions,
   SliDeskTemplate,
 } from "../../types";
-import slugify from "../../utils/slugify";
 import toBinary from "../../utils/toBinary";
 import replaceWithTemplate from "./replaceWithTemplate";
 
@@ -50,15 +49,11 @@ const render = (slide: string) => {
 const treatTitle = (slide: string, templates: SliDeskTemplate) => {
   let content = slide;
   let classes = "";
-  let slug = "";
   const slideTitle = slide.match("<h2>(.*)</h2>");
   if (slideTitle?.length) {
     const spl = slideTitle[1].toString().split(".[");
     if (spl.length !== 1) {
       classes = spl[1].replace("]", "").trim();
-    }
-    if (spl[0].trim() !== "") {
-      slug = slugify(spl[0]);
     }
     // # in classes means template
     const tpl = (classes.split(" ").filter((c) => c.startsWith("#"))[0] ?? "")
@@ -68,7 +63,7 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
       content = replaceWithTemplate(tpl, content, spl[0], templates);
     else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
   }
-  return { content, slug, classes };
+  return { content, classes };
 };
 
 export default async (
@@ -81,11 +76,9 @@ export default async (
   if (slide.trim() === "") return "";
 
   const { timerSlide, timerCheckpoint, content: renderContent } = render(slide);
-  const { content, slug, classes } = treatTitle(renderContent, templates);
-  const slideSlug = `!slide-${cptSlide}`;
+  const { content, classes } = treatTitle(renderContent, templates);
   const datas = {
     num: cptSlide,
-    slug: slug || slideSlug,
     source: "",
     "timer-slide": "",
     "timer-checkpoint": "",

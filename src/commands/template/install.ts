@@ -14,7 +14,7 @@ export const templateInstall = async (
   }
   const [user, ...template] = name.split("__");
   const templateTarballResponse = await fetch(
-    `${urlLink}/addons/download/template/${user.replace("@", "")}/${template.join("__")}`,
+    `${urlLink}/addons/download/template/${user.replace("@", "")}/${template.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
   );
   if (templateTarballResponse.status === 404) {
     error(`template ${name.replace("__", "/")} not found`);

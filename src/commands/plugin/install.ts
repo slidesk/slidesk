@@ -14,7 +14,7 @@ export const pluginInstall = async (
   }
   const [user, ...plugin] = name.split("__");
   const pluginTarballResponse = await fetch(
-    `${urlLink}/addons/download/plugin/${user.replace("@", "")}/${plugin.join("__")}`,
+    `${urlLink}/addons/download/plugin/${user.replace("@", "")}/${plugin.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
   );
   if (pluginTarballResponse.status === 404) {
     error(`Plugin ${name.replace("__", "/")} not found`);

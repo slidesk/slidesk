@@ -13,7 +13,7 @@ export const componentInstall = async (
   }
   const [user, ...component] = name.split("__");
   const componentTarballResponse = await fetch(
-    `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__")}`,
+    `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
   );
   if (componentTarballResponse.status === 404) {
     error(`Component ${name.replace("__", "/")} not found`);

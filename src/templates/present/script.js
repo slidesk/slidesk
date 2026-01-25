@@ -35,10 +35,7 @@ window.slidesk.changeSlide = () => {
   window.slidesk.slides[window.slidesk.currentSlide].classList.add(
     "sd-current",
   );
-  window.location.hash =
-    window.slidesk.slides[window.slidesk.currentSlide].getAttribute(
-      "data-slug",
-    );
+  window.location.hash = window.slidesk.currentSlide;
   if (
     window.slidesk.io &&
     (window.location.hostname === window.slidesk.domain ||
@@ -133,14 +130,8 @@ window.onload = () => {
       },
     });
   }
-  const loadingHash = window.location.hash.replace("#", "").split("+");
-  const slugs = [];
-  window.slidesk.slides.forEach((slide, _) => {
-    slugs.push(slide.getAttribute("data-slug"));
-  });
-  window.slidesk.currentSlide = slugs.indexOf(loadingHash[0]);
-  if (loadingHash.length > 1)
-    window.slidesk.currentSlide += Number(loadingHash[1]);
+  const loadingHash = window.location.hash.replace("#", "");
+  window.slidesk.currentSlide = Number(loadingHash) ?? "1";
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
