@@ -12,9 +12,13 @@ export const templateInstall = async (
   if (name === "") {
     return "Please provide a name for the template";
   }
+  name = name.replace(
+    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+    "",
+  );
   const [user, ...template] = name.split("__");
   const templateTarballResponse = await fetch(
-    `${urlLink}/addons/download/template/${user.replace("@", "")}/${template.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
+    `${urlLink}/addons/download/template/${user.replace("@", "")}/${template.join("__")}`,
   );
   if (templateTarballResponse.status === 404) {
     error(`template ${name.replace("__", "/")} not found`);
