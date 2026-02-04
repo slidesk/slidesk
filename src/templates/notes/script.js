@@ -33,7 +33,14 @@ window.slidesk.io.onmessage = (event) => {
     document.querySelector("#sd-sv-notes").innerHTML = [
       ...current.querySelectorAll("aside.sd-notes"),
     ]
-      .map((a) => atob(a.innerHTML))
+      .map((a) =>
+        decodeURIComponent(
+          atob(a.innerHTML).replace(
+            /[\x80-\uffff]/g,
+            (m) => `%${m.charCodeAt(0).toString(16).padStart(2, "0")}`,
+          ),
+        ),
+      )
       .join("");
     currentNum = current.querySelector(".sd-slide").getAttribute("data-num");
     // check timers
