@@ -12,16 +12,16 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
-    "@clack/prompts": "^0.11.0",
+    "@clack/prompts": "1.0.0",
     "clipse": "^0.0.15",
     "dotenv": "^17.2.3",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.0",
     "picocolors": "^1.1.1",
     "qrcode": "^1.5.4",
-    "tar": "^7.5.6",
+    "tar": "^7.5.7",
     "terminal-image": "^4.2.0",
-    "terminal-size": "^4.0.0",
+    "terminal-size": "^4.0.1",
     "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2"
   },
@@ -29,7 +29,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.12",
+    "@biomejs/biome": "^2.3.14",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",
