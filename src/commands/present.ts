@@ -23,8 +23,9 @@ const flow = async (
   let files = {};
   try {
     files = await Convert(`${talkdir}/main.sdf`, options);
-  } catch (_) {
+  } catch (e) {
     files = await errorContent(options);
+    error(e);
   }
   if (files === null) {
     process.exit();

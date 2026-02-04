@@ -12,9 +12,13 @@ export const themeInstall = async (
   if (name === "") {
     return "Please provide a name for the theme";
   }
+  name = name.replace(
+    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+    "",
+  );
   const [user, ...theme] = name.split("__");
   const themeTarballResponse = await fetch(
-    `${urlLink}/addons/download/theme/${user.replace("@", "")}/${theme.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
+    `${urlLink}/addons/download/theme/${user.replace("@", "")}/${theme.join("__")}`,
   );
   if (themeTarballResponse.status === 404) {
     error(`theme ${name.replace("__", "/")} not found`);

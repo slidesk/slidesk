@@ -12,9 +12,13 @@ export const pluginInstall = async (
   if (name === "") {
     return "Please provide a name for the plugin";
   }
+  name = name.replace(
+    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+    "",
+  );
   const [user, ...plugin] = name.split("__");
   const pluginTarballResponse = await fetch(
-    `${urlLink}/addons/download/plugin/${user.replace("@", "")}/${plugin.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
+    `${urlLink}/addons/download/plugin/${user.replace("@", "")}/${plugin.join("__")}`,
   );
   if (pluginTarballResponse.status === 404) {
     error(`Plugin ${name.replace("__", "/")} not found`);

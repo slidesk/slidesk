@@ -11,9 +11,13 @@ export const componentInstall = async (
   if (name === "") {
     return "Please provide a name for the component";
   }
+  name = name.replace(
+    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+    "",
+  );
   const [user, ...component] = name.split("__");
   const componentTarballResponse = await fetch(
-    `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__").replace(/\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g, "")}`,
+    `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__")}`,
   );
   if (componentTarballResponse.status === 404) {
     error(`Component ${name.replace("__", "/")} not found`);
