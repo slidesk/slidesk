@@ -9,7 +9,6 @@ Copyright &copy; 2026 SliDesk
 repo_url = "https://github.com/slidesk/slidesk"
 repo_name = "slidesk/slidesk"
 
-
 [project.theme]
 logo = "_media/icon.svg"
 language = "en"
