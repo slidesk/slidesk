@@ -10,6 +10,7 @@ repo_url = "https://github.com/slidesk/slidesk"
 repo_name = "slidesk/slidesk"
 
 [project.theme]
+variant = "modern"
 logo = "_media/icon.svg"
 language = "en"
 features = [
@@ -33,6 +34,9 @@ features = [
     "navigation.tracking",
     "search.highlight",
 ]
+
+[project.extra]
+key = "value"
 
 [project.theme.icon]
 repo = "fontawesome/brands/github"
