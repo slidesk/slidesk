@@ -15,7 +15,7 @@ export default function comments(data: string) {
               .slice(1)
               .join("<br/>"),
           ).replace(/%([a-f0-9]{2})/gi, (_, $1) =>
-            String.fromCharCode(parseInt($1, 16)),
+            String.fromCharCode(Number.parseInt($1, 16)),
           ),
         )}</aside>`,
       );

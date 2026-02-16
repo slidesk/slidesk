@@ -1,11 +1,14 @@
-import type { DotenvParseOutput } from "dotenv";
 import { script } from "../../templates/present";
-import type { SliDeskPlugin, SliDeskPresentOptions } from "../../types";
+import type {
+  SliDeskEnv,
+  SliDeskPlugin,
+  SliDeskPresentOptions,
+} from "../../types";
 
 export default (
   options: SliDeskPresentOptions,
   plugins: SliDeskPlugin[],
-  env: DotenvParseOutput,
+  env: SliDeskEnv,
 ) => `window.slidesk = {
   currentSlide: 0,
   slides: [],

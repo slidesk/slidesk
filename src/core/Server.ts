@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import type { Server } from "bun";
+import type { Server, WebSocket } from "bun";
 import type {
   SliDeskFile,
   SliDeskPlugin,
@@ -13,7 +13,7 @@ import getPlugins from "./server/getPlugins";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
-let server: Server;
+let server: Server<WebSocket>;
 
 export default class SlideskServer {
   async create(
