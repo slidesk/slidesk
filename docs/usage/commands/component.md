@@ -1,8 +1,8 @@
 # Manage components
 
-:::note
-(since 2.14.0)
-:::
+!!!info
+    since **2.14.0**
+
 
 SliDesk has a hub in https://slidesk.link.
 
