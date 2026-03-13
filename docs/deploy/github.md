@@ -2,19 +2,19 @@
 
 If your project is hosted in GitHub, you can use GitHub Pages to host your slide.
 
-Using `slidesk -y github`, SliDesk creates for you a `.github/workflow/slidesk.yml` containing:
+You can use the [official SliDesk GitHub Action](https://github.com/marketplace/actions/slidesk-deploy) to build and deploy your slides on GitHub Pages.
 
-```yaml
+```yaml title="Sample action workflow"
 name: Deploy with Slidesk
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 ## Very important
 permissions:
   contents: read
-  pages: write # required by deploy-pages
-  id-token: write # required by deploy-pages
+  pages: write       # required by deploy-pages
+  id-token: write    # required by deploy-pages
 
 jobs:
   slidesk:
