@@ -5,3 +5,11 @@ node_modules
 .scannerwork
 exe/
 coverage
+
+.cache
+site
+.python-version
+main.py
+pyproject.toml
+uv.lock
+
