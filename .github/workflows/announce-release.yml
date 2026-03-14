@@ -1,0 +1,39 @@
+name: Announce Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  bluesky:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get release notes
+        id: release
+        uses: nick-fields/retry@v3
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          timeout_minutes: 1
+          max_attempts: 3
+          command: |
+            BODY=$(gh api repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} --jq '.body // ""')
+            SUMMARY=$(echo "$BODY" | head -n 6 | sed 's/\*\*//g' | sed 's/\* [a-f0-9]\{40\} /\* /g' | sed '/^$/d')
+            echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$SUMMARY" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Post to Bluesky
+        uses: cbrgm/bluesky-github-action@v1
+        with:
+          handle: ${{ secrets.BLUESKY_HANDLE }}
+          password: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          text: |
+            🦆 SliDesk ${{ github.ref_name }} is out! 🚀
+
+            ${{ steps.release.outputs.summary }}
+
+            🔗 https://github.com/slidesk/slidesk/releases/tag/${{ github.ref_name }}
+            📦 docker.io/gouz/slidesk:latest
