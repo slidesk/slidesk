@@ -14,6 +14,7 @@
   "dependencies": {
     "@clack/prompts": "^1.1.0",
     "clipse": "^0.0.15",
+    "dotenv": "^17.3.1",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.1",
     "picocolors": "^1.1.1",
@@ -36,6 +37,7 @@
     "@types/turndown": "^5.0.6"
   },
   "scripts": {
+    "test": "bun test --coverage",
     "make": "bun build src/index.ts --outdir bin --minify --target bun",
     "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify",
     "dev": "bun src/index.ts",
