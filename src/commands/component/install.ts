@@ -11,16 +11,16 @@ export const componentInstall = async (
   if (name === "") {
     return "Please provide a name for the component";
   }
-  name = name.replace(
+  const componentName = name.replace(
     /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
     "",
   );
-  const [user, ...component] = name.split("__");
+  const [user, ...component] = componentName.split("__");
   const componentTarballResponse = await fetch(
     `${urlLink}/addons/download/component/${user.replace("@", "")}/${component.join("__")}`,
   );
   if (componentTarballResponse.status === 404) {
-    error(`Component ${name.replace("__", "/")} not found`);
+    error(`Component ${componentName.replace("__", "/")} not found`);
     return "";
   }
   const componentTarball = await componentTarballResponse.blob();
@@ -31,7 +31,7 @@ export const componentInstall = async (
     C: `${process.cwd()}/components/`,
   });
   await Bun.file(tmp).unlink();
-  return `component ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
+  return `component ${componentName.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
 
 const componentInstallCmd = new Clipse(

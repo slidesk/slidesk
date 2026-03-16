@@ -12,41 +12,41 @@ export const themeInstall = async (
   if (name === "") {
     return "Please provide a name for the theme";
   }
-  name = name.replace(
+  const themeName = name.replace(
     /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
     "",
   );
-  const [user, ...theme] = name.split("__");
+  const [user, ...theme] = themeName.split("__");
   const themeTarballResponse = await fetch(
     `${urlLink}/addons/download/theme/${user.replace("@", "")}/${theme.join("__")}`,
   );
   if (themeTarballResponse.status === 404) {
-    error(`theme ${name.replace("__", "/")} not found`);
+    error(`theme ${themeName.replace("__", "/")} not found`);
     return "";
   }
   const themeTarball = await themeTarballResponse.blob();
-  const tmp = `${process.cwd()}/themes/${name}/link.tgz`;
+  const tmp = `${process.cwd()}/themes/${themeName}/link.tgz`;
   await Bun.write(tmp, themeTarball);
   await extract({
     file: tmp,
-    C: `${process.cwd()}/themes/${name}`,
+    C: `${process.cwd()}/themes/${themeName}`,
   });
   await Bun.file(tmp).unlink();
   const glob = new Bun.Glob("**/*");
   for await (const file of glob.scan(
-    `${process.cwd()}/themes/${name}/${theme.join("__")}`,
+    `${process.cwd()}/themes/${themeName}/${theme.join("__")}`,
   )) {
     await Bun.write(
-      `${process.cwd()}/themes/${name}/${file}`,
+      `${process.cwd()}/themes/${themeName}/${file}`,
       await Bun.file(
-        `${process.cwd()}/themes/${name}/${theme.join("__")}/${file}`,
+        `${process.cwd()}/themes/${themeName}/${theme.join("__")}/${file}`,
       ).arrayBuffer(),
     );
   }
-  await rm(`${process.cwd()}/themes/${name}/${theme.join("__")}`, {
+  await rm(`${process.cwd()}/themes/${themeName}/${theme.join("__")}`, {
     recursive: true,
   });
-  return `theme ${name.replace("__", "/")} ${update ? "updated" : "installed"}`;
+  return `theme ${themeName.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
 const themeInstallCmd = new Clipse("install", "slidesk theme installer");
 themeInstallCmd

@@ -1,4 +1,4 @@
-import type { Server } from "bun";
+import type { Server, WebSocket } from "bun";
 
 export type SliDeskPresentOptions = {
   domain?: string;
@@ -41,7 +41,7 @@ export type SliDeskPluginAddRoute = (
 
 export type SliDeskPluginAddWS = (
   _message: string,
-  _server: Server,
+  _server: Server<WebSocket>,
 ) => Promise<object>;
 
 export type SliDeskPlugin = {
@@ -83,4 +83,8 @@ export type SliDeskFavicon = {
   name: string;
   content: string | Uint8Array;
   type: string;
+};
+
+export type SliDeskEnv = {
+  [key: string]: string;
 };

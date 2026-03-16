@@ -1,11 +1,10 @@
-import type { DotenvParseOutput } from "dotenv";
-import type { SliDeskFile, SliDeskServerOptions } from "../types";
+import type { SliDeskEnv, SliDeskFile, SliDeskServerOptions } from "../types";
 import loadEnv from "../utils/loadEnv";
 import show from "./terminal/show";
 
 class Terminal {
   readonly #slides: string[] = [];
-  #env: DotenvParseOutput = {};
+  #env: SliDeskEnv = {};
   #talkdir = "";
   #currentSlideIndex = 0;
   async create(

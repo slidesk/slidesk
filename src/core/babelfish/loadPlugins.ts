@@ -1,6 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import type { DotenvParseOutput } from "dotenv";
-import type { SliDeskPlugin } from "../../types";
+import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 
 const loadExternalPlugins = async (
   pluginsDir: string,
@@ -34,7 +33,7 @@ const loadExternalPlugins = async (
   return plugins;
 };
 
-export default async (sdfPath: string, env: DotenvParseOutput) => {
+export default async (sdfPath: string, env: SliDeskEnv) => {
   const plugins: SliDeskPlugin[] = [];
   plugins.push(...(await loadExternalPlugins(`${sdfPath}plugins`, sdfPath)));
   if (env.COMMON_DIR !== "")
