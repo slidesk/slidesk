@@ -1,0 +1,29 @@
+name: NPM Publishing
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
+jobs:
+  publish_npm:
+    name: Publish on npm
+    environment: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - run: bun install
+      - run: bun make
+      - run: npm ci
+      - run: npm publish
