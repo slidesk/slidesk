@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
+      - run: rm bun.lock
       - run: bun install
       - run: bun make
       - run: npm ci
