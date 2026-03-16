@@ -1,7 +1,3 @@
-/::
-add_styles: assets/theme.css
-::/
-
 ## TITLE
 
 !include(slides)
