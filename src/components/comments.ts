@@ -9,8 +9,10 @@ export default function comments(data: string) {
             match[0]
               .replace("/*", "")
               .replace("*/", "")
-              .replaceAll("<", "&lt;")
-              .replaceAll(">", "&gt;")
+              .replace(
+                /[&<>"'` !@$%()=+{}[\]]/g,
+                (match) => "&#" + match.charCodeAt(0) + ";",
+              )
               .split("\n")
               .slice(1)
               .join("<br/>"),
