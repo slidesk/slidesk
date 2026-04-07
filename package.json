@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.15.3",
+  "version": "2.15.4",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "./bin/index.js"
@@ -12,24 +12,24 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
-    "@clack/prompts": "^1.1.0",
+    "@clack/prompts": "^1.2.0",
     "clipse": "^0.0.15",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.1",
     "html-minifier-terser": "^7.2.0",
     "markdown-it": "^14.1.1",
     "picocolors": "^1.1.1",
     "qrcode": "^1.5.4",
-    "tar": "^7.5.11",
+    "tar": "^7.5.13",
     "terminal-image": "^4.2.0",
     "terminal-size": "^4.0.1",
-    "turndown": "^7.2.2",
+    "turndown": "^7.2.4",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "peerDependencies": {
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.7",
+    "@biomejs/biome": "^2.4.10",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/markdown-it": "^14.1.2",

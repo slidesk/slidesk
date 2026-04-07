@@ -53,4 +53,49 @@ describe("treatSlide function", () => {
     );
     expect(result).toContain("timer-checkpoint");
   });
+
+  it("should handle source plugin", async () => {
+    const plugins = [
+      {
+        name: "source",
+        addRoutes: "",
+        addWS: "",
+        addHTML: "",
+        addHTMLFromFiles: {},
+        addScripts: [],
+        addStyles: [],
+        addSpeakerScripts: [],
+        addSpeakerStyles: [],
+        onSlideChange: "",
+        onSpeakerViewSlideChange: "",
+        theme: "",
+      },
+    ];
+    const result = await treatSlide("# Hello", 0, {}, {}, plugins);
+    expect(result).toContain("data-source");
+  });
+
+  it("should filter out classes starting with #", async () => {
+    const result = await treatSlide(
+      "## Title.[#template custom-class]",
+      0,
+      {},
+      {},
+      [],
+    );
+    expect(result).toContain("custom-class");
+    expect(result).not.toContain("#template");
+  });
+
+  it("should apply template when found", async () => {
+    const templates = { mytemplate: "<div>{{content}}</div>" };
+    const result = await treatSlide(
+      "## Title.[#mytemplate]",
+      0,
+      {},
+      templates,
+      [],
+    );
+    expect(result).toContain("<div>");
+  });
 });
