@@ -1,7 +1,6 @@
 import { rmSync } from "node:fs";
 import { Clipse } from "clipse";
 import { create } from "tar";
-import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
 import getLinkToken from "../../utils/getLinkToken";
 import save from "../../utils/save";
@@ -13,15 +12,11 @@ const sendToSlideskLink = async (
   options: SliDeskPublishOptions,
 ) => {
   const slideskToken = await getLinkToken();
-  const talkdir = `${process.cwd()}/${talk ?? ""}`;
-  const files = await Convert(`${talkdir}/main.sdf`, {
+  await save(`${process.cwd()}/${talk ?? ""}`, {
     ...options,
+    target: "__SLIDESKLINK__",
     domain: options["slidesk-link-url"]?.replace(/^https?:\/\/(www\.)?/, ""),
   });
-  if (files === null) {
-    process.exit();
-  }
-  await save("__SLIDESKLINK__", talkdir, files);
   await create({ gzip: true, file: "link.tgz" }, ["__SLIDESKLINK__"]);
   rmSync("__SLIDESKLINK__", {
     recursive: true,

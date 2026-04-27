@@ -1,14 +1,13 @@
 import { watch } from "node:fs";
 import { networkInterfaces } from "node:os";
 import process from "node:process";
-import Convert, { errorContent } from "../../core/Convert";
 import SlideskServer from "../../core/Server";
 import Terminal from "../../core/Terminal";
 import type { SliDeskPresentOptions } from "../../types";
 import { getAction } from "../../utils/interactCLI";
 import convert from "../../utils/convert";
 
-const { log, error } = console;
+const { log } = console;
 
 let server: SlideskServer | Terminal = new SlideskServer();
 

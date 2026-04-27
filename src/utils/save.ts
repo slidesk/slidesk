@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
-import type { SliDeskFile } from "../types";
+import type { SliDeskSaveOptions } from "../types";
+import convert from "./convert";
 
 const { log } = console;
 
@@ -24,29 +25,23 @@ const readAllFiles = (dir: string): string[] => {
   return result;
 };
 
-export default async (
-  savePath: string,
-  talkdir: string,
-  files: SliDeskFile,
-) => {
+export default async (talkdir: string, options: SliDeskSaveOptions) => {
+  const files = await convert(talkdir, options);
   const promises: Promise<number>[] = [];
-  if (savePath === "." || savePath === talkdir) {
+  if (options.target === "." || options.target === talkdir) {
     log(
       "=> It is not possible to save to the root of your talk. Try an other path",
     );
     process.exit(0);
   }
-  // clean
-  if (savePath && existsSync(savePath))
-    rmSync(savePath, { recursive: true, force: true });
+  if (options.target && existsSync(options.target))
+    rmSync(options.target, { recursive: true, force: true });
   readAllFiles(talkdir).forEach((file, _) => {
     const nfile = file.replace(talkdir, "");
-    // eslint-disable-next-line no-undef
-    promises.push(Bun.write(`${savePath}/${nfile}`, Bun.file(file)));
+    promises.push(Bun.write(`${options.target}/${nfile}`, Bun.file(file)));
   });
   Object.entries(files).forEach(([key, value], _) => {
-    // eslint-disable-next-line no-undef
-    promises.push(Bun.write(`${savePath}/${key}`, value.content ?? ""));
+    promises.push(Bun.write(`${options.target}/${key}`, value.content ?? ""));
   });
   await Promise.all(promises);
 };

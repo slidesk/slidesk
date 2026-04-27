@@ -19,6 +19,7 @@ export type SliDeskSaveOptions = {
   conf?: string;
   lang?: string;
   target?: string;
+  domain?: string;
 };
 
 export type SliDeskServerOptions = {
