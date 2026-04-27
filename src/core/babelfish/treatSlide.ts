@@ -69,7 +69,6 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
 export default async (
   slide: string,
   cptSlide: number,
-  options: SliDeskPresentOptions,
   templates: SliDeskTemplate,
   plugins: SliDeskPlugin[],
 ) => {
@@ -85,10 +84,10 @@ export default async (
   };
   if (plugins.filter((p) => p.name === "source").length)
     datas.source = toBinary(slide);
-  if (options.timers) {
-    if (timerSlide !== "") datas["timer-slide"] = timerSlide;
-    if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
-  }
+
+  if (timerSlide !== "") datas["timer-slide"] = timerSlide;
+  if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
+
   const dataset: string[] = [];
   Object.entries(datas).forEach(([key, val], _) => {
     if (val !== "") dataset.push(`data-${key}="${val}"`);

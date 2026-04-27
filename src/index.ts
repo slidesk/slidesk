@@ -47,13 +47,6 @@ slidesk
       default: "notes.html",
       optional: true,
     },
-    timers: {
-      short: "t",
-      type: "boolean",
-      description: "add checkpoint and slide maximum time on notes view",
-      default: false,
-      optional: true,
-    },
     transition: {
       short: "a",
       type: "string",

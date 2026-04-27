@@ -33,7 +33,7 @@ export default async (
   const slides: string[] = [];
   let cpt = 0;
   for await (const slide of [...fusion.split("\n## ")])
-    slides.push(await treatSlide(slide, cpt++, options, templates, plugins));
+    slides.push(await treatSlide(slide, cpt++, templates, plugins));
   return slides
     .join("")
     .replaceAll(
