@@ -6,6 +6,7 @@ import Terminal from "../../core/Terminal";
 import type { SliDeskPresentOptions } from "../../types";
 import { getAction } from "../../utils/interactCLI";
 import convert from "../../utils/convert";
+import { Clipse } from "clipse";
 
 const { log } = console;
 
@@ -63,4 +64,85 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
   });
 };
 
-export default present;
+const presentCmd = new Clipse("present", "serve your presentation");
+presentCmd
+  .addOptions({
+    domain: {
+      short: "d",
+      type: "string",
+      default: "localhost",
+      description: "specify a custom domain",
+    },
+    port: {
+      short: "p",
+      type: "string",
+      default: "1337",
+      description: "specify a custom port",
+    },
+    notes: {
+      short: "n",
+      type: "string",
+      description: "open with speakers notes",
+      default: "notes.html",
+      optional: true,
+    },
+    transition: {
+      short: "a",
+      type: "string",
+      description: "transition timer",
+      default: "300",
+      optional: true,
+    },
+    watch: {
+      short: "w",
+      type: "boolean",
+      description: "watch modification of files",
+      default: false,
+      optional: true,
+    },
+    hidden: {
+      short: "g",
+      type: "boolean",
+      description: "remove help information",
+      default: false,
+      optional: true,
+    },
+    conf: {
+      short: "c",
+      type: "string",
+      description: "use a specific .env file",
+      default: "",
+      optional: true,
+    },
+    open: {
+      short: "o",
+      type: "boolean",
+      description: "open a browser with the presentation or notes view",
+      default: false,
+      optional: true,
+    },
+    lang: {
+      short: "l",
+      type: "string",
+      description:
+        "specify the language version (per default, it will use the .lang.json file with default information)",
+      default: "",
+      optional: true,
+    },
+    terminal: {
+      short: "x",
+      type: "boolean",
+      description: "present in a terminal window instead of a browser",
+      default: false,
+      optional: true,
+    },
+  })
+  .addArguments([
+    {
+      name: "talk",
+      description: "directory of your talk",
+    },
+  ])
+  .action(async (args, opts) => await present(args.talk ?? "", opts));
+
+export default presentCmd;
