@@ -48,7 +48,7 @@ SliDesk allows you to check your time with two manners.
 //@ < 35:00
 ```
 
-This syntax in your `.sdf` defines a checkpoint. In this example, when your current slide is display after 35 minutes of the start of your presentation, the clock will be displayed with a red background.
+This syntax in your `.(sdf|md)` defines a checkpoint. In this example, when your current slide is display after 35 minutes of the start of your presentation, the clock will be displayed with a red background.
 
 ## Duration
 

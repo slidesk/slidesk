@@ -1,4 +1,4 @@
-import mainSDF from "./main.sdf" with { type: "text" };
+import mainSDF from "./main.md" with { type: "text" };
 import slidesSpeaker from "./slides/01-speaker.sdf" with { type: "text" };
 import slidesChapter from "./slides/02-first-chapter.sdf" with { type: "text" };
 import slidesSplitted from "./slides/03-splitted.sdf" with { type: "text" };
@@ -8,7 +8,7 @@ import templatesSplit from "./templates/split.sdt" with { type: "text" };
 import assetsThemeCSS from "./themes/default/theme.css" with { type: "text" };
 
 const files = {
-  "main.sdf": mainSDF,
+  "main.md": mainSDF,
   "templates/split.sdt": templatesSplit,
   "themes/default/theme.css": assetsThemeCSS,
   "slides/01-speaker.sdf": slidesSpeaker,

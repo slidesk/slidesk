@@ -9,7 +9,16 @@ export default async (
 ) => {
   let files: { [key: string]: { content: string } } = {};
   try {
-    files = await Convert(`${talk}/main.sdf`, options);
+    const sdfMainFile = Bun.file(`${talk}/main.sdf`);
+    const mdMainFile = Bun.file(`${talk}/main.md`);
+    if (await sdfMainFile.exists())
+      files = await Convert(`${talk}/main.sdf`, options);
+    else if (await mdMainFile.exists())
+      files = await Convert(`${talk}/main.md`, options);
+    else {
+      error("🤔 main.(sdf|md) was not found");
+      process.exit(1);
+    }
   } catch (e) {
     files = await errorContent(options);
     error(e);

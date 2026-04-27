@@ -42,7 +42,7 @@ const includes = async (file: string): Promise<string> => {
   const data = await Bun.file(file).text();
   return replaceAsync(`${data}\n`, /\n!include\(([^()]+)\)/g, async (_, p1) => {
     let [dir, ...exts] = `${p1}`.split(",");
-    if (exts.length === 0) exts = ["sdf"];
+    if (exts.length === 0) exts = ["sdf", "md"];
     if (
       lstatSync(
         `${file.substring(0, file.lastIndexOf("/"))}/${dir}`,

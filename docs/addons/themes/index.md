@@ -19,7 +19,7 @@ A theme can be composed of templates, plugins, and components, which will be aut
 
 ## Creation
 
-To create a theme, simply create a directory within the `themes` folder located in the root directory of your talk (next to the `main.sdf` file).
+To create a theme, simply create a directory within the `themes` folder located in the root directory of your talk (next to the `main.(sdf|md)` file).
 
 In this directory, you can place as many CSS and JS files as you want.
 

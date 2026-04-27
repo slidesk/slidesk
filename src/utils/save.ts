@@ -10,7 +10,7 @@ const readAllFiles = (dir: string): string[] => {
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file, _) => {
     if (
-      /(.sdf|.env|.lang.json|.ds_store|plugin.json|readme.md|.gitignore|.git)$/.exec(
+      /(.sdf|.env|.lang.json|.ds_store|plugin.json|.md|.gitignore|.git)$/.exec(
         file.name.toLowerCase(),
       ) === null &&
       /^\/components\//.exec(file.name) === null

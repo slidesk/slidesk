@@ -25,7 +25,7 @@ You can see special tags : `sd-title` & `sd-title`. These are placeholders for t
 
 To use this template, you need to specify it in the `class` field of your slide. For example:
 
- `main.sdf`:
+ `main.(sdf|md)`:
 ```
 ## My Slide .[#split other-classes]
 

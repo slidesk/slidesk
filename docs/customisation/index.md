@@ -1,6 +1,6 @@
 # Add styles and scripts
 
-To activate the customisation of your presentation, you have to add this following container on the top of your `main.sdf`:
+To activate the customisation of your presentation, you have to add this following container on the top of your `main.(sdf|md)`:
 
 ```
 /::

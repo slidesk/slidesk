@@ -10,7 +10,7 @@ const createDefault = async (dirName: string, responseTitle: string) => {
   mkdirSync(dirName, { recursive: true });
   for await (const file of Object.keys(defaultThemeFiles)) {
     let content = defaultThemeFiles[file];
-    if (file === "main.sdf")
+    if (file === "main.md")
       content = content.replace("# TITLE", ` ${responseTitle as string}`);
     await Bun.write(`${dirName}/${file}`, content, { createPath: true });
   }

@@ -73,11 +73,6 @@ export const errorContent = async (options: SliDeskPresentOptions) => {
 
 export default async (mainFile: string, options: SliDeskPresentOptions) => {
   const { error } = console;
-  const sdfMainFile = Bun.file(mainFile);
-  if (!(await sdfMainFile.exists())) {
-    error("🤔 main.sdf was not found");
-    process.exit(1);
-  }
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   const { env, plugins, templates, favicon, components } = await preload(
     sdfPath,
