@@ -1,8 +1,8 @@
 import { mkdirSync } from "node:fs";
 import { Clipse } from "clipse";
-import defaultThemeFiles from "../templates/default_theme";
-import { question } from "../utils/interactCLI";
-import slugify from "../utils/slugify";
+import defaultThemeFiles from "../../templates/default_theme";
+import { question } from "../../utils/interactCLI";
+import slugify from "../../utils/slugify";
 
 const { log } = console;
 

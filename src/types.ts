@@ -3,7 +3,6 @@ import type { Server, WebSocket } from "bun";
 export type SliDeskPresentOptions = {
   domain?: string;
   port?: string;
-  save?: string;
   notes?: string;
   timers?: boolean;
   transition?: string;
@@ -14,7 +13,12 @@ export type SliDeskPresentOptions = {
   lang?: string;
   terminal?: boolean;
   ip?: string;
-  deploy?: string;
+};
+
+export type SliDeskSaveOptions = {
+  conf?: string;
+  lang?: string;
+  target?: string;
 };
 
 export type SliDeskServerOptions = {

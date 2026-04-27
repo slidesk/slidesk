@@ -1,9 +1,9 @@
 import { Clipse } from "clipse";
-import pluginInstallCmd from "./plugin/install";
-import pluginPushCmd from "./plugin/push";
-import pluginRemoveCmd from "./plugin/remove";
-import pluginSearchCmd from "./plugin/search";
-import pluginUpdateCmd from "./plugin/update";
+import pluginInstallCmd from "./install";
+import pluginPushCmd from "./push";
+import pluginRemoveCmd from "./remove";
+import pluginSearchCmd from "./search";
+import pluginUpdateCmd from "./update";
 
 const pluginCmd = new Clipse("plugin", "slidesk plugin management");
 pluginCmd

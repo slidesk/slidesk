@@ -1,9 +1,9 @@
 import { Clipse } from "clipse";
-import templateInstallCmd from "./template/install";
-import templatePushCmd from "./template/push";
-import templateRemoveCmd from "./template/remove";
-import templateSearchCmd from "./template/search";
-import templateUpdateCmd from "./template/update";
+import templateInstallCmd from "./install";
+import templatePushCmd from "./push";
+import templateRemoveCmd from "./remove";
+import templateSearchCmd from "./search";
+import templateUpdateCmd from "./update";
 
 const templateCmd = new Clipse("template", "slidesk template management");
 templateCmd

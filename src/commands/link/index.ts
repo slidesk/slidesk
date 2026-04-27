@@ -1,7 +1,7 @@
 import { Clipse } from "clipse";
-import linkHostCmd from "./link/host";
-import linkLoginCmd from "./link/login";
-import linkPushCmd from "./link/push";
+import linkHostCmd from "./host";
+import linkLoginCmd from "./login";
+import linkPushCmd from "./push";
 
 const linkCmd = new Clipse("link", "command to interact with slidesk.link");
 linkCmd

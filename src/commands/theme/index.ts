@@ -1,9 +1,9 @@
 import { Clipse } from "clipse";
-import themeInstallCmd from "./theme/install";
-import themePushCmd from "./theme/push";
-import themeRemoveCmd from "./theme/remove";
-import themeSearchCmd from "./theme/search";
-import themeUpdateCmd from "./theme/update";
+import themeInstallCmd from "./install";
+import themePushCmd from "./push";
+import themeRemoveCmd from "./remove";
+import themeSearchCmd from "./search";
+import themeUpdateCmd from "./update";
 
 const themeCmd = new Clipse("theme", "slidesk theme management");
 themeCmd

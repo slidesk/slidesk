@@ -3,9 +3,11 @@ import { Clipse } from "clipse";
 import packagejson from "../package.json";
 import componentCmd from "./commands/component";
 import createCmd from "./commands/create";
+import deployCmd from "./commands/deploy";
 import linkCmd from "./commands/link";
 import pluginCmd from "./commands/plugin";
 import present from "./commands/present";
+import saveCmd from "./commands/save";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import checkVersion from "./utils/checkLastVersion";
@@ -37,13 +39,6 @@ slidesk
       type: "string",
       default: "1337",
       description: "specify a custom port",
-    },
-    save: {
-      short: "s",
-      type: "string",
-      description: "save the presentation",
-      default: "public",
-      optional: true,
     },
     notes: {
       short: "n",
@@ -109,14 +104,6 @@ slidesk
       default: false,
       optional: true,
     },
-    deploy: {
-      short: "y",
-      type: "string",
-      description:
-        "generate a deploy file for 'github', 'gitlab' or 'link' (slidesk.link)",
-      default: "",
-      optional: true,
-    },
   })
   .addArguments([
     {
@@ -131,6 +118,8 @@ slidesk
     linkCmd,
     templateCmd,
     themeCmd,
+    deployCmd,
+    saveCmd,
   ])
   .action(async (args, opts) => await present(args.talk ?? "", opts))
   .ready();

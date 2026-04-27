@@ -1,9 +1,9 @@
 import { Clipse } from "clipse";
-import componentInstallCmd from "./component/install";
-import componentPushCmd from "./component/push";
-import componentRemoveCmd from "./component/remove";
-import componentSearchCmd from "./component/search";
-import componentUpdateCmd from "./component/update";
+import componentInstallCmd from "./install";
+import componentPushCmd from "./push";
+import componentRemoveCmd from "./remove";
+import componentSearchCmd from "./search";
+import componentUpdateCmd from "./update";
 
 const componentCmd = new Clipse("component", "slidesk component management");
 componentCmd
