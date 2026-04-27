@@ -1,59 +1,59 @@
 :root {
-    font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+  font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-    color-scheme: light dark;
+  color-scheme: light dark;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 
-    --sd-heading1-size: 8.5vw;
-    --sd-heading1-line-height: 1;
-    --sd-heading2-size: 5vw;
-    --sd-heading2-line-height: 1;
-    --sd-text-size: 2.2vw;
-    --sd-text-line-height: 1.2;
-    --sd-caption-font-size: 1vw;
-    --sd-caption-line-height: 1;
+  --sd-heading1-size: 8.5vw;
+  --sd-heading1-line-height: 1;
+  --sd-heading2-size: 5vw;
+  --sd-heading2-line-height: 1;
+  --sd-text-size: 2.2vw;
+  --sd-text-line-height: 1.2;
+  --sd-caption-font-size: 1vw;
+  --sd-caption-line-height: 1;
 
-    --sd-background-color: #242424;
-    --sd-heading-color: rgba(255, 255, 255, 0.97);
-    --sd-text-color: rgba(255, 255, 255, 0.87);
-    --sd-primary-color: rgb(37, 186, 146);
-    --sd-caption-color: rgba(0, 0, 0, 0.7);
-    --sd-caption-bgcolor: rgba(255, 255, 255, 0.7);
+  --sd-background-color: #242424;
+  --sd-heading-color: rgba(255, 255, 255, 0.97);
+  --sd-text-color: rgba(255, 255, 255, 0.87);
+  --sd-primary-color: rgb(37, 186, 146);
+  --sd-caption-color: rgba(0, 0, 0, 0.7);
+  --sd-caption-bgcolor: rgba(255, 255, 255, 0.7);
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 * {
-    margin: 0;
+  margin: 0;
 }
 
 html,
 body {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .sd-app {
-    position: relative;
-    overflow: hidden;
-    background-color: var(--sd-background-color);
-    color: var(--sd-text-color);
-    font-size: var(--sd-text-size);
-    line-height: var(--sd-text-line-height);
-    width: 100%;
-    height: 100%;
-    cursor: none;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+  font-size: var(--sd-text-size);
+  line-height: var(--sd-text-line-height);
+  width: 100%;
+  height: 100%;
+  cursor: none;
 }
 
 img,
@@ -61,14 +61,14 @@ picture,
 video,
 canvas,
 svg {
-    display: block;
+  display: block;
 }
 
 input,
 button,
 textarea,
 select {
-    font: inherit;
+  font: inherit;
 }
 
 p,
@@ -78,160 +78,162 @@ h3,
 h4,
 h5,
 h6 {
-    overflow-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 p {
-    margin: 0.7vw auto;
-    text-align: center;
+  margin: 0.7vw auto;
+  text-align: center;
 }
 
 a,
 strong {
-    color: var(--sd-primary-color);
+  color: var(--sd-primary-color);
 }
 
 strong {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 em {
-    font-style: italic;
+  font-style: italic;
 }
 
 .code,
 pre {
-    font-family: monospace;
-    white-space: pre;
+  font-family: monospace;
+  white-space: pre;
 }
 
 .sd-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: translateX(100%);
-    transition: all var(--animationTimer) ease;
-    padding: 30px;
-    overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(100%);
+  transition: all var(--animationTimer) ease;
+  padding: 30px;
+  overflow: hidden;
 }
 
 h1,
 h2,
 h3 {
-    margin: 0 0 1.1vw 0;
-    text-align: center;
-    color: var(--sd-heading-color);
+  margin: 0 0 1.1vw 0;
+  text-align: center;
+  color: var(--sd-heading-color);
 }
 
 h1 {
-    font-size: var(--sd-heading1-size);
-    line-height: var(--sd-heading1-line-height);
+  font-size: var(--sd-heading1-size);
+  line-height: var(--sd-heading1-line-height);
 }
 
 h2 {
-    font-size: var(--sd-heading2-size);
-    line-height: var(--sd-heading2-line-height);
+  font-size: var(--sd-heading2-size);
+  line-height: var(--sd-heading2-line-height);
 }
 
 h3 {
-    font-size: var(--sd-heading3-size);
-    line-height: var(--sd-heading3-line-height);
+  font-size: var(--sd-heading3-size);
+  line-height: var(--sd-heading3-line-height);
 }
 
 .sd-slide.no-sd-animation {
-    transition-duration: 0ms;
+  transition-duration: 0ms;
 }
 
 .sd-slide.sd-current {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .sd-slide.sd-previous {
-    transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .sd-slide .sd-notes {
-    display: none;
+  display: none;
 }
 
 .sd-img {
-    display: inline-block;
-    max-width: 90vw;
-    position: relative;
+  display: inline-block;
+  max-width: 90vw;
+  position: relative;
 }
 
 .sd-img figcaption {
-    font-size: var(--sd-caption-font-size);
-    line-height: var(--sd-caption-line-height);
-    text-align: center;
-    color: var(--sd-caption-color);
-    background-color: var(--sd-caption-bgcolor);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  font-size: var(--sd-caption-font-size);
+  line-height: var(--sd-caption-line-height);
+  text-align: center;
+  color: var(--sd-caption-color);
+  background-color: var(--sd-caption-bgcolor);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 @media print {
-    * {
-        margin: 0;
-        padding: 0;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+  }
 
-    @page {
-        size: A4 landscape;
-        margin: 0;
-    }
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
 
-    html {
-        height: 100%;
-    }
+  html {
+    height: 100%;
+  }
 
-    html .sd-app {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        height: 100%;
-        overflow: visible;
-    }
+  html .sd-app {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    height: 100%;
+    overflow: visible;
+  }
 
-    .sd-slide {
-        position: relative;
-        height: 100%;
-        page-break-after: always;
-        transform: translateX(0);
-        opacity: 1;
-    }
+  .sd-slide {
+    position: relative;
+    height: 100%;
+    page-break-after: always;
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
-    html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-    }
+@media screen and (min-width: 320px) and (max-width: 767px) and (
+    orientation: portrait
+  ) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
 
-    body::before {
-        content: "Please rotate ⟳ your device to view this presentation.";
-        position: absolute;
-        font-size: 5vw;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vh;
-        height: 100vw;
-        background-color: #fff;
-        z-index: 1000;
-    }
+  body::before {
+    content: "Please rotate ⟳ your device to view this presentation.";
+    position: absolute;
+    font-size: 5vw;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vh;
+    height: 100vw;
+    background-color: #fff;
+    z-index: 1000;
+  }
 }

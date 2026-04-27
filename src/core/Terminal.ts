@@ -1,4 +1,4 @@
-import type { SliDeskEnv, SliDeskFile, SliDeskServerOptions } from "../types";
+import type { SliDeskFile, SliDeskServerOptions } from "../types";
 import loadEnv from "../utils/loadEnv";
 import show from "./terminal/show";
 

@@ -5,7 +5,7 @@ import generateHTML from "./generateHTML";
 
 describe("generateHTML function", () => {
   it("should generate HTML without translations", async () => {
-    const tempDir = mkdtempSync(tmpdir()) + "/";
+    const tempDir = `${mkdtempSync(tmpdir())}/`;
     writeFileSync(`${tempDir}index.html`, "<html></html>");
 
     const result = await generateHTML(
@@ -25,7 +25,7 @@ describe("generateHTML function", () => {
   });
 
   it("should generate HTML with translations", async () => {
-    const tempDir = mkdtempSync(tmpdir()) + "/";
+    const tempDir = `${mkdtempSync(tmpdir())}/`;
     writeFileSync(
       `${tempDir}en.lang.json`,
       JSON.stringify({ default: true, hello: "Hello" }),
@@ -46,7 +46,7 @@ describe("generateHTML function", () => {
   });
 
   it("should use specified language", async () => {
-    const tempDir = mkdtempSync(tmpdir()) + "/";
+    const tempDir = `${mkdtempSync(tmpdir())}/`;
     writeFileSync(
       `${tempDir}en.lang.json`,
       JSON.stringify({ hello: "Hello EN" }),

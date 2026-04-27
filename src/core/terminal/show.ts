@@ -1,4 +1,3 @@
-import type { DotenvParseOutput } from "dotenv";
 import pc from "picocolors";
 import terminalImage from "terminal-image";
 import terminalSize from "terminal-size";

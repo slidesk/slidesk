@@ -1,6 +1,6 @@
 # Configuration of SliDesk
 
-SliDesk uses a `.env` file to be configured for your presentation.
+SliDesk uses a `slidesk.toml` file to be configured for your presentation.
 
 This file can be used for plugins (values are readable in an object `window.slidesk.env`) or presentation (values are readable with the syntax `++KEY++`).
 

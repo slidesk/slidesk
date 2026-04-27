@@ -1,17 +1,17 @@
 # conf
 
 ```
-  -c, --conf <name>        use a specific .env file (default: "")
+  -c, --conf <name>        use a specific slidesk.toml file (default: "")
 ```
 
-SliDesk can read a `.env` file.
+SliDesk can read a `slidesk.toml` file.
 
-If your talk's directory have a `.env`, then you can use it for many purpose.
+If your talk's directory have a `slidesk.toml`, then you can use it for many purpose.
 
-With this option, you can specify the path of your `.env` file to load.
+With this option, you can specify the path of your `slidesk.toml` file to load.
 
 ```
-slidesk -c .tnt.env my-talk
+slidesk -c tnt.slidesk.toml my-talk
 ```
 
 ## SliDesk configuration
@@ -24,7 +24,7 @@ SliDesk will create an object property in `window.slidesk.env` to give you an ac
 
 Example:
 
-```dotenv
+```toml
 MYVAR="test"
 ```
 
@@ -36,7 +36,7 @@ console.log(window.slidesk.env.MYVAR);
 
 ## Syntax usage
 
-SliDesk allows you to fetch value from a `.env` file. With this following syntax:
+SliDesk allows you to fetch value from a `slidesk.toml` file. With this following syntax:
 
 ```
 ++MYVAR++

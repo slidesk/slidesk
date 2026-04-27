@@ -17,7 +17,7 @@ const flow = async (
   options: SliDeskPresentOptions = {},
   init = false,
 ) => {
-  let files = await convert(talkdir, options);
+  const files = await convert(talkdir, options);
   if (init) {
     await server.create(files, options, talkdir);
   } else {

@@ -36,7 +36,7 @@ describe("replaceAsync function", () => {
     const result = await replaceAsync(
       "ab cd",
       /(\w)(\w)/g,
-      async (match, g1, g2) => `${g1}-${g2}`,
+      async (_match, g1, g2) => `${g1}-${g2}`,
     );
     expect(result).toBe("a-b c-d");
   });

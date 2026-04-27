@@ -1,4 +1,3 @@
-import type { DotenvParseOutput } from "dotenv";
 import { minify } from "html-minifier-terser";
 import type { SliDeskPlugin } from "../../types";
 

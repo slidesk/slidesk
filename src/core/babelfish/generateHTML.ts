@@ -1,10 +1,6 @@
 import { readdirSync } from "node:fs";
 import translate from "../../components/translate";
-import type {
-  SliDeskEnv,
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-} from "../../types";
+import type { SliDeskPlugin, SliDeskPresentOptions } from "../../types";
 import polish from "./polish";
 
 export default async (
@@ -12,7 +8,7 @@ export default async (
   template: string,
   sdfPath: string,
   options: SliDeskPresentOptions,
-  env: SliDeskEnv,
+  env: object,
   plugins: SliDeskPlugin[],
 ) => {
   const langFiles = readdirSync(sdfPath).filter((item) =>

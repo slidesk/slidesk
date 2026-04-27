@@ -72,7 +72,6 @@ export const errorContent = async (options: SliDeskPresentOptions) => {
 };
 
 export default async (mainFile: string, options: SliDeskPresentOptions) => {
-  const { error } = console;
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   const { env, plugins, templates, favicon, components } = await preload(
     sdfPath,

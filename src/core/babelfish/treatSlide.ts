@@ -1,9 +1,5 @@
 import markdownIt from "markdown-it";
-import type {
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-  SliDeskTemplate,
-} from "../../types";
+import type { SliDeskPlugin, SliDeskTemplate } from "../../types";
 import toBinary from "../../utils/toBinary";
 import replaceWithTemplate from "./replaceWithTemplate";
 

@@ -11,7 +11,7 @@ export default function comments(data: string) {
               .replace("*/", "")
               .replace(
                 /[&<>"'` !@$%()=+{}[\]]/g,
-                (match) => "&#" + match.charCodeAt(0) + ";",
+                (match) => `&#${match.charCodeAt(0)};`,
               )
               .split("\n")
               .slice(1)

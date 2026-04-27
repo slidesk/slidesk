@@ -5,7 +5,7 @@ import preload from "./preload";
 
 describe("preload function", () => {
   it("should load all resources from sdfPath", async () => {
-    const tempDir = mkdtempSync(tmpdir()) + "/";
+    const tempDir = `${mkdtempSync(tmpdir())}/`;
 
     const result = await preload(tempDir, {});
 
@@ -20,7 +20,7 @@ describe("preload function", () => {
   });
 
   it("should pass options to loadEnv", async () => {
-    const tempDir = mkdtempSync(tmpdir()) + "/";
+    const tempDir = `${mkdtempSync(tmpdir())}/`;
 
     const result = await preload(tempDir, { lang: "en", timers: true });
 

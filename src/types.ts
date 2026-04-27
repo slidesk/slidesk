@@ -55,29 +55,25 @@ export type SliDeskPlugin = {
   addRoutes: string | SliDeskPluginAddRoute;
   addWS: string | SliDeskPluginAddWS;
   addHTML: string;
-  addHTMLFromFiles: string[] | { [key: string]: string };
-  addScripts: string[] | { [key: string]: string };
-  addStyles: string[] | { [key: string]: string };
-  addSpeakerScripts: string[] | { [key: string]: string };
-  addSpeakerStyles: string[] | { [key: string]: string };
+  addHTMLFromFiles: string[] | Record<string, string>;
+  addScripts: string[] | Record<string, string>;
+  addStyles: string[] | Record<string, string>;
+  addSpeakerScripts: string[] | Record<string, string>;
+  addSpeakerStyles: string[] | Record<string, string>;
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
-  addScriptModules?: string[] | { [key: string]: string };
+  addScriptModules?: string[] | Record<string, string>;
   theme: string;
 };
 
 export type SliDeskFile = {
   [key: string]: {
-    headers?: {
-      [key: string]: string;
-    };
+    headers?: Record<string, string>;
     content?: string;
   };
 };
 
-export type SliDeskTemplate = {
-  [key: string]: string;
-};
+export type SliDeskTemplate = Record<string, string>;
 
 export type SliDeskConfig = {
   customCSS: string;
@@ -88,8 +84,4 @@ export type SliDeskFavicon = {
   name: string;
   content: string | Uint8Array;
   type: string;
-};
-
-export type SliDeskEnv = {
-  [key: string]: string;
 };
