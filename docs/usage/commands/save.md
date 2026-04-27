@@ -1,7 +1,14 @@
-# save
+# Save your talk
+
 
 ```sh
-  -s, --save <path>        save the presentation
+slidesk save -t public mytalk
+```
+
+You can specify the target directory
+
+```sh
+  -t, --target <path>        save the presentation
 ```
 
 This option generates a directory containing:
@@ -11,5 +18,3 @@ This option generates a directory containing:
 - a copy of your assets
 - plugins
 - ...
-
-This save contains only your presentation, no speaker notes.

@@ -10,41 +10,34 @@ will render something like this:
 
 ```
  ____(•)<
-(SliDesk) v:2.15.1
+(SliDesk) v:2.16.0
 
-
-slidesk 2.15.1
+slidesk 2.16.0
 Your presentation companion
 
 Usage: slidesk [options] [arguments]
 
 Subcommands:
- create      tool to help you to instanciate a talk
- plugin      slidesk plugin management
- component   slidesk component management
- link        command to interact with slidesk.link
- template    slidesk template management
- theme       slidesk theme management
+  create      tool to help you to instanciate a talk
+  plugin      slidesk plugin management
+  component   slidesk component management
+  link        command to interact with slidesk.link
+  template    slidesk template management
+  theme       slidesk theme management
+  deploy      create a deploy file for your presentation
+  save        save your prensentation into a html & assets
 
 Options:
- -h, --help                show help   
- -v, --version             show version   
- -d, --domain <param>      specify a custom domain  (default: localhost) 
- -p, --port <param>        specify a custom port  (default: 1337) 
- -s, --save <param>        save the presentation  (default: public) 
- -n, --notes <param>       open with speakers notes  (default: notes.html) 
- -t, --timers              add checkpoint and slide maximum time on notes view  (default: false) 
- -a, --transition <param>  transition timer  (default: 300) 
- -w, --watch               watch modification of files  (default: false) 
- -g, --hidden              remove help information  (default: false) 
- -c, --conf <param>        use a specific .env file  (default: ) 
- -o, --open                open a browser with the presentation or notes view  (default: false) 
- -l, --lang <param>        specify the language version (per default, it will use the .lang.json file with default information)  (default: ) 
- -x, --terminal            present in a terminal window instead of a browser  (default: false) 
- -y, --deploy <param>      generate a deploy file for 'github', 'gitlab' or 'link' (slidesk.link)  (default: ) 
+  -h, --help                show help
+  -v, --version             show version
+  -n, --notes <param>       open with speakers notes  (default: notes.html)
+  -g, --hidden              remove help information  (default: false)
+  -c, --conf <param>        use a specific .env file  (default: )
+  -o, --open                open a browser with the presentation or notes view  (default: false)
+  -l, --lang <param>        specify the language version (per default, it will use the .lang.json file with default information)  (default: )
 
 Arguments:
- talk  directory of your talk
+  talk  directory of your talk
 ```
 
 We can see that there are several options, that the "talk" consists of a directory (if not specified, SliDesk takes the current directory) and that there is a command to create talks.

@@ -70,8 +70,6 @@ with the sdf content:
 
 ## Title .[#split]
 
-<div class="speaker">
-
 [[foo]]
 
 Test
@@ -89,7 +87,6 @@ A text
 
 [[/block]]
 
-</div>
 ```
 
 will render as:
