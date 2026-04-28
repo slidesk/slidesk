@@ -62,28 +62,10 @@ const linkHostCmd = new Clipse(
 linkHostCmd
   .addArguments([{ name: "talk", description: "directory of your talk" }])
   .addOptions({
-    notes: {
-      short: "n",
-      type: "string",
-      description: "open with speakers notes",
-      default: "notes.html",
-    },
-    timers: {
-      short: "t",
-      type: "boolean",
-      description: "add checkpoint and slide maximum time on notes view",
-      default: false,
-    },
-    transition: {
-      short: "a",
-      type: "string",
-      description: "transition timer",
-      default: "300",
-    },
     conf: {
       short: "c",
       type: "string",
-      description: "use a specific .env file",
+      description: "use a specific slidesk.toml file",
       default: "",
     },
     lang: {
