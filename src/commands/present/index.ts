@@ -33,7 +33,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       .flat()
       .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
       .shift()?.address ?? "127.0.0.1";
-  const talkdir = `${process.cwd()}/${talk}`;
+  const talkdir = `${process.cwd()}${talk !== "" ? `/${talk}` : ""}`;
   const env = (await loadEnv(talkdir, options)) as Record<
     string,
     unknown | Record<string, unknown>
