@@ -66,7 +66,6 @@ export default async (
   slide: string,
   cptSlide: number,
   templates: SliDeskTemplate,
-  plugins: SliDeskPlugin[],
 ) => {
   if (slide.trim() === "") return "";
 
@@ -78,8 +77,7 @@ export default async (
     "timer-slide": "",
     "timer-checkpoint": "",
   };
-  if (plugins.filter((p) => p.name === "source").length)
-    datas.source = toBinary(slide);
+  datas.source = toBinary(slide);
 
   if (timerSlide !== "") datas["timer-slide"] = timerSlide;
   if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;

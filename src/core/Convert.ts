@@ -26,14 +26,7 @@ export const errorContent = async (
   };
   return {
     ...(await generateHTML(
-      await getPresentation(
-        content,
-        options,
-        env,
-        components,
-        templates,
-        plugins,
-      ),
+      await getPresentation(content, env, components, templates),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
@@ -84,14 +77,7 @@ export default async (
   const { config, content } = await prepareSDF(mainFile);
   return {
     ...(await generateHTML(
-      await getPresentation(
-        content,
-        options,
-        env,
-        components,
-        templates,
-        plugins,
-      ),
+      await getPresentation(content, env, components, templates),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,

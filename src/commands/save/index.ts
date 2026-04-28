@@ -33,7 +33,11 @@ saveCmd
     },
   })
   .action(async (args, options) => {
-    await save(args.talk ?? process.cwd(), options);
+    await save(args.talk ?? process.cwd(), options, {
+      slidesk: {
+        deployed: true,
+      },
+    });
     process.exit(0);
   });
 

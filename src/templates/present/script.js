@@ -252,7 +252,8 @@ document.addEventListener("keydown", (e) => {
   if (
     window.location.hostname === window.slidesk.domain ||
     window.location.hostname === "localhost" ||
-    window.location.origin === "file://"
+    window.location.origin === "file://" ||
+    window.slidesk.deployed
   ) {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();

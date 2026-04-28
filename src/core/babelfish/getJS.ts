@@ -11,6 +11,7 @@ export default (
   onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(env)},
   lastAction: "",
-  domain: "${(env.slidesk as Record<string, unknown>)?.DOMAIN ?? "localhost"}"
+  domain: "${(env.slidesk as Record<string, unknown>)?.DOMAIN ?? "localhost"}",
+  deployed: ${(env.slidesk as Record<string, unknown>)?.deployed ? "true" : "false"}
 };
 ${script}`;

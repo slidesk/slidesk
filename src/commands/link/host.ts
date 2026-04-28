@@ -20,6 +20,7 @@ const sendToSlideskLink = async (
     },
     {
       slidesk: {
+        deployed: true,
         DOMAIN: options["slidesk-link-url"]?.replace(
           /^https?:\/\/(www\.)?/,
           "",

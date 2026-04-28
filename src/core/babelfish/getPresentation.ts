@@ -1,20 +1,14 @@
 import comments from "../../components/comments";
 import formatting from "../../components/formatting";
 import image from "../../components/image";
-import type {
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-  SliDeskTemplate,
-} from "../../types";
+import type { SliDeskTemplate } from "../../types";
 import treatSlide from "./treatSlide";
 
 export default async (
   sdf: string,
-  options: SliDeskPresentOptions,
   env: Record<string, unknown | Record<string, unknown>>,
   components: string[],
   templates: SliDeskTemplate,
-  plugins: SliDeskPlugin[],
 ) => {
   let fusion = sdf;
   // comments
@@ -32,6 +26,6 @@ export default async (
   const slides: string[] = [];
   let cpt = 0;
   for await (const slide of [...fusion.split("\n## ")])
-    slides.push(await treatSlide(slide, cpt++, templates, plugins));
+    slides.push(await treatSlide(slide, cpt++, templates));
   return slides.join("");
 };
