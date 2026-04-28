@@ -10,12 +10,12 @@ import loadEnv from "../../utils/loadEnv";
 
 const { log } = console;
 
-let server: SlideskServer = new SlideskServer();
+const server: SlideskServer = new SlideskServer();
 
 const flow = async (
   talkdir: string,
-  options: SliDeskPresentOptions = {},
-  env: object,
+  options: SliDeskPresentOptions,
+  env: Record<string, unknown | Record<string, unknown>>,
   init = false,
 ) => {
   const files = await convert(talkdir, options, env);
@@ -34,7 +34,10 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
       .shift()?.address ?? "127.0.0.1";
   const talkdir = `${process.cwd()}/${talk}`;
-  const env = await loadEnv(talkdir, options);
+  const env = (await loadEnv(talkdir, options)) as Record<
+    string,
+    unknown | Record<string, unknown>
+  >;
   flow(talkdir, options, env, true);
 
   if (!options.hidden)
@@ -47,7 +50,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\nPress \x1b[1mQ\x1b[0m to quit the program.",
       "\n",
     );
-  if (env.slidesk?.WATCH) {
+  if ((env.slidesk as Record<string, unknown>)?.WATCH) {
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
         log(
@@ -83,7 +86,7 @@ presentCmd
     conf: {
       short: "c",
       type: "string",
-      description: "use a specific .env file",
+      description: "use a specific slidesk.toml file",
       default: "",
       optional: true,
     },

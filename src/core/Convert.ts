@@ -13,7 +13,7 @@ import prepareTPL from "./babelfish/prepareTPL";
 
 export const errorContent = async (
   options: SliDeskPresentOptions,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
 ) => {
   const sdfPath = `${process.cwd()}`;
   const { plugins, templates, favicon, components } = await preload(
@@ -74,7 +74,7 @@ export const errorContent = async (
 export default async (
   mainFile: string,
   options: SliDeskPresentOptions,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
 ) => {
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   const { plugins, templates, favicon, components } = await preload(

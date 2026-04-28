@@ -33,7 +33,7 @@ Options:
   -v, --version             show version
   -n, --notes <param>       open with speakers notes  (default: notes.html)
   -g, --hidden              remove help information  (default: false)
-  -c, --conf <param>        use a specific .env file  (default: )
+  -c, --conf <param>        use a specific slidesk.toml file  (default: )
   -o, --open                open a browser with the presentation or notes view  (default: false)
   -l, --lang <param>        specify the language version (per default, it will use the .lang.json file with default information)  (default: )
 

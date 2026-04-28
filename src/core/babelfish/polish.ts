@@ -4,7 +4,7 @@ import type { SliDeskPlugin } from "../../types";
 export default async (
   presentation: string,
   template: string,
-  env: object,
+  env: Record<string, Record<string, unknown>>,
   plugins: SliDeskPlugin[],
 ) => {
   let tpl = template;

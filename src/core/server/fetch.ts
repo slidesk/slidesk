@@ -8,11 +8,11 @@ import getFile from "./getFile";
 
 export default async (
   req: Request,
-  server: Server,
+  server: any,
   serverFiles: SliDeskFile,
   serverPlugins: SliDeskPlugin[],
   serverPath: string,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
 ) => {
   const url = new URL(req.url);
   let res: Response | null = null;

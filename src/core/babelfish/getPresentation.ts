@@ -11,7 +11,7 @@ import treatSlide from "./treatSlide";
 export default async (
   sdf: string,
   options: SliDeskPresentOptions,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
   components: string[],
   templates: SliDeskTemplate,
   plugins: SliDeskPlugin[],
@@ -37,6 +37,6 @@ export default async (
     .join("")
     .replaceAll(
       "#PRESENTATION_URL#",
-      `http${env.slidesk?.HTTPS ? "s" : ""}://${options.ip ?? ""}:${env.slidesk?.PORT ?? ""}`,
+      `http${(env.slidesk as Record<string, unknown>)?.HTTPS ? "s" : ""}://${options.ip ?? ""}:${(env.slidesk as Record<string, unknown>)?.PORT ?? ""}`,
     );
 };

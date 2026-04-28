@@ -4,9 +4,12 @@ import start from "../../utils/start";
 
 const { log } = console;
 
-export default async (env: object, options: SliDeskServerOptions) => {
-  const https = env.slidesk?.HTTPS;
-  const port = env.slidesk?.PORT ?? 1337;
+export default async (
+  env: Record<string, unknown>,
+  options: SliDeskServerOptions,
+) => {
+  const https = env?.HTTPS ?? false;
+  const port = Number(env?.PORT ?? 1337);
   if (options.notes) {
     const url = `http${
       https ? "s" : ""
@@ -26,16 +29,16 @@ export default async (env: object, options: SliDeskServerOptions) => {
       ]);
     }
   }
-  [
-    ...new Set([options.ip, env.slidesk?.DOMAIN ?? "localhost", "localhost"]),
-  ].forEach((e, _) => {
-    if (e)
-      log(
-        `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
-          https ? "s" : ""
-        }://${e}:${port}\x1b[0m`,
-      );
-  });
+  [...new Set([options.ip, env?.DOMAIN ?? "localhost", "localhost"])].forEach(
+    (e, _) => {
+      if (e)
+        log(
+          `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
+            https ? "s" : ""
+          }://${e}:${port}\x1b[0m`,
+        );
+    },
+  );
   if (options.open && !options.notes) {
     Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${port}`]);
   }

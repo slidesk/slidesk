@@ -24,7 +24,6 @@ describe("getJS function", () => {
   });
 
   it("should include plugin onSlideChange", () => {
-    const options = { domain: "localhost" };
     const plugins: SliDeskPlugin[] = [
       {
         name: "test",

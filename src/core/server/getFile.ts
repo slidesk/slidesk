@@ -1,23 +1,27 @@
 export default (
   req: Request,
   path: string,
-  env: { slidesk: { COMMON_DIR: string } },
+  env: Record<string, unknown | Record<string, unknown>>,
 ) => {
+  const slideskEnv = (env.slidesk ?? { COMMON_DIR: "" }) as Record<
+    string,
+    unknown
+  >;
   let fileurl = req.url.replace(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
   if (fileurl.startsWith("/-=[COMMON]=-"))
-    fileurl = fileurl.replace("-=[COMMON]=-", env.slidesk.COMMON_DIR);
+    fileurl = fileurl.replace("-=[COMMON]=-", String(slideskEnv.COMMON_DIR));
   let file = Bun.file(
     fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
   if (
     fileurl.startsWith("/plugins") &&
     file.size === 0 &&
-    env.slidesk.COMMON_DIR
+    slideskEnv.COMMON_DIR
   ) {
-    fileurl = fileurl.replace("/plugins", `/${env.slidesk.COMMON_DIR}/plugins`);
+    fileurl = fileurl.replace("/plugins", `/${slideskEnv.COMMON_DIR}/plugins`);
     file = Bun.file(`${path}${fileurl}`);
   }
   if (file.size !== 0)
