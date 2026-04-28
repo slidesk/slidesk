@@ -8,7 +8,7 @@ export default async (
   template: string,
   sdfPath: string,
   options: SliDeskPresentOptions,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
   plugins: SliDeskPlugin[],
 ) => {
   const langFiles = readdirSync(sdfPath).filter((item) =>

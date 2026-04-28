@@ -1,4 +1,3 @@
-import type { Server } from "bun";
 import type {
   SliDeskFile,
   SliDeskPlugin,

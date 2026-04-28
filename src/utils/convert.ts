@@ -6,7 +6,7 @@ const { error } = console;
 export default async (
   talk: string,
   options: SliDeskSaveOptions | SliDeskPresentOptions,
-  env: object,
+  env: Record<string, unknown | Record<string, unknown>>,
 ) => {
   let files: { [key: string]: { content: string } } = {};
   try {

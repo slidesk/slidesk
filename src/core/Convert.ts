@@ -65,7 +65,7 @@ export const errorContent = async (
       headers: { "Content-Type": "application/json" },
     },
     [`${options.notes === undefined ? "notes.html" : options.notes}`]: {
-      content: getNotesView(config, plugins),
+      content: getNotesView(config, plugins, sdfPath),
       headers: { "Content-Type": "text/html" },
     },
   };
@@ -123,7 +123,7 @@ export default async (
       headers: { "Content-Type": "application/json" },
     },
     [`${options.notes === undefined ? "notes.html" : options.notes}`]: {
-      content: getNotesView(config, plugins),
+      content: getNotesView(config, plugins, sdfPath),
       headers: { "Content-Type": "text/html" },
     },
   };

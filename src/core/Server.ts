@@ -73,10 +73,12 @@ export default class SlideskServer {
       },
       tls: {
         key:
-          slideskEnv?.KEY !== undefined ? Bun.file(slideskEnv?.KEY) : undefined,
+          slideskEnv?.KEY !== undefined
+            ? Bun.file(String(slideskEnv.KEY))
+            : undefined,
         cert:
           slideskEnv?.CERT !== undefined
-            ? Bun.file(slideskEnv?.CERT)
+            ? Bun.file(String(slideskEnv.CERT))
             : undefined,
         passphrase:
           slideskEnv?.PASSPHRASE !== undefined

@@ -33,25 +33,29 @@ const loadExternalPlugins = async (
   return plugins;
 };
 
-export default async (sdfPath: string, env: object) => {
+export default async (
+  sdfPath: string,
+  env: Record<string, unknown | Record<string, unknown>>,
+) => {
   const plugins: SliDeskPlugin[] = [];
-  plugins.push(...(await loadExternalPlugins(`${sdfPath}plugins`, sdfPath)));
-  if (env.slidesk?.COMMON_DIR !== "")
+  plugins.push(...(await loadExternalPlugins(`${sdfPath}/plugins`, sdfPath)));
+  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+  if (slideskEnv.COMMON_DIR !== "")
     plugins.push(
       ...(await loadExternalPlugins(
-        `${sdfPath}/${env.slidesk?.COMMON_DIR}/plugins`,
+        `${sdfPath}/${slideskEnv.COMMON_DIR}/plugins`,
         sdfPath,
       )),
     );
-  if (existsSync(`${sdfPath}themes`)) {
-    const themes = readdirSync(`${sdfPath}themes`, { withFileTypes: true })
+  if (existsSync(`${sdfPath}/themes`)) {
+    const themes = readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
       .filter((d) => d.isDirectory())
       .map((d) => d.name);
     for await (const t of themes) {
-      if (existsSync(`${sdfPath}themes/${t}/plugins`))
+      if (existsSync(`${sdfPath}/themes/${t}/plugins`))
         plugins.push(
           ...(await loadExternalPlugins(
-            `${sdfPath}themes/${t}/plugins`,
+            `${sdfPath}/themes/${t}/plugins`,
             sdfPath,
             `/themes/${t}/`,
           )),

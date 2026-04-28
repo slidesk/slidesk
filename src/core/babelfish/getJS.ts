@@ -13,6 +13,4 @@ export default (
   lastAction: "",
   domain: "${(env.slidesk as Record<string, unknown>)?.DOMAIN ?? "localhost"}"
 };
-if (window.location.origin !== "file://")
-  window.slidesk.io = new WebSocket(\`ws\${window.location.protocol.includes('https') ? "s" : ""}://\${window.location.host}\${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws\`);
 ${script}`;

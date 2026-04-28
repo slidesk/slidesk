@@ -11,5 +11,4 @@ export default (plugins: SliDeskPlugin[]) => `window.slidesk = {
     ${plugins.map((p) => p.onSpeakerViewSlideChange ?? "").join(";")}
   }
 };
-window.slidesk.io = new WebSocket(\`ws\${window.location.protocol.includes('https') ? "s" : ""}://\${window.location.host}\${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws\`);
 ${script}`;

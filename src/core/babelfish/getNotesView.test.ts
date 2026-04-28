@@ -6,13 +6,13 @@ describe("getNotesView function", () => {
   const defaultConfig: SliDeskConfig = { css: [], js: [] };
 
   it("should include default CSS", () => {
-    const result = getNotesView(defaultConfig, []);
+    const result = getNotesView(defaultConfig, [], "");
     expect(result).toContain("slidesk.css");
     expect(result).toContain("slidesk-notes.css");
   });
 
   it("should include default JS", () => {
-    const result = getNotesView(defaultConfig, []);
+    const result = getNotesView(defaultConfig, [], "");
     expect(result).toContain("slidesk-notes.js");
   });
 
@@ -21,7 +21,7 @@ describe("getNotesView function", () => {
       css: ["<link href='/style.css' />"],
       js: [],
     };
-    const result = getNotesView(config, []);
+    const result = getNotesView(config, [], "");
     expect(result).toContain("/style.css");
   });
 
@@ -42,7 +42,7 @@ describe("getNotesView function", () => {
         onSpeakerViewSlideChange: "",
       },
     ];
-    const result = getNotesView(defaultConfig, plugins);
+    const result = getNotesView(defaultConfig, plugins, "");
     expect(result).toContain("speaker-style.css");
   });
 
@@ -63,7 +63,7 @@ describe("getNotesView function", () => {
         onSpeakerViewSlideChange: "",
       },
     ];
-    const result = getNotesView(defaultConfig, plugins);
+    const result = getNotesView(defaultConfig, plugins, "");
     expect(result).toContain("speaker-script.js");
   });
 });
