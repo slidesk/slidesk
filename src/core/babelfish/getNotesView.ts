@@ -6,7 +6,7 @@ export default (config: SliDeskConfig, plugins: SliDeskPlugin[]) => {
   const css = [
     '<link rel="stylesheet" href="slidesk.css" />',
     '<link rel="stylesheet" href="slidesk-notes.css" />',
-    ...config.customIncludes.css,
+    ...config.css,
   ];
   const js = ['<script src="slidesk-notes.js"></script>'];
   plugins.forEach((p, _) => {
@@ -22,7 +22,7 @@ export default (config: SliDeskConfig, plugins: SliDeskPlugin[]) => {
       });
     }
   });
-  template = template.replace("#STYLES#", `${css.join("")}${config.customCSS}`);
+  template = template.replace("#STYLES#", `${css.join("")}`);
   template = template.replace("#SCRIPTS#", `${js.join("")}`);
   return template;
 };

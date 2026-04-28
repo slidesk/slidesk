@@ -26,6 +26,7 @@ Subcommands:
   theme       slidesk theme management
   deploy      create a deploy file for your presentation
   save        save your prensentation into a html & assets
+  present     serve your presentation
 
 Options:
   -h, --help                show help

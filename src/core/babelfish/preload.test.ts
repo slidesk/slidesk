@@ -10,21 +10,11 @@ describe("preload function", () => {
     const result = await preload(tempDir, {});
 
     expect(result).toBeDefined();
-    expect(result.env).toBeDefined();
     expect(result.plugins).toBeDefined();
     expect(result.templates).toBeDefined();
     expect(result.favicon).toBeDefined();
     expect(result.components).toBeDefined();
 
-    rmSync(tempDir, { recursive: true });
-  });
-
-  it("should pass options to loadEnv", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
-
-    const result = await preload(tempDir, { lang: "en", timers: true });
-
-    expect(result.env).toBeDefined();
     rmSync(tempDir, { recursive: true });
   });
 });

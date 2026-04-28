@@ -2,26 +2,27 @@ import { watch } from "node:fs";
 import { networkInterfaces } from "node:os";
 import process from "node:process";
 import SlideskServer from "../../core/Server";
-import Terminal from "../../core/Terminal";
 import type { SliDeskPresentOptions } from "../../types";
 import { getAction } from "../../utils/interactCLI";
 import convert from "../../utils/convert";
 import { Clipse } from "clipse";
+import loadEnv from "../../utils/loadEnv";
 
 const { log } = console;
 
-let server: SlideskServer | Terminal = new SlideskServer();
+let server: SlideskServer = new SlideskServer();
 
 const flow = async (
   talkdir: string,
   options: SliDeskPresentOptions = {},
+  env: object,
   init = false,
 ) => {
-  const files = await convert(talkdir, options);
+  const files = await convert(talkdir, options, env);
   if (init) {
-    await server.create(files, options, talkdir);
+    await server.create(files, options, env, talkdir);
   } else {
-    (server as SlideskServer).setFiles(files);
+    server.setFiles(files);
   }
 };
 
@@ -33,10 +34,8 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
       .shift()?.address ?? "127.0.0.1";
   const talkdir = `${process.cwd()}/${talk}`;
-  if (options.terminal) {
-    server = new Terminal();
-  }
-  flow(talkdir, options, true);
+  const env = await loadEnv(talkdir, options);
+  flow(talkdir, options, env, true);
 
   if (!options.hidden)
     log(
@@ -48,13 +47,13 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\nPress \x1b[1mQ\x1b[0m to quit the program.",
       "\n",
     );
-  if (options.watch) {
+  if (env.slidesk?.WATCH) {
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
         log(
           `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
         );
-        flow(talkdir, options);
+        flow(talkdir, options, env);
       }
     });
   }
@@ -67,37 +66,11 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
 const presentCmd = new Clipse("present", "serve your presentation");
 presentCmd
   .addOptions({
-    domain: {
-      short: "d",
-      type: "string",
-      default: "localhost",
-      description: "specify a custom domain",
-    },
-    port: {
-      short: "p",
-      type: "string",
-      default: "1337",
-      description: "specify a custom port",
-    },
     notes: {
       short: "n",
       type: "string",
       description: "open with speakers notes",
       default: "notes.html",
-      optional: true,
-    },
-    transition: {
-      short: "a",
-      type: "string",
-      description: "transition timer",
-      default: "300",
-      optional: true,
-    },
-    watch: {
-      short: "w",
-      type: "boolean",
-      description: "watch modification of files",
-      default: false,
       optional: true,
     },
     hidden: {
@@ -127,13 +100,6 @@ presentCmd
       description:
         "specify the language version (per default, it will use the .lang.json file with default information)",
       default: "",
-      optional: true,
-    },
-    terminal: {
-      short: "x",
-      type: "boolean",
-      description: "present in a terminal window instead of a browser",
-      default: false,
       optional: true,
     },
   })

@@ -3,10 +3,7 @@ import type { SliDeskConfig, SliDeskPlugin } from "../../types";
 import getNotesView from "./getNotesView";
 
 describe("getNotesView function", () => {
-  const defaultConfig: SliDeskConfig = {
-    customCSS: "",
-    customIncludes: { css: [], js: [] },
-  };
+  const defaultConfig: SliDeskConfig = { css: [], js: [] };
 
   it("should include default CSS", () => {
     const result = getNotesView(defaultConfig, []);
@@ -19,19 +16,10 @@ describe("getNotesView function", () => {
     expect(result).toContain("slidesk-notes.js");
   });
 
-  it("should include custom CSS from config", () => {
-    const config: SliDeskConfig = {
-      customCSS: '<link rel="stylesheet" href="custom.css" />',
-      customIncludes: { css: [], js: [] },
-    };
-    const result = getNotesView(config, []);
-    expect(result).toContain("custom.css");
-  });
-
   it("should include custom includes CSS", () => {
     const config: SliDeskConfig = {
-      customCSS: "",
-      customIncludes: { css: ["<link href='/style.css' />"], js: [] },
+      css: ["<link href='/style.css' />"],
+      js: [],
     };
     const result = getNotesView(config, []);
     expect(result).toContain("/style.css");

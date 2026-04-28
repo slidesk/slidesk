@@ -5,8 +5,8 @@ import includes from "./includes";
 export default async (mainFile: string) => {
   let fusion = await includes(mainFile);
   let configuration: SliDeskConfig = {
-    customCSS: "",
-    customIncludes: { css: [], js: [] },
+    css: [],
+    js: [],
   };
   // get Custom configuration
   const m = /\/::([\s\S]*)::\//m.exec(fusion);

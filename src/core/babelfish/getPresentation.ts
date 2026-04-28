@@ -2,7 +2,6 @@ import comments from "../../components/comments";
 import formatting from "../../components/formatting";
 import image from "../../components/image";
 import type {
-  SliDeskEnv,
   SliDeskPlugin,
   SliDeskPresentOptions,
   SliDeskTemplate,
@@ -12,7 +11,7 @@ import treatSlide from "./treatSlide";
 export default async (
   sdf: string,
   options: SliDeskPresentOptions,
-  env: SliDeskEnv,
+  env: object,
   components: string[],
   templates: SliDeskTemplate,
   plugins: SliDeskPlugin[],
@@ -38,6 +37,6 @@ export default async (
     .join("")
     .replaceAll(
       "#PRESENTATION_URL#",
-      `http${env.HTTPS === "true" ? "s" : ""}://${options.ip ?? ""}:${options.port ?? ""}`,
+      `http${env.slidesk?.HTTPS ? "s" : ""}://${options.ip ?? ""}:${env.slidesk?.PORT ?? ""}`,
     );
 };

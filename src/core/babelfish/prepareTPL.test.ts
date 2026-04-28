@@ -4,8 +4,8 @@ import prepareTPL from "./prepareTPL";
 
 describe("prepareTPL function", () => {
   const defaultConfig: SliDeskConfig = {
-    customCSS: "",
-    customIncludes: { css: [], js: [] },
+    css: [],
+    js: [],
   };
 
   const defaultFavicon: SliDeskFavicon = {
@@ -26,8 +26,8 @@ describe("prepareTPL function", () => {
 
   it("should include custom CSS from config", () => {
     const config: SliDeskConfig = {
-      customCSS: '<link rel="stylesheet" href="custom.css" />',
-      customIncludes: { css: [], js: [] },
+      css: ['<link rel="stylesheet" href="custom.css" />'],
+      js: [],
     };
     const result = prepareTPL(config, [], defaultFavicon, "/tmp");
     expect(result).toContain("custom.css");
@@ -35,8 +35,8 @@ describe("prepareTPL function", () => {
 
   it("should include custom JS from config", () => {
     const config: SliDeskConfig = {
-      customCSS: "",
-      customIncludes: { css: [], js: ['<script src="custom.js"></script>'] },
+      css: [],
+      js: ['<script src="custom.js"></script>'],
     };
     const result = prepareTPL(config, [], defaultFavicon, "/tmp");
     expect(result).toContain("custom.js");

@@ -6,21 +6,22 @@ const { error } = console;
 export default async (
   talk: string,
   options: SliDeskSaveOptions | SliDeskPresentOptions,
+  env: object,
 ) => {
   let files: { [key: string]: { content: string } } = {};
   try {
     const sdfMainFile = Bun.file(`${talk}/main.sdf`);
     const mdMainFile = Bun.file(`${talk}/main.md`);
     if (await sdfMainFile.exists())
-      files = await Convert(`${talk}/main.sdf`, options);
+      files = await Convert(`${talk}/main.sdf`, options, env);
     else if (await mdMainFile.exists())
-      files = await Convert(`${talk}/main.md`, options);
+      files = await Convert(`${talk}/main.md`, options, env);
     else {
       error("🤔 main.(sdf|md) was not found");
       process.exit(1);
     }
   } catch (e) {
-    files = await errorContent(options);
+    files = await errorContent(options, env);
     error(e);
   }
   if (files === null) {

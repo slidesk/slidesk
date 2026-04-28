@@ -11,17 +11,17 @@ import preload from "./babelfish/preload";
 import prepareSDF from "./babelfish/prepareSDF";
 import prepareTPL from "./babelfish/prepareTPL";
 
-export const errorContent = async (options: SliDeskPresentOptions) => {
+export const errorContent = async (
+  options: SliDeskPresentOptions,
+  env: object,
+) => {
   const sdfPath = `${process.cwd()}`;
-  const { env, plugins, templates, favicon, components } = await preload(
+  const { plugins, templates, favicon, components } = await preload(
     sdfPath,
-    options,
+    env,
   );
   const { config, content } = {
-    config: {
-      customCSS: "",
-      customIncludes: { css: [], js: [] },
-    },
+    config: { css: [], js: [] },
     content: "ERROR",
   };
   return {
@@ -41,7 +41,7 @@ export const errorContent = async (options: SliDeskPresentOptions) => {
       plugins,
     )),
     "slidesk.css": {
-      content: getCSS(options, env),
+      content: getCSS(env as { slidesk: { TRANSITION?: number } }),
       headers: { "Content-type": "text/css" },
     },
     "slidesk-notes.css": {
@@ -49,7 +49,7 @@ export const errorContent = async (options: SliDeskPresentOptions) => {
       headers: { "Content-type": "text/css" },
     },
     "slidesk.js": {
-      content: getJS(options, plugins, env),
+      content: getJS(plugins, env),
       headers: { "Content-type": "application/javascript" },
     },
     "slidesk-notes.js": {
@@ -71,11 +71,15 @@ export const errorContent = async (options: SliDeskPresentOptions) => {
   };
 };
 
-export default async (mainFile: string, options: SliDeskPresentOptions) => {
+export default async (
+  mainFile: string,
+  options: SliDeskPresentOptions,
+  env: object,
+) => {
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
-  const { env, plugins, templates, favicon, components } = await preload(
+  const { plugins, templates, favicon, components } = await preload(
     sdfPath,
-    options,
+    env,
   );
   const { config, content } = await prepareSDF(mainFile);
   return {
@@ -95,7 +99,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
       plugins,
     )),
     "slidesk.css": {
-      content: getCSS(options, env),
+      content: getCSS(env),
       headers: { "Content-type": "text/css" },
     },
     "slidesk-notes.css": {
@@ -103,7 +107,7 @@ export default async (mainFile: string, options: SliDeskPresentOptions) => {
       headers: { "Content-type": "text/css" },
     },
     "slidesk.js": {
-      content: getJS(options, plugins, env),
+      content: getJS(plugins, env),
       headers: { "Content-type": "application/javascript" },
     },
     "slidesk-notes.js": {

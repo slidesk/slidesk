@@ -8,14 +8,8 @@ export default (
   sdfPath: string,
 ) => {
   let template = String(view);
-  const css = [
-    '<link rel="stylesheet" href="slidesk.css" />',
-    ...config.customIncludes.css,
-  ];
-  const js = [
-    ...config.customIncludes.js,
-    '<script src="slidesk.js"></script>',
-  ];
+  const css = ['<link rel="stylesheet" href="slidesk.css" />', ...config.css];
+  const js = [...config.js, '<script src="slidesk.js"></script>'];
   const globCSS = new Bun.Glob("**/*.css");
   const globJS = new Bun.Glob("**/*.js");
   try {
@@ -63,7 +57,7 @@ export default (
       });
     }
   });
-  template = template.replace("#STYLES#", `${css.join("")}${config.customCSS}`);
+  template = template.replace("#STYLES#", `${css.join("")}`);
   template = template.replace("#SCRIPTS#", `${js.join("")}`);
   template = template.replace("#FAVICON#", favicon.name);
   template = template.replace("#FAVICON_TYPE#", favicon.type);

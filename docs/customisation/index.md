@@ -58,9 +58,12 @@ For example, if you want to have a slide with 2 classes "foo" and "bar", use the
 
 It's possible to have a common directory to share a theme, plugins, ... for many presentations
 
-Then in your `.env` file add:
+Then in your `slidesk.toml` file add:
 
-COMMON_DIR=path/to/common
+```toml
+[slidesk]
+COMMON_DIR="path/to/common"
+```
 
 To use it in your presentation, you can use the following syntax:
 

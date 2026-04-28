@@ -12,7 +12,7 @@ export default async (
   serverFiles: SliDeskFile,
   serverPlugins: SliDeskPlugin[],
   serverPath: string,
-  env: { [key: string]: string },
+  env: object,
 ) => {
   const url = new URL(req.url);
   let res: Response | null = null;

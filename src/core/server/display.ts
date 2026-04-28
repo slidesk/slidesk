@@ -4,11 +4,13 @@ import start from "../../utils/start";
 
 const { log } = console;
 
-export default async (https: boolean, options: SliDeskServerOptions) => {
+export default async (env: object, options: SliDeskServerOptions) => {
+  const https = env.slidesk?.HTTPS;
+  const port = env.slidesk?.PORT ?? 1337;
   if (options.notes) {
     const url = `http${
       https ? "s" : ""
-    }://${options.ip}:${options.port}/${options.notes}`;
+    }://${options.ip}:${port}/${options.notes}`;
     log(`Your speaker view is available on: \x1b[1m\x1b[36;49m${url}\x1b[0m`);
     QRCODE(
       url,
@@ -20,20 +22,22 @@ export default async (https: boolean, options: SliDeskServerOptions) => {
     if (options.open) {
       Bun.spawn([
         start(),
-        `http${https ? "s" : ""}://localhost:${options.port}/${options.notes}`,
+        `http${https ? "s" : ""}://localhost:${port}/${options.notes}`,
       ]);
     }
   }
-  [...new Set([options.ip, options.domain, "localhost"])].forEach((e, _) => {
+  [
+    ...new Set([options.ip, env.slidesk?.DOMAIN ?? "localhost", "localhost"]),
+  ].forEach((e, _) => {
     if (e)
       log(
         `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
           https ? "s" : ""
-        }://${e}:${options.port}\x1b[0m`,
+        }://${e}:${port}\x1b[0m`,
       );
   });
   if (options.open && !options.notes) {
-    Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${options.port}`]);
+    Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${port}`]);
   }
   log();
 };

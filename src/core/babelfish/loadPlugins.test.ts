@@ -6,7 +6,7 @@ import loadPlugins from "./loadPlugins";
 describe("loadPlugins function", () => {
   it("should return empty array when no plugins directory exists", async () => {
     const tempDir = `${mkdtempSync(tmpdir())}/`;
-    const env: object = { COMMON_DIR: "" };
+    const env: object = { slidesk: { COMMON_DIR: "" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toEqual([]);
     rmSync(tempDir, { recursive: true });
@@ -40,7 +40,7 @@ describe("loadPlugins function", () => {
       JSON.stringify({ addHTML: "", addScripts: [], addStyles: [] }),
     );
 
-    const env: object = { COMMON_DIR: "common" };
+    const env: object = { slidesk: { COMMON_DIR: "common" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toHaveLength(2);
     rmSync(tempDir, { recursive: true });
@@ -54,7 +54,7 @@ describe("loadPlugins function", () => {
       JSON.stringify({ addHTML: "", addScripts: [], addStyles: [] }),
     );
 
-    const env: object = { COMMON_DIR: "" };
+    const env: object = { slidesk: { COMMON_DIR: "" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toHaveLength(1);
     expect(result[0].theme).toBe("/themes/dark/");
@@ -76,7 +76,7 @@ describe("loadPlugins function", () => {
       }),
     );
 
-    const env: object = { COMMON_DIR: "" };
+    const env: object = { slidesk: { COMMON_DIR: "" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toHaveLength(1);
     expect(result[0].addHTMLFromFiles).toBeDefined();

@@ -4,11 +4,12 @@ import type { SliDeskPlugin } from "../../types";
 export default async (
   presentation: string,
   template: string,
-  env: DotenvParseOutput,
+  env: object,
   plugins: SliDeskPlugin[],
 ) => {
   let tpl = template;
-  if (env.TITLE) tpl = tpl.replace("#TITLE#", env.TITLE.toString());
+  if (env.slidesk?.TITLE)
+    tpl = tpl.replace("#TITLE#", env.slidesk.TITLE.toString());
   else
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
       tpl = tpl.replace("#TITLE#", title[1]);

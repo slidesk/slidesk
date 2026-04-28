@@ -2,6 +2,7 @@ import { existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import type { SliDeskSaveOptions } from "../types";
 import convert from "./convert";
+import loadEnv from "./loadEnv";
 
 const { log } = console;
 
@@ -10,7 +11,7 @@ const readAllFiles = (dir: string): string[] => {
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file, _) => {
     if (
-      /(.sdf|.env|.lang.json|.ds_store|plugin.json|.md|.gitignore|.git)$/.exec(
+      /(.sdf|.env|.lang.json|.ds_store|plugin.json|.md|.gitignore|.git|.toml)$/.exec(
         file.name.toLowerCase(),
       ) === null &&
       /^\/components\//.exec(file.name) === null
@@ -26,7 +27,8 @@ const readAllFiles = (dir: string): string[] => {
 };
 
 export default async (talkdir: string, options: SliDeskSaveOptions) => {
-  const files = await convert(talkdir, options);
+  const env = await loadEnv(talkdir, options);
+  const files = await convert(talkdir, options, env);
   const promises: Promise<number>[] = [];
   if (options.target === "." || options.target === talkdir) {
     log(

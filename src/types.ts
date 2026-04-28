@@ -1,12 +1,7 @@
 import type { Server, WebSocket } from "bun";
 
 export type SliDeskPresentOptions = {
-  domain?: string;
-  port?: string;
   notes?: string;
-  timers?: boolean;
-  transition?: string;
-  watch?: boolean;
   hidden?: boolean;
   conf?: string;
   open?: string;
@@ -19,12 +14,9 @@ export type SliDeskSaveOptions = {
   conf?: string;
   lang?: string;
   target?: string;
-  domain?: string;
 };
 
 export type SliDeskServerOptions = {
-  port?: string;
-  domain?: string;
   notes?: string;
   open?: string;
   ip?: string;
@@ -32,8 +24,6 @@ export type SliDeskServerOptions = {
 
 export type SliDeskPublishOptions = {
   notes?: string;
-  timers?: boolean;
-  transition?: string;
   lang?: string;
   "slidesk-link-url"?: string;
 };
@@ -75,10 +65,7 @@ export type SliDeskFile = {
 
 export type SliDeskTemplate = Record<string, string>;
 
-export type SliDeskConfig = {
-  customCSS: string;
-  customIncludes: { css: string[]; js: string[] };
-};
+export type SliDeskConfig = { css: string[]; js: string[] };
 
 export type SliDeskFavicon = {
   name: string;

@@ -4,9 +4,9 @@ import type {
   SliDeskFile,
   SliDeskPlugin,
   SliDeskPluginAddWS,
+  SliDeskServerEnv,
   SliDeskServerOptions,
 } from "../types";
-import loadEnv from "../utils/loadEnv";
 import display from "./server/display";
 import fetch from "./server/fetch";
 import getPlugins from "./server/getPlugins";
@@ -19,21 +19,27 @@ export default class SlideskServer {
   async create(
     files: SliDeskFile,
     options: SliDeskServerOptions,
+    env: object,
     path: string,
   ) {
     serverFiles = files;
     serverPath = path;
     const serverPlugins: SliDeskPlugin[] = [];
-    const env = await loadEnv(path, options);
     const pluginsDir = `${path}/plugins`;
     if (existsSync(pluginsDir))
       serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
-    if (env.COMMON_DIR && existsSync(`${path}/${env.COMMON_DIR}/plugins`))
+    if (
+      env.slidesk?.COMMON_DIR &&
+      existsSync(`${path}/${env.slidesk?.COMMON_DIR}/plugins`)
+    )
       serverPlugins.push(
-        ...(await getPlugins(`${path}/${env.COMMON_DIR}/plugins`, serverPath)),
+        ...(await getPlugins(
+          `${path}/${env.slidesk?.COMMON_DIR}/plugins`,
+          serverPath,
+        )),
       );
     server = Bun.serve({
-      port: options.port,
+      port: env.slidesk?.PORT ?? 1337,
       async fetch(req) {
         return fetch(req, this, serverFiles, serverPlugins, serverPath, env);
       },
@@ -66,12 +72,12 @@ export default class SlideskServer {
         },
       },
       tls: {
-        key: env.KEY ? Bun.file(env.KEY) : undefined,
-        cert: env.CERT ? Bun.file(env.CERT) : undefined,
-        passphrase: env.PASSPHRASE ?? undefined,
+        key: env.slidesk?.KEY ? Bun.file(env.slidesk?.KEY) : undefined,
+        cert: env.slidesk?.CERT ? Bun.file(env.slidesk?.CERT) : undefined,
+        passphrase: env.slidesk?.PASSPHRASE ?? undefined,
       },
     });
-    await display(env.HTTPS === "true", options);
+    await display(env.slidesk?.HTTPS ?? false, options);
   }
 
   setFiles(files: SliDeskFile) {

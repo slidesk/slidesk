@@ -1,26 +1,15 @@
 import { script } from "../../templates/present";
-import type {
-  SliDeskEnv,
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-} from "../../types";
+import type { SliDeskPlugin } from "../../types";
 
-export default (
-  options: SliDeskPresentOptions,
-  plugins: SliDeskPlugin[],
-  env: SliDeskEnv,
-) => `window.slidesk = {
+export default (plugins: SliDeskPlugin[], env: object) => `window.slidesk = {
   currentSlide: 0,
   slides: [],
-  animationTimer: ${Number(env.ANIMATION_TIMER ?? options.transition ?? 300)},
+  animationTimer: ${Number(env.slidesk?.TRANSITION ?? 300)},
   onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(env)},
   lastAction: "",
-  domain: "${options.domain}"
+  domain: "${env.slidesk?.DOMAIN ?? "localhost"}"
 };
-${
-  !options.save
-    ? `window.slidesk.io = new WebSocket(\`ws\${window.location.protocol.includes('https') ? "s" : ""}://\${window.location.host}\${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws\`);`
-    : "window.slidesk.save = true;"
-}
+if (window.location.origin !== "file://")
+  window.slidesk.io = new WebSocket(\`ws\${window.location.protocol.includes('https') ? "s" : ""}://\${window.location.host}\${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws\`);
 ${script}`;
