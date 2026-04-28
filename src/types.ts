@@ -6,7 +6,7 @@ export type SliDeskPresentOptions = {
   conf?: string;
   open?: string;
   lang?: string;
-  terminal?: boolean;
+  telnet?: boolean;
   ip?: string;
 };
 
@@ -72,3 +72,28 @@ export type SliDeskFavicon = {
   content: string | Uint8Array;
   type: string;
 };
+
+export interface SliDeskTelnetSlidesConfig {
+  port?: number;
+  totalSlides?: number | null;
+  slides: string[];
+}
+
+export type SliDeskTelnetTransition =
+  | "fade"
+  | "slide-left"
+  | "slide-right"
+  | "wipe";
+
+export interface SliDeskTelnetSession {
+  currentSlide: number;
+  totalSlides: number;
+  rows: number;
+  cols: number;
+  loading: boolean;
+  started: boolean;
+  config: Required<SliDeskTelnetSlidesConfig>;
+}
+
+import type { Socket } from "bun";
+export type BunSocket = Socket;

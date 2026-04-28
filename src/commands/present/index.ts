@@ -7,6 +7,7 @@ import { getAction } from "../../utils/interactCLI";
 import convert from "../../utils/convert";
 import { Clipse } from "clipse";
 import loadEnv from "../../utils/loadEnv";
+import { startTelnetServer } from "../../core/TCPServer";
 
 const { log } = console;
 
@@ -21,6 +22,9 @@ const flow = async (
   const files = await convert(talkdir, options, env);
   if (init) {
     await server.create(files, options, env, talkdir);
+    if (options.telnet) {
+      await startTelnetServer(options, env);
+    }
   } else {
     server.setFiles(files);
   }
@@ -103,6 +107,13 @@ presentCmd
       description:
         "specify the language version (per default, it will use the .lang.json file with default information)",
       default: "",
+      optional: true,
+    },
+    telnet: {
+      short: "t",
+      type: "boolean",
+      description: "serve a telnet version",
+      default: false,
       optional: true,
     },
   })
