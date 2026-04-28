@@ -12,11 +12,21 @@ const sendToSlideskLink = async (
   options: SliDeskPublishOptions,
 ) => {
   const slideskToken = await getLinkToken();
-  await save(`${process.cwd()}/${talk ?? ""}`, {
-    ...options,
-    target: "__SLIDESKLINK__",
-    domain: options["slidesk-link-url"]?.replace(/^https?:\/\/(www\.)?/, ""),
-  });
+  await save(
+    `${process.cwd()}/${talk ?? ""}`,
+    {
+      ...options,
+      target: "__SLIDESKLINK__",
+    },
+    {
+      slidesk: {
+        DOMAIN: options["slidesk-link-url"]?.replace(
+          /^https?:\/\/(www\.)?/,
+          "",
+        ),
+      },
+    },
+  );
   await create({ gzip: true, file: "link.tgz" }, ["__SLIDESKLINK__"]);
   rmSync("__SLIDESKLINK__", {
     recursive: true,
