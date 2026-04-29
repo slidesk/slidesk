@@ -23,7 +23,7 @@ export async function startTelnetServer(
   ) as SliDeskTelnetTransition;
 
   const html = await (await fetch(slideServerUrl)).text();
-  const { total, list } = parseSlides(html);
+  const { total, list } = await parseSlides(html);
 
   const fullConfig: Required<SliDeskTelnetSlidesConfig> = {
     port: 2323,

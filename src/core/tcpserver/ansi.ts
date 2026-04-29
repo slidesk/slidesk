@@ -26,6 +26,7 @@ export const ANSI = {
   },
   moveTo: (row: number, col: number) => `\x1b[${row};${col}H`,
   eraseLine: "\x1b[2K",
+  home: "\x1b[H",
 };
 
 export const IAC_ENABLE_CHAR_MODE = Buffer.from([
