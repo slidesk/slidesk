@@ -1,4 +1,4 @@
-import type { Server, WebSocket } from "bun";
+import type { Server, Socket, WebSocket } from "bun";
 
 export type SliDeskPresentOptions = {
   notes?: string;
@@ -79,12 +79,6 @@ export interface SliDeskTelnetSlidesConfig {
   slides: string[];
 }
 
-export type SliDeskTelnetTransition =
-  | "fade"
-  | "slide-left"
-  | "slide-right"
-  | "wipe";
-
 export interface SliDeskTelnetSession {
   currentSlide: number;
   totalSlides: number;
@@ -95,5 +89,4 @@ export interface SliDeskTelnetSession {
   config: Required<SliDeskTelnetSlidesConfig>;
 }
 
-import type { Socket } from "bun";
 export type BunSocket = Socket;

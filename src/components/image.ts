@@ -1,9 +1,7 @@
 export default function image(data: string) {
   let newData = data;
   [...newData.matchAll(/!image\((.*)\)/g)].forEach((match, _) => {
-    const [src, alt, width, height, optionals, caption] = [
-      ...match[1].split(","),
-    ];
+    const [src, alt, width, height, optionals, caption] = match[1].split(",");
     let classc = "";
     if (
       optionals?.trim().indexOf("[") !== -1 ||

@@ -25,7 +25,7 @@ themeSearchCmd
           required: false,
         })) as string[];
         if (themesToInstall.length) {
-          for await (const p of themesToInstall) {
+          for (const p of themesToInstall) {
             await themeInstall(p, opts["slidesk-link-url"] as string);
           }
         }

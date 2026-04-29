@@ -1,4 +1,4 @@
-import { globSync, lstatSync, readdirSync } from "node:fs";
+import { globSync, lstatSync } from "node:fs";
 import replaceAsync from "../../utils/replaceAsync";
 
 const includes = async (file: string): Promise<string> => {
@@ -13,7 +13,7 @@ const includes = async (file: string): Promise<string> => {
         exts.map((ext) => `${realDirOrFile}/**/*.${ext}`),
       ).sort((a, b) => a.localeCompare(b));
       const res: string[] = [];
-      for await (const file of files) {
+      for (const file of files) {
         res.push(await includes(file));
       }
       return res.join("\n");

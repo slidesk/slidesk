@@ -1,4 +1,4 @@
-import sharp, { type Sharp } from "sharp";
+import sharp from "sharp";
 import { Resvg } from "@resvg/resvg-js";
 import { ANSI } from "./ansi";
 
@@ -43,13 +43,13 @@ export function detectFormat(input: Buffer | string): ImageFormat {
   if (input[0] === 0x89 && input[1] === 0x50) return "png";
   if (input[0] === 0xff && input[1] === 0xd8) return "jpeg";
   if (
-    input.slice(0, 4).toString() === "RIFF" &&
-    input.slice(8, 12).toString() === "WEBP"
+    input.subarray(0, 4).toString() === "RIFF" &&
+    input.subarray(8, 12).toString() === "WEBP"
   )
     return "webp";
   if (
-    input.slice(0, 6).toString() === "GIF87a" ||
-    input.slice(0, 6).toString() === "GIF89a"
+    input.subarray(0, 6).toString() === "GIF87a" ||
+    input.subarray(0, 6).toString() === "GIF89a"
   )
     return "gif";
   if (input.toString("utf8", 0, 200).includes("<svg")) return "svg";
@@ -125,7 +125,6 @@ async function renderBlock(imgBuf: Buffer, cols: number): Promise<string> {
   const img = sharp(imgBuf);
   const meta = await img.metadata();
 
-  // Ratio : chaque char = 2 px haut × 1 px large (approx car glyphes ~2:1)
   const rows = Math.round(
     ((meta.height ?? cols) / (meta.width ?? cols)) * cols * 0.5,
   );
@@ -168,6 +167,64 @@ async function renderBlock(imgBuf: Buffer, cols: number): Promise<string> {
   return out;
 }
 
+const colorMapPalette = (data: Buffer<ArrayBufferLike>) => {
+  const colorMap = new Map<string, number>();
+  const palette: Array<[number, number, number]> = [];
+
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 128) continue; // transparent
+    const key = `${data[i]},${data[i + 1]},${data[i + 2]}`;
+    if (!colorMap.has(key) && palette.length < 256) {
+      colorMap.set(key, palette.length);
+      palette.push([data[i], data[i + 1], data[i + 2]]);
+    }
+  }
+  return { colorMap, palette };
+};
+
+const definePalette = (palette: Array<[number, number, number]>) => {
+  let out = "\x1bP0;1;8q";
+
+  for (let ci = 0; ci < palette.length; ci++) {
+    const [r, g, b] = palette[ci];
+    const pr = Math.round((r / 255) * 100);
+    const pg = Math.round((g / 255) * 100);
+    const pb = Math.round((b / 255) * 100);
+    out += `#${ci};2;${pr};${pg};${pb}`;
+  }
+  return out;
+};
+
+const getBandLines = (
+  palette: Array<[number, number, number]>,
+  info: sharp.OutputInfo,
+  band: number,
+  data: Buffer<ArrayBufferLike>,
+  colorMap: Map<string, number>,
+) => {
+  const bandLines: string[] = new Array(palette.length).fill("");
+
+  for (let x = 0; x < info.width; x++) {
+    const colorBits = new Array(palette.length).fill(0);
+
+    for (let bit = 0; bit < 6; bit++) {
+      const y = band * 6 + bit;
+      if (y >= info.height) continue;
+      const pxIdx = (y * info.width + x) * 4;
+      if (data[pxIdx + 3] < 128) continue;
+
+      const key = `${data[pxIdx]},${data[pxIdx + 1]},${data[pxIdx + 2]}`;
+      const ci = colorMap.get(key) ?? 0;
+      colorBits[ci] |= 1 << bit;
+    }
+
+    for (let ci = 0; ci < palette.length; ci++) {
+      bandLines[ci] += String.fromCodePoint(63 + colorBits[ci]);
+    }
+  }
+  return bandLines;
+};
+
 async function renderSixel(imgBuf: Buffer, cols: number): Promise<string> {
   const img = sharp(imgBuf);
   const meta = await img.metadata();
@@ -181,52 +238,14 @@ async function renderSixel(imgBuf: Buffer, cols: number): Promise<string> {
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  const colorMap = new Map<string, number>();
-  const palette: Array<[number, number, number]> = [];
+  const { colorMap, palette } = colorMapPalette(data);
 
-  for (let i = 0; i < data.length; i += 4) {
-    if (data[i + 3] < 128) continue; // transparent
-    const key = `${data[i]},${data[i + 1]},${data[i + 2]}`;
-    if (!colorMap.has(key) && palette.length < 256) {
-      colorMap.set(key, palette.length);
-      palette.push([data[i], data[i + 1], data[i + 2]]);
-    }
-  }
-
-  let out = "\x1bP0;1;8q";
-
-  // Définir la palette
-  for (let ci = 0; ci < palette.length; ci++) {
-    const [r, g, b] = palette[ci];
-    const pr = Math.round((r / 255) * 100);
-    const pg = Math.round((g / 255) * 100);
-    const pb = Math.round((b / 255) * 100);
-    out += `#${ci};2;${pr};${pg};${pb}`;
-  }
+  let out = definePalette(palette);
 
   const bands = Math.ceil(pxH / 6);
 
   for (let band = 0; band < bands; band++) {
-    const bandLines: string[] = new Array(palette.length).fill("");
-
-    for (let x = 0; x < info.width; x++) {
-      const colorBits = new Array(palette.length).fill(0);
-
-      for (let bit = 0; bit < 6; bit++) {
-        const y = band * 6 + bit;
-        if (y >= info.height) continue;
-        const pxIdx = (y * info.width + x) * 4;
-        if (data[pxIdx + 3] < 128) continue;
-
-        const key = `${data[pxIdx]},${data[pxIdx + 1]},${data[pxIdx + 2]}`;
-        const ci = colorMap.get(key) ?? 0;
-        colorBits[ci] |= 1 << bit;
-      }
-
-      for (let ci = 0; ci < palette.length; ci++) {
-        bandLines[ci] += String.fromCharCode(63 + colorBits[ci]);
-      }
-    }
+    const bandLines = getBandLines(palette, info, band, data, colorMap);
 
     for (let ci = 0; ci < palette.length; ci++) {
       if (!bandLines[ci] || bandLines[ci].split("").every((c) => c === "?"))
@@ -260,11 +279,9 @@ async function renderKitty(imgBuf: Buffer, cols: number): Promise<string> {
   let out = "";
 
   chunks.forEach((chunk, i) => {
-    const isLast = i === chunks.length - 1;
+    const isLast = i === chunks.length - 1 ? 0 : 1;
     const params =
-      i === 0
-        ? `a=T,f=32,v=${pxH},s=${pxW},m=${isLast ? 0 : 1}`
-        : `m=${isLast ? 0 : 1}`;
+      i === 0 ? `a=T,f=32,v=${pxH},s=${pxW},m=${isLast}` : `m=${isLast}`;
     out += `\x1b_G${params};${chunk}\x1b\\`;
   });
 
@@ -275,13 +292,7 @@ export async function imageToAnsi(
   input: Buffer | string,
   options: RenderOptions = {},
 ): Promise<AnsiResult> {
-  const {
-    cols = 80,
-    mode = "block",
-    loop = true,
-    frameDelay,
-    svgScale = 2,
-  } = options;
+  const { cols = 80, mode = "block", frameDelay, svgScale = 2 } = options;
 
   let buf: Buffer;
   if (typeof input === "string") {
@@ -343,7 +354,6 @@ async function renderByMode(
       return renderKitty(buf, cols);
     case "sixel":
       return renderSixel(buf, cols);
-    case "block":
     default:
       return renderBlock(buf, cols);
   }
@@ -377,17 +387,21 @@ export interface PrepassOptions extends RenderOptions {
 }
 
 function extractAttr(attrs: string, name: string): string {
-  const m = attrs.match(new RegExp(`${name}=["']?([^"'\\s>]*)["']?`, "i"));
+  const m = new RegExp(String.raw`${name}=["']?([^"'\s>]*)["']?`, "i").exec(
+    attrs,
+  );
   return m ? decodeEntities(m[1]) : "";
 }
 
 function decodeEntities(s: string): string {
   return s
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n)));
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll(/&#(\d+);/g, (_, n) =>
+      String.fromCodePoint(Number.parseInt(n, 10)),
+    );
 }
 
 function dataUrlToBuffer(dataUrl: string): Buffer {
@@ -422,7 +436,7 @@ export async function preprocessImages(
     placeholder: string;
   }> = [];
 
-  let processedHtml = html.replace(
+  let processedHtml = html.replaceAll(
     /<a([^>]*)>\s*<img([^>]*)>\s*<\/a>/gi,
     (full, aAttrs, imgAttrs) => {
       const src = extractAttr(imgAttrs, "src");
@@ -436,7 +450,7 @@ export async function preprocessImages(
     },
   );
 
-  processedHtml = processedHtml.replace(imgPattern, (full, attrs) => {
+  processedHtml = processedHtml.replaceAll(imgPattern, (full, attrs) => {
     const src = extractAttr(attrs, "src");
     const alt = extractAttr(attrs, "alt");
     if (!src) return fallbackToAlt && alt ? alt : "";

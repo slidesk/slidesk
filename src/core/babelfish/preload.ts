@@ -3,10 +3,7 @@ import loadFavicon from "./loadFavicon";
 import loadPlugins from "./loadPlugins";
 import loadTemplates from "./loadTemplates";
 
-export default async (
-  sdfPath: string,
-  env: Record<string, unknown | Record<string, unknown>>,
-) => {
+const preload = async (sdfPath: string, env: Record<string, unknown>) => {
   return {
     plugins: await loadPlugins(sdfPath, env),
     templates: await loadTemplates(sdfPath),
@@ -14,3 +11,5 @@ export default async (
     components: loadComponents(sdfPath),
   };
 };
+
+export default preload;

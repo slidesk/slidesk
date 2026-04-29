@@ -41,9 +41,7 @@ window.slidesk.getPresentationPath = () => {
   if (currentPath.endsWith("notes.html")) {
     return currentPath.replace("notes.html", "index.html");
   }
-  return (
-    currentPath.substring(0, currentPath.lastIndexOf("/") + 1) + "index.html"
-  );
+  return `${currentPath.substring(0, currentPath.lastIndexOf("/") + 1)}index.html`;
 };
 
 window.slidesk.setupChannel = () => {
@@ -60,9 +58,9 @@ window.slidesk.setupChannel = () => {
       ]
         .map((a) =>
           decodeURIComponent(
-            atob(a.innerHTML).replace(
+            atob(a.innerHTML).replaceAll(
               /[\x80-\uffff]/g,
-              (m) => `%${m.charCodeAt(0).toString(16).padStart(2, "0")}`,
+              (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
             ),
           ),
         )
@@ -106,9 +104,9 @@ window.slidesk.loadInitialState = () => {
     ]
       .map((a) =>
         decodeURIComponent(
-          atob(a.innerHTML).replace(
+          atob(a.innerHTML).replaceAll(
             /[\x80-\uffff]/g,
-            (m) => `%${m.charCodeAt(0).toString(16).padStart(2, "0")}`,
+            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
           ),
         ),
       )
@@ -152,9 +150,9 @@ window.slidesk.io.onmessage = (event) => {
     ]
       .map((a) =>
         decodeURIComponent(
-          atob(a.innerHTML).replace(
+          atob(a.innerHTML).replaceAll(
             /[\x80-\uffff]/g,
-            (m) => `%${m.charCodeAt(0).toString(16).padStart(2, "0")}`,
+            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
           ),
         ),
       )
@@ -302,9 +300,9 @@ window.addEventListener("storage", (event) => {
     ]
       .map((a) =>
         decodeURIComponent(
-          atob(a.innerHTML).replace(
+          atob(a.innerHTML).replaceAll(
             /[\x80-\uffff]/g,
-            (m) => `%${m.charCodeAt(0).toString(16).padStart(2, "0")}`,
+            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
           ),
         ),
       )

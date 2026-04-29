@@ -25,7 +25,7 @@ templateSearchCmd
           required: false,
         })) as string[];
         if (templatesToInstall.length) {
-          for await (const p of templatesToInstall) {
+          for (const p of templatesToInstall) {
             await templateInstall(p, opts["slidesk-link-url"] as string);
           }
         }

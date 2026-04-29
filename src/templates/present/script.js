@@ -87,17 +87,13 @@ window.slidesk.changeSlide = () => {
   ) {
     window.slidesk.sendMessage({
       action: "current",
-      payload: window.slidesk.slides[
-        window.slidesk.currentSlide
-      ].outerHTML.replace(/data-source="(^")"/gi, ""),
+      payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
     });
     window.slidesk.sendMessage({
       action: "future",
       payload:
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
-          ? window.slidesk.slides[
-              window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^")"/gi, "")
+          ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
           : "",
     });
     window.slidesk.sendMessage({
@@ -189,7 +185,7 @@ window.onload = () => {
     });
   } else window.slidesk.setupChannel();
   const loadingHash = window.location.hash.replace("#", "");
-  window.slidesk.currentSlide = Number(loadingHash) ?? 0;
+  window.slidesk.currentSlide = Number(loadingHash ?? 0);
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {

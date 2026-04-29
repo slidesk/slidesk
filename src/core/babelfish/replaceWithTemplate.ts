@@ -1,7 +1,7 @@
 import type { SliDeskTemplate } from "../../types";
 import parseText from "./parseText";
 
-export default (
+const replaceWithTemplate = (
   tpl: string,
   content: string,
   title: string,
@@ -18,7 +18,9 @@ export default (
     );
   });
   return text
-    .replace(/<sd-title \/>/g, `<h2>${title}</h2>`)
-    .replace(/<sd-content \/>/g, newContent.replace(/<h2>(.*)<\/h2>/g, ""))
+    .replaceAll("<sd-title />", `<h2>${title}</h2>`)
+    .replaceAll("<sd-content />", newContent.replaceAll(/<h2>(.*)<\/h2>/g, ""))
     .replaceAll(/<sd-[^>]+\s*\/>/g, "");
 };
+
+export default replaceWithTemplate;

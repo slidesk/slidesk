@@ -1,6 +1,5 @@
 import readline from "node:readline";
 import type Server from "../core/Server";
-import type Terminal from "../core/Terminal";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -14,12 +13,12 @@ export const removeCurrentLine = () => {
 
 export const question = (query: string) =>
   new Promise((resolve) => {
-    rl.question(query !== "" ? `\x1b[1m> ${query}\x1b[0m\n` : "", (anwser) =>
+    rl.question(query === "" ? "" : `\x1b[1m> ${query}\x1b[0m\n`, (anwser) =>
       resolve(anwser.trim()),
     );
   });
 
-export const getAction = async (server: Server | Terminal, present = false) => {
+export const getAction = async (server: Server, present = false) => {
   const answer = await question("");
   const i = (answer as string).trim().toLowerCase();
   removeCurrentLine();

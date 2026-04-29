@@ -1,6 +1,14 @@
 import { platform } from "node:process";
 
-const start = () =>
-  platform === "darwin" ? "open" : platform === "win32" ? "start" : "xdg-open";
+const start = () => {
+  switch (platform) {
+    case "darwin":
+      return "open";
+    case "win32":
+      return "start";
+    default:
+      return "xdg-open";
+  }
+};
 
 export default start;

@@ -14,14 +14,14 @@ export async function parseSlides(html: string): Promise<SlideIndex> {
   const list: SlideEntry[] = [];
 
   const sectionRe =
-    /<section\s+([^>]*class\s*=\s*(?:"[^"]*sd-slide[^"]*"|'[^']*sd-slide[^']*'|sd-slide\S*)[^>]*)>([\s\S]*?)(?=<section\s|$)/gi;
+    /<section([^>]*class\s*=\s*["']?[^"'>]*sd-slide[^"'>]*["']?[^>]*)>([\s\S]*?)(?=<section\s|$)/gi;
 
-  for await (const match of html.matchAll(sectionRe)) {
+  for (const match of html.matchAll(sectionRe)) {
     const attrs = match[1] ?? "";
     const body = match[2] ?? "";
 
-    const numMatch = attrs.match(/data-num\s*=\s*["']?(\d+)["']?/i);
-    const num = numMatch ? parseInt(numMatch[1], 10) : list.length;
+    const numMatch = /data-num\s*=\s*["']?(\d+)["']?/i.exec(attrs);
+    const num = numMatch ? Number.parseInt(numMatch[1], 10) : list.length;
 
     list.push({
       num,
@@ -30,7 +30,7 @@ export async function parseSlides(html: string): Promise<SlideIndex> {
           .trim()
           .replace("<h2></h2>", "")
           .replace("</body></html>", "")
-          .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")}`,
+          .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")}`,
         {
           cols: 80,
           mode: "block",

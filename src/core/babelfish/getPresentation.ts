@@ -4,9 +4,9 @@ import image from "../../components/image";
 import type { SliDeskTemplate } from "../../types";
 import treatSlide from "./treatSlide";
 
-export default async (
+const getPresentation = async (
   sdf: string,
-  env: Record<string, unknown | Record<string, unknown>>,
+  env: Record<string, unknown>,
   components: string[],
   templates: SliDeskTemplate,
 ) => {
@@ -18,14 +18,16 @@ export default async (
   // format text
   fusion = formatting(fusion, env);
   // custom components
-  for await (const c of components) {
+  for (const c of components) {
     const { default: comp } = await import(c);
     fusion = await comp(fusion);
   }
   // slice & treatment
   const slides: string[] = [];
   let cpt = 0;
-  for await (const slide of [...fusion.split("\n## ")])
+  for (const slide of fusion.split("\n## "))
     slides.push(await treatSlide(slide, cpt++, templates));
   return slides.join("");
 };
+
+export default getPresentation;

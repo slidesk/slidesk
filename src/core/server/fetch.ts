@@ -5,13 +5,13 @@ import type {
 } from "../../types";
 import getFile from "./getFile";
 
-export default async (
+const fetch = async (
   req: Request,
   server: any,
   serverFiles: SliDeskFile,
   serverPlugins: SliDeskPlugin[],
   serverPath: string,
-  env: Record<string, unknown | Record<string, unknown>>,
+  env: Record<string, unknown>,
 ) => {
   const url = new URL(req.url);
   let res: Response | null = null;
@@ -33,7 +33,7 @@ export default async (
         return new Response(serverFiles[url.pathname.substring(1)].content, {
           headers: serverFiles[url.pathname.substring(1)].headers,
         });
-      for await (const plugin of [...Object.values(serverPlugins)]) {
+      for (const plugin of Object.values(serverPlugins)) {
         if (plugin.addRoutes) {
           res = await (plugin.addRoutes as SliDeskPluginAddRoute)(
             req,
@@ -46,3 +46,5 @@ export default async (
       return getFile(req, serverPath, env);
   }
 };
+
+export default fetch;

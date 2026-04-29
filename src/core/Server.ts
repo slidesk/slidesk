@@ -18,7 +18,7 @@ export default class SlideskServer {
   async create(
     files: SliDeskFile,
     options: SliDeskServerOptions,
-    env: Record<string, unknown | Record<string, unknown>>,
+    env: Record<string, unknown>,
     path: string,
   ) {
     serverFiles = files;
@@ -30,11 +30,11 @@ export default class SlideskServer {
       serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
     if (
       slideskEnv?.COMMON_DIR &&
-      existsSync(`${path}/${slideskEnv?.COMMON_DIR}/plugins`)
+      existsSync(`${path}/${slideskEnv?.COMMON_DIR as string}/plugins`)
     )
       serverPlugins.push(
         ...(await getPlugins(
-          `${path}/${slideskEnv?.COMMON_DIR}/plugins`,
+          `${path}/${slideskEnv?.COMMON_DIR as string}/plugins`,
           serverPath,
         )),
       );
@@ -73,17 +73,17 @@ export default class SlideskServer {
       },
       tls: {
         key:
-          slideskEnv?.KEY !== undefined
-            ? Bun.file(String(slideskEnv.KEY))
-            : undefined,
+          slideskEnv?.KEY === undefined
+            ? undefined
+            : Bun.file(slideskEnv.KEY as string),
         cert:
-          slideskEnv?.CERT !== undefined
-            ? Bun.file(String(slideskEnv.CERT))
-            : undefined,
+          slideskEnv?.CERT === undefined
+            ? undefined
+            : Bun.file(slideskEnv.CERT as string),
         passphrase:
-          slideskEnv?.PASSPHRASE !== undefined
-            ? String(slideskEnv?.PASSPHRASE)
-            : undefined,
+          slideskEnv?.PASSPHRASE === undefined
+            ? undefined
+            : (slideskEnv?.PASSPHRASE as string),
       },
     });
     await display(slideskEnv, options);

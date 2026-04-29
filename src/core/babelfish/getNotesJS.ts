@@ -1,7 +1,7 @@
 import { script } from "../../templates/notes";
 import type { SliDeskPlugin } from "../../types";
 
-export default (plugins: SliDeskPlugin[]) => `window.slidesk = {
+const getNotesJS = (plugins: SliDeskPlugin[]) => `window.slidesk = {
   io: {},
   timer: document.querySelector("#sd-sv-timer"),
   subtimer: document.querySelector("#sd-sv-subtimer"),
@@ -12,3 +12,5 @@ export default (plugins: SliDeskPlugin[]) => `window.slidesk = {
   }
 };
 ${script}`;
+
+export default getNotesJS;

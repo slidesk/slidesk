@@ -3,12 +3,12 @@ import translate from "../../components/translate";
 import type { SliDeskPlugin, SliDeskPresentOptions } from "../../types";
 import polish from "./polish";
 
-export default async (
+const generateHTML = async (
   presentation: string,
   template: string,
   sdfPath: string,
   options: SliDeskPresentOptions,
-  env: Record<string, unknown | Record<string, unknown>>,
+  env: Record<string, unknown>,
   plugins: SliDeskPlugin[],
 ) => {
   const langFiles = readdirSync(sdfPath).filter((item) =>
@@ -46,3 +46,5 @@ export default async (
     },
   };
 };
+
+export default generateHTML;

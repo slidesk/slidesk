@@ -1,6 +1,5 @@
 import markdownIt from "markdown-it";
-import type { SliDeskPlugin, SliDeskTemplate } from "../../types";
-import toBinary from "../../utils/toBinary";
+import type { SliDeskTemplate } from "../../types";
 import replaceWithTemplate from "./replaceWithTemplate";
 
 const md = markdownIt({
@@ -14,7 +13,7 @@ const prepareHTML = (slide: string) => {
   let timerSlide = "";
   let timerCheckpoint = "";
   const content = `## ${slide
-    .replace(/\\r/g, "")
+    .replaceAll("\r", "")
     .split("\n")
     .map((p) => {
       if (p.trimStart().startsWith("//@")) {
@@ -52,9 +51,9 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
       classes = spl[1].replace("]", "").trim();
     }
     // # in classes means template
-    const tpl = (classes.split(" ").filter((c) => c.startsWith("#"))[0] ?? "")
-      .replace(/.sdt$/g, "")
-      .replace(/^#/g, "");
+    const tpl = (classes.split(" ").find((c) => c.startsWith("#")) ?? "")
+      .replaceAll(/.sdt$/g, "")
+      .replaceAll(/^#/g, "");
     if (tpl && templates[tpl])
       content = replaceWithTemplate(tpl, content, spl[0], templates);
     else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
@@ -62,7 +61,7 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
   return { content, classes };
 };
 
-export default async (
+const treatSlide = async (
   slide: string,
   cptSlide: number,
   templates: SliDeskTemplate,
@@ -90,3 +89,5 @@ export default async (
     .filter((c) => !c.startsWith("#"))
     .join(" ")}" ${dataset.join(" ")}>${content}</section>`;
 };
+
+export default treatSlide;

@@ -1,9 +1,9 @@
 import { readdirSync } from "node:fs";
 import type { SliDeskPlugin } from "../../types";
 
-export default async (pluginsDir: string, serverPath: string) => {
+const getPlugins = async (pluginsDir: string, serverPath: string) => {
   const serverPlugins: SliDeskPlugin[] = [];
-  for await (const plugin of readdirSync(pluginsDir)) {
+  for (const plugin of readdirSync(pluginsDir)) {
     const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
     const pluginFile = Bun.file(pluginPath);
     const exists = await pluginFile.exists();
@@ -29,3 +29,5 @@ export default async (pluginsDir: string, serverPath: string) => {
   }
   return serverPlugins;
 };
+
+export default getPlugins;

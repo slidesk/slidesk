@@ -1,8 +1,4 @@
-import type {
-  BunSocket,
-  SliDeskTelnetSession,
-  SliDeskTelnetTransition,
-} from "../../types";
+import type { BunSocket, SliDeskTelnetSession } from "../../types";
 import { ANSI } from "./ansi";
 import { renderSlide } from "./session";
 import { send } from "./transitions";
@@ -11,7 +7,6 @@ export function handleInput(
   socket: BunSocket,
   session: SliDeskTelnetSession,
   data: Buffer,
-  transitionType: SliDeskTelnetTransition,
 ) {
   if (data[0] === 255) return;
 
@@ -21,7 +16,7 @@ export function handleInput(
   if (key === "\x1b[C" || key === " " || key === "\r" || key === "\r\n") {
     if (session.currentSlide < session.totalSlides - 1) {
       session.currentSlide++;
-      renderSlide(socket, session, transitionType);
+      renderSlide(socket, session);
     }
     return;
   }
@@ -30,16 +25,16 @@ export function handleInput(
   if (key === "\x1b[D" || key === "\x7f" || key === "\x08") {
     if (session.currentSlide > 0) {
       session.currentSlide--;
-      renderSlide(socket, session, transitionType);
+      renderSlide(socket, session);
     }
     return;
   }
 
   // Digit -> direct jump
-  const num = parseInt(key, 10);
-  if (!isNaN(num) && num >= 1 && num <= session.totalSlides) {
+  const num = Number.parseInt(key, 10);
+  if (!Number.isNaN(num) && num >= 1 && num <= session.totalSlides) {
     session.currentSlide = num - 1;
-    renderSlide(socket, session, "fade");
+    renderSlide(socket, session);
     return;
   }
 
@@ -53,7 +48,10 @@ export function handleInput(
   if (key === "q" || key === "Q" || key === "\x03") {
     send(
       socket,
-      ANSI.clear + ANSI.fg.bright.yellow + "\n  Goodbye! \n\n" + ANSI.reset,
+      ANSI.clear +
+        ANSI.fg.bright.yellow +
+        "\r\n  Goodbye! \r\n\r\n" +
+        ANSI.reset,
     );
     setTimeout(() => socket.end(), 500);
   }

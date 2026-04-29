@@ -9,15 +9,15 @@ export default function comments(data: string) {
             match[0]
               .replace("/*", "")
               .replace("*/", "")
-              .replace(
+              .replaceAll(
                 /[&<>"'` !@$%()=+{}[\]]/g,
-                (match) => `&#${match.charCodeAt(0)};`,
+                (match) => `&#${match.codePointAt(0)};`,
               )
               .split("\n")
               .slice(1)
               .join("<br/>"),
-          ).replace(/%([a-f0-9]{2})/gi, (_, $1) =>
-            String.fromCharCode(Number.parseInt($1, 16)),
+          ).replaceAll(/%([a-f0-9]{2})/gi, (_, $1) =>
+            String.fromCodePoint(Number.parseInt($1, 16)),
           ),
         )}</aside>`,
       );

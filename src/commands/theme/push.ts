@@ -36,7 +36,9 @@ themePushCmd
             ).toString("base64"),
           );
         }
-      } catch (_) {}
+      } catch (e) {
+        console.error(e);
+      }
       data.set("json", JSON.stringify(images));
       const readme = Bun.file(`${themePath}/README.md`);
       if (await readme.exists()) data.set("desc", await readme.text());

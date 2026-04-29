@@ -1,18 +1,14 @@
-export default (
-  req: Request,
-  path: string,
-  env: Record<string, unknown | Record<string, unknown>>,
-) => {
+const getFile = (req: Request, path: string, env: Record<string, unknown>) => {
   const slideskEnv = (env.slidesk ?? { COMMON_DIR: "" }) as Record<
     string,
-    unknown
+    string
   >;
-  let fileurl = req.url.replace(
+  let fileurl = req.url.replaceAll(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
   if (fileurl.startsWith("/-=[COMMON]=-"))
-    fileurl = fileurl.replace("-=[COMMON]=-", String(slideskEnv.COMMON_DIR));
+    fileurl = fileurl.replace("-=[COMMON]=-", slideskEnv.COMMON_DIR);
   let file = Bun.file(
     fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
@@ -32,3 +28,5 @@ export default (
     });
   return new Response(`${req.url} not found`, { status: 404 });
 };
+
+export default getFile;

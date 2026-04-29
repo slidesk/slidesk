@@ -12,8 +12,8 @@ export const themeInstall = async (
   if (name === "") {
     return "Please provide a name for the theme";
   }
-  const themeName = name.replace(
-    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+  const themeName = name.replaceAll(
+    /\\u(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])/g,
     "",
   );
   const [user, ...theme] = themeName.split("__");

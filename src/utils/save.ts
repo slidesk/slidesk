@@ -26,10 +26,10 @@ const readAllFiles = (dir: string): string[] => {
   return result;
 };
 
-export default async (
+const save = async (
   talkdir: string,
   options: SliDeskSaveOptions,
-  additionalEnv: Record<string, unknown | Record<string, unknown>> = {},
+  additionalEnv: Record<string, unknown> = {},
 ) => {
   const env = { ...(await loadEnv(talkdir, options)), ...additionalEnv };
   const files = await convert(talkdir, options, env);
@@ -51,3 +51,5 @@ export default async (
   });
   await Promise.all(promises);
 };
+
+export default save;

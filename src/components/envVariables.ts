@@ -7,11 +7,11 @@ const getByPath = (obj: Record<string, unknown>, path: string): string => {
   }, obj);
 
   if (value === undefined) return "";
-  return String(value);
+  return value as string;
 };
 
 const envVariables = (data: string, env: object) => {
-  const splitted = [...data.split("++")];
+  const splitted = data.split("++");
   if (splitted.length % 2 && splitted.length > 1)
     return splitted
       .map((t, i) => {

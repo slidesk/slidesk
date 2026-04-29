@@ -1,4 +1,4 @@
-export default (text: string): { [key: string]: string } => {
+const parseText = (text: string): { [key: string]: string } => {
   const result: { [key: string]: string } = {};
   const regex = /<p>\[\[(\w+)\]\]<\/p>(.|\n)*?<p>\[\[(\/\1)\]\]<\/p>/g;
   let m: RegExpExecArray | null;
@@ -13,3 +13,5 @@ export default (text: string): { [key: string]: string } => {
   }
   return result;
 };
+
+export default parseText;

@@ -1,5 +1,5 @@
 export default async function checkVersion(currentVersion: string) {
-  const { log } = console;
+  const { warn, error } = console;
   try {
     const github = await fetch(
       "https://api.github.com/repos/slidesk/slidesk/releases/latest",
@@ -10,10 +10,14 @@ export default async function checkVersion(currentVersion: string) {
     if (github.ok) {
       const data = await github.json();
       if (data.tag_name !== currentVersion) {
-        log(`SliDesk is out of date! Please update to ${data.tag_name}`);
+        const message = {
+          version: `SliDesk is out of date! Please update to ${data.tag_name}`,
+        };
+        warn({ message });
       }
     }
-  } catch (_) {
+  } catch (e) {
     // no connection
+    error(e);
   }
 }

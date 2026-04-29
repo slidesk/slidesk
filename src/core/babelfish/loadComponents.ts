@@ -1,6 +1,6 @@
 import { existsSync, readdirSync } from "node:fs";
 
-export default (sdfPath: string) => {
+const loadComponents = (sdfPath: string) => {
   const componentsDir = `${sdfPath}/components`;
   const components: string[] = [];
   if (existsSync(componentsDir)) {
@@ -25,3 +25,5 @@ export default (sdfPath: string) => {
   }
   return components;
 };
+
+export default loadComponents;

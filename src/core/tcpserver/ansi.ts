@@ -57,58 +57,58 @@ export function parseNAWS(data: Buffer): { cols: number; rows: number } | null {
 }
 
 export function stripTags(html: string): string {
-  return html.replace(/<[^>]+>/g, "").trim();
+  return html.replaceAll(/<[^>]+>/g, "").trim();
 }
 
 export function htmlToAnsi(html: string, width: number): string {
   const text = html
-    .replace(/<head[\s\S]*?<\/head>/gi, "")
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "");
+    .replaceAll(/<head[\s\S]*?<\/head>/gi, "")
+    .replaceAll(/<script[\s\S]*?<\/script>/gi, "")
+    .replaceAll(/<style[\s\S]*?<\/style>/gi, "");
 
   return (
     text
       // Headings
-      .replace(
+      .replaceAll(
         /<h1[^>]*>([\s\S]*?)<\/h1>/gi,
         (_, c) =>
           `\r\n${ANSI.bold}${ANSI.fg.bright.white}${"=".repeat(width)}\r\n  ${stripTags(c).trim().toUpperCase()}\r\n${"=".repeat(width)}${ANSI.reset}\r\n`,
       )
-      .replace(
+      .replaceAll(
         /<h2[^>]*>([\s\S]*?)<\/h2>/gi,
         (_, c) =>
           `\r\n${ANSI.bold}${ANSI.fg.bright.cyan}| ${stripTags(c).trim()}${ANSI.reset}\r\n${ANSI.fg.cyan}${"-".repeat(width)}${ANSI.reset}\r\n`,
       )
-      .replace(
+      .replaceAll(
         /<h3[^>]*>([\s\S]*?)<\/h3>/gi,
         (_, c) =>
           `\r\n${ANSI.bold}${ANSI.fg.yellow}  * ${stripTags(c).trim()}${ANSI.reset}\r\n`,
       )
-      .replace(
+      .replaceAll(
         /<h[4-6][^>]*>([\s\S]*?)<\/h[4-6]>/gi,
         (_, c) =>
           `\r\n${ANSI.bold}    - ${stripTags(c).trim()}${ANSI.reset}\r\n`,
       )
       // Lists
-      .replace(
+      .replaceAll(
         /<li[^>]*>([\s\S]*?)<\/li>/gi,
         (_, c) => `  ${ANSI.fg.cyan}>${ANSI.reset} ${stripTags(c).trim()}\r\n`,
       )
       // Inline emphasis
-      .replace(
+      .replaceAll(
         /<(strong|b)[^>]*>([\s\S]*?)<\/(strong|b)>/gi,
         (_, _t, c) => `${ANSI.bold}${c}${ANSI.reset}`,
       )
-      .replace(
+      .replaceAll(
         /<(em|i)[^>]*>([\s\S]*?)<\/(em|i)>/gi,
         (_, _t, c) => `${ANSI.italic}${c}${ANSI.reset}`,
       )
-      .replace(
+      .replaceAll(
         /<code[^>]*>([\s\S]*?)<\/code>/gi,
         (_, c) =>
           `${ANSI.fg.bright.green}${ANSI.bg.bright.black} ${stripTags(c)} ${ANSI.reset}`,
       )
-      .replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_, c) => {
+      .replaceAll(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_, c) => {
         const lines = stripTags(c).split("\n");
         const body = lines
           .map(
@@ -119,35 +119,37 @@ export function htmlToAnsi(html: string, width: number): string {
         return `\r\n${ANSI.fg.bright.black}+${"-".repeat(width - 2)}+${ANSI.reset}\n${body}\n${ANSI.fg.bright.black}+${"-".repeat(width - 2)}+${ANSI.reset}\r\n`;
       })
       // Links
-      .replace(
+      .replaceAll(
         /<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi,
         (_, href, c) =>
           `${ANSI.underline}${ANSI.fg.blue}${stripTags(c)}${ANSI.reset}${ANSI.dim} (${href})${ANSI.reset}`,
       )
       // Horizontal rules / line breaks
-      .replace(
+      .replaceAll(
         /<hr[^>]*\/?>/gi,
         `\n${ANSI.fg.bright.black}${"-".repeat(width)}${ANSI.reset}\r\n`,
       )
-      .replace(/<br[^>]*\/?>/gi, "\r\n")
+      .replaceAll(/<br[^>]*\/?>/gi, "\r\n")
       // Paragraphs / divs
-      .replace(
+      .replaceAll(
         /<p[^>]*>([\s\S]*?)<\/p>/gi,
         (_, c) => `\n${stripTags(c).trim()}\r\n`,
       )
-      .replace(/<div[^>]*>([\s\S]*?)<\/div>/gi, (_, c) => `${c}\r\n`)
+      .replaceAll(/<div[^>]*>([\s\S]*?)<\/div>/gi, (_, c) => `${c}\r\n`)
       // Remaining tags
-      .replace(/<[^>]+>/g, "")
+      .replaceAll(/<[^>]+>/g, "")
       // HTML entities
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&apos;/g, "'")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n)))
+      .replaceAll("&amp;", "&")
+      .replaceAll("&lt;", "<")
+      .replaceAll("&gt;", ">")
+      .replaceAll("&quot;", '"')
+      .replaceAll("&apos;", "'")
+      .replaceAll("&nbsp;", " ")
+      .replaceAll(/&#(\d+);/g, (_, n) =>
+        String.fromCodePoint(Number.parseInt(n, 10)),
+      )
       // Collapse multiple blank lines
-      .replace(/\r\n{3,}/g, "\r\n\r\n")
+      .replaceAll(/\r\n{3,}/g, "\r\n\r\n")
   );
 }
 
@@ -155,14 +157,14 @@ export function wrapText(text: string, width: number): string {
   return text
     .split("\r\n")
     .map((line) => {
-      const visLen = line.replace(/\x1b\[[^m]*m/g, "").length;
+      const visLen = line.replaceAll(/\x1b\[[^m]*m/g, "").length;
       if (visLen <= width) return line;
       const words = line.split(" ");
       const wrapped: string[] = [];
       let current = "";
       for (const word of words) {
-        const wLen = word.replace(/\x1b\[[^m]*m/g, "").length;
-        const cLen = current.replace(/\x1b\[[^m]*m/g, "").length;
+        const wLen = word.replaceAll(/\x1b\[[^m]*m/g, "").length;
+        const cLen = current.replaceAll(/\x1b\[[^m]*m/g, "").length;
         if (cLen + wLen + 1 > width && current) {
           wrapped.push(current);
           current = word;

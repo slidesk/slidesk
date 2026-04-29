@@ -2,7 +2,7 @@ import { homedir } from "node:os";
 
 const { error } = console;
 
-export default async () => {
+const getLinkToken = async () => {
   const slideskTokenFile = Bun.file(`${homedir()}/.slidesk`);
   if (!(await slideskTokenFile.exists())) {
     error("You must be logged, use 'slidesk link login' first.");
@@ -15,3 +15,5 @@ export default async () => {
   }
   return slideskToken;
 };
+
+export default getLinkToken;

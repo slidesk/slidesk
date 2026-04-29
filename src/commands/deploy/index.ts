@@ -26,12 +26,7 @@ deployCmd
   .action(async (args, options) => {
     const talkdir = `${process.cwd()}/${args.talk ?? ""}`;
     const depls = ["github", "gitlab", "link"];
-    if (!depls.includes(options.target as string)) {
-      error(
-        `${options.target} is not a valid deploy option (${depls.join(", ")})`,
-      );
-      process.exit(1);
-    } else {
+    if (depls.includes(options.target as string)) {
       switch (options.target) {
         case "github":
           await Bun.write(
@@ -47,6 +42,11 @@ deployCmd
           break;
       }
       process.exit(0);
+    } else {
+      error(
+        `${options.target} is not a valid deploy option (${depls.join(", ")})`,
+      );
+      process.exit(1);
     }
   });
 

@@ -3,7 +3,6 @@ import type {
   SliDeskServerOptions,
   SliDeskTelnetSession,
   SliDeskTelnetSlidesConfig,
-  SliDeskTelnetTransition,
 } from "../types";
 import { IAC_ENABLE_CHAR_MODE, parseNAWS } from "./tcpserver/ansi";
 import { sendBanner } from "./tcpserver/banner";
@@ -13,14 +12,11 @@ import { renderSlide } from "./tcpserver/session";
 
 export async function startTelnetServer(
   options: SliDeskServerOptions,
-  env: Record<string, unknown | Record<string, unknown>>,
+  env: Record<string, unknown>,
 ) {
   const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
   const port = Number(slideskEnv?.TELNET_PORT ?? 2323);
   const slideServerUrl = `http://localhost:${Number(slideskEnv?.PORT ?? 1337)}`;
-  const transitionType = String(
-    slideskEnv?.TELNET_TRANSITION ?? "wipe",
-  ) as SliDeskTelnetTransition;
 
   const html = await (await fetch(slideServerUrl)).text();
   const { total, list } = await parseSlides(html);
@@ -71,7 +67,7 @@ export async function startTelnetServer(
           return;
         }
 
-        handleInput(socket, session, Buffer.from(data), transitionType);
+        handleInput(socket, session, Buffer.from(data));
       },
 
       close(socket) {
@@ -86,23 +82,27 @@ export async function startTelnetServer(
     },
     tls: {
       key:
-        slideskEnv?.KEY !== undefined
-          ? Bun.file(String(slideskEnv.KEY))
-          : undefined,
+        slideskEnv?.KEY === undefined
+          ? undefined
+          : Bun.file(slideskEnv.KEY as string),
       cert:
-        slideskEnv?.CERT !== undefined
-          ? Bun.file(String(slideskEnv.CERT))
-          : undefined,
+        slideskEnv?.CERT === undefined
+          ? undefined
+          : Bun.file(slideskEnv.CERT as string),
       passphrase:
-        slideskEnv?.PASSPHRASE !== undefined
-          ? String(slideskEnv?.PASSPHRASE)
-          : undefined,
+        slideskEnv?.PASSPHRASE === undefined
+          ? undefined
+          : (slideskEnv?.PASSPHRASE as string),
     },
   });
 
   console.log(`[telnet] Server started on port ${port}`);
   [
-    ...new Set([options.ip, slideskEnv?.DOMAIN ?? "localhost", "localhost"]),
+    ...new Set([
+      options.ip,
+      (slideskEnv?.DOMAIN as string) ?? "localhost",
+      "localhost",
+    ]),
   ].forEach((e, _) => {
     if (e) console.log(`[telnet] Connect with: telnet ${e} ${port}`);
   });

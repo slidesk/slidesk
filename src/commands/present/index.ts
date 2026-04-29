@@ -16,7 +16,7 @@ const server: SlideskServer = new SlideskServer();
 const flow = async (
   talkdir: string,
   options: SliDeskPresentOptions,
-  env: Record<string, unknown | Record<string, unknown>>,
+  env: Record<string, unknown>,
   init = false,
 ) => {
   const files = await convert(talkdir, options, env);
@@ -35,13 +35,11 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
   options.ip =
     Object.values(nets)
       .flat()
-      .filter((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
-      .shift()?.address ?? "127.0.0.1";
-  const talkdir = `${process.cwd()}${talk !== "" ? `/${talk}` : ""}`;
-  const env = (await loadEnv(talkdir, options)) as Record<
-    string,
-    unknown | Record<string, unknown>
-  >;
+      .find((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
+      ?.address ?? "127.0.0.1";
+  const talkPath = talk === "" ? "" : `/${talk}`;
+  const talkdir = `${process.cwd()}${talkPath}`;
+  const env = await loadEnv(talkdir, options);
   flow(talkdir, options, env, true);
 
   if (!options.hidden)
