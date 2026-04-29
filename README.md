@@ -6,6 +6,8 @@
 
 A complete documentation is available here: [https://slidesk.github.io/slidesk-doc/](https://slidesk.github.io/slidesk/)
 
+A good example of a presentation using the features: [SliDesk Talk](https://github.com/slidesk/talk-slidesk)
+
 Write your talk/presentation in Markdown, generate it and visualize it in Web.
 
 SliDesk is a new talk engine like RevealJS developped with [Bun](https://bun.sh).
