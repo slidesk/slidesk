@@ -31,8 +31,6 @@ export async function startTelnetServer(
     slides: list.map((l) => l.content),
   };
 
-  console.log(fullConfig);
-
   const sessions = new WeakMap<BunSocket, SliDeskTelnetSession>();
 
   Bun.listen({
