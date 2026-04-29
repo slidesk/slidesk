@@ -26,7 +26,7 @@ jobs:
       - run: rm bun.lock
       - run: bun install
       - run: bun make
-      - run: npm ci
-      - run: npm publish --provenance --access public
+      - run: bun ci
+      - run: bun publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
