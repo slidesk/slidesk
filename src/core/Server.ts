@@ -6,7 +6,6 @@ import type {
   SliDeskPluginAddWS,
   SliDeskServerOptions,
 } from "../types";
-import loadEnv from "../utils/loadEnv";
 import display from "./server/display";
 import fetch from "./server/fetch";
 import getPlugins from "./server/getPlugins";
@@ -19,21 +18,28 @@ export default class SlideskServer {
   async create(
     files: SliDeskFile,
     options: SliDeskServerOptions,
+    env: Record<string, unknown>,
     path: string,
   ) {
     serverFiles = files;
     serverPath = path;
     const serverPlugins: SliDeskPlugin[] = [];
-    const env = await loadEnv(path, options);
     const pluginsDir = `${path}/plugins`;
+    const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
     if (existsSync(pluginsDir))
       serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
-    if (env.COMMON_DIR && existsSync(`${path}/${env.COMMON_DIR}/plugins`))
+    if (
+      slideskEnv?.COMMON_DIR &&
+      existsSync(`${path}/${slideskEnv?.COMMON_DIR as string}/plugins`)
+    )
       serverPlugins.push(
-        ...(await getPlugins(`${path}/${env.COMMON_DIR}/plugins`, serverPath)),
+        ...(await getPlugins(
+          `${path}/${slideskEnv?.COMMON_DIR as string}/plugins`,
+          serverPath,
+        )),
       );
     server = Bun.serve({
-      port: options.port,
+      port: Number(slideskEnv?.PORT ?? 1337),
       async fetch(req) {
         return fetch(req, this, serverFiles, serverPlugins, serverPath, env);
       },
@@ -66,12 +72,21 @@ export default class SlideskServer {
         },
       },
       tls: {
-        key: env.KEY ? Bun.file(env.KEY) : undefined,
-        cert: env.CERT ? Bun.file(env.CERT) : undefined,
-        passphrase: env.PASSPHRASE ?? undefined,
+        key:
+          slideskEnv?.KEY === undefined
+            ? undefined
+            : Bun.file(slideskEnv.KEY as string),
+        cert:
+          slideskEnv?.CERT === undefined
+            ? undefined
+            : Bun.file(slideskEnv.CERT as string),
+        passphrase:
+          slideskEnv?.PASSPHRASE === undefined
+            ? undefined
+            : (slideskEnv?.PASSPHRASE as string),
       },
     });
-    await display(env.HTTPS === "true", options);
+    await display(slideskEnv, options);
   }
 
   setFiles(files: SliDeskFile) {

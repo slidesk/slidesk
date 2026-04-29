@@ -1,5 +1,34 @@
+window.slidesk.channel = null;
+
+if (window.location.origin !== "file://") {
+  try {
+    window.slidesk.io = new WebSocket(
+      `ws${window.location.protocol.includes("https") ? "s" : ""}://${window.location.host}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws`,
+    );
+  } catch (_) {}
+}
+
+window.slidesk.setupChannel = () => {
+  if (!window.slidesk.channel) {
+    window.slidesk.channel = new BroadcastChannel("slidesk_sync");
+    window.slidesk.channel.onmessage = (event) => {
+      const data = event.data;
+      if (
+        data.action === "goto" &&
+        window.location.hostname !== window.slidesk.domain &&
+        window.location.hostname !== "localhost"
+      ) {
+        window.slidesk.goto(data.payload);
+      } else if (window.slidesk[data.action]) {
+        window.slidesk[data.action](data);
+      }
+    };
+  }
+};
+
 window.slidesk.sendMessage = (payload) => {
-  window.slidesk.waitForSocketConnection(payload);
+  if (window.slidesk.channel) window.slidesk.channel.postMessage(payload);
+  else window.slidesk.waitForSocketConnection(payload);
 };
 
 window.slidesk.waitForSocketConnection = (payload) => {
@@ -29,6 +58,7 @@ window.slidesk.cleanOldSlide = (id) => {
 };
 
 window.slidesk.changeSlide = () => {
+  window.slidesk.saveCheckpoints();
   window.slidesk.slides[window.slidesk.currentSlide].classList.remove(
     "sd-previous",
   );
@@ -36,6 +66,20 @@ window.slidesk.changeSlide = () => {
     "sd-current",
   );
   window.location.hash = window.slidesk.currentSlide;
+
+  const slideData = {
+    currentSlideHTML:
+      window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
+    futureSlideHTML:
+      window.slidesk.currentSlide !== window.slidesk.slides.length - 1
+        ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
+        : "",
+    currentSlideNum: window.slidesk.currentSlide,
+    totalSlides: window.slidesk.slides.length,
+    timestamp: Date.now(),
+  };
+  localStorage.setItem("slidesk_current_slide", JSON.stringify(slideData));
+
   if (
     window.slidesk.io &&
     (window.location.hostname === window.slidesk.domain ||
@@ -43,17 +87,13 @@ window.slidesk.changeSlide = () => {
   ) {
     window.slidesk.sendMessage({
       action: "current",
-      payload: window.slidesk.slides[
-        window.slidesk.currentSlide
-      ].outerHTML.replace(/data-source="(^")"/gi, ""),
+      payload: window.slidesk.slides[window.slidesk.currentSlide].outerHTML,
     });
     window.slidesk.sendMessage({
       action: "future",
       payload:
         window.slidesk.currentSlide !== window.slidesk.slides.length - 1
-          ? window.slidesk.slides[
-              window.slidesk.currentSlide + 1
-            ].outerHTML.replace(/data-source="(^")"/gi, "")
+          ? window.slidesk.slides[window.slidesk.currentSlide + 1].outerHTML
           : "",
     });
     window.slidesk.sendMessage({
@@ -113,6 +153,20 @@ window.slidesk.fullscreen = () => {
   }
 };
 
+window.slidesk.saveCheckpoints = () => {
+  const timerCheckpoints = {};
+  window.slidesk.slides.forEach((slide, idx) => {
+    timerCheckpoints[idx] = slide.getAttribute("data-timer-checkpoint");
+  });
+  localStorage.setItem(
+    "slidesk_checkpoints",
+    JSON.stringify({
+      timerCheckpoints,
+      nbSlides: window.slidesk.slides.length,
+    }),
+  );
+};
+
 window.onload = () => {
   window.slidesk.slides = document.querySelectorAll(".sd-slide");
   if (window.slidesk.io) {
@@ -129,9 +183,9 @@ window.onload = () => {
         nbSlides: window.slidesk.slides.length,
       },
     });
-  }
+  } else window.slidesk.setupChannel();
   const loadingHash = window.location.hash.replace("#", "");
-  window.slidesk.currentSlide = Number(loadingHash) ?? "1";
+  window.slidesk.currentSlide = Number(loadingHash ?? 0);
   if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
@@ -150,8 +204,8 @@ window.onload = () => {
   document.querySelectorAll(".sd-img img").forEach((img, _) => {
     img.addEventListener("load", () => {
       let ratio = 1;
-      if (Number(window.slidesk.env.WIDTH))
-        ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
+      if (Number(window.slidesk.env.slidesk.WIDTH))
+        ratio = window.innerWidth / Number(window.slidesk.env.slidesk.WIDTH);
       const newW = `${ratio * img.width}px`;
       const newH = `${ratio * img.height}px`;
       img.parentElement.style.width = newW;
@@ -194,7 +248,8 @@ document.addEventListener("keydown", (e) => {
   if (
     window.location.hostname === window.slidesk.domain ||
     window.location.hostname === "localhost" ||
-    window.slidesk.save
+    window.location.origin === "file://" ||
+    window.slidesk.deployed
   ) {
     if (e.key === "ArrowLeft") {
       window.slidesk.previous();

@@ -25,7 +25,7 @@ componentSearchCmd
           required: false,
         })) as string[];
         if (componentsToInstall.length) {
-          for await (const p of componentsToInstall) {
+          for (const p of componentsToInstall) {
             await componentInstall(p, opts["slidesk-link-url"] as string);
           }
         }

@@ -1,25 +1,22 @@
-import type { Server, WebSocket } from "bun";
+import type { Server, Socket, WebSocket } from "bun";
 
 export type SliDeskPresentOptions = {
-  domain?: string;
-  port?: string;
-  save?: string;
   notes?: string;
-  timers?: boolean;
-  transition?: string;
-  watch?: boolean;
   hidden?: boolean;
   conf?: string;
   open?: string;
   lang?: string;
-  terminal?: boolean;
+  telnet?: boolean;
   ip?: string;
-  deploy?: string;
+};
+
+export type SliDeskSaveOptions = {
+  conf?: string;
+  lang?: string;
+  target?: string;
 };
 
 export type SliDeskServerOptions = {
-  port?: string;
-  domain?: string;
   notes?: string;
   open?: string;
   ip?: string;
@@ -27,8 +24,6 @@ export type SliDeskServerOptions = {
 
 export type SliDeskPublishOptions = {
   notes?: string;
-  timers?: boolean;
-  transition?: string;
   lang?: string;
   "slidesk-link-url"?: string;
 };
@@ -50,34 +45,27 @@ export type SliDeskPlugin = {
   addRoutes: string | SliDeskPluginAddRoute;
   addWS: string | SliDeskPluginAddWS;
   addHTML: string;
-  addHTMLFromFiles: string[] | { [key: string]: string };
-  addScripts: string[] | { [key: string]: string };
-  addStyles: string[] | { [key: string]: string };
-  addSpeakerScripts: string[] | { [key: string]: string };
-  addSpeakerStyles: string[] | { [key: string]: string };
+  addHTMLFromFiles: string[] | Record<string, string>;
+  addScripts: string[] | Record<string, string>;
+  addStyles: string[] | Record<string, string>;
+  addSpeakerScripts: string[] | Record<string, string>;
+  addSpeakerStyles: string[] | Record<string, string>;
   onSlideChange: string;
   onSpeakerViewSlideChange: string;
-  addScriptModules?: string[] | { [key: string]: string };
+  addScriptModules?: string[] | Record<string, string>;
   theme: string;
 };
 
 export type SliDeskFile = {
   [key: string]: {
-    headers?: {
-      [key: string]: string;
-    };
+    headers?: Record<string, string>;
     content?: string;
   };
 };
 
-export type SliDeskTemplate = {
-  [key: string]: string;
-};
+export type SliDeskTemplate = Record<string, string>;
 
-export type SliDeskConfig = {
-  customCSS: string;
-  customIncludes: { css: string[]; js: string[] };
-};
+export type SliDeskConfig = { css: string[]; js: string[] };
 
 export type SliDeskFavicon = {
   name: string;
@@ -85,6 +73,20 @@ export type SliDeskFavicon = {
   type: string;
 };
 
-export type SliDeskEnv = {
-  [key: string]: string;
-};
+export interface SliDeskTelnetSlidesConfig {
+  port?: number;
+  totalSlides?: number | null;
+  slides: string[];
+}
+
+export interface SliDeskTelnetSession {
+  currentSlide: number;
+  totalSlides: number;
+  rows: number;
+  cols: number;
+  loading: boolean;
+  started: boolean;
+  config: Required<SliDeskTelnetSlidesConfig>;
+}
+
+export type BunSocket = Socket;

@@ -20,6 +20,11 @@ body {
   margin: 0;
 }
 
+#sd-sv-left {
+  background-color: var(--sd-background-color);
+  color: var(--sd-text-color);
+}
+
 #sd-sv-left .sd-app {
   height: 50%;
   box-sizing: border-box;

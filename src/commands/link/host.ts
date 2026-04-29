@@ -1,7 +1,6 @@
 import { rmSync } from "node:fs";
 import { Clipse } from "clipse";
 import { create } from "tar";
-import Convert from "../../core/Convert";
 import type { SliDeskPublishOptions } from "../../types";
 import getLinkToken from "../../utils/getLinkToken";
 import save from "../../utils/save";
@@ -13,15 +12,22 @@ const sendToSlideskLink = async (
   options: SliDeskPublishOptions,
 ) => {
   const slideskToken = await getLinkToken();
-  const talkdir = `${process.cwd()}/${talk ?? ""}`;
-  const files = await Convert(`${talkdir}/main.sdf`, {
-    ...options,
-    domain: options["slidesk-link-url"]?.replace(/^https?:\/\/(www\.)?/, ""),
-  });
-  if (files === null) {
-    process.exit();
-  }
-  await save("__SLIDESKLINK__", talkdir, files);
+  await save(
+    `${process.cwd()}/${talk ?? ""}`,
+    {
+      ...options,
+      target: "__SLIDESKLINK__",
+    },
+    {
+      slidesk: {
+        deployed: true,
+        DOMAIN: options["slidesk-link-url"]?.replace(
+          /^https?:\/\/(www\.)?/,
+          "",
+        ),
+      },
+    },
+  );
   await create({ gzip: true, file: "link.tgz" }, ["__SLIDESKLINK__"]);
   rmSync("__SLIDESKLINK__", {
     recursive: true,
@@ -57,28 +63,10 @@ const linkHostCmd = new Clipse(
 linkHostCmd
   .addArguments([{ name: "talk", description: "directory of your talk" }])
   .addOptions({
-    notes: {
-      short: "n",
-      type: "string",
-      description: "open with speakers notes",
-      default: "notes.html",
-    },
-    timers: {
-      short: "t",
-      type: "boolean",
-      description: "add checkpoint and slide maximum time on notes view",
-      default: false,
-    },
-    transition: {
-      short: "a",
-      type: "string",
-      description: "transition timer",
-      default: "300",
-    },
     conf: {
       short: "c",
       type: "string",
-      description: "use a specific .env file",
+      description: "use a specific slidesk.toml file",
       default: "",
     },
     lang: {

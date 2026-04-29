@@ -1,26 +1,19 @@
 import { script } from "../../templates/present";
-import type {
-  SliDeskEnv,
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-} from "../../types";
+import type { SliDeskPlugin } from "../../types";
 
-export default (
-  options: SliDeskPresentOptions,
+const getJS = (
   plugins: SliDeskPlugin[],
-  env: SliDeskEnv,
+  env: Record<string, unknown>,
 ) => `window.slidesk = {
   currentSlide: 0,
   slides: [],
-  animationTimer: ${Number(env.ANIMATION_TIMER ?? options.transition ?? 300)},
+  animationTimer: ${Number(((env.slidesk as Record<string, unknown>)?.TRANSITION as string) ?? 300)},
   onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(env)},
   lastAction: "",
-  domain: "${options.domain}"
+  domain: "${((env.slidesk as Record<string, unknown>)?.DOMAIN as string) ?? "localhost"}",
+  deployed: ${((env.slidesk as Record<string, unknown>)?.deployed as boolean) ? "true" : "false"}
 };
-${
-  !options.save
-    ? `window.slidesk.io = new WebSocket(\`ws\${window.location.protocol.includes('https') ? "s" : ""}://\${window.location.host}\${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws\`);`
-    : "window.slidesk.save = true;"
-}
 ${script}`;
+
+export default getJS;

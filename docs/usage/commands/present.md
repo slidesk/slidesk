@@ -2,7 +2,7 @@
 
 This is the default command.
 
-It will convert your `.sdf` files and launch a webserver with websockets.
+It will convert your `.(sdf|md)` files and launch a webserver with websockets.
 
 ```sh
 slidesk my-talk

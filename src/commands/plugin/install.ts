@@ -12,8 +12,8 @@ export const pluginInstall = async (
   if (name === "") {
     return "Please provide a name for the plugin";
   }
-  const pluginName = name.replace(
-    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+  const pluginName = name.replaceAll(
+    /\\u(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])/g,
     "",
   );
   const [user, ...plugin] = pluginName.split("__");

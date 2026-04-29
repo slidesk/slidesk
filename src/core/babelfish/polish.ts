@@ -1,15 +1,16 @@
-import type { DotenvParseOutput } from "dotenv";
 import { minify } from "html-minifier-terser";
 import type { SliDeskPlugin } from "../../types";
 
-export default async (
+const polish = async (
   presentation: string,
   template: string,
-  env: DotenvParseOutput,
+  env: Record<string, unknown>,
   plugins: SliDeskPlugin[],
 ) => {
   let tpl = template;
-  if (env.TITLE) tpl = tpl.replace("#TITLE#", env.TITLE.toString());
+  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+  if (slideskEnv.TITLE)
+    tpl = tpl.replace("#TITLE#", slideskEnv.TITLE as string);
   else
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
       tpl = tpl.replace("#TITLE#", title[1]);
@@ -38,3 +39,5 @@ export default async (
       .join("")}</body>`,
   );
 };
+
+export default polish;

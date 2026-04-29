@@ -12,8 +12,8 @@ export const templateInstall = async (
   if (name === "") {
     return "Please provide a name for the template";
   }
-  const templateName = name.replace(
-    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+  const templateName = name.replaceAll(
+    /\\u(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])/g,
     "",
   );
   const [user, ...template] = templateName.split("__");

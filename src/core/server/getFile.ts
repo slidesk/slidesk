@@ -1,15 +1,23 @@
-export default (req: Request, path: string, env: { [key: string]: string }) => {
-  let fileurl = req.url.replace(
+const getFile = (req: Request, path: string, env: Record<string, unknown>) => {
+  const slideskEnv = (env.slidesk ?? { COMMON_DIR: "" }) as Record<
+    string,
+    string
+  >;
+  let fileurl = req.url.replaceAll(
     new RegExp(`^https?://${req.headers.get("host")}`, "g"),
     "",
   );
   if (fileurl.startsWith("/-=[COMMON]=-"))
-    fileurl = fileurl.replace("-=[COMMON]=-", env.COMMON_DIR);
+    fileurl = fileurl.replace("-=[COMMON]=-", slideskEnv.COMMON_DIR);
   let file = Bun.file(
     fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
   );
-  if (fileurl.startsWith("/plugins") && file.size === 0 && env.COMMON_DIR) {
-    fileurl = fileurl.replace("/plugins", `/${env.COMMON_DIR}/plugins`);
+  if (
+    fileurl.startsWith("/plugins") &&
+    file.size === 0 &&
+    slideskEnv.COMMON_DIR
+  ) {
+    fileurl = fileurl.replace("/plugins", `/${slideskEnv.COMMON_DIR}/plugins`);
     file = Bun.file(`${path}${fileurl}`);
   }
   if (file.size !== 0)
@@ -20,3 +28,5 @@ export default (req: Request, path: string, env: { [key: string]: string }) => {
     });
   return new Response(`${req.url} not found`, { status: 404 });
 };
+
+export default getFile;

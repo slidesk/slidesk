@@ -25,7 +25,7 @@ pluginSearchCmd
           required: false,
         })) as string[];
         if (pluginsToInstall.length) {
-          for await (const p of pluginsToInstall) {
+          for (const p of pluginsToInstall) {
             await pluginInstall(p, opts["slidesk-link-url"] as string);
           }
         }

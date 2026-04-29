@@ -1,6 +1,6 @@
 # Create a talk
 
-To present a talk, SliDesk needs a `main.sdf` file.
+To present a talk, SliDesk needs a `main.sdf` file or `main.md`.
 
 You can create it by yourself or using the `create` command.
 
@@ -18,4 +18,4 @@ Then you can input the title you want.
 
 > Do you want to customize the presentation? [yN]
 
-If you choose Yes, then a `custom.css` file will be created in addition of the `main.sdf`.
+If you choose Yes, then a `custom.css` file will be created in addition of the `main.(sdf|md)`.

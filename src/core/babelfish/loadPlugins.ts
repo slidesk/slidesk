@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import type { SliDeskEnv, SliDeskPlugin } from "../../types";
+import type { SliDeskPlugin } from "../../types";
 
 const loadExternalPlugins = async (
   pluginsDir: string,
@@ -8,7 +8,7 @@ const loadExternalPlugins = async (
 ) => {
   const plugins: SliDeskPlugin[] = [];
   if (existsSync(pluginsDir))
-    for await (const plugin of readdirSync(pluginsDir)) {
+    for (const plugin of readdirSync(pluginsDir)) {
       const pluginFile = Bun.file(`${pluginsDir}/${plugin}/plugin.json`);
       const exists = await pluginFile.exists();
       if (exists) {
@@ -18,8 +18,9 @@ const loadExternalPlugins = async (
             const files = json[t];
             json[t] = {};
             files.forEach((s: string, _: number) => {
+              const p = `plugins/${plugin}/`;
               json[t][s] = readFileSync(
-                `${sdfPath}/${s.replace(/plugins\/([^/]+)\//g, `plugins/${plugin}/`)}`,
+                `${sdfPath}/${s.replaceAll(/plugins\/([^/]+)\//g, p)}`,
                 {
                   encoding: "utf8",
                 },
@@ -33,25 +34,27 @@ const loadExternalPlugins = async (
   return plugins;
 };
 
-export default async (sdfPath: string, env: SliDeskEnv) => {
+const loadPlugins = async (sdfPath: string, env: Record<string, unknown>) => {
   const plugins: SliDeskPlugin[] = [];
-  plugins.push(...(await loadExternalPlugins(`${sdfPath}plugins`, sdfPath)));
-  if (env.COMMON_DIR !== "")
+  plugins.push(...(await loadExternalPlugins(`${sdfPath}/plugins`, sdfPath)));
+  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+  const commonDir = (slideskEnv.COMMON_DIR as string) ?? "";
+  if (commonDir !== "")
     plugins.push(
       ...(await loadExternalPlugins(
-        `${sdfPath}/${env.COMMON_DIR}/plugins`,
+        `${sdfPath}/${commonDir}/plugins`,
         sdfPath,
       )),
     );
-  if (existsSync(`${sdfPath}themes`)) {
-    const themes = readdirSync(`${sdfPath}themes`, { withFileTypes: true })
+  if (existsSync(`${sdfPath}/themes`)) {
+    const themes = readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
       .filter((d) => d.isDirectory())
       .map((d) => d.name);
-    for await (const t of themes) {
-      if (existsSync(`${sdfPath}themes/${t}/plugins`))
+    for (const t of themes) {
+      if (existsSync(`${sdfPath}/themes/${t}/plugins`))
         plugins.push(
           ...(await loadExternalPlugins(
-            `${sdfPath}themes/${t}/plugins`,
+            `${sdfPath}/themes/${t}/plugins`,
             sdfPath,
             `/themes/${t}/`,
           )),
@@ -60,3 +63,5 @@ export default async (sdfPath: string, env: SliDeskEnv) => {
   }
   return plugins;
 };
+
+export default loadPlugins;

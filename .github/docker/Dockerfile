@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 FROM base AS install
 RUN mkdir -p /temp/prod
 COPY package.json bun.lockb /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
+WORKDIR /temp/prod
+RUN bun install --frozen-lockfile --production
 
 # Stage for amd64
 FROM base AS prerelease

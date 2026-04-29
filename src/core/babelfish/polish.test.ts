@@ -7,7 +7,7 @@ describe("polish function", () => {
     const template =
       "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>";
     const presentation = "<p>Slide content</p>";
-    const env = { TITLE: "My Presentation" };
+    const env = { slidesk: { TITLE: "My Presentation" } };
     const plugins: SliDeskPlugin[] = [];
 
     const result = await polish(presentation, template, env, plugins);

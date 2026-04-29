@@ -1,10 +1,12 @@
 # SliDesk
 
 <p align="center">
-<img src="https://github.com/gouz/slidesk/assets/219936/5cdc9f5c-1b9c-4a9a-9a7f-124043dee8d5" />
+    <img alt="slidesk" src="https://avatars.githubusercontent.com/u/154438498?s=400&u=b60d757d495067fe815e71d754bb601ef68a5e0d&v=4" />
 </p>
 
 A complete documentation is available here: [https://slidesk.github.io/slidesk-doc/](https://slidesk.github.io/slidesk/)
+
+A good example of a presentation using the features: [SliDesk Talk](https://github.com/slidesk/talk-slidesk)
 
 Write your talk/presentation in Markdown, generate it and visualize it in Web.
 

@@ -1,10 +1,5 @@
 import markdownIt from "markdown-it";
-import type {
-  SliDeskPlugin,
-  SliDeskPresentOptions,
-  SliDeskTemplate,
-} from "../../types";
-import toBinary from "../../utils/toBinary";
+import type { SliDeskTemplate } from "../../types";
 import replaceWithTemplate from "./replaceWithTemplate";
 
 const md = markdownIt({
@@ -18,7 +13,7 @@ const prepareHTML = (slide: string) => {
   let timerSlide = "";
   let timerCheckpoint = "";
   const content = `## ${slide
-    .replace(/\\r/g, "")
+    .replaceAll("\r", "")
     .split("\n")
     .map((p) => {
       if (p.trimStart().startsWith("//@")) {
@@ -56,9 +51,9 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
       classes = spl[1].replace("]", "").trim();
     }
     // # in classes means template
-    const tpl = (classes.split(" ").filter((c) => c.startsWith("#"))[0] ?? "")
-      .replace(/.sdt$/g, "")
-      .replace(/^#/g, "");
+    const tpl = (classes.split(" ").find((c) => c.startsWith("#")) ?? "")
+      .replaceAll(/.sdt$/g, "")
+      .replaceAll(/^#/g, "");
     if (tpl && templates[tpl])
       content = replaceWithTemplate(tpl, content, spl[0], templates);
     else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
@@ -66,12 +61,10 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
   return { content, classes };
 };
 
-export default async (
+const treatSlide = async (
   slide: string,
   cptSlide: number,
-  options: SliDeskPresentOptions,
   templates: SliDeskTemplate,
-  plugins: SliDeskPlugin[],
 ) => {
   if (slide.trim() === "") return "";
 
@@ -83,12 +76,10 @@ export default async (
     "timer-slide": "",
     "timer-checkpoint": "",
   };
-  if (plugins.filter((p) => p.name === "source").length)
-    datas.source = toBinary(slide);
-  if (options.timers) {
-    if (timerSlide !== "") datas["timer-slide"] = timerSlide;
-    if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
-  }
+
+  if (timerSlide !== "") datas["timer-slide"] = timerSlide;
+  if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
+
   const dataset: string[] = [];
   Object.entries(datas).forEach(([key, val], _) => {
     if (val !== "") dataset.push(`data-${key}="${val}"`);
@@ -98,3 +89,5 @@ export default async (
     .filter((c) => !c.startsWith("#"))
     .join(" ")}" ${dataset.join(" ")}>${content}</section>`;
 };
+
+export default treatSlide;

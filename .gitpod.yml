@@ -1,9 +1,0 @@
-image: gitpod/workspace-bun
-
-tasks:
-  - name: Execute SliDesk
-    command: bunx slidesk -wi example
-
-ports:
-  - port: 1337
-    onOpen: open-preview

@@ -1,17 +1,15 @@
-import type { SliDeskPresentOptions } from "../../types";
-import loadEnv from "../../utils/loadEnv";
 import loadComponents from "./loadComponents";
 import loadFavicon from "./loadFavicon";
 import loadPlugins from "./loadPlugins";
 import loadTemplates from "./loadTemplates";
 
-export default async (sdfPath: string, options: SliDeskPresentOptions) => {
-  const env = await loadEnv(sdfPath, options);
+const preload = async (sdfPath: string, env: Record<string, unknown>) => {
   return {
-    env,
     plugins: await loadPlugins(sdfPath, env),
     templates: await loadTemplates(sdfPath),
     favicon: await loadFavicon(sdfPath),
     components: loadComponents(sdfPath),
   };
 };
+
+export default preload;

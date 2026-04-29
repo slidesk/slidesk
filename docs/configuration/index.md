@@ -1,10 +1,22 @@
 # Configuration of SliDesk
 
-SliDesk uses a `.env` file to be configured for your presentation.
+SliDesk uses a `slidesk.toml` file to be configured for your presentation.
 
 This file can be used for plugins (values are readable in an object `window.slidesk.env`) or presentation (values are readable with the syntax `++KEY++`).
 
-Some keys are reserved for SliDesk:
+```toml
+[slidesk]
+HTTPS=true
+KEY=""
+CERT=""
+PASSPHRASE=""
+WIDTH=1920
+TITLE="This is my Title tag"
+DOMAIN="localhost"
+PORT=1337
+TRANSITION=300
+WATCH=true
+```
 
 ## HTTPS
 
@@ -31,3 +43,23 @@ This parameter is used for responsive design. If this value is specified, then i
 ## TITLE
 
 You can specify a title that will be displayed at the title tag.
+
+## DOMAIN
+
+You can specify a domain to use instead of "localhost"
+
+## PORT
+
+You can change the default port. Default: 1337
+
+## TRANSITION
+
+You can specify the duration of animation
+
+## WATCH
+
+You can disable the watcher. Per default, SliDesk watchs the changement of files in the talk directory, then it refreshs the presentation.
+
+## TELNET_PORT
+
+The port used by the telnet server. Default: 2323

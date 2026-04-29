@@ -2,11 +2,11 @@ import type { SliDeskConfig } from "../../types";
 import config from "./config";
 import includes from "./includes";
 
-export default async (mainFile: string) => {
+const prepareSDF = async (mainFile: string) => {
   let fusion = await includes(mainFile);
   let configuration: SliDeskConfig = {
-    customCSS: "",
-    customIncludes: { css: [], js: [] },
+    css: [],
+    js: [],
   };
   // get Custom configuration
   const m = /\/::([\s\S]*)::\//m.exec(fusion);
@@ -16,3 +16,5 @@ export default async (mainFile: string) => {
   }
   return { config: configuration, content: fusion };
 };
+
+export default prepareSDF;

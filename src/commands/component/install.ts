@@ -11,8 +11,8 @@ export const componentInstall = async (
   if (name === "") {
     return "Please provide a name for the component";
   }
-  const componentName = name.replace(
-    /\\u([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])([0-9]|[a-fA-F])/g,
+  const componentName = name.replaceAll(
+    /\\u(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])(\d|[a-fA-F])/g,
     "",
   );
   const [user, ...component] = componentName.split("__");

@@ -2,13 +2,13 @@
 
 Sometimes, presentation can be very long, and finding a slide is fastiduous.
 
-SliDesk offers the possibility to split your `main.sdf` file and use "includes" to simplify the writting of your presentation.
+SliDesk offers the possibility to split your `main.(sdf|md)` file and use "includes" to simplify the writting of your presentation.
 
 ```
 !include(path/of/sdf)
 ```
 
-Then you can have a nice `main.sdf` to manage easily your time of your parts.
+Then you can have a nice `main.(sdf|md)` to manage easily your time of your parts.
 
 ```
 # 3615 Twitch
