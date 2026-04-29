@@ -31,11 +31,6 @@ Subcommands:
 Options:
   -h, --help                show help
   -v, --version             show version
-  -n, --notes <param>       open with speakers notes  (default: notes.html)
-  -g, --hidden              remove help information  (default: false)
-  -c, --conf <param>        use a specific slidesk.toml file  (default: )
-  -o, --open                open a browser with the presentation or notes view  (default: false)
-  -l, --lang <param>        specify the language version (per default, it will use the .lang.json file with default information)  (default: )
 
 Arguments:
   talk  directory of your talk
@@ -43,12 +38,33 @@ Arguments:
 
 We can see that there are several options, that the "talk" consists of a directory (if not specified, SliDesk takes the current directory) and that there is a command to create talks.
 
+```bash
+slidesk present -h
+
+Options:
+  -h, --help           show help
+  -v, --version        show version
+  -n, --notes <param>  open with speakers notes  (default: notes.html)
+  -g, --hidden         remove help information  (default: false)
+  -c, --conf <param>   use a specific slidesk.toml file  (default: )
+  -o, --open           open a browser with the presentation or notes view  (default: false)
+  -l, --lang <param>   specify the language version (per default, it will use the .lang.json file with default information)  (default: )
+  -t, --telnet         serve a telnet version  (default: false)
+
+Arguments:
+  talk  directory of your talk
+```
+
+
 As far as options are concerned, the one that will undoubtedly be most frequently used is `-n`, which generates the Speaker view. Coupled with the `-t` option, this will enable you to better manage your time via the checkpoints defined in your presentation, as seen above.
 
 To simplify the call, you can use a simplified syntax:
 
 ```sh
-slidesk -tn
+slidesk present -tn
 ```
 
 Which combines the `-t` and `-n` options.
+
+
+`present` is the default subcommand, so `slidesk present -tn` can be simplified with `slidesk -tn`
