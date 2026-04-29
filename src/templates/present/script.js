@@ -208,8 +208,8 @@ window.onload = () => {
   document.querySelectorAll(".sd-img img").forEach((img, _) => {
     img.addEventListener("load", () => {
       let ratio = 1;
-      if (Number(window.slidesk.env.WIDTH))
-        ratio = window.innerWidth / Number(window.slidesk.env.WIDTH);
+      if (Number(window.slidesk.env.slidesk.WIDTH))
+        ratio = window.innerWidth / Number(window.slidesk.env.slidesk.WIDTH);
       const newW = `${ratio * img.width}px`;
       const newH = `${ratio * img.height}px`;
       img.parentElement.style.width = newW;
