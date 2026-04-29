@@ -4,7 +4,7 @@
     <img alt="slidesk" src="https://avatars.githubusercontent.com/u/154438498?s=400&u=b60d757d495067fe815e71d754bb601ef68a5e0d&v=4" />
 </p>
 
-A complete documentation is available here: [https://slidesk.github.io/slidesk-doc/](https://slidesk.github.io/slidesk/)
+A complete documentation is available here: [https://slidesk.github.io/slidesk](https://slidesk.github.io/slidesk/)
 
 A good example of a presentation using the features: [SliDesk Talk](https://github.com/slidesk/talk-slidesk)
 
