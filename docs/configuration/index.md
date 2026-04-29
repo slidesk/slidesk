@@ -50,7 +50,7 @@ You can specify a domain to use instead of "localhost"
 
 ## PORT
 
-You can change the default port
+You can change the default port. Default: 1337
 
 ## TRANSITION
 
@@ -59,3 +59,7 @@ You can specify the duration of animation
 ## WATCH
 
 You can disable the watcher. Per default, SliDesk watchs the changement of files in the talk directory, then it refreshs the presentation.
+
+## TELNET_PORT
+
+The port used by the telnet server. Default: 2323

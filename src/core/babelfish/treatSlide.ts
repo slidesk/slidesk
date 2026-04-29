@@ -77,7 +77,6 @@ export default async (
     "timer-slide": "",
     "timer-checkpoint": "",
   };
-  datas.source = toBinary(slide);
 
   if (timerSlide !== "") datas["timer-slide"] = timerSlide;
   if (timerCheckpoint !== "") datas["timer-checkpoint"] = timerCheckpoint;
