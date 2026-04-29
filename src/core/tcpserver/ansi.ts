@@ -44,6 +44,9 @@ export const IAC_ENABLE_CHAR_MODE = Buffer.from([
   31, // DO NAWS   (Negotiate About Window Size)
 ]);
 
+const ESC = String.fromCharCode(27);
+const ANSI_ESCAPE_REGEX = new RegExp(`${ESC}\\[[^m]*m`, "g");
+
 export function parseNAWS(data: Buffer): { cols: number; rows: number } | null {
   // IAC SB NAWS <cols-hi> <cols-lo> <rows-hi> <rows-lo> IAC SE
   for (let i = 0; i < data.length - 6; i++) {
@@ -157,14 +160,14 @@ export function wrapText(text: string, width: number): string {
   return text
     .split("\r\n")
     .map((line) => {
-      const visLen = line.replaceAll(/\x1b\[[^m]*m/g, "").length;
+      const visLen = line.replaceAll(ANSI_ESCAPE_REGEX, "").length;
       if (visLen <= width) return line;
       const words = line.split(" ");
       const wrapped: string[] = [];
       let current = "";
       for (const word of words) {
-        const wLen = word.replaceAll(/\x1b\[[^m]*m/g, "").length;
-        const cLen = current.replaceAll(/\x1b\[[^m]*m/g, "").length;
+        const wLen = word.replaceAll(ANSI_ESCAPE_REGEX, "").length;
+        const cLen = current.replaceAll(ANSI_ESCAPE_REGEX, "").length;
         if (cLen + wLen + 1 > width && current) {
           wrapped.push(current);
           current = word;

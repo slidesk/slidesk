@@ -5,9 +5,11 @@ import type {
 } from "../../types";
 import getFile from "./getFile";
 
+type ServerLike = { upgrade(req: Request): boolean | undefined };
+
 const fetch = async (
   req: Request,
-  server: any,
+  server: ServerLike,
   serverFiles: SliDeskFile,
   serverPlugins: SliDeskPlugin[],
   serverPath: string,

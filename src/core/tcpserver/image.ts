@@ -93,7 +93,7 @@ interface GifFrame {
 async function extractGifFrames(input: Buffer): Promise<GifFrame[]> {
   const meta = await sharp(input, { animated: true }).metadata();
   const pageCount = meta.pages ?? 1;
-  const delays = ((meta as any).delay as number[] | undefined) ?? [];
+  const delays = (meta as { delay?: number[] }).delay ?? [];
 
   const frames: GifFrame[] = [];
 
