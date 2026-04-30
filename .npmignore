@@ -10,3 +10,6 @@ tsconfig.json
 coverage
 biome.json
 sonar-project.properties
+docs
+src
+zesical.toml
