@@ -1,5 +1,3 @@
-import { preprocessImages } from "./image";
-
 export interface SlideEntry {
   num: number;
   content: string;
@@ -10,7 +8,7 @@ export interface SlideIndex {
   list: SlideEntry[];
 }
 
-export async function parseSlides(html: string): Promise<SlideIndex> {
+export function parseSlides(html: string): SlideIndex {
   const list: SlideEntry[] = [];
 
   const sectionRe =
@@ -25,18 +23,11 @@ export async function parseSlides(html: string): Promise<SlideIndex> {
 
     list.push({
       num,
-      content: await preprocessImages(
-        `<section>${body
-          .trim()
-          .replace("<h2></h2>", "")
-          .replace("</body></html>", "")
-          .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")}`,
-        {
-          cols: 80,
-          mode: "block",
-          fallbackToAlt: true,
-        },
-      ),
+      content: `<section>${body
+        .trim()
+        .replace("<h2></h2>", "")
+        .replace("</body></html>", "")
+        .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")}`,
     });
   }
 

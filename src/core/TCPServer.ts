@@ -19,7 +19,7 @@ export async function startTelnetServer(
   const slideServerUrl = `http://localhost:${Number(slideskEnv?.PORT ?? 1337)}`;
 
   const html = await (await fetch(slideServerUrl)).text();
-  const { total, list } = await parseSlides(html);
+  const { total, list } = parseSlides(html);
 
   const fullConfig: Required<SliDeskTelnetSlidesConfig> = {
     port: 2323,
