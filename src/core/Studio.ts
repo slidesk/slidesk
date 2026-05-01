@@ -28,9 +28,10 @@ export async function startStudio(port: number, talkdir: string) {
     port,
     routes: {
       "/": layoutHTML,
-      "/slidesk.css": new Response(defaultCSS, {
-        headers: { "Content-Type": "text/css" },
-      }),
+      "/slidesk.css": () =>
+        new Response(defaultCSS, {
+          headers: { "Content-Type": "text/css" },
+        }),
       "/api/styles": async () => {
         const { config } = await prepareSDF(file);
         return Response.json({
@@ -38,7 +39,9 @@ export async function startStudio(port: number, talkdir: string) {
         });
       },
       "/api/slides": async () => {
-        return Response.json({ slides: await getSlides(talkdir) });
+        return Response.json({
+          slides: await getSlides(talkdir, env, components),
+        });
       },
     },
     async fetch(req) {
