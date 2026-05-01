@@ -40,19 +40,17 @@ export async function startStudio(port: number, talkdir: string) {
       },
       "/api/slides": async () => {
         return Response.json({
-          slides: await getSlides(talkdir, env, components),
+          slides: await getSlides(talkdir, env, components, templates),
         });
       },
     },
     async fetch(req) {
-      return new Response(
-        await Bun.file(
-          `${talkdir}/${req.url.replace(`http://localhost:${port}`, "")}`,
-        ).text(),
-        {
-          headers: { "Content-Type": "text/css" },
-        },
+      const file = Bun.file(
+        `${talkdir}/${req.url.replace(`http://localhost:${port}`, "")}`,
       );
+      return new Response(await file.arrayBuffer(), {
+        headers: { "Content-Type": file.type },
+      });
     },
   });
 }

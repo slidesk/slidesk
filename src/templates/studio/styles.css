@@ -66,6 +66,10 @@ aside {
         overflow-y: scroll;
 
         article {
+            background-color: var(--sd-background-color);
+            color: var(--sd-text-color);
+            font-size: var(--sd-text-size);
+            line-height: var(--sd-text-line-height);
             box-shadow:
                 0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698),
                 0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024),
@@ -74,7 +78,6 @@ aside {
                 0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302),
                 0.5rem 1rem 6rem rgba(129, 145, 181, 0.06),
                 0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
-            background-color: #fff;
             margin: 10rem;
             width: 1920px;
             height: 1080px;
@@ -87,6 +90,7 @@ aside {
                 right: auto;
                 bottom: auto;
                 transform: none;
+                opacity: 1;
                 zoom: 10%;
             }
 
@@ -103,7 +107,8 @@ main {
     display: flex;
     flex-direction: column;
 
-    header {
+    header,
+    footer {
         height: 3rem;
         background: white;
         border-bottom: 1px solid #aaa;
@@ -112,8 +117,15 @@ main {
 
     #workbench {
         flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         article {
+            background-color: var(--sd-background-color);
+            color: var(--sd-text-color);
+            font-size: var(--sd-text-size);
+            line-height: var(--sd-text-line-height);
             box-shadow:
                 0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698),
                 0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024),
@@ -122,7 +134,6 @@ main {
                 0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302),
                 0.5rem 1rem 6rem rgba(129, 145, 181, 0.06),
                 0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
-            background-color: #fff;
             margin: 2rem;
             width: 1920px;
             height: 1080px;
@@ -135,6 +146,7 @@ main {
                 right: auto;
                 bottom: auto;
                 transform: none;
+                opacity: 1;
                 zoom: 80%;
             }
         }
