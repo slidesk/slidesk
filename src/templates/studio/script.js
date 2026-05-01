@@ -1,6 +1,7 @@
 let zoom = 0;
 const $previews = document.getElementById("previews");
 const $workbench = document.getElementById("workbench");
+const $saveSlide = document.getElementById("saveSlide");
 
 const addPresentationStyles = async () => {
   const styles = await (await fetch("/api/styles")).json();
@@ -18,17 +19,30 @@ const makeSlidePreview = (slide) => {
   art.dataset.classes = slide.classes;
   art.innerHTML = slide.content;
   art.addEventListener("click", (event) => {
-    const el = event.target;
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    $previews
+      .querySelectorAll("article")
+      .forEach((a) => a.classList.remove("studio-selected"));
+    art.classList.add("studio-selected");
     $workbench.innerHTML = `
       <article
-        class="sd-slide ${el.dataset.classes}"
-        data-file="${el.dataset.file}"
-        data-num="${el.dataset.num}"
-        data-classes="${el.dataset.classes}"
+        class="sd-slide ${art.dataset.classes}"
+        data-file="${art.dataset.file}"
+        data-num="${art.dataset.num}"
+        data-classes="${art.dataset.classes}"
         style="zoom: ${zoom - 3}%">
-        ${el.innerHTML}
+        ${art.innerHTML}
       </article>
     `;
+    $saveSlide.setAttribute("disabled", "true");
+    $workbench.querySelectorAll("h2, p").forEach((el) => {
+      el.setAttribute("contenteditable", "true");
+      el.addEventListener("input", (event) => {
+        console.log(event);
+        $saveSlide.removeAttribute("disabled");
+      });
+    });
   });
   $previews.append(art);
 };
