@@ -39,7 +39,6 @@ const makeSlidePreview = (slide) => {
     $workbench.querySelectorAll("h2, p").forEach((el) => {
       el.setAttribute("contenteditable", "true");
       el.addEventListener("input", (event) => {
-        console.log(event);
         $saveSlide.removeAttribute("disabled");
       });
     });
