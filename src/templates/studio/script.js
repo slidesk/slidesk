@@ -1,7 +1,6 @@
 let zoom = 0;
 const $previews = document.getElementById("previews");
 const $workbench = document.getElementById("workbench");
-const $saveSlide = document.getElementById("saveSlide");
 
 const decodeComments = (content) =>
   atob(content)
@@ -80,7 +79,7 @@ turndownService.addRule("image", {
 });
 turndownService.keep(["div", "iframe"]);
 
-$saveSlide.addEventListener("click", async () => {
+const saveCurrentSlide = async () => {
   const $slide = $workbench.querySelector("article.sd-slide");
   const html = $slide.innerHTML;
   const md = turndownService
@@ -115,7 +114,7 @@ $saveSlide.addEventListener("click", async () => {
       )
       ?.classList.add("studio-selected");
   }, 10);
-});
+};
 
 const addPresentationStyles = async () => {
   const styles = await (await fetch("/api/styles")).json();
@@ -149,11 +148,10 @@ const makeSlidePreview = (slide) => {
         ${art.innerHTML}
       </article>
     `;
-    $saveSlide.setAttribute("disabled", "true");
     $workbench.querySelectorAll("h2, p").forEach((el) => {
       el.setAttribute("contenteditable", "true");
-      el.addEventListener("input", (event) => {
-        $saveSlide.removeAttribute("disabled");
+      el.addEventListener("blur", async () => {
+        await saveCurrentSlide();
       });
     });
   });
