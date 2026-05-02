@@ -82,7 +82,17 @@ turndownService.keep(["div", "iframe"]);
 
 $saveSlide.addEventListener("click", async () => {
   const $slide = $workbench.querySelector("article.sd-slide");
-  const md = turndownService.turndown($slide.innerHTML);
+  const html = $slide.innerHTML;
+  const md = turndownService
+    .turndown(html)
+    .split("\n")
+    .map((l, i) => {
+      if (i === 0 && $slide.dataset.classes !== "") {
+        return `${l} .[${$slide.dataset.classes}]`;
+      }
+      return l;
+    })
+    .join("\n");
   await fetch("/api/slide/edit", {
     method: "POST",
     headers: {
