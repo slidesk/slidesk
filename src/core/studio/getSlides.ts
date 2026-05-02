@@ -9,7 +9,6 @@ import { prepareHTML, treatTitle } from "../babelfish/treatSlide";
 const getSlides = async (
   talkdir: string,
   env: Record<string, unknown>,
-  components: string[],
   templates: SliDeskTemplate,
 ) => {
   const md = MarkdownIt({
@@ -32,10 +31,6 @@ const getSlides = async (
       fusion = comments(fusion);
       fusion = image(fusion).replace("data-src=", "src=");
       fusion = formatting(fusion, env);
-      for (const c of components) {
-        const { default: comp } = await import(c);
-        fusion = await comp(fusion);
-      }
       const html = md.render(prepareHTML(fusion).content);
       const { content, classes } = treatTitle(html, templates);
       res.push({

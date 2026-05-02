@@ -21,7 +21,7 @@ export async function startStudio(port: number, talkdir: string) {
     process.exit(1);
   }
   const env = await loadEnv(talkdir, {});
-  const { plugins, templates, components } = await preload(talkdir, env);
+  const { plugins, templates } = await preload(talkdir, env);
   const { config } = await prepareSDF(file);
   let slides: SliDeskStudioSlide[] = [];
   Bun.serve({
@@ -39,7 +39,7 @@ export async function startStudio(port: number, talkdir: string) {
         });
       },
       "/api/slides": async () => {
-        slides = await getSlides(talkdir, env, components, templates);
+        slides = await getSlides(talkdir, env, templates);
         return Response.json({
           slides,
         });
