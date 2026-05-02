@@ -2,7 +2,7 @@ import { globSync } from "node:fs";
 import comments from "../../components/comments";
 import image from "../../components/image";
 import formatting from "../../components/formatting";
-import type { SliDeskTemplate } from "../../types";
+import type { SliDeskStudioSlide, SliDeskTemplate } from "../../types";
 import MarkdownIt from "markdown-it";
 import { prepareHTML, treatTitle } from "../babelfish/treatSlide";
 
@@ -22,12 +22,11 @@ const getSlides = async (
   const files = globSync(["md", "sdf"].map((ext) => `${talkdir}/**/*.${ext}`))
     .sort((a, b) => a.localeCompare(b))
     .filter((n) => !n.toLowerCase().includes("/readme.md"));
-  const res: { file: string; content: string; num: number; classes: string }[] =
-    [];
+  const res: SliDeskStudioSlide[] = [];
   for (const file of files) {
-    const content = await Bun.file(file).text();
+    const original = await Bun.file(file).text();
     let num = 0;
-    const slides = content.split("## ").filter((s) => s.trim() !== "");
+    const slides = original.split("## ").filter((s) => s.trim() !== "");
     for (const text of slides) {
       let fusion = text;
       fusion = comments(fusion);
@@ -40,7 +39,8 @@ const getSlides = async (
       const html = md.render(prepareHTML(fusion).content);
       const { content, classes } = treatTitle(html, templates);
       res.push({
-        file,
+        file: file.replace(process.cwd(), ""),
+        original: `## ${text}`,
         content,
         num,
         classes: classes

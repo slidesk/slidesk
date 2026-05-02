@@ -3,6 +3,70 @@ const $previews = document.getElementById("previews");
 const $workbench = document.getElementById("workbench");
 const $saveSlide = document.getElementById("saveSlide");
 
+const decodeComments = (content) =>
+  atob(content)
+    .replaceAll(/&#(\d+);/g, (_, code) =>
+      String.fromCodePoint(Number.parseInt(code, 10)),
+    )
+    .split("<br/>")
+    .join("\n");
+
+const encodeComments = (content) =>
+  btoa(
+    encodeURIComponent(
+      content
+        .replace("/*", "")
+        .replace("*/", "")
+        .replaceAll(
+          /[&<>"'` !@$%()=+{}[\]]/g,
+          (match) => `&#${match.codePointAt(0)};`,
+        )
+        .split("\n")
+        .slice(1)
+        .join("<br/>"),
+    ).replaceAll(/%([a-f0-9]{2})/gi, (_, $1) =>
+      String.fromCodePoint(Number.parseInt($1, 16)),
+    ),
+  );
+
+const turndownService = new TurndownService({
+  headingStyle: "atx",
+  bulletListMarker: "-",
+  codeBlockStyle: "fenced",
+});
+turndownService.addRule("comments", {
+  filter: ["aside"],
+  replacement: (content) => `/*\n${decodeComments(content)}\n*/`,
+});
+turndownService.keep(["div", "iframe"]);
+
+$saveSlide.addEventListener("click", async () => {
+  const $slide = $workbench.querySelector("article.sd-slide");
+  const md = turndownService.turndown($slide.innerHTML);
+  await fetch("/api/slide/edit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      file: $slide.dataset.file,
+      classes: $slide.dataset.classes,
+      num: $slide.dataset.num,
+      content: md,
+    }),
+  });
+  await fetchSlides();
+  setTimeout(() => {
+    [...$previews.querySelectorAll("article")]
+      .find(
+        (a) =>
+          a.dataset.file === $slide.dataset.file &&
+          a.dataset.num == $slide.dataset.num,
+      )
+      ?.classList.add("studio-selected");
+  }, 10);
+});
+
 const addPresentationStyles = async () => {
   const styles = await (await fetch("/api/styles")).json();
   styles.css?.forEach((s) => {
@@ -47,6 +111,7 @@ const makeSlidePreview = (slide) => {
 };
 
 const fetchSlides = async () => {
+  $previews.innerHTML = "";
   const slides = await (await fetch("/api/slides")).json();
   let lastNum = 0;
   let file = "";

@@ -5,6 +5,8 @@ import preload from "./babelfish/preload";
 import prepareSDF from "./babelfish/prepareSDF";
 import getStyles from "./studio/getStyles";
 import getSlides from "./studio/getSlides";
+import updateSlide from "./studio/updateSlide";
+import type { SliDeskStudioSlide } from "../types";
 
 const { error } = console;
 
@@ -19,10 +21,9 @@ export async function startStudio(port: number, talkdir: string) {
     process.exit(1);
   }
   const env = await loadEnv(talkdir, {});
-  const { plugins, templates, favicon, components } = await preload(
-    talkdir,
-    env,
-  );
+  const { plugins, templates, components } = await preload(talkdir, env);
+  const { config } = await prepareSDF(file);
+  let slides: SliDeskStudioSlide[] = [];
   Bun.serve({
     //development: false,
     port,
@@ -33,15 +34,22 @@ export async function startStudio(port: number, talkdir: string) {
           headers: { "Content-Type": "text/css" },
         }),
       "/api/styles": async () => {
-        const { config } = await prepareSDF(file);
         return Response.json({
           css: await getStyles(config, plugins, talkdir),
         });
       },
       "/api/slides": async () => {
+        slides = await getSlides(talkdir, env, components, templates);
         return Response.json({
-          slides: await getSlides(talkdir, env, components, templates),
+          slides,
         });
+      },
+      "/api/slide/edit": {
+        POST: async (req) => {
+          const body = await req.json();
+          await updateSlide(slides, body);
+          return new Response("", { status: 200 });
+        },
       },
     },
     async fetch(req) {
