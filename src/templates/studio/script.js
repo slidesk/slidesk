@@ -1,6 +1,8 @@
 let zoom = 0;
+const EDITABLE_SELECTORS = "h2, p, figure, pre";
 const $previews = document.getElementById("previews");
 const $workbench = document.getElementById("workbench");
+const $classes = document.getElementById("classes");
 
 const decodeComments = (content) =>
   atob(content)
@@ -81,17 +83,23 @@ turndownService.keep(["div", "iframe"]);
 
 const saveCurrentSlide = async () => {
   const $slide = $workbench.querySelector("article.sd-slide");
-  const html = $slide.innerHTML;
-  const md = turndownService
-    .turndown(html)
-    .split("\n")
-    .map((l, i) => {
-      if (i === 0 && $slide.dataset.classes !== "") {
-        return `${l} .[${$slide.dataset.classes}]`;
-      }
-      return l;
-    })
-    .join("\n");
+  [...$slide.querySelectorAll(".studio-drag-handle")].forEach((e) => {
+    e.remove();
+  });
+  const html = $slide.innerHTML.replace(/>\s+</g, "><").trim();
+  let content = "";
+  const classes = $classes.value;
+  if (html.indexOf("position: absolute;") !== -1)
+    content = `## .[${classes}]\n${html.replace('contenteditable="true" ', "")}`;
+  else
+    content = turndownService
+      .turndown(html)
+      .split("\n")
+      .map((l, i) => {
+        if (i === 0) return `${l} .[${classes}]`;
+        return l;
+      })
+      .join("\n");
   await fetch("/api/slide/edit", {
     method: "POST",
     headers: {
@@ -101,7 +109,7 @@ const saveCurrentSlide = async () => {
       file: $slide.dataset.file,
       classes: $slide.dataset.classes,
       num: $slide.dataset.num,
-      content: md,
+      content,
     }),
   });
   await fetchSlides();
@@ -112,7 +120,7 @@ const saveCurrentSlide = async () => {
           a.dataset.file === $slide.dataset.file &&
           a.dataset.num == $slide.dataset.num,
       )
-      ?.classList.add("studio-selected");
+      ?.click();
   }, 10);
 };
 
@@ -120,6 +128,97 @@ const addPresentationStyles = async () => {
   const styles = await (await fetch("/api/styles")).json();
   styles.css?.forEach((s) => {
     document.head.innerHTML += s;
+  });
+};
+
+const freezeSlideLayout = (slide) => {
+  if (slide.dataset.frozen) return;
+  slide.dataset.frozen = "true";
+
+  const slideRect = slide.getBoundingClientRect();
+  const scale = slide.offsetWidth / slideRect.width;
+
+  slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const x = (rect.left - slideRect.left) * scale;
+    const y = (rect.top - slideRect.top) * scale;
+    const w = rect.width * scale;
+    const h = rect.height * scale;
+
+    el.style.position = "relative";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.width = w + "px";
+    el.style.height = h + "px";
+  });
+
+  slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
+    el.style.position = "absolute";
+  });
+};
+
+const makeDraggable = (el, slide) => {
+  const handle = document.createElement("span");
+  handle.className = "studio-drag-handle";
+  handle.textContent = "✥";
+  handle.setAttribute("contenteditable", "false");
+  el.appendChild(handle);
+
+  let startMouseX, startMouseY, startElX, startElY, dragging;
+
+  handle.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    startMouseX = e.clientX;
+    startMouseY = e.clientY;
+    dragging = false;
+
+    const slideRect = slide.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const scale = slide.offsetWidth / slideRect.width;
+    startElX = (elRect.left - slideRect.left) * scale;
+    startElY = (elRect.top - slideRect.top) * scale;
+
+    const onMouseMove = (e) => {
+      const dx = e.clientX - startMouseX;
+      const dy = e.clientY - startMouseY;
+
+      if (!dragging && Math.hypot(dx, dy) < 4) return;
+
+      if (!dragging) {
+        dragging = true;
+        freezeSlideLayout(slide);
+        el.blur();
+        el.setAttribute("contenteditable", "false");
+        handle.style.cursor = "grabbing";
+      }
+
+      const slideRect = slide.getBoundingClientRect();
+      const scale = slide.offsetWidth / slideRect.width;
+
+      let x = startElX + dx * scale;
+      let y = startElY + dy * scale;
+
+      x = Math.max(0, Math.min(x, slide.offsetWidth - el.offsetWidth));
+      y = Math.max(0, Math.min(y, slide.offsetHeight - el.offsetHeight));
+
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+    };
+
+    const onMouseUp = () => {
+      if (dragging) {
+        el.setAttribute("contenteditable", "true");
+        handle.style.cursor = "grab";
+        saveCurrentSlide();
+      }
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
   });
 };
 
@@ -138,6 +237,7 @@ const makeSlidePreview = (slide) => {
       .querySelectorAll("article")
       .forEach((a) => a.classList.remove("studio-selected"));
     art.classList.add("studio-selected");
+    $classes.value = art.dataset.classes;
     $workbench.innerHTML = `
       <article
         class="sd-slide ${art.dataset.classes}"
@@ -148,11 +248,14 @@ const makeSlidePreview = (slide) => {
         ${art.innerHTML}
       </article>
     `;
-    $workbench.querySelectorAll("h2, p").forEach((el) => {
+    $classes.textContent = art.dataset.classes;
+    const $slide = $workbench.querySelector("article.sd-slide");
+    $workbench.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
       el.setAttribute("contenteditable", "true");
       el.addEventListener("blur", async () => {
         await saveCurrentSlide();
       });
+      makeDraggable(el, $slide);
     });
   });
   $previews.append(art);

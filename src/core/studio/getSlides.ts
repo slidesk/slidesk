@@ -36,7 +36,7 @@ const getSlides = async (
       res.push({
         file: file.replace(process.cwd(), ""),
         original: `## ${text}`,
-        content,
+        content: content.replace("<h2></h2>", ""),
         num,
         classes: classes
           .split(" ")

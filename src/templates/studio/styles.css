@@ -154,3 +154,42 @@ main {
         }
     }
 }
+
+.studio-drag-handle {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    width: 20px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-size: 14px;
+    color: #888;
+    user-select: none;
+}
+
+[contenteditable]:hover {
+    outline: 1px dashed #888;
+}
+
+[contenteditable]:hover .studio-drag-handle,
+[contenteditable]:focus-within .studio-drag-handle {
+    opacity: 1;
+}
+
+.sd-slide {
+    h2,
+    p,
+    figure,
+    pre {
+        position: relative;
+    }
+}
+
+#classes {
+    margin-left: 0.5rem;
+}
