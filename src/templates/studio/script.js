@@ -21,7 +21,6 @@ const encodeComments = (content) =>
           (match) => `&#${match.codePointAt(0)};`,
         )
         .split("\n")
-        .slice(1)
         .join("<br/>"),
     ).replaceAll(/%([a-f0-9]{2})/gi, (_, $1) =>
       String.fromCodePoint(Number.parseInt($1, 16)),
@@ -295,7 +294,7 @@ const makeSlidePreview = (slide) => {
     $notesTextarea.addEventListener("blur", async () => {
       await saveCurrentSlide();
     });
-    [...art.querySelectorAll("aside.sd-notes")].forEach((n) => {
+    [...$workbench.querySelectorAll("aside.sd-notes")].forEach((n) => {
       n.remove();
     });
     $workbench.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
