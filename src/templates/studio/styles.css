@@ -155,7 +155,8 @@ main {
     }
 }
 
-.studio-drag-handle {
+.studio-drag-handle,
+.studio-resize-handle {
     position: absolute;
     bottom: -18px;
     left: 0;
@@ -172,12 +173,19 @@ main {
     user-select: none;
 }
 
+.studio-resize-handle {
+    left: auto;
+    right: 0;
+}
+
 [contenteditable]:hover {
     outline: 1px dashed #888;
 }
 
 [contenteditable]:hover .studio-drag-handle,
-[contenteditable]:focus-within .studio-drag-handle {
+[contenteditable]:focus-within .studio-drag-handle,
+[contenteditable]:hover .studio-resize-handle,
+[contenteditable]:focus-within .studio-resize-handle {
     opacity: 1;
 }
 

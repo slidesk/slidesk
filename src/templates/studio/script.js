@@ -83,28 +83,24 @@ turndownService.keep(["div", "iframe"]);
 
 const saveCurrentSlide = async () => {
   const $slide = $workbench.querySelector("article.sd-slide");
-  [...$slide.querySelectorAll(".studio-drag-handle")].forEach((e) => {
+  [
+    ...$slide.querySelectorAll(".studio-drag-handle, .studio-resize-handle"),
+  ].forEach((e) => {
     e.remove();
   });
   const html = $slide.innerHTML.replace(/>\s+</g, "><").trim();
-  let content = "";
   const classes = $classes.value;
-  if (html.indexOf("position: absolute;") !== -1)
-    content = `## .[${classes}]\n${html.replace('contenteditable="true" ', "")}`;
-  else
-    content = turndownService
-      .turndown(html)
-      .split("\n")
-      .map((l, i) => {
-        if (i === 0) return `${l} .[${classes}]`;
-        return l;
-      })
-      .join("\n");
+  const content =
+    html.indexOf("position: absolute;") !== -1
+      ? `## .[${classes}]\n${html.replace('contenteditable="true"', "")}`
+      : turndownService
+          .turndown(html)
+          .split("\n")
+          .map((l, i) => (i === 0 ? `${l} .[${classes}]` : l))
+          .join("\n");
   await fetch("/api/slide/edit", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       file: $slide.dataset.file,
       classes: $slide.dataset.classes,
@@ -140,21 +136,64 @@ const freezeSlideLayout = (slide) => {
 
   slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
     const rect = el.getBoundingClientRect();
-    const x = (rect.left - slideRect.left) * scale;
-    const y = (rect.top - slideRect.top) * scale;
-    const w = rect.width * scale;
-    const h = rect.height * scale;
-
     el.style.position = "relative";
-    el.style.left = x + "px";
-    el.style.top = y + "px";
-    el.style.width = w + "px";
-    el.style.height = h + "px";
+    el.style.left = (rect.left - slideRect.left) * scale + "px";
+    el.style.top = (rect.top - slideRect.top) * scale + "px";
+    el.style.width = rect.width * scale + "px";
+    el.style.height = rect.height * scale + "px";
   });
 
   slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
     el.style.position = "absolute";
   });
+};
+
+const startDrag = (
+  e,
+  el,
+  slide,
+  { immediate = false, onDragStart, onMove, onEnd } = {},
+) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const startMouseX = e.clientX;
+  const startMouseY = e.clientY;
+  let dragging = false;
+
+  const getScale = () => {
+    const slideRect = slide.getBoundingClientRect();
+    return slide.offsetWidth / slideRect.width;
+  };
+
+  const onMouseMove = (e) => {
+    const dx = e.clientX - startMouseX;
+    const dy = e.clientY - startMouseY;
+
+    if (!dragging) {
+      if (!immediate && Math.hypot(dx, dy) < 4) return;
+      dragging = true;
+      freezeSlideLayout(slide);
+      el.blur();
+      el.setAttribute("contenteditable", "false");
+      onDragStart?.();
+    }
+
+    onMove(dx, dy, getScale());
+  };
+
+  const onMouseUp = () => {
+    if (dragging) {
+      el.setAttribute("contenteditable", "true");
+      onEnd?.();
+      saveCurrentSlide();
+    }
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  };
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
 };
 
 const makeDraggable = (el, slide) => {
@@ -164,61 +203,57 @@ const makeDraggable = (el, slide) => {
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
-  let startMouseX, startMouseY, startElX, startElY, dragging;
-
   handle.addEventListener("mousedown", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    startMouseX = e.clientX;
-    startMouseY = e.clientY;
-    dragging = false;
-
     const slideRect = slide.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
     const scale = slide.offsetWidth / slideRect.width;
-    startElX = (elRect.left - slideRect.left) * scale;
-    startElY = (elRect.top - slideRect.top) * scale;
+    const startElX = (elRect.left - slideRect.left) * scale;
+    const startElY = (elRect.top - slideRect.top) * scale;
 
-    const onMouseMove = (e) => {
-      const dx = e.clientX - startMouseX;
-      const dy = e.clientY - startMouseY;
-
-      if (!dragging && Math.hypot(dx, dy) < 4) return;
-
-      if (!dragging) {
-        dragging = true;
-        freezeSlideLayout(slide);
-        el.blur();
-        el.setAttribute("contenteditable", "false");
+    startDrag(e, el, slide, {
+      onDragStart: () => {
         handle.style.cursor = "grabbing";
-      }
-
-      const slideRect = slide.getBoundingClientRect();
-      const scale = slide.offsetWidth / slideRect.width;
-
-      let x = startElX + dx * scale;
-      let y = startElY + dy * scale;
-
-      x = Math.max(0, Math.min(x, slide.offsetWidth - el.offsetWidth));
-      y = Math.max(0, Math.min(y, slide.offsetHeight - el.offsetHeight));
-
-      el.style.left = x + "px";
-      el.style.top = y + "px";
-    };
-
-    const onMouseUp = () => {
-      if (dragging) {
-        el.setAttribute("contenteditable", "true");
+      },
+      onMove: (dx, dy, scale) => {
+        el.style.left =
+          Math.max(
+            0,
+            Math.min(startElX + dx * scale, slide.offsetWidth - el.offsetWidth),
+          ) + "px";
+        el.style.top =
+          Math.max(
+            0,
+            Math.min(
+              startElY + dy * scale,
+              slide.offsetHeight - el.offsetHeight,
+            ),
+          ) + "px";
+      },
+      onEnd: () => {
         handle.style.cursor = "grab";
-        saveCurrentSlide();
-      }
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
+      },
+    });
+  });
+};
 
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
+const makeResizable = (el, slide) => {
+  const handle = document.createElement("span");
+  handle.className = "studio-resize-handle studio-resize-se";
+  handle.textContent = "⇲";
+  handle.setAttribute("contenteditable", "false");
+  el.appendChild(handle);
+
+  handle.addEventListener("mousedown", (e) => {
+    const startWidth = el.offsetWidth;
+    const startHeight = el.offsetHeight;
+
+    startDrag(e, el, slide, {
+      immediate: true,
+      onMove: (dx, dy, scale) => {
+        el.style.width = Math.max(50, startWidth + dx * scale) + "px";
+        el.style.height = Math.max(20, startHeight + dy * scale) + "px";
+      },
+    });
   });
 };
 
@@ -256,6 +291,7 @@ const makeSlidePreview = (slide) => {
         await saveCurrentSlide();
       });
       makeDraggable(el, $slide);
+      makeResizable(el, $slide);
     });
   });
   $previews.append(art);
