@@ -52,7 +52,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\nPress \x1b[1mQ\x1b[0m to quit the program.",
       "\n",
     );
-  if ((env.slidesk as Record<string, unknown>)?.WATCH) {
+  if ((env.slidesk as Record<string, unknown>)?.WATCH !== false) {
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
         log(
