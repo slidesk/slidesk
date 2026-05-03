@@ -23,5 +23,5 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build & Deploy
-        uses: yodamad-actions/slidesk@1.0.0
+        uses: yodamad-actions/slidesk@1.1.0
 ```

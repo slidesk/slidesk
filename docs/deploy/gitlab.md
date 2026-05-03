@@ -9,7 +9,7 @@ stages:
   - deploy
 
 include:
- - component: $CI_SERVER_FQDN/fun_with/fun-with-gitlab/components/slidesk/slidesk@1.0.1
+ - component: $CI_SERVER_FQDN/fun_with/fun-with-gitlab/components/slidesk/slidesk@1.1.0
 ```
 
 After running this job, your slide is available 🎉. To verify, you can go on the `Deploy > Pages` GitLab menu to see the url generated for your website.
