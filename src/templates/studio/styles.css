@@ -1,0 +1,211 @@
+:root {
+    font-family: SegoeUI, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #dadada;
+    color: #333;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+}
+
+aside {
+    border-right: 1px solid #aaa;
+    box-shadow: 1px 1px 5px #aaa;
+    display: flex;
+    flex-direction: column;
+
+    header {
+        background: white;
+        color: #000;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+        padding: 0.5rem 1rem;
+        height: 3rem;
+        border-bottom: 1px solid #aaa;
+        box-shadow: 1px 1px 5px #aaa;
+
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        p {
+            font-weight: 700;
+            padding: 0 0 0 1rem;
+        }
+    }
+
+    #previews {
+        flex-grow: 1;
+        overflow-y: scroll;
+
+        article {
+            cursor: pointer;
+            background-color: var(--sd-background-color);
+            color: var(--sd-text-color);
+            font-size: var(--sd-text-size);
+            line-height: var(--sd-text-line-height);
+            box-shadow: 0px 1px 18px 5px rgba(0, 0, 0, 0.25);
+            margin: 10rem;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+
+            &.studio-selected {
+                border: 1px solid red;
+                box-shadow: 0px 1px 18px 5px rgba(255, 0, 0, 0.25);
+            }
+
+            &.sd-slide {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                transform: none;
+                opacity: 1;
+                zoom: 10%;
+            }
+
+            .studio-add-slide {
+                font-size: 30rem;
+            }
+        }
+    }
+}
+
+main {
+    flex-grow: 1;
+    background-color: #eee;
+    display: flex;
+    flex-direction: column;
+
+    header,
+    footer {
+        height: 3rem;
+        background: white;
+        border-bottom: 1px solid #aaa;
+        box-shadow: 1px 1px 5px #aaa;
+    }
+
+    #workbench {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        article,
+        #speaker-notes {
+            background-color: var(--sd-background-color);
+            color: var(--sd-text-color);
+            font-size: var(--sd-text-size);
+            line-height: var(--sd-text-line-height);
+            box-shadow: 0px 1px 18px 5px rgba(0, 0, 0, 0.25);
+            margin: 2rem;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+
+            &.sd-slide {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                transform: none;
+                opacity: 1;
+            }
+        }
+
+        #speaker-notes {
+            display: none;
+        }
+    }
+
+    header,
+    footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.5rem;
+
+        label {
+            margin: 0 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+}
+
+.studio-drag-handle,
+.studio-resize-handle {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    width: 20px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-size: 14px;
+    color: #888;
+    user-select: none;
+}
+
+.studio-resize-handle {
+    left: auto;
+    right: 0;
+}
+
+[contenteditable]:hover {
+    outline: 1px dashed #888;
+}
+
+[contenteditable]:hover .studio-drag-handle,
+[contenteditable]:focus-within .studio-drag-handle,
+[contenteditable]:hover .studio-resize-handle,
+[contenteditable]:focus-within .studio-resize-handle {
+    opacity: 1;
+}
+
+.sd-slide {
+    h2,
+    p,
+    figure,
+    pre {
+        position: relative;
+    }
+}
+
+#classes {
+    margin-left: 0.5rem;
+}

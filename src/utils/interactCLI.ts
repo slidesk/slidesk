@@ -29,3 +29,11 @@ export const getAction = async (server: Server, present = false) => {
   else if (present) server.send("next");
   getAction(server, present);
 };
+
+export const getActionStudio = async () => {
+  const answer = await question("");
+  const i = (answer as string).trim().toLowerCase();
+  removeCurrentLine();
+  if (i === "q") process.exit();
+  getActionStudio();
+};

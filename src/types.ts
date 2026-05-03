@@ -90,3 +90,11 @@ export interface SliDeskTelnetSession {
 }
 
 export type BunSocket = Socket;
+
+export type SliDeskStudioSlide = {
+  file: string;
+  original?: string;
+  content: string;
+  num: number;
+  classes: string;
+};
