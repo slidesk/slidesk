@@ -143,14 +143,16 @@ main {
         }
     }
 
+    header,
     footer {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
 
-        #actions {
-            padding: 0 1rem;
+        label {
+            margin: 0 0.5rem;
+            font-size: 0.75rem;
         }
     }
 }
