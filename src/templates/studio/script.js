@@ -16,8 +16,6 @@ const encodeComments = (content) =>
   btoa(
     encodeURIComponent(
       content
-        .replace("/*", "")
-        .replace("*/", "")
         .replaceAll(
           /[&<>"'` !@$%()=+{}[\]]/g,
           (match) => `&#${match.codePointAt(0)};`,
@@ -82,6 +80,8 @@ turndownService.addRule("image", {
 turndownService.keep(["div", "iframe"]);
 
 const saveCurrentSlide = async () => {
+  const $notesTextarea = document.getElementById("speaker-notes");
+  const notesValue = $notesTextarea?.value || "";
   const $slide = $workbench.querySelector("article.sd-slide");
   [
     ...$slide.querySelectorAll(".studio-drag-handle, .studio-resize-handle"),
@@ -92,9 +92,11 @@ const saveCurrentSlide = async () => {
   const classes = $classes.value;
   const content =
     html.indexOf("position: absolute;") !== -1
-      ? `## .[${classes}]\n${html.replace('contenteditable="true"', "")}`
+      ? `## .[${classes}]\n${html.replace('contenteditable="true"', "")}\n/*\n${notesValue}\n*/`
       : turndownService
-          .turndown(html)
+          .turndown(
+            `${html}<aside class="sd-notes">${encodeComments(notesValue)}</aside>`,
+          )
           .split("\n")
           .map((l, i) => (i === 0 ? `${l} .[${classes}]` : l))
           .join("\n");
@@ -282,9 +284,20 @@ const makeSlidePreview = (slide) => {
         style="zoom: ${zoom - 3}%">
         ${art.innerHTML}
       </article>
+      <textarea id="speaker-notes" style="zoom: ${zoom - 3}%"></textarea>
     `;
     $classes.textContent = art.dataset.classes;
     const $slide = $workbench.querySelector("article.sd-slide");
+    const $notesTextarea = document.getElementById("speaker-notes");
+    $notesTextarea.value = [...art.querySelectorAll("aside.sd-notes")]
+      .map((n) => decodeComments(n.textContent))
+      .join("\n");
+    $notesTextarea.addEventListener("blur", async () => {
+      await saveCurrentSlide();
+    });
+    [...art.querySelectorAll("aside.sd-notes")].forEach((n) => {
+      n.remove();
+    });
     $workbench.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
       el.setAttribute("contenteditable", "true");
       el.addEventListener("blur", async () => {
@@ -292,6 +305,17 @@ const makeSlidePreview = (slide) => {
       });
       makeDraggable(el, $slide);
       makeResizable(el, $slide);
+    });
+    let notesVisible = false;
+    document.getElementById("toggle-notes").addEventListener("click", () => {
+      if (notesVisible) {
+        $slide.style.display = "none";
+        $notesTextarea.style.display = "block";
+      } else {
+        $slide.style.display = "flex";
+        $notesTextarea.style.display = "none";
+      }
+      notesVisible = !notesVisible;
     });
   });
   $previews.append(art);

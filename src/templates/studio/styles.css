@@ -120,7 +120,8 @@ main {
         align-items: center;
         justify-content: center;
 
-        article {
+        article,
+        #speaker-notes {
             background-color: var(--sd-background-color);
             color: var(--sd-text-color);
             font-size: var(--sd-text-size);
@@ -141,6 +142,10 @@ main {
                 opacity: 1;
             }
         }
+
+        #speaker-notes {
+            display: none;
+        }
     }
 
     header,
@@ -149,6 +154,7 @@ main {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        padding: 0 0.5rem;
 
         label {
             margin: 0 0.5rem;
