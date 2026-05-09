@@ -86,7 +86,9 @@ const saveCurrentSlide = async () => {
   const notesValue = $notesTextarea?.value || "";
   const $slide = $workbench.querySelector("article.sd-slide");
   [
-    ...$slide.querySelectorAll(".studio-drag-handle, .studio-resize-handle"),
+    ...$slide.querySelectorAll(
+      ".studio-drag-handle, .studio-resize-handle, .studio-remove-handle",
+    ),
   ].forEach((e) => {
     e.remove();
   });
