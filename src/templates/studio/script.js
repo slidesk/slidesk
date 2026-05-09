@@ -352,6 +352,8 @@ const fetchSlides = async () => {
 const bindButtonActions = () => {
   let notesVisible = false;
   document.getElementById("toggle-notes").addEventListener("click", () => {
+    const $slide = $workbench.querySelector("article.sd-slide");
+    const $notesTextarea = document.getElementById("speaker-notes");
     if (notesVisible) {
       $slide.style.display = "none";
       $notesTextarea.style.display = "block";
