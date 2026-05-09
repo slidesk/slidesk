@@ -1,5 +1,6 @@
 import layoutHTML from "../templates/studio/layout.html";
 import defaultCSS from "../templates/present/styles.css" with { type: "text" };
+import faviconSVG from "../templates/slidesk.svg" with { type: "text" };
 import loadEnv from "../utils/loadEnv";
 import preload from "./babelfish/preload";
 import prepareSDF from "./babelfish/prepareSDF";
@@ -29,6 +30,12 @@ export async function startStudio(port: number, talkdir: string) {
     port,
     routes: {
       "/": layoutHTML,
+      "/favicon.svg": () =>
+        new Response(faviconSVG, {
+          headers: {
+            "Content-Type": "image/svg+xml",
+          },
+        }),
       "/slidesk.css": () =>
         new Response(defaultCSS, {
           headers: { "Content-Type": "text/css" },

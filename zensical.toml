@@ -8,6 +8,7 @@ Copyright &copy; 2026 SliDesk
 """
 repo_url = "https://github.com/slidesk/slidesk"
 repo_name = "slidesk/slidesk"
+extra_javascript = ["javascripts/matomo.js"]
 
 [project.theme]
 variant = "modern"

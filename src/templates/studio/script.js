@@ -1,3 +1,6 @@
+import TurndownService from "turndown";
+import "@tabler/icons-webfont/dist/tabler-icons.css";
+
 let zoom = 0;
 const EDITABLE_SELECTORS = "h2, p, figure, pre";
 const $previews = document.getElementById("previews");
@@ -200,7 +203,7 @@ const startDrag = (
 const makeDraggable = (el, slide) => {
   const handle = document.createElement("span");
   handle.className = "studio-drag-handle";
-  handle.textContent = "✥";
+  handle.textContent = "🏄";
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
@@ -239,8 +242,8 @@ const makeDraggable = (el, slide) => {
 
 const makeResizable = (el, slide) => {
   const handle = document.createElement("span");
-  handle.className = "studio-resize-handle studio-resize-se";
-  handle.textContent = "⇲";
+  handle.className = "studio-resize-handle";
+  handle.textContent = "📏";
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
@@ -258,9 +261,24 @@ const makeResizable = (el, slide) => {
   });
 };
 
+const makeRemovable = (el, slide) => {
+  const handle = document.createElement("span");
+  handle.className = "studio-remove-handle";
+  handle.textContent = "🗑️";
+  handle.setAttribute("contenteditable", "false");
+  el.appendChild(handle);
+
+  handle.addEventListener("click", () => {
+    if (confirm("Remove this item?")) {
+      el.remove();
+      saveCurrentSlide();
+    }
+  });
+};
+
 const makeSlidePreview = (slide) => {
   const art = document.createElement("article");
-  art.classList.add("sd-slide");
+  art.classList.add("sd-slide", "shadow-lg");
   if (slide.classes !== "") art.classList.add(slide.classes.split(" "));
   art.dataset.file = slide.file;
   art.dataset.num = slide.num;
@@ -274,9 +292,12 @@ const makeSlidePreview = (slide) => {
       .forEach((a) => a.classList.remove("studio-selected"));
     art.classList.add("studio-selected");
     $classes.value = art.dataset.classes;
+    [...document.querySelectorAll("button")].forEach((b) => {
+      b.removeAttribute("disabled");
+    });
     $workbench.innerHTML = `
       <article
-        class="sd-slide ${art.dataset.classes}"
+        class="sd-slide ${art.dataset.classes} shadow-lg"
         data-file="${art.dataset.file}"
         data-num="${art.dataset.num}"
         data-classes="${art.dataset.classes}"
@@ -304,17 +325,7 @@ const makeSlidePreview = (slide) => {
       });
       makeDraggable(el, $slide);
       makeResizable(el, $slide);
-    });
-    let notesVisible = false;
-    document.getElementById("toggle-notes").addEventListener("click", () => {
-      if (notesVisible) {
-        $slide.style.display = "none";
-        $notesTextarea.style.display = "block";
-      } else {
-        $slide.style.display = "flex";
-        $notesTextarea.style.display = "none";
-      }
-      notesVisible = !notesVisible;
+      makeRemovable(el, $slide);
     });
   });
   $previews.append(art);
@@ -338,8 +349,39 @@ const fetchSlides = async () => {
   });
 };
 
+const bindButtonActions = () => {
+  let notesVisible = false;
+  document.getElementById("toggle-notes").addEventListener("click", () => {
+    if (notesVisible) {
+      $slide.style.display = "none";
+      $notesTextarea.style.display = "block";
+    } else {
+      $slide.style.display = "flex";
+      $notesTextarea.style.display = "none";
+    }
+    notesVisible = !notesVisible;
+  });
+
+  const addTextItem = async (tag, defaultText) => {
+    const el = document.createElement(tag);
+    el.textContent = defaultText;
+    const $slide = $workbench.querySelector("article.sd-slide");
+    $slide.appendChild(el);
+    await saveCurrentSlide();
+  };
+
+  document.getElementById("add-heading").addEventListener("click", () => {
+    addTextItem("h2", "Slide Title");
+  });
+
+  document.getElementById("add-paragraph").addEventListener("click", () => {
+    addTextItem("p", "Slide Text");
+  });
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
   await addPresentationStyles();
   await fetchSlides();
+  bindButtonActions();
   zoom = (100 * $workbench.clientWidth) / 1920;
 });
