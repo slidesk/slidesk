@@ -9,7 +9,7 @@ const md = markdownIt({
   typographer: true,
 });
 
-const prepareHTML = (slide: string) => {
+export const prepareHTML = (slide: string) => {
   let timerSlide = "";
   let timerCheckpoint = "";
   const content = `## ${slide
@@ -41,7 +41,7 @@ const render = (slide: string) => {
   return { timerSlide, timerCheckpoint, content };
 };
 
-const treatTitle = (slide: string, templates: SliDeskTemplate) => {
+export const treatTitle = (slide: string, templates: SliDeskTemplate) => {
   let content = slide;
   let classes = "";
   const slideTitle = slide.match("<h2>(.*)</h2>");

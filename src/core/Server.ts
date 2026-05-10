@@ -39,6 +39,7 @@ export default class SlideskServer {
         )),
       );
     server = Bun.serve({
+      development: false,
       port: Number(slideskEnv?.PORT ?? 1337),
       async fetch(req) {
         return fetch(req, this, serverFiles, serverPlugins, serverPath, env);

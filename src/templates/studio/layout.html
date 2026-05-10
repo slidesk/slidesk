@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            rel="shortcut icon"
+            href="favicon.svg"
+            sizes="any"
+            type="image/svg+xml"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="size-full flex flex-row bg-slate-100">
+        <aside
+            class="flex flex-col border-r border-slate-400 bg-slate-200 shadow-md"
+        >
+            <header
+                class="bg-white text-black flex flex-row items-center justify-start h-12 px-4 py-2 border-b border-slate-400 shadow-md"
+            >
+                <img src="slidesk.svg" class="w-8 h-8" />
+                <p class="font-bold pl-4">Studio</p>
+            </header>
+            <section id="previews" class="grow overflow-y-scroll"></section>
+        </aside>
+        <main class="grow flex flex-col">
+            <header
+                class="h-12 bg-white border-b border-slate-400 shadow-md flex flex-row justify-between items-center px-2"
+            >
+                <label class="mx-2 text-xs">
+                    Classes:
+                    <input id="classes" class="ml-2 border-b h-8 w-48" />
+                </label>
+                <div>
+                    <button
+                        id="add-heading"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
+                        type="button"
+                        disabled
+                    >
+                        <i class="ti ti-heading"></i>
+                    </button>
+                    <button
+                        id="add-paragraph"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
+                        type="button"
+                        disabled
+                    >
+                        <i class="ti ti-pilcrow"></i>
+                    </button>
+                    <!--button
+                        id="add-image"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
+                        type="button"
+                        disabled
+                    >
+                        <i class="ti ti-photo"></i>
+                    </button>
+                    <button
+                        id="add-variable"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
+                        type="button"
+                        disabled
+                    >
+                        <i class="ti ti-variable"></i>
+                        </button-->
+                </div>
+            </header>
+            <section
+                id="workbench"
+                class="grow flex items-center justify-center shadow-lg"
+            ></section>
+            <footer
+                class="h-12 bg-white border-t border-slate-400 shadow-md text-xs flex flex-row justify-between items-center px-2"
+            >
+                <button
+                    id="toggle-notes"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
+                    type="button"
+                    disabled
+                >
+                    <i class="ti ti-pencil"></i>
+                    Notes
+                </button>
+            </footer>
+        </main>
+        <script src="script.js"></script>
+    </body>
+</html>
