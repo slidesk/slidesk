@@ -120,7 +120,7 @@ const saveCurrentSlide = async () => {
       .find(
         (a) =>
           a.dataset.file === $slide.dataset.file &&
-          a.dataset.num == $slide.dataset.num,
+          a.dataset.num === $slide.dataset.num,
       )
       ?.click();
   }, 10);
@@ -221,19 +221,14 @@ const makeDraggable = (el, slide) => {
         handle.style.cursor = "grabbing";
       },
       onMove: (dx, dy, scale) => {
-        el.style.left =
-          Math.max(
-            0,
-            Math.min(startElX + dx * scale, slide.offsetWidth - el.offsetWidth),
-          ) + "px";
-        el.style.top =
-          Math.max(
-            0,
-            Math.min(
-              startElY + dy * scale,
-              slide.offsetHeight - el.offsetHeight,
-            ),
-          ) + "px";
+        el.style.left = `${Math.max(
+          0,
+          Math.min(startElX + dx * scale, slide.offsetWidth - el.offsetWidth),
+        )}px`;
+        el.style.top = `${Math.max(
+          0,
+          Math.min(startElY + dy * scale, slide.offsetHeight - el.offsetHeight),
+        )}px`;
       },
       onEnd: () => {
         handle.style.cursor = "grab";
@@ -256,14 +251,14 @@ const makeResizable = (el, slide) => {
     startDrag(e, el, slide, {
       immediate: true,
       onMove: (dx, dy, scale) => {
-        el.style.width = Math.max(50, startWidth + dx * scale) + "px";
-        el.style.height = Math.max(20, startHeight + dy * scale) + "px";
+        el.style.width = `${Math.max(50, startWidth + dx * scale)}px`;
+        el.style.height = `${Math.max(20, startHeight + dy * scale)}px`;
       },
     });
   });
 };
 
-const makeRemovable = (el, slide) => {
+const makeRemovable = (el) => {
   const handle = document.createElement("span");
   handle.className = "studio-remove-handle";
   handle.textContent = "🗑️";
@@ -289,9 +284,9 @@ const makeSlidePreview = (slide) => {
   art.addEventListener("click", (event) => {
     event.stopImmediatePropagation();
     event.preventDefault();
-    $previews
-      .querySelectorAll("article")
-      .forEach((a) => a.classList.remove("studio-selected"));
+    $previews.querySelectorAll("article").forEach((a) => {
+      a.classList.remove("studio-selected");
+    });
     art.classList.add("studio-selected");
     $classes.value = art.dataset.classes;
     [...document.querySelectorAll("button")].forEach((b) => {
@@ -327,7 +322,7 @@ const makeSlidePreview = (slide) => {
       });
       makeDraggable(el, $slide);
       makeResizable(el, $slide);
-      makeRemovable(el, $slide);
+      makeRemovable(el);
     });
   });
   $previews.append(art);
