@@ -143,10 +143,10 @@ const freezeSlideLayout = (slide) => {
   slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
     const rect = el.getBoundingClientRect();
     el.style.position = "relative";
-    el.style.left = (rect.left - slideRect.left) * scale + "px";
-    el.style.top = (rect.top - slideRect.top) * scale + "px";
-    el.style.width = rect.width * scale + "px";
-    el.style.height = rect.height * scale + "px";
+    el.style.left = `${(rect.left - slideRect.left) * scale}px`;
+    el.style.top = `${(rect.top - slideRect.top) * scale}px`;
+    el.style.width = `${rect.width * scale}px`;
+    el.style.height = `${rect.height * scale}px`;
   });
 
   slide.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
@@ -273,7 +273,7 @@ const makeRemovable = (el) => {
   });
 };
 
-const makeSlidePreview = (slide) => {
+const makeSlidePreview = (slide, editable = false) => {
   const art = document.createElement("article");
   art.classList.add("sd-slide", "shadow-lg");
   if (slide.classes !== "") art.classList.add(slide.classes.split(" "));
@@ -281,18 +281,19 @@ const makeSlidePreview = (slide) => {
   art.dataset.num = slide.num;
   art.dataset.classes = slide.classes;
   art.innerHTML = slide.content;
-  art.addEventListener("click", (event) => {
-    event.stopImmediatePropagation();
-    event.preventDefault();
-    $previews.querySelectorAll("article").forEach((a) => {
-      a.classList.remove("studio-selected");
-    });
-    art.classList.add("studio-selected");
-    $classes.value = art.dataset.classes;
-    [...document.querySelectorAll("button")].forEach((b) => {
-      b.removeAttribute("disabled");
-    });
-    $workbench.innerHTML = `
+  if (editable)
+    art.addEventListener("click", (event) => {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      $previews.querySelectorAll("article").forEach((a) => {
+        a.classList.remove("studio-selected");
+      });
+      art.classList.add("studio-selected");
+      $classes.value = art.dataset.classes;
+      [...document.querySelectorAll("button")].forEach((b) => {
+        b.removeAttribute("disabled");
+      });
+      $workbench.innerHTML = `
       <article
         class="sd-slide ${art.dataset.classes} shadow-lg"
         data-file="${art.dataset.file}"
@@ -303,28 +304,50 @@ const makeSlidePreview = (slide) => {
       </article>
       <textarea id="speaker-notes" style="zoom: ${zoom - 3}%"></textarea>
     `;
-    $classes.textContent = art.dataset.classes;
-    const $slide = $workbench.querySelector("article.sd-slide");
-    const $notesTextarea = document.getElementById("speaker-notes");
-    $notesTextarea.value = [...art.querySelectorAll("aside.sd-notes")]
-      .map((n) => decodeComments(n.textContent))
-      .join("\n");
-    $notesTextarea.addEventListener("blur", async () => {
-      await saveCurrentSlide();
-    });
-    [...$workbench.querySelectorAll("aside.sd-notes")].forEach((n) => {
-      n.remove();
-    });
-    $workbench.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
-      el.setAttribute("contenteditable", "true");
-      el.addEventListener("blur", async () => {
+      $classes.textContent = art.dataset.classes;
+      const $slide = $workbench.querySelector("article.sd-slide");
+      const $notesTextarea = document.getElementById("speaker-notes");
+      $notesTextarea.value = [...art.querySelectorAll("aside.sd-notes")]
+        .map((n) => decodeComments(n.textContent))
+        .join("\n");
+      $notesTextarea.addEventListener("blur", async () => {
         await saveCurrentSlide();
       });
-      makeDraggable(el, $slide);
-      makeResizable(el, $slide);
-      makeRemovable(el);
+      [...$workbench.querySelectorAll("aside.sd-notes")].forEach((n) => {
+        n.remove();
+      });
+      $workbench.querySelectorAll(EDITABLE_SELECTORS).forEach((el) => {
+        el.setAttribute("contenteditable", "true");
+        el.addEventListener("blur", async () => {
+          await saveCurrentSlide();
+        });
+        makeDraggable(el, $slide);
+        makeResizable(el, $slide);
+        makeRemovable(el);
+      });
     });
-  });
+  else
+    art.addEventListener("click", async (event) => {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      const prev = [...$previews.querySelectorAll("article")].at(-2);
+      const file = prev.dataset.file;
+      await fetch("/api/slide/edit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          file,
+          classes: "",
+          num: -1,
+          content: "## .[]\n",
+        }),
+      });
+      await fetchSlides();
+      setTimeout(() => {
+        const arr = [...$previews.querySelectorAll("article")];
+        arr[arr.length - 2].click();
+      }, 10);
+    });
   $previews.append(art);
 };
 
@@ -336,7 +359,7 @@ const fetchSlides = async () => {
   slides.slides.forEach((slide) => {
     if (file === "") file = slide.file;
     if (slide.file === file) lastNum = slide.num;
-    makeSlidePreview(slide);
+    makeSlidePreview(slide, true);
   });
   makeSlidePreview({
     file,

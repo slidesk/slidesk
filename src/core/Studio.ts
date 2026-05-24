@@ -1,13 +1,13 @@
-import layoutHTML from "../templates/studio/layout.html";
 import defaultCSS from "../templates/present/styles.css" with { type: "text" };
 import faviconSVG from "../templates/slidesk.svg" with { type: "text" };
+import layoutHTML from "../templates/studio/layout.html";
+import type { SliDeskStudioSlide } from "../types";
 import loadEnv from "../utils/loadEnv";
 import preload from "./babelfish/preload";
 import prepareSDF from "./babelfish/prepareSDF";
-import getStyles from "./studio/getStyles";
 import getSlides from "./studio/getSlides";
+import getStyles from "./studio/getStyles";
 import updateSlide from "./studio/updateSlide";
-import type { SliDeskStudioSlide } from "../types";
 
 const { error } = console;
 
