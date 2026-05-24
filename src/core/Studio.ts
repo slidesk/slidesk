@@ -8,6 +8,7 @@ import prepareSDF from "./babelfish/prepareSDF";
 import getSlides from "./studio/getSlides";
 import getStyles from "./studio/getStyles";
 import updateSlide from "./studio/updateSlide";
+import { getVariables, saveVariable } from "./studio/variables";
 
 const { error } = console;
 
@@ -55,6 +56,16 @@ export async function startStudio(port: number, talkdir: string) {
         POST: async (req) => {
           const body = await req.json();
           await updateSlide(slides, body);
+          return new Response("", { status: 200 });
+        },
+      },
+      "/api/variables": async () => {
+        return Response.json({ variables: await getVariables(talkdir) });
+      },
+      "/api/variables/save": {
+        POST: async (req) => {
+          const { name } = await req.json();
+          await saveVariable(talkdir, name);
           return new Response("", { status: 200 });
         },
       },

@@ -118,3 +118,10 @@ main {
         position: relative;
     }
 }
+
+#var-modal :where(select, input) {
+    margin-bottom: 0.75rem;
+}
+#var-modal p {
+    margin-bottom: 1rem;
+}

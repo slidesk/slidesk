@@ -58,7 +58,7 @@
                         disabled
                     >
                         <i class="ti ti-photo"></i>
-                    </button>
+                    </button-->
                     <button
                         id="add-variable"
                         class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
@@ -66,7 +66,7 @@
                         disabled
                     >
                         <i class="ti ti-variable"></i>
-                        </button-->
+                    </button>
                 </div>
             </header>
             <section
@@ -87,6 +87,39 @@
                 </button>
             </footer>
         </main>
+        <div
+            id="var-modal"
+            class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 text-black"
+        >
+            <div class="bg-white rounded-lg p-6 min-w-[320px] shadow-xl">
+                <p class="text-lg font-bold mb-4">Insert Variable</p>
+                <select
+                    id="var-select"
+                    class="w-full border rounded px-2 py-1 mb-3"
+                >
+                    <option value="">-- Select existing --</option>
+                </select>
+                <input
+                    id="var-input"
+                    class="w-full border rounded px-2 py-1 mb-4"
+                    placeholder="Or type a new variable name"
+                />
+                <div class="flex justify-end gap-2">
+                    <button
+                        id="var-cancel"
+                        class="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300 cursor-pointer"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        id="var-insert"
+                        class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white cursor-pointer"
+                    >
+                        Insert
+                    </button>
+                </div>
+            </div>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>
