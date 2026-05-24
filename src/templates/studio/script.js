@@ -1,5 +1,6 @@
 import TurndownService from "turndown";
 import "@tabler/icons-webfont/dist/tabler-icons.css";
+import "@tailwindcss/browser";
 
 let zoom = 0;
 const EDITABLE_SELECTORS = "h2, p, figure, pre";

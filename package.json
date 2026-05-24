@@ -12,6 +12,7 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
+    "@tailwindcss/browser": "^4.1.6",
     "@clack/prompts": "^1.2.0",
     "@tabler/icons-webfont": "^3.44.0",
     "clipse": "^0.0.18",

@@ -7,6 +7,7 @@
       "dependencies": {
         "@clack/prompts": "^1.2.0",
         "@tabler/icons-webfont": "^3.44.0",
+        "@tailwindcss/browser": "^4.1.6",
         "clipse": "^0.0.18",
         "html-minifier-terser": "^7.2.0",
         "markdown-it": "^14.1.1",
@@ -75,6 +76,8 @@
     "@tabler/icons": ["@tabler/icons@3.44.0", "", {}, "sha512-Wn0AOZG9sg0L+bjfMqq4eNhC6pQjIrk94LvvWYNYkY8KH8wC3YILRzQlrnVJc4FUeMxH/AK97QsYCX35H3LndA=="],
 
     "@tabler/icons-webfont": ["@tabler/icons-webfont@3.44.0", "", { "dependencies": { "@tabler/icons": "3.44.0", "svg-path-commander": "^2.1.11", "svgtofont": "^6.5.0" } }, "sha512-gN6SCXv88bL5Cehf10bVxBgi4q79WSzOrmjnKkSf6sxRdmRy27ZC+T5dXmqnU2PVGLLrBJqGkmMlHukNGFrl1A=="],
+
+    "@tailwindcss/browser": ["@tailwindcss/browser@4.3.0", "", {}, "sha512-izCuCS1V4c18DH47BbJuAPoCi7LP9gSSanr4k42cL+GN3Km/H3QO3fpMVVPXUBpAatHYgfmQWOmrNJqq+bzAAQ=="],
 
     "@thednp/dommatrix": ["@thednp/dommatrix@3.0.4", "", {}, "sha512-xpKtQZqFOuAPfQDbePIh9f48YKfmULV7z9C+anPBSHiOG4P+T3ct7Cx2AZOoUeXbxiDkz7SONANy1bB7p2uysg=="],
 
