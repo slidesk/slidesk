@@ -206,6 +206,7 @@ const makeDraggable = (el, slide) => {
   const handle = document.createElement("span");
   handle.className = "studio-drag-handle";
   handle.textContent = "🏄";
+  handle.title = "Drag";
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
@@ -241,6 +242,7 @@ const makeResizable = (el, slide) => {
   const handle = document.createElement("span");
   handle.className = "studio-resize-handle";
   handle.textContent = "📏";
+  handle.title = "Resize";
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
@@ -262,6 +264,7 @@ const makeRemovable = (el) => {
   const handle = document.createElement("span");
   handle.className = "studio-remove-handle";
   handle.textContent = "🗑️";
+  handle.title = "Remove";
   handle.setAttribute("contenteditable", "false");
   el.appendChild(handle);
 
