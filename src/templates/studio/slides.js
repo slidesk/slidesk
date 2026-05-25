@@ -3,13 +3,19 @@ import { serializeSlide } from "./editor.js";
 import { decodeComments } from "./comments.js";
 import { makeDraggable, makeResizable, makeRemovable } from "./actions.js";
 
+const getCleanSlideHTML = () => {
+  const clone = $workbench.querySelector("article.sd-slide").cloneNode(true);
+  clone.querySelectorAll(
+    ".studio-drag-handle, .studio-resize-handle, .studio-remove-handle, aside.sd-notes",
+  ).forEach((e) => e.remove());
+  return clone.innerHTML.replace(/>\s+</g, "><").trim();
+};
+
 export const saveCurrentSlide = async () => {
   const $notesTextarea = document.getElementById("speaker-notes");
   const $slide = $workbench.querySelector("article.sd-slide");
-  [...$slide.querySelectorAll(
-    ".studio-drag-handle, .studio-resize-handle, .studio-remove-handle",
-  )].forEach((e) => e.remove());
-  const html = $slide.innerHTML.replace(/>\s+</g, "><").trim();
+  $slide.dataset.classes = $classes.value;
+  const html = getCleanSlideHTML();
   const content = serializeSlide(html, $classes.value, $notesTextarea?.value || "");
   await fetch("/api/slide/edit", {
     method: "POST",
@@ -21,13 +27,15 @@ export const saveCurrentSlide = async () => {
       content,
     }),
   });
-  await fetchSlides();
-  const next = [...$previews.querySelectorAll("article")].find(
+  const preview = [...$previews.querySelectorAll("article")].find(
     (a) =>
       a.dataset.file === $slide.dataset.file &&
       a.dataset.num === $slide.dataset.num,
   );
-  setTimeout(() => next?.click(), 10);
+  if (preview) {
+    preview.dataset.classes = $slide.dataset.classes;
+    preview.innerHTML = getCleanSlideHTML();
+  }
 };
 
 const loadSlide = (art) => {

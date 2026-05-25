@@ -1,4 +1,3 @@
-import "@tabler/icons-webfont/dist/tabler-icons.css";
 import "@tailwindcss/browser";
 import { fetchSlides, saveCurrentSlide } from "./slides.js";
 import { addImageItem } from "./image.js";
