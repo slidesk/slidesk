@@ -96,7 +96,6 @@ main {
     bottom: auto;
     top: -18px;
 }
-
 [contenteditable]:hover {
     outline: 1px dashed #888;
 }
