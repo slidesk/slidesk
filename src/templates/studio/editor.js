@@ -45,13 +45,13 @@ turndownService.keep(["div", "iframe"]);
 
 export const serializeSlide = (html, classes, notesValue) => {
   if (html.indexOf("position: absolute;") !== -1)
-    return `## .[${classes}]\n${html.replace('contenteditable="true"', "")}\n/*\n${notesValue}\n*/`;
+    return `## .[${classes}]\n${html.replace('contenteditable="true"', "")}\n/*\n${notesValue}\n*/\n`;
   return turndownService
     .turndown(
       `${html}<aside class="sd-notes">${encodeComments(notesValue)}</aside>`,
     )
     .split("\n")
     .map((l, i) => (i === 0 ? `${l} .[${classes}]` : l))
-    .push("")
+    .concat("")
     .join("\n");
 };
