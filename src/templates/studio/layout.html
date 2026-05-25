@@ -51,14 +51,14 @@
                     >
                         <i class="ti ti-pilcrow"></i>
                     </button>
-                    <!--button
+                    <button
                         id="add-image"
                         class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
                         type="button"
                         disabled
                     >
                         <i class="ti ti-photo"></i>
-                    </button-->
+                    </button>
                     <button
                         id="add-variable"
                         class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-25 disabled:cursor-default"
@@ -87,6 +87,60 @@
                 </button>
             </footer>
         </main>
+        <div
+            id="image-modal"
+            class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 text-black"
+        >
+            <div class="bg-white rounded-lg p-6 min-w-[400px] shadow-xl">
+                <p class="text-lg font-bold mb-4">Insert Image</p>
+                <input
+                    id="img-src"
+                    class="w-full mb-2"
+                    type="file"
+                    accept="image/*"
+                />
+                <div class="flex gap-2 mb-2">
+                    <input
+                        id="img-width"
+                        class="w-1/2 border rounded px-2 py-1"
+                        placeholder="Width"
+                    />
+                    <input
+                        id="img-height"
+                        class="w-1/2 border rounded px-2 py-1"
+                        placeholder="Height"
+                    />
+                </div>
+                <input
+                    id="img-alt"
+                    class="w-full border rounded px-2 py-1 mb-2"
+                    placeholder="Alt text"
+                />
+                <input
+                    id="img-caption"
+                    class="w-full border rounded px-2 py-1 mb-2"
+                    placeholder="Caption"
+                />
+                <label class="flex items-center gap-2 mb-4 text-sm">
+                    <input id="img-hide-caption" type="checkbox" />
+                    Hide caption
+                </label>
+                <div class="flex justify-end gap-2">
+                    <button
+                        id="img-cancel"
+                        class="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300 cursor-pointer"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        id="img-insert"
+                        class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white cursor-pointer"
+                    >
+                        Insert
+                    </button>
+                </div>
+            </div>
+        </div>
         <div
             id="var-modal"
             class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 text-black"

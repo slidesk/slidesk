@@ -1,6 +1,7 @@
 import "@tabler/icons-webfont/dist/tabler-icons.css";
 import "@tailwindcss/browser";
 import { fetchSlides, saveCurrentSlide } from "./slides.js";
+import { addImageItem } from "./image.js";
 import { addVariableItem } from "./variables.js";
 
 export const EDITABLE_SELECTORS = "h2, p, figure, pre";
@@ -31,6 +32,7 @@ const bindButtonActions = () => {
   };
   document.getElementById("add-heading").addEventListener("click", () => addTextItem("h2", "Slide Title"));
   document.getElementById("add-paragraph").addEventListener("click", () => addTextItem("p", "Slide Text"));
+  document.getElementById("add-image").addEventListener("click", addImageItem);
   document.getElementById("add-variable").addEventListener("click", addVariableItem);
 };
 

@@ -122,6 +122,10 @@ main {
 #var-modal :where(select, input) {
     margin-bottom: 0.75rem;
 }
-#var-modal p {
+#image-modal :where(input:not([type="checkbox"])) {
+    margin-bottom: 0.5rem;
+}
+#var-modal p:first-child,
+#image-modal p:first-child {
     margin-bottom: 1rem;
 }

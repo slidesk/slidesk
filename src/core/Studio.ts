@@ -7,6 +7,7 @@ import preload from "./babelfish/preload";
 import prepareSDF from "./babelfish/prepareSDF";
 import getSlides from "./studio/getSlides";
 import getStyles from "./studio/getStyles";
+import { uploadImage } from "./studio/image";
 import updateSlide from "./studio/updateSlide";
 import { getVariables, saveVariable } from "./studio/variables";
 
@@ -68,6 +69,9 @@ export async function startStudio(port: number, talkdir: string) {
           await saveVariable(talkdir, name);
           return new Response("", { status: 200 });
         },
+      },
+      "/api/image/upload": {
+        POST: (req) => uploadImage(talkdir, req),
       },
     },
     async fetch(req) {

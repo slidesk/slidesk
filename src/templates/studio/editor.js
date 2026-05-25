@@ -52,5 +52,6 @@ export const serializeSlide = (html, classes, notesValue) => {
     )
     .split("\n")
     .map((l, i) => (i === 0 ? `${l} .[${classes}]` : l))
+    .push("")
     .join("\n");
 };
