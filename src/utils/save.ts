@@ -31,6 +31,7 @@ const save = async (
   options: SliDeskSaveOptions,
   additionalEnv: Record<string, unknown> = {},
 ) => {
+  if (talkdir === ".") talkdir = process.cwd();
   const env = { ...(await loadEnv(talkdir, options)), ...additionalEnv };
   const files = await convert(talkdir, options, env);
   const promises: Promise<number>[] = [];
