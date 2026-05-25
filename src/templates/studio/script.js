@@ -2,6 +2,7 @@ import "@tailwindcss/browser";
 import { fetchSlides, saveCurrentSlide } from "./slides.js";
 import { addImageItem } from "./image.js";
 import { addVariableItem } from "./variables.js";
+import "./css-editor.js";
 
 export const EDITABLE_SELECTORS = "h2, p, figure, pre";
 export const $previews = document.getElementById("previews");

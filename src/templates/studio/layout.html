@@ -87,6 +87,77 @@
                 </button>
             </footer>
         </main>
+        <aside
+            id="css-panel"
+            class="w-60 bg-white border-l border-slate-400 shadow-md flex flex-col text-xs overflow-y-auto"
+        >
+            <section id="css-element" class="hidden">
+                <header class="h-8 bg-slate-100 border-b border-slate-400 flex items-center px-3 font-semibold">
+                    Element
+                </header>
+                <div class="p-3 space-y-2">
+                    <label class="flex items-center justify-between">
+                        Color
+                        <input id="css-color" type="color" class="w-8 h-8 p-0 border rounded cursor-pointer" />
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Size
+                        <select id="css-size" class="border rounded px-1 py-0.5 w-20">
+                            <option value="">inherit</option>
+                            <option>0.75rem</option><option>0.875rem</option><option>1rem</option>
+                            <option>1.25rem</option><option>1.5rem</option><option>2rem</option>
+                            <option>2.5rem</option><option>3rem</option><option>4rem</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Weight
+                        <select id="css-weight" class="border rounded px-1 py-0.5 w-20">
+                            <option value="">inherit</option>
+                            <option>normal</option><option>bold</option>
+                            <option>100</option><option>200</option><option>300</option>
+                            <option>400</option><option>500</option><option>600</option>
+                            <option>700</option><option>800</option><option>900</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Style
+                        <select id="css-style" class="border rounded px-1 py-0.5 w-20">
+                            <option value="">inherit</option>
+                            <option>normal</option><option>italic</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Align
+                        <select id="css-align" class="border rounded px-1 py-0.5 w-20">
+                            <option value="">inherit</option>
+                            <option>left</option><option>center</option><option>right</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Bg color
+                        <span class="flex items-center gap-1">
+                            <input id="css-el-bg" type="color" class="w-8 h-8 p-0 border rounded cursor-pointer" />
+                            <button id="css-el-bg-clear" class="w-5 h-5 flex items-center justify-center text-xs rounded hover:bg-slate-200 cursor-pointer disabled:opacity-25 disabled:cursor-default" type="button" title="Clear background">✕</button>
+                        </span>
+                    </label>
+                </div>
+            </section>
+            <section id="css-slide">
+                <header class="h-8 bg-slate-100 border-b border-slate-400 flex items-center px-3 font-semibold">
+                    Slide
+                </header>
+                <div class="p-3 space-y-2">
+                    <label class="flex items-center justify-between">
+                        Bg color
+                        <input id="css-slide-bg" type="color" class="w-8 h-8 p-0 border rounded cursor-pointer" />
+                    </label>
+                    <label class="flex items-center justify-between">
+                        Bg image
+                        <input id="css-slide-img" type="file" accept="image/*" class="w-32 text-[0.6rem]" />
+                    </label>
+                </div>
+            </section>
+        </aside>
         <div
             id="image-modal"
             class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 text-black"
