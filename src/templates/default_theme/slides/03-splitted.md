@@ -16,3 +16,5 @@ A text
 - 🏢 Dev'in
 
 [[/right]]
+
+`slidesk template install @gouz/split`

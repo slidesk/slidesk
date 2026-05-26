@@ -3,8 +3,9 @@ import { Clipse } from "clipse";
 import defaultThemeFiles from "../../templates/default_theme";
 import { question } from "../../utils/interactCLI";
 import slugify from "../../utils/slugify";
+import { templateInstall } from "../template/install";
 
-const { log } = console;
+const { error, log } = console;
 
 const createDefault = async (dirName: string, responseTitle: string) => {
   mkdirSync(dirName, { recursive: true });
@@ -36,7 +37,18 @@ const createCmd = new Clipse(
 createCmd
   .addArguments([{ name: "talk", description: "name of your talk/directory" }])
   .action(async (args) => {
-    await create(args.talk ?? "");
+    const talk = args.talk ?? "";
+    if (talk.trim() === "") {
+      error("You must specify an argument (talk directory)");
+      process.exit(1);
+    }
+    await create(talk);
+    await templateInstall(
+      "@gouz__split",
+      "https://slidesk.link",
+      false,
+      `${process.cwd()}/${talk}`,
+    );
     process.exit(0);
   });
 

@@ -8,6 +8,7 @@ export const templateInstall = async (
   name = "",
   urlLink = "https://slidesk.link",
   update = false,
+  target = process.cwd(),
 ): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the template";
@@ -25,32 +26,30 @@ export const templateInstall = async (
     return "";
   }
   const templateTarball = await templateTarballResponse.blob();
-  const tmp = `${process.cwd()}/templates/${templateName}/link.tgz`;
+  const tmp = `${target}/templates/${templateName}/link.tgz`;
   await Bun.write(tmp, templateTarball);
   await extract({
     file: tmp,
-    C: `${process.cwd()}/templates/${templateName}`,
+    C: `${target}/templates/${templateName}`,
   });
   await Bun.file(tmp).unlink();
   const glob = new Bun.Glob("**/*");
   for await (const file of glob.scan(
-    `${process.cwd()}/templates/${templateName}/${template.join("__")}`,
+    `${target}/templates/${templateName}/${template.join("__")}`,
   )) {
     await Bun.write(
-      `${process.cwd()}/templates/${templateName}/${file}`,
+      `${target}/templates/${templateName}/${file}`,
       await Bun.file(
-        `${process.cwd()}/templates/${templateName}/${template.join("__")}/${file}`,
+        `${target}/templates/${templateName}/${template.join("__")}/${file}`,
       ).arrayBuffer(),
     );
   }
-  await rm(
-    `${process.cwd()}/templates/${templateName}/${template.join("__")}`,
-    {
-      recursive: true,
-    },
-  );
+  await rm(`${target}/templates/${templateName}/${template.join("__")}`, {
+    recursive: true,
+  });
   return `template ${templateName.replace("__", "/")} ${update ? "updated" : "installed"}`;
 };
+
 const templateInstallCmd = new Clipse("install", "slidesk template installer");
 templateInstallCmd
   .addArguments([{ name: "name", description: "name of the template" }])

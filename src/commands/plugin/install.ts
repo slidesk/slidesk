@@ -8,6 +8,7 @@ export const pluginInstall = async (
   name = "",
   urlLink = "https://slidesk.link",
   update = false,
+  target = process.cwd(),
 ): Promise<string> => {
   if (name === "") {
     return "Please provide a name for the plugin";
@@ -25,29 +26,29 @@ export const pluginInstall = async (
     return "";
   }
   const pluginTarball = await pluginTarballResponse.blob();
-  const tmp = `${process.cwd()}/plugins/${pluginName}/link.tgz`;
+  const tmp = `${target}/plugins/${pluginName}/link.tgz`;
   await Bun.write(tmp, pluginTarball);
   await extract({
     file: tmp,
-    C: `${process.cwd()}/plugins/${pluginName}`,
+    C: `${target}/plugins/${pluginName}`,
   });
   await Bun.file(tmp).unlink();
   const glob = new Bun.Glob("**/*");
   for await (const file of glob.scan(
-    `${process.cwd()}/plugins/${pluginName}/${plugin.join("__")}`,
+    `${target}/plugins/${pluginName}/${plugin.join("__")}`,
   )) {
     await Bun.write(
-      `${process.cwd()}/plugins/${pluginName}/${file}`,
+      `${target}/plugins/${pluginName}/${file}`,
       await Bun.file(
-        `${process.cwd()}/plugins/${pluginName}/${plugin.join("__")}/${file}`,
+        `${target}/plugins/${pluginName}/${plugin.join("__")}/${file}`,
       ).arrayBuffer(),
     );
   }
-  await rm(`${process.cwd()}/plugins/${pluginName}/${plugin.join("__")}`, {
+  await rm(`${target}/plugins/${pluginName}/${plugin.join("__")}`, {
     recursive: true,
   });
   const pluginJSON = await Bun.file(
-    `${process.cwd()}/plugins/${pluginName}/plugin.json`,
+    `${target}/plugins/${pluginName}/plugin.json`,
   ).json();
   ["addStyles", "addScripts", "addSpeakerScripts", "addSpeakerStyles"].forEach(
     (p, _) => {
@@ -65,7 +66,7 @@ export const pluginInstall = async (
     );
   }
   await Bun.write(
-    `${process.cwd()}/plugins/${pluginName}/plugin.json`,
+    `${target}/plugins/${pluginName}/plugin.json`,
     JSON.stringify(pluginJSON),
   );
   return `Plugin ${pluginName.replace("__", "/")} ${update ? "updated" : "installed"}`;
