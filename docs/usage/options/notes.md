@@ -13,7 +13,7 @@ slidesk -n hidden-path
 ```
 
 
-![speaker view](./_media/notes.png)
+![speaker view](../../_media/notes.png)
 
 In the speaker view, you can view:
 
@@ -58,4 +58,4 @@ This syntax in your `.(sdf|md)` defines a checkpoint. In this example, when your
 
 This syntax allow to display a new clock which the time you want. Here, a 2 minutes clock will be shown. After the time specified, this clock will have a red background, to warn you you reach the limits.
 
-![timers](./_media/timers.png)
+![timers](../../_media/timers.png)
