@@ -25,4 +25,3 @@ RUN chmod +x exe/slidesk
 FROM ubuntu:jammy
 COPY --from=prerelease /usr/src/app/exe/slidesk /bin/slidesk
 WORKDIR /slidesk
-CMD ["slidesk"]
