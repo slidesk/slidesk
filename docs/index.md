@@ -1,40 +1,76 @@
-# About SliDesk
+# SliDesk
 
 ![logo](_media/icon.svg){width=250}
 
-A contraction of the words "Slide" and "Desk", this open-source project aims to be a tool for both slide creation and presentation at conferences.
+SliDesk is a talk engine that turns Markdown into web-based presentations. Lightweight, extensible via plugins, and built with [Bun](https://bun.sh).
 
-Write your talk/presentation in a MarkDown, generate it and visualize it in Web.
+## Installation
 
-SliDesk is a new talk engine like RevealJS or SliDev developped with [Bun](https://bun.sh).
+Choose your method:
 
-Plugins, Components, Themes, Templates can be found here : https://slidesk.link
+- **Homebrew** (macOS/Linux):
+  ```sh
+  brew tap gouz/tools && brew install slidesk
+  ```
 
-A VSCode extension is available too : https://github.com/slidesk/vscode-sdf-language
+- **Bun** (any platform):
+  ```sh
+  bunx slidesk
+  ```
 
-The initial specifications for SliDesk (https://github.com/slidesk/slidesk) corresponded to the following list of features:
+- **Debian/Ubuntu** — download the `.deb` from the [releases page](https://github.com/slidesk/slidesk/releases).
 
-- Server
-- Presentation View
-- Speaker view:
-- Displaying the current and next slide
-- Timer(s)
-- Viewing speech notes
-- Watcher: if a file is modified, the displayed presentation is updated
-- Image management
-- Theme management
-- Plugin operation to add functionality as needed
-- A presentation generator (the essential files to get started)
+- **Docker**:
+  ```sh
+  docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest slidesk
+  ```
 
-Modular operation is essential. SliDesk must be a lightweight tool, but expandable as needed.
+## Create a presentation
 
-The advantage of using Bun is that it can generate a binary executable that does not need any dependencies.
+```sh
+slidesk create my-talk
+```
 
-## Why a new tool???
+SliDesk will ask for a title and optionally generate a `custom.css`. This creates a `my-talk/` directory containing a `main.md` file.
 
-I decided to create my own tool for my talks, because:
+## Write slides
 
-- It's fun to create something
-- I want to have a tool which do only the minimum
-- I want a very tiny light tool
-- I want it to be permissive a lot (you can add html tags in without any problem)
+Slides are written in Markdown. Each `## ` heading starts a new slide.
+
+```markdown
+## First Slide
+
+# My Talk
+
+Welcome to SliDesk!
+
+## Second Slide
+
+- Bullet points
+- Work as expected
+
+!image(image.jpg)
+```
+
+See the [full syntax guide](syntax/) for details.
+
+## Present
+
+```sh
+slidesk my-talk
+```
+
+Open http://localhost:1337 in your browser.
+
+While running, use the terminal to navigate:
+- **Enter** — next slide
+- **P + Enter** — previous slide
+- **Q** — quit
+
+Add speaker notes: `slidesk my-talk -n` (opens `notes.html`).
+
+## Next steps
+
+- [Configuration guide](configuration/) — customize ports, HTTPS, transitions
+- [Plugins](addons/) — extend SliDesk with extras
+- [Deploy](deploy/) — export a standalone HTML bundle
