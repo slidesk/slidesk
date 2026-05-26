@@ -17,6 +17,7 @@ This `json` file describes the comportement of the plugin. Each keys of the json
 - `addHTML`: add some html at the end of the presentation
 - `addHTMLFromFiles`: an array of html files to append in the `body`
 - `addScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry)
+- `addScriptModules`: an array of ressources to load as ES modules (will be convert to `script` tag with `type="module"` and `src` value as each entry)
 - `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
 - `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
 - `addSpeakerStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry) but on speaker view

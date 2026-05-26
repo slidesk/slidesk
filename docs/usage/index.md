@@ -1,18 +1,18 @@
 # Usage
 
-SliDesk has many options
+SliDesk has many subcommands and options.
 
 ```sh
 slidesk -h
 ```
 
-will render something like this:
+will render something like:
 
 ```
  ____(•)<
-(SliDesk) v:2.16.0
+(SliDesk) v:2.16.5
 
-slidesk 2.16.0
+slidesk 2.16.5
 Your presentation companion
 
 Usage: slidesk [options] [arguments]
@@ -36,7 +36,23 @@ Arguments:
   talk  directory of your talk
 ```
 
-We can see that there are several options, that the "talk" consists of a directory (if not specified, SliDesk takes the current directory) and that there is a command to create talks.
+The `talk` argument is a directory containing your `main.sdf` or `main.md` file. If not specified, SliDesk uses the current directory.
+
+## Subcommands overview
+
+| Command | Description |
+|---------|-------------|
+| `present` (default) | Convert and serve your presentation with live reload |
+| `create` | Scaffold a new talk directory |
+| `save` | Export presentation as static HTML + assets |
+| `deploy` | Generate CI/CD files for GitHub, GitLab, or slidesk.link |
+| `link` | Interact with the slidesk.link hub (login, host, push) |
+| `plugin` | Install, update, remove, search, and push plugins |
+| `component` | Install, update, remove, search, and push components |
+| `template` | Install, update, remove, search, and push templates |
+| `theme` | Install, update, remove, search, and push themes |
+
+## Present options
 
 ```bash
 slidesk present -h
@@ -55,16 +71,22 @@ Arguments:
   talk  directory of your talk
 ```
 
+## Common option patterns
 
-As far as options are concerned, the one that will undoubtedly be most frequently used is `-n`, which generates the Speaker view. Coupled with the `-t` option, this will enable you to better manage your time via the checkpoints defined in your presentation, as seen above.
-
-To simplify the call, you can use a simplified syntax:
+The most frequently used option is `-n`, which enables the Speaker view. Combined with `-t`, you get both the speaker view and a telnet server:
 
 ```sh
-slidesk present -tn
+slidesk -tn my-talk
 ```
 
-Which combines the `-t` and `-n` options.
+This combines `-t` (telnet) and `-n` (notes).
 
+Since `present` is the default subcommand, you can omit it:
 
-`present` is the default subcommand, so `slidesk present -tn` can be simplified with `slidesk -tn`
+```sh
+slidesk -tn my-talk         # same as: slidesk present -tn my-talk
+slidesk -no my-talk         # speaker notes + auto-open browser
+slidesk -g my-talk          # hide terminal help info
+slidesk -l fr my-talk       # present in French
+slidesk -c custom.toml my-talk  # use a custom config file
+```

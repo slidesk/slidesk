@@ -2,39 +2,45 @@
 
 ![logo](_media/icon.svg){width=250}
 
-A contraction of the words "Slide" and "Desk", this open-source project aims to be a tool for both slide creation and presentation at conferences.
+A contraction of the words **Slide** and **Desk**, this open-source project aims to be a tool for both slide creation and presentation at conferences.
 
-Write your talk/presentation in a MarkDown, generate it and visualize it in Web.
+Write your talk/presentation in Markdown, generate it and visualize it in the web.
 
-SliDesk is a new talk engine like RevealJS or SliDev developped with [Bun](https://bun.sh).
+SliDesk is a talk engine similar to RevealJS or SliDev, developed with [Bun](https://bun.sh).
 
-Plugins, Components, Themes, Templates can be found here : https://slidesk.link
+## Features
 
-A VSCode extension is available too : https://github.com/slidesk/vscode-sdf-language
+- **Server** with live reload via WebSocket
+- **Presentation view** with keyboard, touch, and swipe navigation
+- **Speaker view** showing the current and next slide, timer(s), and speech notes
+- **File watcher** — if a file is modified, the presentation updates in real time
+- **Image management** with responsive sizing and captions
+- **Theme system** with CSS custom properties for full visual control
+- **Plugin system** to add front-end scripts, back-end routes, and WebSocket handlers
+- **Component system** for custom HTML transformations
+- **Template system** with named blocks and reusable layouts
+- **Internationalisation** with `.lang.json` translation files
+- **Presentation generator** (`slidesk create`) to scaffold new talks
+- **Telnet server** to present from a terminal
+- **Hub** at [slidesk.link](https://slidesk.link) to share and discover addons
 
-The initial specifications for SliDesk (https://github.com/slidesk/slidesk) corresponded to the following list of features:
-
-- Server
-- Presentation View
-- Speaker view:
-- Displaying the current and next slide
-- Timer(s)
-- Viewing speech notes
-- Watcher: if a file is modified, the displayed presentation is updated
-- Image management
-- Theme management
-- Plugin operation to add functionality as needed
-- A presentation generator (the essential files to get started)
+## Philosophy
 
 Modular operation is essential. SliDesk must be a lightweight tool, but expandable as needed.
 
-The advantage of using Bun is that it can generate a binary executable that does not need any dependencies.
+The advantage of using Bun is that it can generate a standalone binary executable that does not need any dependencies.
 
-## Why a new tool???
+## Why a new tool?
 
-I decided to create my own tool for my talks, because:
+I decided to create my own tool for my talks because:
 
 - It's fun to create something
-- I want to have a tool which do only the minimum
-- I want a very tiny light tool
-- I want it to be permissive a lot (you can add html tags in without any problem)
+- I want a tool that does only the minimum
+- I want a very tiny, light tool
+- I want it to be permissive — you can embed raw HTML, Vue, React, Svelte, etc. without any problem
+
+## Links
+
+- **Source code**: https://github.com/slidesk/slidesk
+- **Hub (plugins, themes, templates, components)**: https://slidesk.link
+- **VSCode extension**: https://github.com/slidesk/vscode-sdf-language

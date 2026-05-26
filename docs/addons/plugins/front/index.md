@@ -2,15 +2,17 @@
 
 The `hooks` used in front plugin are:
 
-- `addHTML`: add some html at the end of the presentation
-- `addHTMLFromFiles`: an array of html files to append in the `body`
-- `addScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry)
-- `addScriptModules`: an array of ressources to load as modules (will be convert to `script` tag with `src` value as each entry and `type="module"`)
-- `addSpeakerScripts`: an array of ressources to load (will be convert to `script` tag with `src` value as each entry) but on speaker view
-- `addStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry)
-- `addSpeakerStyles`: an array of ressources to load (will be convert to `link` tag with `href` value as each entry) but on speaker view
-- `onSlideChange`: javascript code which will be executed after a slide is changed
-- `onSpeakerViewSlideChange`: javascript code which will be executed after a slide is changed
+| Hook | Type | Description |
+|------|------|-------------|
+| `addHTML` | string | HTML injected at the end of the presentation body |
+| `addHTMLFromFiles` | string[] | Array of HTML file paths to append in the body |
+| `addScripts` | string[] | Script URLs loaded as `<script src="...">` |
+| `addScriptModules` | string[] | Script URLs loaded as `<script type="module" src="...">` |
+| `addSpeakerScripts` | string[] | Script URLs loaded only in the speaker view |
+| `addStyles` | string[] | CSS URLs loaded as `<link rel="stylesheet" href="...">` |
+| `addSpeakerStyles` | string[] | CSS URLs loaded only in the speaker view |
+| `onSlideChange` | string | JavaScript code executed after each slide change |
+| `onSpeakerViewSlideChange` | string | JavaScript code executed after each slide change in speaker view |
 
 ## Creation of a Webcam plugin
 

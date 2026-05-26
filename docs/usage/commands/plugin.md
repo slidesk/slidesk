@@ -1,14 +1,47 @@
 # Manage plugins
 
-!!!info
-    since **2.14.0**
+> since **2.14.0**
 
-SliDesk has a hub in https://slidesk.link.
+Plugins extend SliDesk with front-end scripts, styles, server-side routes, and WebSocket handlers. Find them on the hub at https://slidesk.link.
 
-A command allows you to install plugins from this repository:
+## Search
+
+Search for available plugins:
 
 ```sh
-slidesk plugin install <name>
+slidesk plugin search steps
 ```
 
-You have 5 actions available for plugins: `install`, `update`, `remove`, `push` and `search`.
+## Install
+
+Install a plugin into your talk's `plugins/` directory:
+
+```sh
+slidesk plugin install @gouz/steps
+```
+
+## Update
+
+Update an installed plugin:
+
+```sh
+slidesk plugin update @gouz/steps
+```
+
+## Remove
+
+Remove a plugin:
+
+```sh
+slidesk plugin remove @gouz/steps
+```
+
+## Push
+
+Share your own plugin (requires `slidesk link login`):
+
+```sh
+slidesk plugin push my-plugin
+```
+
+Your plugin must have a `plugins/my-plugin/plugin.json` file defining its hooks. See the [plugin documentation](/addons/plugins) for the full reference.

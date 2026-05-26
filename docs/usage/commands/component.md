@@ -1,15 +1,47 @@
 # Manage components
 
-!!!info
-    since **2.14.0**
+> since **2.14.0**
 
+Components are reusable `.mjs` modules that transform slide HTML during the build. They can be shared via the hub at https://slidesk.link.
 
-SliDesk has a hub in https://slidesk.link.
+## Search
 
-A command allows you to install components from this repository:
+Search for available components on the hub:
 
 ```sh
-slidesk component install <name>
+slidesk component search qrcode
 ```
 
-You have 5 actions available for components: `install`, `update`, `remove`, `push` and `search`.
+## Install
+
+Install a component from the hub into your talk's `components/` directory:
+
+```sh
+slidesk component install @gouz/qrcode
+```
+
+## Update
+
+Update an installed component to the latest version:
+
+```sh
+slidesk component update @gouz/qrcode
+```
+
+## Remove
+
+Remove a component from your talk:
+
+```sh
+slidesk component remove @gouz/qrcode
+```
+
+## Push
+
+Share your own component with the community (requires `slidesk link login`):
+
+```sh
+slidesk component push my-component
+```
+
+The component must be a single `.mjs` file in the `components/` directory following the [component convention](/addons/components).
