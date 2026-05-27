@@ -34,8 +34,17 @@ Download the `.deb` file from the [releases page](https://github.com/slidesk/sli
 
 ## Docker
 
+SliDesk is also available as a Docker image (`gouz/slidesk`):
+
 ```sh
+# Present a talk from the current directory
 docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest slidesk
+
+# Create a new talk
+docker run -it -v "$(pwd)"/:/slidesk/ gouz/slidesk:latest slidesk create my-talk
+
+# Export as static site
+docker run -it -v "$(pwd)"/:/slidesk/ gouz/slidesk:latest slidesk save my-talk
 ```
 
 SliDesk is now accessible at http://localhost:1337.

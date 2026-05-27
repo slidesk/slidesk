@@ -2,6 +2,8 @@
 
 Search, install, update, remove, and push addons (plugins, components, templates, themes) from the hub.
 
+All addon commands accept `--slidesk-link-url <url>` to point to a custom hub instance (default: `https://slidesk.link`).
+
 ## Search
 
 ```sh

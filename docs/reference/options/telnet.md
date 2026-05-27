@@ -6,6 +6,8 @@
 
 Launches a telnet server alongside the HTTP server.
 
+When TLS (`KEY` / `CERT`) is configured in `slidesk.toml`, the telnet server also serves over TLS for encrypted connections.
+
 ```sh
 slidesk -t my-talk
 telnet localhost 2323

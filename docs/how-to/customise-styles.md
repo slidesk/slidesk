@@ -47,6 +47,10 @@ SliDesk exposes CSS variables for easy theming:
 
 You're free to add your own styles on top.
 
+## Auto-included assets
+
+Any `.css` or `.js` file placed in the `templates/` or `themes/` directory of your talk is automatically loaded by SliDesk -- no need to list them in `add_styles` or `add_scripts`.
+
 ## Shared common directory
 
 To share themes, plugins, and assets across multiple presentations, set `COMMON_DIR` in `slidesk.toml`:

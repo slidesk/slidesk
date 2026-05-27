@@ -6,7 +6,7 @@ Scaffold a new talk directory.
 slidesk create mytalk
 ```
 
-Prompts for a title and optional custom CSS.
+Prompts for a title, then scaffolds the talk directory and auto-installs the `@gouz/split` template for multi-column layouts.
 
 ## Generated structure
 
@@ -14,7 +14,6 @@ Prompts for a title and optional custom CSS.
 mytalk/
 ├── main.md            # your slides in Markdown
 ├── slidesk.toml       # optional config file
-├── custom.css         # optional, only if you answered yes
 ├── slides/            # slide fragments (referenced via !include)
 ├── themes/
 │   └── default/

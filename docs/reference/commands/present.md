@@ -8,6 +8,8 @@ slidesk my-talk
 
 SliDesk watches the talk directory for file changes and automatically refreshes the browser.
 
+When the server starts, a QR code is displayed in the terminal pointing to the presentation URL for easy access from mobile devices.
+
 ## Options
 
 ```sh

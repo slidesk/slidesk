@@ -17,6 +17,7 @@ Subcommands:
 Options:
   -h, --help                show help
   -v, --version             show version
+  --slidesk-link-url <url>  custom hub URL (default: https://slidesk.link)
 
 Arguments:
   talk  directory of your talk

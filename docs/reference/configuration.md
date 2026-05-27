@@ -106,7 +106,9 @@ TELNET_PORT=2323
 
 ## COMMON_DIR
 
-Path to a shared directory for reusing themes, plugins, and assets across multiple presentations.
+Path to a shared directory for reusing themes, plugins, templates, components, and assets across multiple presentations.
+
+Plugins placed in `COMMON_DIR/plugins/` are automatically loaded alongside local plugins.
 
 ```toml
 [slidesk]

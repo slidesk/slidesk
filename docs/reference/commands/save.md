@@ -9,6 +9,7 @@ slidesk save -t public mytalk
 ## Options
 
 ```
-  -t, --target <path>        output directory
-  -n, --notes                include speaker notes view
+  -t, --target <path>        output directory (default: "public")
+  -c, --conf <file>          custom slidesk.toml path
+  -l, --lang <code>          language version
 ```
