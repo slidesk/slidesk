@@ -17,30 +17,12 @@ SliDesk is a talk engine that turns Markdown into web-based presentations. Light
 - **Hub integration** — share and discover addons at [slidesk.link](https://slidesk.link)
 - **Deploy** — export static HTML, or CI/CD for GitHub/GitLab Pages
 
-## Installation
-
-Choose your method:
-
-- **Homebrew** (macOS/Linux):
-  ```sh
-  brew tap gouz/tools && brew install slidesk
-  ```
-
-- **Bun** (any platform):
-  ```sh
-  bunx slidesk
-  ```
-
-- **Debian/Ubuntu** — download the `.deb` from the [releases page](https://github.com/slidesk/slidesk/releases).
-
-- **Docker**:
-  ```sh
-  docker run -it -v "$(pwd)"/:/slidesk/ -p 1337:1337 gouz/slidesk:latest slidesk
-  ```
-
 ## Quick start
 
 ```sh
+# Install via Homebrew (macOS/Linux)
+brew tap gouz/tools && brew install slidesk
+
 # Create a new talk
 slidesk create my-talk
 
@@ -50,45 +32,11 @@ slidesk my-talk
 # Open http://localhost:1337
 ```
 
-## Write slides
+See the [installation tutorial](tutorials/01-installation) for other install methods.
 
-Slides are written in Markdown. Each `## ` heading starts a new slide.
+## Documentation
 
-```markdown
-## First Slide
-
-# My Talk
-
-Welcome to SliDesk!
-
-## Second Slide
-
-- Bullet points
-- Work as expected
-
-!image(image.jpg)
-```
-
-See the [full syntax guide](syntax/) for details.
-
-## Present
-
-```sh
-slidesk my-talk
-```
-
-Open http://localhost:1337 in your browser.
-
-While running, use the terminal to navigate:
-- **Enter** — next slide
-- **P + Enter** — previous slide
-- **Q** — quit
-
-Add speaker notes: `slidesk my-talk -n` (opens `notes.html`).
-
-## Next steps
-
-- [Configuration guide](configuration/) — customize ports, HTTPS, transitions, domain
-- [Plugins & addons](addons/) — extend SliDesk with extras
-- [Usage & commands](usage/) — all CLI subcommands and options
-- [Deploy](deploy/) — export a standalone HTML bundle or CI/CD
+- [Tutorials](tutorials) — learn SliDesk step by step
+- [How-to Guides](how-to) — solve specific tasks
+- [Reference](reference) — commands, options, syntax, APIs
+- [Explanation](explanation) — background and architecture
