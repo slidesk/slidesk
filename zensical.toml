@@ -10,6 +10,10 @@ repo_url = "https://github.com/slidesk/slidesk"
 repo_name = "slidesk/slidesk"
 extra_css = ["stylesheets/extra.css"]
 
+[[project.extra_javascript]]
+path = "scripts/extra.js"
+type = "module"
+
 [project.theme]
 variant = "modern"
 logo = "_media/icon.svg"
