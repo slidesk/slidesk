@@ -9,6 +9,81 @@ Copyright &copy; 2026 SliDesk
 repo_url = "https://github.com/slidesk/slidesk"
 repo_name = "slidesk/slidesk"
 extra_css = ["stylesheets/extra.css"]
+nav = [
+    "index.md",
+
+    { Tutorials = [
+        "tutorials/index.md",
+        "tutorials/01-installation.md",
+        "tutorials/02-your-first-presentation.md",
+        "tutorials/03-adding-content.md",
+        "tutorials/04-going-further.md"
+    ]},
+
+    { "How-to Guides" = [
+        "how-to/index.md",
+        "how-to/customise-styles.md",
+        "how-to/create-components.md",
+        "how-to/create-plugins.md",
+        "how-to/create-themes.md",
+        "how-to/export-static-site.md",
+        "how-to/deploy-github-pages.md",
+        "how-to/deploy-gitlab-pages.md",
+        "how-to/manage-addons.md",
+        "how-to/use-hub-slidesk-link.md",
+        "how-to/use-speaker-notes.md",
+        "how-to/use-templates.md"
+    ]},
+
+    { Explanation = [
+        "explanation/index.md",
+        "explanation/why-slidesk.md",
+        "explanation/how-slidesk-works.md",
+        "explanation/addon-architecture.md"
+    ]},
+
+    { Reference = [
+        "reference/index.md",
+        "reference/cli.md",
+        "reference/configuration.md",
+        "reference/component-api.md",
+        "reference/plugin-hooks.md",
+        "reference/template-format.md",
+
+        { Commands = [
+            "reference/commands/component.md",
+            "reference/commands/create.md",
+            "reference/commands/deploy.md",
+            "reference/commands/link.md",
+            "reference/commands/plugin.md",
+            "reference/commands/present.md",
+            "reference/commands/save.md",
+            "reference/commands/template.md",
+            "reference/commands/theme.md"
+        ]},
+
+        { Options = [
+            "reference/options/conf.md",
+            "reference/options/help.md",
+            "reference/options/hidden.md",
+            "reference/options/lang.md",
+            "reference/options/notes.md",
+            "reference/options/open.md",
+            "reference/options/telnet.md",
+            "reference/options/version.md"
+        ]},
+
+        { Syntax = [
+            "reference/syntax/index.md",
+            "reference/syntax/comments.md",
+            "reference/syntax/images.md",
+            "reference/syntax/includes.md",
+            "reference/syntax/internationalisation.md",
+            "reference/syntax/speaker-notes.md",
+            "reference/syntax/urls.md"
+        ]}
+    ]}
+]
 
 [[project.extra_javascript]]
 path = "scripts/extra.js"
@@ -26,15 +101,12 @@ features = [
     "content.footnote.tooltips",
     "content.tabs.link",
     "content.tooltips",
-    #"navigation.expand",
+    "navigation.expand",
     "navigation.footer",
     "navigation.instant",
     "navigation.instant.prefetch",
     "navigation.path",
     "navigation.prune",
-    "navigation.sections",
-    "navigation.tabs",
-    "navigation.tabs.sticky",
     "navigation.top",
     "navigation.tracking",
     "search.highlight",
