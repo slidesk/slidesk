@@ -32,4 +32,4 @@ slidesk component install @gouz/qrcode
 slidesk component push my-component
 ```
 
-See [manage addons](/how-to/manage-addons).
+See [manage addons](/slidesk/how-to/manage-addons).

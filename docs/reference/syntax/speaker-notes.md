@@ -14,4 +14,4 @@ This text is only for you — visible in the speaker view.
 */
 ```
 
-See the [speaker notes how-to](/how-to/use-speaker-notes) for timers and checkpoints.
+See the [speaker notes how-to](/slidesk/how-to/use-speaker-notes) for timers and checkpoints.

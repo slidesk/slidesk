@@ -113,4 +113,4 @@ export default async (message) => {
 slidesk plugin push my-plugin
 ```
 
-See [manage addons](/how-to/manage-addons).
+See [manage addons](/slidesk/how-to/manage-addons).

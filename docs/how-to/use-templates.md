@@ -81,4 +81,4 @@ slidesk template install @gouz/split
 slidesk template push my-template
 ```
 
-See [manage addons](/how-to/manage-addons).
+See [manage addons](/slidesk/how-to/manage-addons).
