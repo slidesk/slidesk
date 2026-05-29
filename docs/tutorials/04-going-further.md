@@ -20,7 +20,7 @@ Combine with speaker notes:
 slidesk -tn my-talk
 ```
 
-See the [telnet how-to](/how-to/use-speaker-notes) for all commands.
+See the [telnet how-to](/slidesk/how-to/use-speaker-notes) for all commands.
 
 ## Internationalisation
 
@@ -49,7 +49,7 @@ Export your presentation as a standalone static site:
 slidesk save -t public my-talk
 ```
 
-See [export static site](/how-to/export-static-site).
+See [export static site](/slidesk/how-to/export-static-site).
 
 ## Deploy
 
@@ -60,4 +60,4 @@ slidesk deploy -t github my-talk
 slidesk deploy -t gitlab my-talk
 ```
 
-See [deploy to GitHub Pages](/how-to/deploy-github-pages) or [deploy to GitLab Pages](/how-to/deploy-gitlab-pages).
+See [deploy to GitHub Pages](/slidesk/how-to/deploy-github-pages) or [deploy to GitLab Pages](/slidesk/how-to/deploy-gitlab-pages).

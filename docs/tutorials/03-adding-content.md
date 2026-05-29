@@ -22,7 +22,7 @@ Full example:
 
 Images are responsive when `WIDTH` is set in `slidesk.toml`.
 
-See the [image reference](/reference/syntax/images) for all options.
+See the [image reference](/slidesk/reference/syntax/images) for all options.
 
 ## Slide classes
 
@@ -42,7 +42,7 @@ Apply a template with `.[#template-name]`:
 ## My Slide .[#split left right]
 ```
 
-Templates are `.sdt` files in the `templates/` directory. See the [template how-to](/how-to/use-templates) for creating your own.
+Templates are `.sdt` files in the `templates/` directory. See the [template how-to](/slidesk/how-to/use-templates) for creating your own.
 
 ## Speaker notes
 
@@ -74,7 +74,7 @@ Create custom `.mjs` components in the `components/` directory:
 !test(hello world)
 ```
 
-See [how to create components](/how-to/create-components).
+See [how to create components](/slidesk/how-to/create-components).
 
 ## Plugins
 
@@ -107,4 +107,4 @@ Split long presentations into multiple files:
 !include(slides/conclusion.md)
 ```
 
-See the [includes reference](/reference/syntax/includes) for details.
+See the [includes reference](/slidesk/reference/syntax/includes) for details.
