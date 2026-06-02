@@ -114,10 +114,11 @@ features = [
     "search.highlight",
 ]
 
-[project.markdown_extensions]
-attr_list = true
+[[project.markdown_extensions]]
+name = "attr_list"
 
-[project.markdown_extensions.pymdownx.superfences]
+[[project.markdown_extensions]]
+name = "pymdownx.superfences"
 custom_fences = [
   { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
 ]
