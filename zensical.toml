@@ -47,6 +47,8 @@ nav = [
         "reference/cli.md",
         "reference/configuration.md",
         "reference/component-api.md",
+        "reference/slidesk-api.md",
+        "reference/websocket-protocol.md",
         "reference/plugin-hooks.md",
         "reference/template-format.md",
 
@@ -110,6 +112,11 @@ features = [
     "navigation.top",
     "navigation.tracking",
     "search.highlight",
+]
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
 ]
 
 [project.extra]
