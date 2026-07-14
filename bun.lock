@@ -9,6 +9,7 @@
         "clipse": "^0.0.18",
         "html-minifier-terser": "^7.2.0",
         "markdown-it": "^14.1.1",
+        "markdown-it-table": "^4.1.1",
         "qrcode": "^1.5.4",
         "tar": "^7.5.13",
       },
@@ -134,6 +135,8 @@
     "lower-case": ["lower-case@2.0.2", "", { "dependencies": { "tslib": "^2.0.3" } }, "sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg=="],
 
     "markdown-it": ["markdown-it@14.1.1", "", { "dependencies": { "argparse": "^2.0.1", "entities": "^4.4.0", "linkify-it": "^5.0.0", "mdurl": "^2.0.0", "punycode.js": "^2.3.1", "uc.micro": "^2.1.0" }, "bin": { "markdown-it": "bin/markdown-it.mjs" } }, "sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA=="],
+
+    "markdown-it-table": ["markdown-it-table@4.1.1", "", {}, "sha512-dzFHRwCe97sXD071Gw/LSIwgAcO2vNsT0BcPCmnrKhNW/W57Bnknl8EaC+j4hM3bAqus1CiVPcTQAvLkUfHLhw=="],
 
     "mdurl": ["mdurl@2.0.0", "", {}, "sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w=="],
 

@@ -1,11 +1,12 @@
 import markdownIt from "markdown-it";
+import { markdownItTable } from "markdown-it-table";
 
 const md = markdownIt({
   html: true,
   xhtmlOut: true,
   linkify: true,
   typographer: true,
-});
+}).use(markdownItTable);
 
 export default function comments(data: string) {
   let newData = data;

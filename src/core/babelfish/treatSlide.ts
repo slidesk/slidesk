@@ -1,4 +1,5 @@
 import markdownIt from "markdown-it";
+import { markdownItTable } from "markdown-it-table";
 import type { SliDeskTemplate } from "../../types";
 import replaceWithTemplate from "./replaceWithTemplate";
 
@@ -7,7 +8,7 @@ const md = markdownIt({
   xhtmlOut: true,
   linkify: true,
   typographer: true,
-});
+}).use(markdownItTable);
 
 const prepareHTML = (slide: string) => {
   let timerSlide = "";
