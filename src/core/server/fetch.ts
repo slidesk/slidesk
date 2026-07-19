@@ -1,3 +1,4 @@
+import type { Server } from "bun";
 import type {
   SliDeskFile,
   SliDeskPlugin,
@@ -5,11 +6,9 @@ import type {
 } from "../../types";
 import getFile from "./getFile";
 
-type ServerLike = { upgrade(req: Request): boolean | undefined };
-
 const fetch = async (
   req: Request,
-  server: ServerLike,
+  server: Server<undefined>,
   serverFiles: SliDeskFile,
   serverPlugins: SliDeskPlugin[],
   serverPath: string,

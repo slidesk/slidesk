@@ -16,7 +16,7 @@ pluginPushCmd
       description: "plugin name",
     },
   ])
-  .action(async (args, options) => {
+  .action(async (args, options: { "slidesk-link-url"?: string }) => {
     if (args.plugin) {
       const pluginPath = `${process.cwd()}/${args.plugin}`;
       const pluginJSON = Bun.file(`${pluginPath}/plugin.json`);

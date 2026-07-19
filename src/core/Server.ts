@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import type { Server, WebSocket } from "bun";
+import type { Server } from "bun";
 import type {
   SliDeskFile,
   SliDeskPlugin,
@@ -12,7 +12,7 @@ import getPlugins from "./server/getPlugins";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
-let server: Server<WebSocket>;
+let server: Server<undefined>;
 
 export default class SlideskServer {
   async create(
@@ -49,18 +49,15 @@ export default class SlideskServer {
         },
         async message(ws, message: string) {
           const json = JSON.parse(message);
-          if (
-            json.plugin &&
-            serverPlugins.find((p) => p.name === json.plugin)?.addWS
-          ) {
+          const addWS = serverPlugins.find(
+            (p) => p.name === json.plugin,
+          )?.addWS;
+          if (json.plugin && addWS) {
             server.publish(
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await (
-                  serverPlugins.find((p) => p.name === json.plugin)
-                    ?.addWS as SliDeskPluginAddWS
-                )(message, server),
+                response: await (addWS as SliDeskPluginAddWS)(message, server),
               }),
             );
           } else {

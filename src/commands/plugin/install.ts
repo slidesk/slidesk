@@ -74,7 +74,7 @@ export const pluginInstall = async (
 const pluginInstallCmd = new Clipse("install", "slidesk plugin installer");
 pluginInstallCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     const res = await pluginInstall(
       (args.name ?? "").replace("/", "__"),
       opts["slidesk-link-url"] as string,

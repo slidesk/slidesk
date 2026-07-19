@@ -40,7 +40,7 @@ const componentInstallCmd = new Clipse(
 );
 componentInstallCmd
   .addArguments([{ name: "name", description: "name of the component" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     const res = await componentInstall(
       (args.name ?? "").replace("/", "__"),
       opts["slidesk-link-url"] as string,

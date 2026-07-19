@@ -16,7 +16,7 @@ componentPushCmd
       description: "component name",
     },
   ])
-  .action(async (args, options) => {
+  .action(async (args, options: { "slidesk-link-url"?: string }) => {
     if (args.component) {
       const componentFile = `${process.cwd()}/${args.component}.mjs`;
       const slideskToken = await getLinkToken();

@@ -53,7 +53,7 @@ export const templateInstall = async (
 const templateInstallCmd = new Clipse("install", "slidesk template installer");
 templateInstallCmd
   .addArguments([{ name: "name", description: "name of the template" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     const res = await templateInstall(
       (args.name ?? "").replace("/", "__"),
       opts["slidesk-link-url"] as string,

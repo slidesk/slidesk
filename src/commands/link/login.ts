@@ -16,7 +16,15 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
       optional: true,
     },
   })
-  .action(async (_, o) => {
+  .action(
+    async (
+      _,
+      o: {
+        force?: boolean;
+        "with-token"?: string;
+        "slidesk-link-url"?: string;
+      },
+    ) => {
     const home = homedir();
     const globalSlidesk = Bun.file(`${home}/.slidesk`);
     if (

@@ -7,7 +7,7 @@ const linkPushCmd = new Clipse(
   "push",
   "push talk to your user page on slidesk.link",
 );
-linkPushCmd.action(async (_, options) => {
+linkPushCmd.action(async (_, options: { "slidesk-link-url"?: string }) => {
   const linkYML = Bun.file(`${process.cwd()}/link.yml`);
   if (!(await linkYML.exists())) {
     error("link.yml not found");

@@ -5,7 +5,7 @@ import { themeRemove } from "./remove";
 const themeUpdateCmd = new Clipse("update", "slidesk theme updater");
 themeUpdateCmd
   .addArguments([{ name: "name", description: "name of the theme" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await themeRemove(args.name ?? "");
     const res = themeInstall(
       args.name ?? "",

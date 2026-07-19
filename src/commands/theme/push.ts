@@ -16,7 +16,7 @@ themePushCmd
       description: "theme name",
     },
   ])
-  .action(async (args, options) => {
+  .action(async (args, options: { "slidesk-link-url"?: string }) => {
     if (args.theme) {
       const themePath = `${process.cwd()}/${args.theme}`;
       const slideskToken = await getLinkToken();

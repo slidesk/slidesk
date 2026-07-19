@@ -31,11 +31,11 @@ const save = async (
   options: SliDeskSaveOptions,
   additionalEnv: Record<string, unknown> = {},
 ) => {
-  if (talkdir === ".") talkdir = process.cwd();
-  const env = { ...(await loadEnv(talkdir, options)), ...additionalEnv };
-  const files = await convert(talkdir, options, env);
+  const dir = talkdir === "." ? process.cwd() : talkdir;
+  const env = { ...(await loadEnv(dir, options)), ...additionalEnv };
+  const files = await convert(dir, options, env);
   const promises: Promise<number>[] = [];
-  if (options.target === "." || options.target === talkdir) {
+  if (options.target === "." || options.target === dir) {
     log(
       "=> It is not possible to save to the root of your talk. Try an other path",
     );
@@ -43,8 +43,8 @@ const save = async (
   }
   if (options.target && existsSync(options.target))
     rmSync(options.target, { recursive: true, force: true });
-  readAllFiles(talkdir).forEach((file, _) => {
-    const nfile = file.replace(talkdir, "");
+  readAllFiles(dir).forEach((file, _) => {
+    const nfile = file.replace(dir, "");
     promises.push(Bun.write(`${options.target}/${nfile}`, Bun.file(file)));
   });
   Object.entries(files).forEach(([key, value], _) => {

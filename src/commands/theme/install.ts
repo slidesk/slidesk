@@ -51,7 +51,7 @@ export const themeInstall = async (
 const themeInstallCmd = new Clipse("install", "slidesk theme installer");
 themeInstallCmd
   .addArguments([{ name: "name", description: "name of the theme" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     const res = await themeInstall(
       (args.name ?? "").replace("/", "__"),
       opts["slidesk-link-url"] as string,

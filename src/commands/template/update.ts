@@ -5,7 +5,7 @@ import { templateRemove } from "./remove";
 const templateUpdateCmd = new Clipse("update", "slidesk template updater");
 templateUpdateCmd
   .addArguments([{ name: "name", description: "name of the template" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await templateRemove(args.name ?? "");
     const res = templateInstall(
       args.name ?? "",

@@ -12,7 +12,7 @@ themeSearchCmd
       description: "term to find in name or tags",
     },
   ])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     if (args.search) {
       const response = await fetch(
         `${opts["slidesk-link-url"]}/addons/search/theme/${args.search}`,

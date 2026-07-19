@@ -1,10 +1,10 @@
-import type { Server, Socket, WebSocket } from "bun";
+import type { Server, Socket } from "bun";
 
 export type SliDeskPresentOptions = {
   notes?: string;
   hidden?: boolean;
   conf?: string;
-  open?: string;
+  open?: boolean;
   lang?: string;
   telnet?: boolean;
   ip?: string;
@@ -18,7 +18,7 @@ export type SliDeskSaveOptions = {
 
 export type SliDeskServerOptions = {
   notes?: string;
-  open?: string;
+  open?: boolean;
   ip?: string;
 };
 
@@ -36,7 +36,7 @@ export type SliDeskPluginAddRoute = (
 
 export type SliDeskPluginAddWS = (
   _message: string,
-  _server: Server<WebSocket>,
+  _server: Server<undefined>,
 ) => Promise<object>;
 
 export type SliDeskPlugin = {

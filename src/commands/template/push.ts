@@ -16,7 +16,7 @@ templatePushCmd
       description: "template name",
     },
   ])
-  .action(async (args, options) => {
+  .action(async (args, options: { "slidesk-link-url"?: string }) => {
     if (args.template) {
       const templatePath = `${process.cwd()}/${args.template}`;
       const slideskToken = await getLinkToken();

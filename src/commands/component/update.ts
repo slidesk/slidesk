@@ -5,7 +5,7 @@ import { componentRemove } from "./remove";
 const componentUpdateCmd = new Clipse("update", "slidesk component updater");
 componentUpdateCmd
   .addArguments([{ name: "name", description: "name of the component" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await componentRemove(args.name ?? "");
     const res = componentInstall(
       args.name ?? "",

@@ -5,7 +5,7 @@ import { pluginRemove } from "./remove";
 const pluginUpdateCmd = new Clipse("update", "slidesk plugin updater");
 pluginUpdateCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
-  .action(async (args, opts) => {
+  .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await pluginRemove(args.name ?? "");
     const res = pluginInstall(
       args.name ?? "",
