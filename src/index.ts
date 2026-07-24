@@ -11,6 +11,7 @@ import saveCmd from "./commands/save";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import checkVersion from "./utils/checkLastVersion";
+import skillsCmd from "./commands/skills";
 
 const { log } = console;
 
@@ -37,6 +38,7 @@ slidesk
     deployCmd,
     saveCmd,
     presentCmd,
+    skillsCmd,
   ])
   .defineDefaultCommand(presentCmd)
   .ready();
