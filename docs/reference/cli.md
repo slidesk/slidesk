@@ -13,6 +13,7 @@ Subcommands:
   deploy      create CI/CD deploy files
   save        export presentation as HTML + assets
   present     serve your presentation (default)
+  skills      add AI skills for your presentations
 
 Options:
   -h, --help                show help

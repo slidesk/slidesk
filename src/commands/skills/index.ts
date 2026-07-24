@@ -2,7 +2,7 @@ import { Clipse } from "clipse";
 
 const skillsCmd = new Clipse(
   "skills",
-  "add skills to help you to write your presentation",
+  "add AI skills for your presentations",
 );
 skillsCmd
   .action(async () => {
