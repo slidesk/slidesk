@@ -27,6 +27,6 @@ jobs:
       - run: bun install
       - run: bun make
       - run: bun ci
-      - run: bun publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: JS-DevTools/npm-publish@v4.1.5
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
