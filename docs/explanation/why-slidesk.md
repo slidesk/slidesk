@@ -54,7 +54,26 @@ A one-hour talk in a single Markdown file is unpleasant to edit and unpleasant t
 !include(slides/99-questions.md)
 ```
 
-You can include a whole directory — files are gathered recursively and sorted alphabetically — which makes reordering a matter of renaming files, and makes a section reusable across talks. Combined with i18n, a language-agnostic `slides/` directory becomes a library you can pull into any deck. See the [includes reference](../reference/syntax/includes).
+You can also include a whole directory with a single line. Files are gathered **recursively** and sorted **alphabetically** — subdirectories are walked automatically, so the slide order follows the natural file / folder tree:
+
+```
+slides/
+├── 01-intro.md
+├── 02-demo.md
+├── 03-advanced/
+│   ├── 01-feature-a.md
+│   ├── 02-feature-b.md
+│   └── 03-feature-c.md
+└── 99-questions.md
+```
+
+```markdown
+# $$title$$
+
+!include(slides)
+```
+
+This produces slides in order: `01-intro`, `02-demo`, `03-advanced/01-feature-a`, `03-advanced/02-feature-b`, `03-advanced/03-feature-c`, `99-questions`. Reordering is just renaming files, and the whole `slides/` directory can be shared across talks. See the [includes reference](../reference/syntax/includes).
 
 ## Everything else
 
