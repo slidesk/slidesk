@@ -80,6 +80,8 @@ Slides are rendered at 1920x1080: `pdf` keeps text vectorial and selectable,
 `pptx` embeds one full-bleed capture per slide plus the `/* ... */` speaker
 notes as plain text in the notes pane.
 
+## Terminal navigation
+
 Terminal navigation while presenting: **Enter** = next, **P + Enter** = previous, **Q** = quit,
 type a **number** = jump. Browser: arrows / swipe, **f** = fullscreen.
 
