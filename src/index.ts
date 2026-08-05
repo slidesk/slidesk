@@ -4,14 +4,16 @@ import packagejson from "../package.json";
 import componentCmd from "./commands/component";
 import createCmd from "./commands/create";
 import deployCmd from "./commands/deploy";
+import exportCmd from "./commands/export";
+import importCmd from "./commands/import";
 import linkCmd from "./commands/link";
 import pluginCmd from "./commands/plugin";
 import presentCmd from "./commands/present";
 import saveCmd from "./commands/save";
+import skillsCmd from "./commands/skills";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import checkVersion from "./utils/checkLastVersion";
-import skillsCmd from "./commands/skills";
 
 const { log } = console;
 
@@ -37,6 +39,8 @@ slidesk
     themeCmd,
     deployCmd,
     saveCmd,
+    exportCmd,
+    importCmd,
     presentCmd,
     skillsCmd,
   ])

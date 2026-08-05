@@ -1,6 +1,6 @@
 ---
 name: slidesk
-description: Author, build, and present SliDesk talks — Markdown/SDF presentations served over HTTP by the Bun-based SliDesk engine. Use when creating or editing a SliDesk talk (main.md / main.sdf), writing slides, configuring slidesk.toml, building themes/templates/components/plugins, adding speaker notes, or running the slidesk CLI (create, present, save, deploy, plugin, theme, template, component, link).
+description: Author, build, and present SliDesk talks — Markdown/SDF presentations served over HTTP by the Bun-based SliDesk engine. Use when creating or editing a SliDesk talk (main.md / main.sdf), writing slides, configuring slidesk.toml, building themes/templates/components/plugins, adding speaker notes, converting an existing PowerPoint/Google Slides/Slidev/reveal.js deck, or running the slidesk CLI (create, present, save, export, import, deploy, plugin, theme, template, component, link).
 ---
 
 # SliDesk
@@ -26,6 +26,8 @@ slidesk [options] [talk-dir]     # 'present' is the default subcommand; talk-dir
 slidesk create my-talk           # scaffold a new talk (prompts for title, installs @gouz/split)
 slidesk my-talk                  # present → serves on http://localhost:1337 (shows QR code)
 slidesk save -t public my-talk   # export standalone static HTML site to ./public
+slidesk export -t pdf my-talk    # export to my-talk.pdf (-t pdf | pptx, -o file)
+slidesk import deck.pptx -o mine # import a pptx/gslides/slidev/reveal.js deck
 slidesk deploy -t github my-talk # generate CI/CD files: -t github | gitlab | link
 ```
 
@@ -45,6 +47,38 @@ Subcommands `plugin`, `theme`, `template`, `component` each support `search | in
 | `-h --help`, `-v --version` | help / version |
 
 Flags combine: `slidesk -tn my-talk` = telnet + speaker notes.
+
+### export options
+
+| Flag | Meaning |
+|------|---------|
+| `-t, --type <pdf\|pptx>` | output format (default `pdf`) |
+| `-o, --output <file>` | output file (default: slugified `TITLE`) |
+| `-c, --conf <file>`, `-l, --lang <code>` | same as `present` |
+
+### import options
+
+| Flag | Meaning |
+|------|---------|
+| `-t, --type <fmt>` | `pptx`, `gslides`, `slidev` or `revealjs` (default: guessed) |
+| `-o, --output <dir>` | target directory (default: slugified deck title) |
+| `-f, --force` | write even if the target directory is not empty |
+
+`source` is a file, a directory (looks for `slides.md` / `index.html`) or a URL.
+A `docs.google.com/presentation` URL is downloaded through its pptx export, so
+the deck must be shared with "anyone with the link". Output is a normal talk:
+`main.md` with `!include(slides)`, one `slides/NN-title.md` per source slide,
+`slidesk.toml` with the title, and `assets/` for images pulled out of a pptx.
+Content only — layout, shapes, charts and animations are dropped.
+
+### export rendering
+
+Rendering runs in a headless Chromium already installed on the machine (Chrome,
+Chromium, Edge, Brave, Vivaldi), driven over the DevTools Protocol — no extra
+dependency, nothing downloaded. Override detection with `SLIDESK_CHROME`.
+Slides are rendered at 1920x1080: `pdf` keeps text vectorial and selectable,
+`pptx` embeds one full-bleed capture per slide plus the `/* ... */` speaker
+notes as plain text in the notes pane.
 
 Terminal navigation while presenting: **Enter** = next, **P + Enter** = previous, **Q** = quit,
 type a **number** = jump. Browser: arrows / swipe, **f** = fullscreen.

@@ -16,6 +16,13 @@ export type SliDeskSaveOptions = {
   target?: string;
 };
 
+export type SliDeskExportOptions = {
+  conf?: string;
+  lang?: string;
+  type?: string;
+  output?: string;
+};
+
 export type SliDeskServerOptions = {
   notes?: string;
   open?: boolean;

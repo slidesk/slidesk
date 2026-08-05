@@ -12,6 +12,8 @@ Subcommands:
   theme       theme management
   deploy      create CI/CD deploy files
   save        export presentation as HTML + assets
+  export      export presentation as a pdf or a pptx file
+  import      turn a pptx, Google Slides, slidev or reveal.js deck into a talk
   present     serve your presentation (default)
   skills      add AI skills for your presentations
 
