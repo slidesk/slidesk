@@ -26,7 +26,7 @@ main.sdf / main.md
 
 ## Builder
 
-The builder reads `main.sdf` or `main.md`, parses it with markdown-it, processes components, applies templates, resolves `!include()` directives, and generates the final HTML for each slide.
+The builder reads `main.sdf` or `main.md`, parses it with bun, processes components, applies templates, resolves `!include()` directives, and generates the final HTML for each slide.
 
 ## Server
 
