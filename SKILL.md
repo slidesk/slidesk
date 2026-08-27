@@ -74,8 +74,9 @@ Content only — layout, shapes, charts and animations are dropped.
 ### export rendering
 
 Rendering runs in a headless Chromium already installed on the machine (Chrome,
-Chromium, Edge, Brave, Vivaldi), driven over the DevTools Protocol — no extra
-dependency, nothing downloaded. Override detection with `SLIDESK_CHROME`.
+Chromium, Edge, Brave, Vivaldi), started by `Bun.WebView` and driven over the
+DevTools Protocol — no extra dependency, nothing downloaded. Override detection
+with `SLIDESK_CHROME`.
 Slides are rendered at 1920x1080: `pdf` keeps text vectorial and selectable,
 `pptx` embeds one full-bleed capture per slide plus the `/* ... */` speaker
 notes as plain text in the notes pane.

@@ -17,9 +17,10 @@ slidesk export -o build/deck.pdf my-talk
 
 ## Install a browser
 
-Exporting needs a Chromium-based browser: SliDesk starts it headless and drives
-it over the DevTools Protocol. Chrome, Chromium, Edge, Brave and Vivaldi are
-found automatically. Nothing is downloaded and no extra dependency is installed.
+Exporting needs a Chromium-based browser: SliDesk starts it headless through
+`Bun.WebView` and drives it over the DevTools Protocol. Chrome, Chromium, Edge,
+Brave and Vivaldi are found automatically. Nothing is downloaded and no extra
+dependency is installed.
 
 If your browser lives somewhere unusual — or in CI:
 
