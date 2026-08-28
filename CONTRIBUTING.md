@@ -12,10 +12,12 @@ bun test            # run the suite with coverage
 bun run test:coverage   # same, then enforce the 80% threshold
 ```
 
-Coverage is currently ~93%. The gate lives in `scripts/coverage-gate.ts`: Bun only
+Coverage is currently ~98%. The gate lives in `scripts/coverage-gate.ts`: Bun only
 reports the files a test imported, so a module with no test at all is absent from
 the report and would silently inflate the percentage — the gate adds those files
-back and counts them as fully uncovered.
+back and counts them as fully uncovered. `src/index.ts` is one of them on
+purpose: every path through it ends in `process.exit`, so it is driven as a real
+subprocess in `src/index.test.ts`, which the coverage report cannot see.
 
 A few conventions make the suite independent of the order Bun happens to run the
 files in, since it runs them all in a single process:
@@ -27,7 +29,10 @@ files in, since it runs them all in a single process:
   would undo that shared spy for every later file.
 - **`process.exit`** — stub it so it *throws* (`ExitError` in
   `src/__testing__/addons.ts`). A no-op stub lets the code after a guard clause
-  keep running, which is how a test once wiped the working directory.
+  keep running, which is how a test once wiped the working directory; on the CLI
+  entry point it makes Clipse fall through to the default command and start
+  serving the current directory. When throwing is not an option because the
+  rejection would be unhandled, run the binary as a subprocess instead.
 - **Chromium** — export tests replace `src/core/browser` with
   `browserModuleMock` from `src/__testing__/browser.ts`. Bun keeps a module mock
   for the whole process, so the fake page is read from a shared holder at call
