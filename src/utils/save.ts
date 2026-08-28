@@ -39,7 +39,9 @@ const save = async (
     log(
       "=> It is not possible to save to the root of your talk. Try an other path",
     );
-    process.exit(0);
+    // `return` matters: without it the rmSync below still runs on the guarded
+    // target if process.exit is ever stubbed or overridden.
+    return process.exit(0);
   }
   if (options.target && existsSync(options.target))
     rmSync(options.target, { recursive: true, force: true });
