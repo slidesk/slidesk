@@ -29,15 +29,17 @@ const render = (slide: string) => {
     timerCheckpoint,
     content: preparedHTML,
   } = prepareHTML(slide);
-  const content = Bun.markdown.html(preparedHTML, {
-    tables: true,
-    strikethrough: true,
-    tasklists: true,
-    autolinks: true,
-    headings: false,
-    underline: true,
-    latexMath: true,
-  }).replace("<h2> </h2>", "");
+  const content = Bun.markdown
+    .html(preparedHTML, {
+      tables: true,
+      strikethrough: true,
+      tasklists: true,
+      autolinks: true,
+      headings: false,
+      underline: true,
+      latexMath: true,
+    })
+    .replace("<h2> </h2>", "");
   return { timerSlide, timerCheckpoint, content };
 };
 

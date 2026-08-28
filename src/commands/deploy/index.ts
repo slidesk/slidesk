@@ -1,6 +1,6 @@
 import { Clipse } from "clipse";
-import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
 import githubYML from "../../templates/ci/github.yml" with { type: "text" };
+import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
 import linkYML from "../../templates/ci/link.yml" with { type: "text" };
 
 const { error } = console;

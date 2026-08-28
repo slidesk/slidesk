@@ -1,13 +1,13 @@
 import { watch } from "node:fs";
 import { networkInterfaces } from "node:os";
 import process from "node:process";
-import SlideskServer from "../../core/Server";
-import type { SliDeskPresentOptions } from "../../types";
-import { getAction } from "../../utils/interactCLI";
-import convert from "../../utils/convert";
 import { Clipse } from "clipse";
-import loadEnv from "../../utils/loadEnv";
+import SlideskServer from "../../core/Server";
 import { startTelnetServer } from "../../core/TCPServer";
+import type { SliDeskPresentOptions } from "../../types";
+import convert from "../../utils/convert";
+import { getAction } from "../../utils/interactCLI";
+import loadEnv from "../../utils/loadEnv";
 
 const { log } = console;
 
