@@ -1,0 +1,8 @@
+{
+  "addStyles": ["plugins/demo/demo.css"],
+  "addScripts": ["plugins/demo/demo.js"],
+  "addScriptModules": ["plugins/demo/demo.mjs"],
+  "addSpeakerStyles": ["plugins/demo/speaker.css"],
+  "addSpeakerScripts": ["plugins/demo/speaker.js"],
+  "addHTMLFromFiles": ["plugins/demo/snippet.html"]
+}
