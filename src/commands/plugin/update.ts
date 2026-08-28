@@ -7,7 +7,7 @@ pluginUpdateCmd
   .addArguments([{ name: "name", description: "name of the plugin" }])
   .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await pluginRemove(args.name ?? "");
-    const res = pluginInstall(
+    const res = await pluginInstall(
       args.name ?? "",
       opts["slidesk-link-url"] as string,
       true,

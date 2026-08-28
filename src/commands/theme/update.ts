@@ -7,7 +7,7 @@ themeUpdateCmd
   .addArguments([{ name: "name", description: "name of the theme" }])
   .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await themeRemove(args.name ?? "");
-    const res = themeInstall(
+    const res = await themeInstall(
       args.name ?? "",
       opts["slidesk-link-url"] as string,
       true,

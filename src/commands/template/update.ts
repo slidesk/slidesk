@@ -7,7 +7,7 @@ templateUpdateCmd
   .addArguments([{ name: "name", description: "name of the template" }])
   .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     await templateRemove(args.name ?? "");
-    const res = templateInstall(
+    const res = await templateInstall(
       args.name ?? "",
       opts["slidesk-link-url"] as string,
       true,
