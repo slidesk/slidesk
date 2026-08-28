@@ -22,7 +22,7 @@ describe("loadEnv function", () => {
     const tempDir = `${mkdtempSync(tmpdir())}/`;
     writeFileSync(
       `${tempDir}slidesk.toml`,
-      'TITLE="My Presentation"\nLANG=fr\nHTTPS="true"',
+      'TITLE="My Presentation"\nLANG="fr"\nHTTPS="true"',
     );
 
     const result = (await loadEnv(tempDir, {})) as {
@@ -52,7 +52,7 @@ describe("loadEnv function", () => {
 
   it("should handle empty lines in slidesk.toml file", async () => {
     const tempDir = `${mkdtempSync(tmpdir())}/`;
-    writeFileSync(`${tempDir}slidesk.toml`, "TITLE=Test\n\nLANG=en\n");
+    writeFileSync(`${tempDir}slidesk.toml`, 'TITLE="Test"\n\nLANG="en"\n');
 
     const result = (await loadEnv(tempDir, {})) as {
       TITLE: string;
