@@ -1,11 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 import loadPlugins from "./loadPlugins";
 
 describe("loadPlugins function", () => {
   it("should return empty array when no plugins directory exists", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     const env: Record<string, unknown> = { slidesk: { COMMON_DIR: "" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toEqual([]);
@@ -13,7 +14,7 @@ describe("loadPlugins function", () => {
   });
 
   it("should load plugins from plugins directory", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     mkdirSync(`${tempDir}plugins/myplugin`, { recursive: true });
     writeFileSync(
       `${tempDir}plugins/myplugin/plugin.json`,
@@ -28,7 +29,7 @@ describe("loadPlugins function", () => {
   });
 
   it("should load plugins from common directory", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     mkdirSync(`${tempDir}plugins/plugin1`, { recursive: true });
     mkdirSync(`${tempDir}common/plugins/commonPlugin`, { recursive: true });
     writeFileSync(
@@ -47,7 +48,7 @@ describe("loadPlugins function", () => {
   });
 
   it("should load plugins from theme directories", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     mkdirSync(`${tempDir}themes/dark/plugins/themePlugin`, { recursive: true });
     writeFileSync(
       `${tempDir}themes/dark/plugins/themePlugin/plugin.json`,
@@ -62,7 +63,7 @@ describe("loadPlugins function", () => {
   });
 
   it("should handle addHTMLFromFiles", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     mkdirSync(`${tempDir}plugins/myplugin`, { recursive: true });
     mkdirSync(`${tempDir}templates`, { recursive: true });
     writeFileSync(`${tempDir}templates/extra.html`, "<div>extra</div>");
