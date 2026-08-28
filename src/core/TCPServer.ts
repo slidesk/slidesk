@@ -22,7 +22,7 @@ export async function startTelnetServer(
   const { total, list } = parseSlides(html);
 
   const fullConfig: Required<SliDeskTelnetSlidesConfig> = {
-    port: 2323,
+    port,
     totalSlides: total,
     slides: list.map((l) => l.content),
   };
