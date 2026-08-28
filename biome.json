@@ -6,7 +6,13 @@
     "useIgnoreFile": true,
     "defaultBranch": "main"
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -36,6 +42,12 @@
     "indentWidth": 2
   },
   "files": {
-    "includes": ["**", "!**/example", "!**/src/plugins.json", "!**/docs"]
+    "includes": [
+      "**",
+      "!**/example",
+      "!**/src/plugins.json",
+      "!**/docs",
+      "!**/src/__fixtures__"
+    ]
   }
 }
