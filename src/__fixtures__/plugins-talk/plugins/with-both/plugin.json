@@ -1,0 +1,4 @@
+{
+  "addRoutes": "plugins/with-both/routes.js",
+  "addWS": "plugins/with-both/ws.js"
+}

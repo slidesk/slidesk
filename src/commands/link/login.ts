@@ -25,27 +25,27 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
         "slidesk-link-url"?: string;
       },
     ) => {
-    const home = homedir();
-    const globalSlidesk = Bun.file(`${home}/.slidesk`);
-    if (
-      (await globalSlidesk.exists()) &&
-      globalSlidesk.size !== 0 &&
-      !o.force
-    ) {
-      process.exit(0);
-    }
-    if (o["with-token"]) {
-      await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
-      process.exit(0);
-    }
-    Bun.serve({
-      port: 1337,
-      routes: {
-        "/auth/:code": async (req) => {
-          const { code } = req.params;
-          await Bun.write(globalSlidesk, code);
-          return new Response(
-            `<html>
+      const home = homedir();
+      const globalSlidesk = Bun.file(`${home}/.slidesk`);
+      if (
+        (await globalSlidesk.exists()) &&
+        globalSlidesk.size !== 0 &&
+        !o.force
+      ) {
+        process.exit(0);
+      }
+      if (o["with-token"]) {
+        await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
+        process.exit(0);
+      }
+      Bun.serve({
+        port: 1337,
+        routes: {
+          "/auth/:code": async (req) => {
+            const { code } = req.params;
+            await Bun.write(globalSlidesk, code);
+            return new Response(
+              `<html>
               <script>
                 fetch("http://localhost:1337/close").then(() => {
                   window.close();
@@ -53,15 +53,16 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
               </script>
               <body>You can close this tab</body>
             </html>`,
-            { headers: { "Content-Type": "text/html" } },
-          );
+              { headers: { "Content-Type": "text/html" } },
+            );
+          },
+          "/close": () => {
+            process.exit(0);
+          },
         },
-        "/close": () => {
-          process.exit(0);
-        },
-      },
-    });
-    Bun.spawn([start(), `${o["slidesk-link-url"]}/auth`]);
-  });
+      });
+      Bun.spawn([start(), `${o["slidesk-link-url"]}/auth`]);
+    },
+  );
 
 export default linkLoginCmd;

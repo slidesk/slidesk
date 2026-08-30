@@ -36,10 +36,9 @@ const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
       : `${defaultOutput(talkdir, env)}.${type}`;
 
   const server = await serve(files, env, talkdir);
-  const page = await launch();
+  const page = await launch(WIDTH, HEIGHT);
   let bar: ReturnType<typeof progress> | null = null;
   try {
-    await page.setViewport(WIDTH, HEIGHT);
     await page.goto(server.url);
     const total = await prepare(page, WIDTH, HEIGHT);
     log(`📽️  ${total} slide${total > 1 ? "s" : ""} to export`);

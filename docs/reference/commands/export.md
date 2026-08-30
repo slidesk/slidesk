@@ -19,10 +19,11 @@ slidesk export -o slides.pdf mytalk
 
 ## Requirements
 
-Exporting renders your slides in a headless Chromium. SliDesk drives an already
-installed browser over the DevTools Protocol — nothing is downloaded. Chrome,
-Chromium, Edge, Brave and Vivaldi are detected automatically; set
-`SLIDESK_CHROME` (or `CHROME_PATH`) to point at a specific binary:
+Exporting renders your slides in a headless Chromium, driven by `Bun.WebView`
+over the DevTools Protocol — an already installed browser is used, nothing is
+downloaded. Chrome, Chromium, Edge, Brave and Vivaldi are detected
+automatically, as is Playwright's `chrome-headless-shell` when it happens to be
+cached; set `SLIDESK_CHROME` (or `CHROME_PATH`) to point at a specific binary:
 
 ```sh
 SLIDESK_CHROME=/usr/bin/chromium slidesk export mytalk

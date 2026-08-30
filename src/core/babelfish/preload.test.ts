@@ -1,11 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 import preload from "./preload";
 
 describe("preload function", () => {
   it("should load all resources from sdfPath", async () => {
-    const tempDir = `${mkdtempSync(tmpdir())}/`;
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
 
     const result = await preload(tempDir, {});
 

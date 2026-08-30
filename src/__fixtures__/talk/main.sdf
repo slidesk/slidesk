@@ -1,0 +1,7 @@
+/::
+add_styles: custom.css
+add_scripts: custom.js
+::/
+## Welcome
+
+!include(slides)

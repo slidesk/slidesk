@@ -14,3 +14,6 @@ pyproject.toml
 uv.lock
 
 bin
+
+# scratch directories used by the test suite
+src/__fixtures__/.tmp-*
