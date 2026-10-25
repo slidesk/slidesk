@@ -47,6 +47,10 @@ const sendToSlideskLink = async (
   if (uuid.startsWith("err:")) {
     error(uuid);
     process.exit(1);
+  } else if (uuid === "") {
+    error("Your presentation is too large");
+    await file.unlink();
+    process.exit(1);
   }
   log("Your presentation is available for 72h:");
   log(`${options["slidesk-link-url"]}/s/${uuid}/`);
