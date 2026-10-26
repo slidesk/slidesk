@@ -207,6 +207,18 @@ body {
     transform: translateX(0);
     opacity: 1;
   }
+
+  .sd-img {
+    max-width: 90vw;
+    height: auto !important;
+  }
+  .sd-img img {
+    width: auto !important;
+    height: auto !important;
+    max-width: 100%;
+    /* Leave room for the slide title and captions. */
+    max-height: 80vh;
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 767px) and (
