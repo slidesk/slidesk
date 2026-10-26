@@ -147,8 +147,8 @@ if (build.exitCode !== 0) {
     page?.status === 200 && html.includes("Welcome"),
     `status ${page?.status}: ${html.slice(0, 500)}`,
   );
-  proc.stdin.write("q\n");
-  proc.stdin.end();
+  await proc.stdin.write("q\n");
+  await proc.stdin.end();
   const code = await Promise.race([
     proc.exited,
     Bun.sleep(10_000).then(() => "timeout"),
@@ -199,7 +199,7 @@ if (page) {
       second === 0,
       `${second} setTimeout calls in the second second`,
     );
-    files.stop(true);
+    await files.stop(true);
 
     // a page left open reconnects when present is restarted
     const port = 18807;
@@ -212,8 +212,8 @@ if (page) {
         stderr: "ignore",
       });
     const quit = async (proc: ReturnType<typeof start>) => {
-      proc.stdin.write("q\n");
-      proc.stdin.end();
+      await proc.stdin.write("q\n");
+      await proc.stdin.end();
       await proc.exited;
     };
     let present = start();
