@@ -1,15 +1,20 @@
+import { join } from "node:path";
 import type { SliDeskEnv } from "../../types";
+import commonDir from "../../utils/commonDir";
+
+const COMMON = "/-=[COMMON]=-/";
 
 const getFile = (req: Request, path: string, env: SliDeskEnv) => {
-  const commonDir = env.slidesk?.COMMON_DIR ?? "";
-  let fileurl = new URL(req.url).pathname;
-  if (fileurl.startsWith("/-=[COMMON]=-"))
-    fileurl = fileurl.replace("-=[COMMON]=-", commonDir);
-  let file = Bun.file(`${path}${fileurl}`);
-  if (fileurl.startsWith("/plugins") && file.size === 0 && commonDir) {
-    fileurl = fileurl.replace("/plugins", `/${commonDir}/plugins`);
-    file = Bun.file(`${path}${fileurl}`);
-  }
+  const common = commonDir(path, env);
+  const fileurl = new URL(req.url).pathname;
+  let file = Bun.file(
+    common && fileurl.startsWith(COMMON)
+      ? join(common, fileurl.slice(COMMON.length))
+      : `${path}${fileurl}`,
+  );
+  // the plugins of COMMON_DIR are served as if they were in the talk
+  if (fileurl.startsWith("/plugins/") && file.size === 0 && common)
+    file = Bun.file(join(common, fileurl));
   if (file.size !== 0)
     return new Response(file, {
       headers: {

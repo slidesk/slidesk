@@ -7,6 +7,7 @@ import type {
   SliDeskServerPlugin,
   SliDeskSocketData,
 } from "../types";
+import commonDir from "../utils/commonDir";
 import display from "./server/display";
 import fetch from "./server/fetch";
 import getPlugins from "./server/getPlugins";
@@ -20,10 +21,10 @@ export default class SlideskServer {
   /** (Re)loads the addRoutes / addWS hooks of the talk and common plugins. */
   async loadPlugins(env: SliDeskEnv) {
     const plugins: SliDeskServerPlugin[] = [];
-    const commonDir = env.slidesk?.COMMON_DIR;
+    const common = commonDir(serverPath, env);
     for (const dir of [
       `${serverPath}/plugins`,
-      commonDir ? `${serverPath}/${commonDir}/plugins` : "",
+      common ? `${common}/plugins` : "",
     ])
       if (dir && existsSync(dir))
         plugins.push(...(await getPlugins(dir, serverPath)));

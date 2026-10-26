@@ -6,24 +6,16 @@ import type {
   SliDeskServerPlugin,
   SliDeskSocketData,
 } from "../../types";
+import commonDir from "../../utils/commonDir";
 import fetch from "../server/fetch";
 import getPlugins from "../server/getPlugins";
 
 const serve = async (files: SliDeskFile, env: SliDeskEnv, talkdir: string) => {
   const plugins: SliDeskServerPlugin[] = [];
-  const slideskEnv = env.slidesk ?? {};
-  if (existsSync(`${talkdir}/plugins`))
-    plugins.push(...(await getPlugins(`${talkdir}/plugins`, talkdir)));
-  if (
-    slideskEnv?.COMMON_DIR &&
-    existsSync(`${talkdir}/${slideskEnv.COMMON_DIR}/plugins`)
-  )
-    plugins.push(
-      ...(await getPlugins(
-        `${talkdir}/${slideskEnv.COMMON_DIR}/plugins`,
-        talkdir,
-      )),
-    );
+  const common = commonDir(talkdir, env);
+  for (const dir of [`${talkdir}/plugins`, common ? `${common}/plugins` : ""])
+    if (dir && existsSync(dir))
+      plugins.push(...(await getPlugins(dir, talkdir)));
 
   const server: Server<SliDeskSocketData> = Bun.serve<SliDeskSocketData>({
     port: 0,

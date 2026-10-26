@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import save from "./save";
@@ -101,6 +101,55 @@ describe("save", () => {
     await save(fixture, { target: fixture }).catch(() => {});
     expect(existsSync(join(fixture, "main.sdf"))).toBe(true);
     expect(existsSync(join(fixture, "slides/01-intro.sdf"))).toBe(true);
+  });
+
+  /** A copy of the test talk using a shared directory set as an absolute path. */
+  const sharedTalk = () => {
+    const dir = join(scratch, "shared-talk");
+    cpSync(fixture, dir, { recursive: true });
+    const shared = join(scratch, "shared");
+    mkdirSync(join(shared, "plugins/badge"), { recursive: true });
+    mkdirSync(join(shared, "assets"), { recursive: true });
+    writeFileSync(
+      join(shared, "plugins/badge/plugin.json"),
+      JSON.stringify({
+        addHTMLFromFiles: ["plugins/badge/badge.html"],
+        addScripts: ["plugins/badge/badge.js"],
+      }),
+    );
+    writeFileSync(join(shared, "plugins/badge/badge.html"), "<i id=badge></i>");
+    writeFileSync(join(shared, "plugins/badge/badge.js"), "1");
+    writeFileSync(join(shared, "assets/logo.svg"), "<svg/>");
+    writeFileSync(
+      join(dir, "slidesk.toml"),
+      `[slidesk]\nTITLE = "Configured title"\nCOMMON_DIR = "${shared.replaceAll("\\", "/")}"\n`,
+    );
+    return dir;
+  };
+
+  it("keeps the [slidesk] settings of the talk next to the added ones", async () => {
+    const target = join(scratch, "configured");
+    await save(sharedTalk(), { target }, { slidesk: { deployed: true } });
+    const html = await Bun.file(join(target, "index.html")).text();
+    expect(html).toContain("<title>Configured title</title>");
+    expect(await Bun.file(join(target, "slidesk.js")).text()).toContain(
+      "deployed: true",
+    );
+  });
+
+  it("loads the plugins of a COMMON_DIR given as an absolute path", async () => {
+    const target = join(scratch, "common-plugins");
+    await save(sharedTalk(), { target });
+    expect(await Bun.file(join(target, "index.html")).text()).toContain(
+      "id=badge",
+    );
+  });
+
+  it("exports the files of the COMMON_DIR", async () => {
+    const target = join(scratch, "common-files");
+    await save(sharedTalk(), { target });
+    expect(existsSync(join(target, "-=[COMMON]=-/assets/logo.svg"))).toBe(true);
+    expect(existsSync(join(target, "plugins/badge/badge.js"))).toBe(true);
   });
 
   it("merges the additional env into the talk configuration", async () => {
