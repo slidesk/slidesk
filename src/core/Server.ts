@@ -48,7 +48,12 @@ export default class SlideskServer {
           ws.subscribe("slidesk");
         },
         async message(ws, message: string) {
-          const json = JSON.parse(message);
+          let json: { plugin?: string };
+          try {
+            json = JSON.parse(message);
+          } catch {
+            return;
+          }
           const addWS = serverPlugins.find(
             (p) => p.name === json.plugin,
           )?.addWS;

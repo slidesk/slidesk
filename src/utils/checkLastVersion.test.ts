@@ -50,6 +50,13 @@ describe("checkVersion", () => {
     expect(errors).toEqual([]);
   });
 
+  it("stays quiet when running a version ahead of the release", async () => {
+    const { warns } = captureConsole();
+    stubFetch(async () => Response.json({ tag_name: "2.19.0" }));
+    await checkVersion("2.20.0");
+    expect(warns).toEqual([]);
+  });
+
   it("swallows a network failure", async () => {
     const { warns, errors } = captureConsole();
     stubFetch(async () => {
@@ -57,7 +64,7 @@ describe("checkVersion", () => {
     });
     await checkVersion("2.19.0");
     expect(warns).toEqual([]);
-    expect(errors).toHaveLength(1);
+    expect(errors).toEqual([]);
   });
 
   it("queries the github releases endpoint", async () => {

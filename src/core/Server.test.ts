@@ -95,6 +95,18 @@ describe("SlideskServer", () => {
     sender.close();
   });
 
+  it("drops a websocket message that is not json", async () => {
+    await start();
+    const listener = await socket();
+    const sender = await socket();
+    const received = nextMessage(listener);
+    sender.send("not json");
+    sender.send(JSON.stringify({ action: "next" }));
+    expect((await received).action).toBe("next");
+    listener.close();
+    sender.close();
+  });
+
   it("answers a websocket message addressed to a plugin", async () => {
     await start();
     const ws = await socket();
