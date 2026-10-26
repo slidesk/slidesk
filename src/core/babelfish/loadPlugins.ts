@@ -1,6 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { relative } from "node:path";
 import type { SliDeskEnv, SliDeskPlugin } from "../../types";
+import commonDir from "../../utils/commonDir";
+import { pluginFilePath } from "../server/getPlugins";
 
 /**
  * A plugin being written (empty or half-typed plugin.json, a file it names
@@ -41,7 +43,11 @@ const loadExternalPlugins = async (
               json.addHTMLFromFiles.map((s) => [
                 s,
                 readFileSync(
-                  `${sdfPath}/${s.replaceAll(/plugins\/([^/]+)\//g, p)}`,
+                  pluginFilePath(
+                    pluginsDir,
+                    sdfPath,
+                    s.replaceAll(/plugins\/([^/]+)\//g, p),
+                  ),
                   { encoding: "utf8" },
                 ),
               ]),
@@ -58,15 +64,9 @@ const loadExternalPlugins = async (
 const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
   const plugins: SliDeskPlugin[] = [];
   plugins.push(...(await loadExternalPlugins(`${sdfPath}/plugins`, sdfPath)));
-  const slideskEnv = env.slidesk ?? {};
-  const commonDir = slideskEnv.COMMON_DIR ?? "";
-  if (commonDir !== "")
-    plugins.push(
-      ...(await loadExternalPlugins(
-        `${sdfPath}/${commonDir}/plugins`,
-        sdfPath,
-      )),
-    );
+  const common = commonDir(sdfPath, env);
+  if (common)
+    plugins.push(...(await loadExternalPlugins(`${common}/plugins`, sdfPath)));
   if (existsSync(`${sdfPath}/themes`)) {
     const themes = readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
       .filter((d) => d.isDirectory())

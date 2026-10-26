@@ -1,7 +1,8 @@
 import { existsSync, readdirSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
-import type { SliDeskSaveOptions } from "../types";
+import type { SliDeskEnv, SliDeskSaveOptions } from "../types";
 import { CliError } from "./cliError";
+import commonDir from "./commonDir";
 import convert from "./convert";
 import loadEnv from "./loadEnv";
 
@@ -31,10 +32,16 @@ const readAllFiles = (dir: string): string[] => {
 const save = async (
   talkdir: string,
   options: SliDeskSaveOptions,
-  additionalEnv: Record<string, unknown> = {},
+  additionalEnv: SliDeskEnv = {},
 ) => {
   const dir = talkdir === "." ? process.cwd() : talkdir;
-  const env = { ...(await loadEnv(dir, options)), ...additionalEnv };
+  const loaded = await loadEnv(dir, options);
+  // the [slidesk] settings of the talk are completed, not replaced
+  const env: SliDeskEnv = {
+    ...loaded,
+    ...additionalEnv,
+    slidesk: { ...loaded.slidesk, ...additionalEnv.slidesk },
+  };
   const files = await convert(dir, options, env);
   const promises: Promise<number>[] = [];
   const target = path.resolve(options.target ?? "public");
@@ -63,6 +70,17 @@ const save = async (
     const nfile = file.replace(dir, "");
     promises.push(Bun.write(`${target}/${nfile}`, Bun.file(file)));
   });
+  // the shared files are served at -=[COMMON]=-/ and its plugins at plugins/
+  const common = commonDir(dir, env);
+  if (common && existsSync(common))
+    for (const file of readAllFiles(common)) {
+      const shared = path.relative(common, file);
+      promises.push(
+        Bun.write(`${target}/-=[COMMON]=-/${shared}`, Bun.file(file)),
+      );
+      if (shared.startsWith(`plugins${path.sep}`))
+        promises.push(Bun.write(`${target}/${shared}`, Bun.file(file)));
+    }
   Object.entries(files).forEach(([key, value], _) => {
     promises.push(Bun.write(`${target}/${key}`, value.content ?? ""));
   });

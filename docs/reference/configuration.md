@@ -106,9 +106,11 @@ TELNET_PORT=2323
 
 ## COMMON_DIR
 
-Path to a shared directory for reusing themes, plugins, templates, components, and assets across multiple presentations.
+Path to a shared directory for reusing themes, plugins, templates, components, and assets across multiple presentations. It can be absolute, or relative to the talk.
 
-Plugins placed in `COMMON_DIR/plugins/` are automatically loaded alongside local plugins.
+Plugins placed in `COMMON_DIR/plugins/` are automatically loaded alongside local plugins. The paths in their `plugin.json` (`plugins/<name>/…`) are looked up in `COMMON_DIR`, then in the talk.
+
+`slidesk save` copies the files of `COMMON_DIR` into the export, under `-=[COMMON]=-/`, and its plugins under `plugins/`.
 
 ```toml
 [slidesk]
