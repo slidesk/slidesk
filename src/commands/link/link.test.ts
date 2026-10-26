@@ -145,7 +145,7 @@ describe("link host", () => {
 });
 
 describe("link login", () => {
-  // login reads and writes ~/.slidesk and binds port 1337, so Bun's file,
+  // login reads and writes ~/.slidesk and binds a local port, so Bun's file,
   // server and spawn entry points are stubbed for the whole block
   let stored: { path: string; content: string }[] = [];
   let served: {
@@ -154,7 +154,10 @@ describe("link login", () => {
   } | null = null;
   let spawned: string[][] = [];
 
-  const stubBun = (token: { exists: boolean; size: number }) => {
+  const stubBun = (
+    token: { exists: boolean; size: number },
+    busy: number[] = [],
+  ) => {
     stored = [];
     served = null;
     spawned = [];
@@ -174,9 +177,13 @@ describe("link login", () => {
         });
         return 0;
       }) as never),
-      spyOn(Bun, "serve").mockImplementation(((options: never) => {
+      spyOn(Bun, "serve").mockImplementation(((options: {
+        port: number;
+        routes: Record<string, CallableFunction>;
+      }) => {
+        if (busy.includes(options.port)) throw new Error("EADDRINUSE");
         served = options;
-        return { stop: () => {} } as never;
+        return { port: options.port || 4242, stop: () => {} } as never;
       }) as never),
       spyOn(Bun, "spawn").mockImplementation(((cmd: string[]) => {
         spawned.push(cmd);
@@ -228,7 +235,14 @@ describe("link login", () => {
     await run(["login", "--slidesk-link-url", LINK]);
     expect(served).not.toBeNull();
     expect(spawned).toHaveLength(1);
-    expect(spawned[0][1]).toBe(`${LINK}/auth`);
+    expect(spawned[0][1]).toBe(`${LINK}/auth?port=1337`);
+  });
+
+  it("falls back to a free port when 1337 is taken", async () => {
+    stubBun({ exists: false, size: 0 }, [1337]);
+    await run(["login", "--slidesk-link-url", LINK]);
+    expect(served?.port).toBe(0);
+    expect(spawned[0][1]).toBe(`${LINK}/auth?port=4242`);
   });
 
   it("stores the code the hub redirects back with", async () => {
