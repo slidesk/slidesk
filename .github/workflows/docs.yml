@@ -7,6 +7,10 @@ permissions:
   contents: read
   pages: write
   id-token: write
+# a deployment started while another one runs is rejected: queue them instead
+concurrency:
+  group: pages
+  cancel-in-progress: false
 jobs:
   deploy:
     environment:
