@@ -44,6 +44,7 @@ describe("save", () => {
   it("wipes an existing target directory first", async () => {
     const target = join(scratch, "stale");
     mkdirSync(target, { recursive: true });
+    writeFileSync(join(target, "index.html"), "old");
     writeFileSync(join(target, "leftover.txt"), "old");
     await save(fixture, { target });
     expect(existsSync(join(target, "leftover.txt"))).toBe(false);
@@ -54,6 +55,40 @@ describe("save", () => {
     expect(save(fixture, { target: fixture })).rejects.toThrow(
       "not possible to save to the root",
     );
+  });
+
+  it("refuses to wipe a parent of the talk", async () => {
+    expect(save(fixture, { target: join(fixture, "..") })).rejects.toThrow(
+      "not possible to save to the root",
+    );
+    expect(save(fixture, { target: "/" })).rejects.toThrow(
+      "not possible to save to the root",
+    );
+    expect(existsSync(join(fixture, "main.sdf"))).toBe(true);
+  });
+
+  it("refuses to wipe a directory that is not an export", async () => {
+    const target = join(scratch, "src");
+    mkdirSync(target, { recursive: true });
+    writeFileSync(join(target, "code.ts"), "precious");
+    expect(save(fixture, { target })).rejects.toThrow(
+      "is not a SliDesk export",
+    );
+    expect(existsSync(join(target, "code.ts"))).toBe(true);
+  });
+
+  it("refuses to replace a file", async () => {
+    const target = join(scratch, "file.txt");
+    writeFileSync(target, "precious");
+    expect(save(fixture, { target })).rejects.toThrow(
+      "is not a SliDesk export",
+    );
+  });
+
+  it("leaves the components out of the export", async () => {
+    const target = join(scratch, "nocomponents");
+    await save(fixture, { target });
+    expect(existsSync(join(target, "components"))).toBe(false);
   });
 
   it("refuses to save into the current directory", async () => {
