@@ -169,6 +169,25 @@ const page = await launch(800, 600).catch((e) => {
 });
 if (page) {
   try {
+    // the test talk has a plugin adding html after the slides
+    const pdfTalk = talk(18808);
+    const pdfRun = await run(pdfTalk.dir, [
+      "export",
+      "-t",
+      "pdf",
+      "-o",
+      "talk.pdf",
+    ]);
+    const pdf = await Bun.file(join(pdfTalk.dir, "talk.pdf"))
+      .text()
+      .catch(() => "");
+    const pages = pdf.match(/\/Type\s*\/Page[^s]/g)?.length ?? 0;
+    check(
+      "export gives one pdf page per slide",
+      pdfRun.code === 0 && pages === 3,
+      `exit ${pdfRun.code}, ${pages} pages\n${pdfRun.output}`,
+    );
+
     // an export served over plain http has no websocket to talk to
     const { dir } = talk(18806);
     await run(dir, ["save", "-t", "public"]);

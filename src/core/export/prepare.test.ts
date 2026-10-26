@@ -29,6 +29,7 @@ describe("prepare", () => {
     expect(evaluated[0]).toContain("width: 1280px !important");
     expect(evaluated[0]).toContain("height: 720px !important");
     expect(evaluated[0]).toContain("break-after: page");
+    expect(evaluated[0]).toContain("body > :not(.sd-slide)");
   });
 
   it("waits for images and fonts before counting", async () => {

@@ -24,6 +24,10 @@ const EXPORT_CSS = (width: number, height: number) => `
     break-after: auto;
     page-break-after: auto;
   }
+  /* what plugins add after the slides would be printed on extra pages */
+  body > :not(.sd-slide) {
+    display: none !important;
+  }
 }`;
 
 const loadImages = `(async () => {
