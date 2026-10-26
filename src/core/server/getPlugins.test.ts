@@ -1,4 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import getPlugins from "./getPlugins";
 
@@ -8,6 +10,19 @@ const pluginsDir = join(talk, "plugins");
 const load = () => getPlugins(pluginsDir, talk);
 
 describe("getPlugins", () => {
+  it("skips a plugin whose plugin.json or handler is not ready", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "slidesk-plugins-"));
+    mkdirSync(join(dir, "plugins/half"), { recursive: true });
+    mkdirSync(join(dir, "plugins/nohandler"), { recursive: true });
+    writeFileSync(join(dir, "plugins/half/plugin.json"), '{"addWS":');
+    writeFileSync(
+      join(dir, "plugins/nohandler/plugin.json"),
+      '{"addRoutes":"plugins/nohandler/todo.js"}',
+    );
+    expect(await getPlugins(join(dir, "plugins"), dir)).toEqual([]);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
   it("returns an empty list when no plugin declares a hook", async () => {
     const empty = join(talk, "empty-plugins");
     expect(await getPlugins(empty, talk)).toEqual([]);

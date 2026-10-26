@@ -1,5 +1,6 @@
 import { readdirSync } from "node:fs";
 import type { SliDeskPlugin, SliDeskServerPlugin } from "../../types";
+import { skipBrokenPlugin } from "../babelfish/loadPlugins";
 
 const getPlugins = async (pluginsDir: string, serverPath: string) => {
   const serverPlugins: SliDeskServerPlugin[] = [];
@@ -8,8 +9,9 @@ const getPlugins = async (pluginsDir: string, serverPath: string) => {
     const pluginFile = Bun.file(pluginPath);
     const exists = await pluginFile.exists();
     if (exists) {
-      const json: Partial<SliDeskPlugin> = await pluginFile.json();
-      if (json.addRoutes || json.addWS) {
+      const obj = await skipBrokenPlugin(pluginPath, async () => {
+        const json: Partial<SliDeskPlugin> = await pluginFile.json();
+        if (!json.addRoutes && !json.addWS) return undefined;
         const obj: SliDeskServerPlugin = { name: plugin };
         if (typeof json.addRoutes === "string")
           obj.addRoutes = (
@@ -17,8 +19,9 @@ const getPlugins = async (pluginsDir: string, serverPath: string) => {
           ).default;
         if (typeof json.addWS === "string")
           obj.addWS = (await import(`${serverPath}/${json.addWS}`)).default;
-        serverPlugins.push(obj);
-      }
+        return obj;
+      });
+      if (obj) serverPlugins.push(obj);
     }
   }
   return serverPlugins;

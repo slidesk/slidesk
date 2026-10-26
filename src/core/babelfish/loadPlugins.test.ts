@@ -1,10 +1,39 @@
-import { describe, expect, it } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { captured } from "../../__testing__/console";
 import loadPlugins from "./loadPlugins";
 
+beforeEach(() => {
+  captured.clear();
+});
+
 describe("loadPlugins function", () => {
+  it("skips a plugin whose plugin.json is being written", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    mkdirSync(`${tempDir}plugins/draft`, { recursive: true });
+    mkdirSync(`${tempDir}plugins/ready`, { recursive: true });
+    writeFileSync(`${tempDir}plugins/draft/plugin.json`, '{"addHTML":');
+    writeFileSync(`${tempDir}plugins/ready/plugin.json`, "{}");
+    const result = await loadPlugins(tempDir, {});
+    expect(result.map((p) => p.name)).toEqual(["ready"]);
+    expect(String(captured.warns)).toContain("draft/plugin.json skipped");
+    rmSync(tempDir, { recursive: true });
+  });
+
+  it("skips a plugin naming an html file that does not exist yet", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    mkdirSync(`${tempDir}plugins/draft`, { recursive: true });
+    writeFileSync(
+      `${tempDir}plugins/draft/plugin.json`,
+      JSON.stringify({ addHTMLFromFiles: ["plugins/draft/todo.html"] }),
+    );
+    expect(await loadPlugins(tempDir, {})).toEqual([]);
+    expect(String(captured.warns)).toContain("skipped");
+    rmSync(tempDir, { recursive: true });
+  });
+
   it("should return empty array when no plugins directory exists", async () => {
     const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     const env: Record<string, unknown> = { slidesk: { COMMON_DIR: "" } };
