@@ -100,6 +100,25 @@ jobs:
           files: slidesk_${{ matrix.release_suffix }}.tar.gz
           generate_release_notes: true
 
+  build_windows:
+    name: Build Windows release
+    needs: create_release
+    environment: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: oven-sh/setup-bun@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: bun install
+      - run: bun build src/index.ts --compile --minify --target=bun-windows-x64 --outfile slidesk.exe
+      - run: zip slidesk_windows.zip slidesk.exe
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: slidesk_windows.zip
+
   update_brew_formula:
     name: Update formula
     runs-on: ubuntu-latest
