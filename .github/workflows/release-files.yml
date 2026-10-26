@@ -63,7 +63,7 @@ jobs:
             sha_field: MAC_AMD_SHA
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
       - name: Checkout code
         uses: actions/checkout@v4
       - run: bun install
@@ -150,7 +150,7 @@ jobs:
     needs: create_release
     runs-on: ubuntu-latest
     steps:
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
       - name: Checkout code
         uses: actions/checkout@v4
       - run: bun install
