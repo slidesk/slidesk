@@ -60,3 +60,5 @@ slidesk component push my-component
 slidesk template push my-template
 slidesk theme push my-theme
 ```
+
+Run it from the directory that holds the addon: `my-plugin/`, `my-template/` and `my-theme/` are directories, while `my-component` stands for `my-component.mjs`.

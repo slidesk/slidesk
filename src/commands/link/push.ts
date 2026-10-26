@@ -1,6 +1,7 @@
 import { Clipse } from "clipse";
 import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
+import { hubFetch } from "../../utils/hub";
 
 const { log } = console;
 
@@ -14,7 +15,7 @@ linkPushCmd.action(async (_, options: { "slidesk-link-url"?: string }) => {
   const slideskToken = await getLinkToken();
   const data = new FormData();
   data.set("file", linkYML);
-  const response = await fetch(`${options["slidesk-link-url"]}/pushtotalk`, {
+  const response = await hubFetch(`${options["slidesk-link-url"]}/pushtotalk`, {
     method: "post",
     body: data,
     headers: {

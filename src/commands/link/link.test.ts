@@ -17,8 +17,12 @@ import {
 import { captured } from "../../__testing__/console";
 import { runCommand } from "../../utils/cliError";
 
+const savedTokens: string[] = [];
 mock.module("../../utils/getLinkToken", () => ({
   default: async () => "a-token",
+  saveLinkToken: async (token: string) => {
+    savedTokens.push(token);
+  },
 }));
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
@@ -138,6 +142,20 @@ describe("link host", () => {
     expect(captured.error()).toContain("err:talk too large");
   });
 
+  it("reports a failing hub instead of printing its error page", async () => {
+    stubFetch(async () => new Response("<html>oops", { status: 502 }));
+    expect(await run(["host", talk, "--slidesk-link-url", LINK])).toBe(1);
+    expect(captured.error()).toContain("Hosting failed (502)");
+    expect(captured.log()).not.toContain("available for 72h");
+  });
+
+  it("leaves a link.tgz of the user alone", async () => {
+    writeFileSync(join(cwd.dir, "link.tgz"), "mine");
+    stubFetch(async () => new Response("abc123"));
+    await run(["host", talk, "--slidesk-link-url", LINK]);
+    expect(await Bun.file(join(cwd.dir, "link.tgz")).text()).toBe("mine");
+  });
+
   it("documents its options", () => {
     const help = linkCmd.helpText();
     expect(help).toContain("host");
@@ -145,9 +163,8 @@ describe("link host", () => {
 });
 
 describe("link login", () => {
-  // login reads and writes ~/.slidesk and binds a local port, so Bun's file,
-  // server and spawn entry points are stubbed for the whole block
-  let stored: { path: string; content: string }[] = [];
+  // login reads ~/.slidesk and binds a local port, so Bun's file, server and
+  // spawn entry points are stubbed for the whole block
   let stopped = 0;
   let served: {
     port: number;
@@ -159,7 +176,7 @@ describe("link login", () => {
     token: { exists: boolean; size: number },
     busy: number[] = [],
   ) => {
-    stored = [];
+    savedTokens.length = 0;
     stopped = 0;
     served = null;
     spawned = [];
@@ -169,16 +186,6 @@ describe("link login", () => {
         size: token.size,
         exists: async () => token.exists,
       })) as never),
-      spyOn(Bun, "write").mockImplementation((async (
-        target: { path: string } | string,
-        content: string,
-      ) => {
-        stored.push({
-          path: typeof target === "string" ? target : target.path,
-          content: String(content),
-        });
-        return 0;
-      }) as never),
       spyOn(Bun, "serve").mockImplementation(((options: {
         port: number;
         routes: Record<string, CallableFunction>;
@@ -202,7 +209,7 @@ describe("link login", () => {
   it("does nothing when a token is already stored", async () => {
     stubBun({ exists: true, size: 42 });
     expect(await run(["login", "--slidesk-link-url", LINK])).toBe(0);
-    expect(stored).toEqual([]);
+    expect(savedTokens).toEqual([]);
     expect(served).toBeNull();
   });
 
@@ -217,9 +224,7 @@ describe("link login", () => {
         LINK,
       ]),
     ).toBe(0);
-    expect(stored).toHaveLength(1);
-    expect(stored[0].path).toEndWith("/.slidesk");
-    expect(stored[0].content).toBe("tok-42");
+    expect(savedTokens).toEqual(["tok-42"]);
   });
 
   it("refreshes an existing token when forced", async () => {
@@ -234,7 +239,7 @@ describe("link login", () => {
         LINK,
       ]),
     ).toBe(0);
-    expect(stored[0].content).toBe("tok-99");
+    expect(savedTokens).toEqual(["tok-99"]);
   });
 
   it("opens the browser on the hub authentication page", async () => {
@@ -257,7 +262,7 @@ describe("link login", () => {
     await run(["login", "--slidesk-link-url", LINK]);
     const routes = served?.routes as Record<string, CallableFunction>;
     const res = await routes["/auth/:code"]({ params: { code: "from-hub" } });
-    expect(stored[0].content).toBe("from-hub");
+    expect(savedTokens).toEqual(["from-hub"]);
     expect(await res.text()).toContain("You can close this tab");
   });
 

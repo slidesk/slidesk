@@ -279,6 +279,30 @@ describe("plugin command", () => {
     expect(captured.error()).toContain("nope");
   });
 
+  it("leaves a link.tgz of the user alone", async () => {
+    mkdirSync(join(cwd.dir, "mine"), { recursive: true });
+    writeFileSync(join(cwd.dir, "mine/plugin.json"), "{}");
+    writeFileSync(join(cwd.dir, "link.tgz"), "mine");
+    stubFetch(async () => new Response("", { status: 201 }));
+    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await Bun.file(join(cwd.dir, "link.tgz")).text()).toBe("mine");
+  });
+
+  it("refuses to push a plugin that does not exist", async () => {
+    expect(await run(["push", "ghost", "--slidesk-link-url", LINK])).toBe(1);
+    expect(captured.error()).toContain("ghost not found");
+  });
+
+  it("reports an unreachable hub", async () => {
+    stubFetch(async () => {
+      throw new TypeError("fetch failed");
+    });
+    expect(
+      await run(["install", "bob/timer", "--slidesk-link-url", LINK]),
+    ).toBe(1);
+    expect(captured.error()).toContain(`Cannot reach ${LINK}`);
+  });
+
   it("exits when the push has no plugin name", async () => {
     expect(await run(["push"])).toBe(1);
     expect(captured.error()).toContain("Please provide a plugin name");

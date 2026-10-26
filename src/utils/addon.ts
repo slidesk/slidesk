@@ -1,8 +1,12 @@
+import { existsSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { multiselect } from "@clack/prompts";
-import { type AnyClipse, Clipse } from "clipse";
+import { Clipse } from "clipse";
 import { extract } from "tar";
 import { CliError } from "./cliError";
+import getLinkToken from "./getLinkToken";
+import { hubFetch, withTarball } from "./hub";
+import slugify from "./slugify";
 
 const { log } = console;
 
@@ -27,7 +31,7 @@ export const addonInstall = async (
   const [user, ...rest] = addonName.split("__");
   const addon = rest.join("__");
   const label = `${user}/${addon}`;
-  const response = await fetch(
+  const response = await hubFetch(
     `${urlLink}/addons/download/${kind}/${user.replace("@", "")}/${addon}`,
   );
   if (response.status === 404) throw new CliError(`${kind} ${label} not found`);
@@ -82,7 +86,7 @@ const searchCmd = (kind: AddonKind) =>
     ])
     .action(async (args, opts: LinkOpts) => {
       if (!args.search) throw new CliError("Please provide a search term");
-      const response = await fetch(
+      const response = await hubFetch(
         `${opts["slidesk-link-url"]}/addons/search/${kind}/${args.search}`,
       );
       if (response.status !== 200)
@@ -99,8 +103,61 @@ const searchCmd = (kind: AddonKind) =>
           log(await addonInstall(kind, p, opts["slidesk-link-url"]));
     });
 
-/** The `slidesk <kind>` command: install, remove, update and search on slidesk.link, plus its own push. */
-export const addonCmd = (kind: AddonKind, pushCmd: AnyClipse) => {
+/** The manifest sent along an addon: plugin.json, or the preview images of a theme. */
+const pushedJson = async (kind: AddonKind, path: string, name: string) => {
+  if (kind === "plugin") {
+    const manifest = Bun.file(`${path}/plugin.json`);
+    if (!(await manifest.exists()))
+      throw new CliError(`${name}/plugin.json is missing`);
+    return JSON.stringify(await manifest.json());
+  }
+  if (kind === "theme" && existsSync(`${path}/preview`)) {
+    const images: string[] = [];
+    for await (const img of new Bun.Glob("*.webp").scan(`${path}/preview`))
+      images.push(
+        Buffer.from(
+          await Bun.file(`${path}/preview/${img}`).arrayBuffer(),
+        ).toString("base64"),
+      );
+    return JSON.stringify(images);
+  }
+  return kind === "theme" ? "[]" : "{}";
+};
+
+const pushCmd = (kind: AddonKind) =>
+  new Clipse("push", `push ${kind} to your user page on slidesk.link`)
+    .addArguments([{ name: "name", description: `${kind} name` }])
+    .action(async (args, opts: LinkOpts) => {
+      if (!args.name) throw new CliError(`Please provide a ${kind} name`);
+      // a component is a single .mjs file, the other addons a directory
+      const entry = kind === "component" ? `${args.name}.mjs` : args.name;
+      const path = `${process.cwd()}/${entry}`;
+      if (!existsSync(path)) throw new CliError(`${entry} not found`);
+      const json = await pushedJson(kind, path, args.name);
+      const readme = Bun.file(
+        kind === "component" ? path : `${path}/README.md`,
+      );
+      const desc = (await readme.exists()) ? await readme.text() : "";
+      const slideskToken = await getLinkToken();
+      await withTarball(process.cwd(), [entry], async (file) => {
+        const data = new FormData();
+        data.set("file", file);
+        data.set("type", kind);
+        data.set("name", slugify(args.name ?? ""));
+        data.set("json", json);
+        data.set("desc", desc);
+        const response = await hubFetch(`${opts["slidesk-link-url"]}/addons`, {
+          method: "post",
+          body: data,
+          headers: { "x-slidesk": slideskToken },
+        });
+        if (response.status !== 201) throw new CliError(await response.text());
+      });
+      log(`Your ${kind} has been added or updated into the hub, thanks`);
+    });
+
+/** The `slidesk <kind>` command: install, remove, update, search and push on slidesk.link. */
+export const addonCmd = (kind: AddonKind) => {
   const nameArg = [{ name: "name", description: `name of the ${kind}` }];
   const install =
     (update: boolean) => async (args: { name?: string }, opts: LinkOpts) =>
@@ -129,6 +186,6 @@ export const addonCmd = (kind: AddonKind, pushCmd: AnyClipse) => {
         .addArguments(nameArg)
         .action(install(true)),
       searchCmd(kind),
-      pushCmd,
+      pushCmd(kind),
     ]);
 };

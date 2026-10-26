@@ -1,5 +1,6 @@
 import { homedir } from "node:os";
 import { Clipse } from "clipse";
+import { saveLinkToken } from "../../utils/getLinkToken";
 import start from "../../utils/start";
 
 const linkLoginCmd = new Clipse("login", "login to slidesk.link")
@@ -34,13 +35,13 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
       )
         return;
       if (o["with-token"]) {
-        await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
+        await saveLinkToken(String(o["with-token"]));
         return;
       }
       const routes = {
         "/auth/:code": async (req: Bun.BunRequest<"/auth/:code">) => {
           const { code } = req.params;
-          await Bun.write(globalSlidesk, code);
+          await saveLinkToken(code);
           return new Response(
             `<html>
               <script>
