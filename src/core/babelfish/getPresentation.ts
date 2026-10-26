@@ -4,6 +4,8 @@ import image from "../../components/image";
 import type { SliDeskEnv, SliDeskTemplate } from "../../types";
 import treatSlide from "./treatSlide";
 
+let importCount = 0;
+
 const getPresentation = async (
   sdf: string,
   env: SliDeskEnv,
@@ -19,8 +21,8 @@ const getPresentation = async (
   fusion = formatting(fusion, env);
   // custom components
   for (const c of components) {
-    // the query defeats the module cache, so an edited component is picked up while watching
-    const { default: comp } = await import(`${c}?t=${Date.now()}`);
+    // a fresh query defeats the module cache, so an edited component is picked up while watching
+    const { default: comp } = await import(`${c}?v=${++importCount}`);
     fusion = await comp(fusion);
   }
   // slice & treatment
