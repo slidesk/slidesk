@@ -20,7 +20,6 @@ componentRemoveCmd
   .action(async (args) => {
     const res = await componentRemove(args.name ?? "");
     console.log(res);
-    process.exit(0);
   });
 
 export default componentRemoveCmd;

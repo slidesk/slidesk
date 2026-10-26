@@ -38,7 +38,6 @@ saveCmd
         deployed: true,
       },
     });
-    process.exit(0);
   });
 
 export default saveCmd;

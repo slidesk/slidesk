@@ -2,10 +2,11 @@ import { rmSync } from "node:fs";
 import { Clipse } from "clipse";
 import { create } from "tar";
 import type { SliDeskPublishOptions } from "../../types";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import save from "../../utils/save";
 
-const { log, error } = console;
+const { log } = console;
 
 const sendToSlideskLink = async (
   talk: string,
@@ -44,20 +45,16 @@ const sendToSlideskLink = async (
     },
   });
   const uuid = await response.text();
-  if (uuid.startsWith("err:")) {
-    error(uuid);
-    process.exit(1);
-  } else if (uuid === "") {
-    error("Your presentation is too large");
+  if (uuid.startsWith("err:")) throw new CliError(uuid);
+  if (uuid === "") {
     await file.unlink();
-    process.exit(1);
+    throw new CliError("Your presentation is too large");
   }
   log("Your presentation is available for 72h:");
   log(`${options["slidesk-link-url"]}/s/${uuid}/`);
   if (options.notes)
     log(`${options["slidesk-link-url"]}/s/${uuid}/${options.notes}`);
   await file.unlink();
-  process.exit(0);
 };
 
 const linkHostCmd = new Clipse(

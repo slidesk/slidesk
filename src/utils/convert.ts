@@ -1,10 +1,10 @@
 import { content, errorContent } from "../core/Convert";
 import type {
   SliDeskEnv,
-  SliDeskFile,
   SliDeskPresentOptions,
   SliDeskSaveOptions,
 } from "../types";
+import { CliError } from "./cliError";
 
 const { error } = console;
 
@@ -13,23 +13,16 @@ const convert = async (
   options: SliDeskSaveOptions | SliDeskPresentOptions,
   env: SliDeskEnv,
 ) => {
-  let files: SliDeskFile = {};
+  let mainFile = `${talk}/main.sdf`;
+  if (!(await Bun.file(mainFile).exists())) mainFile = `${talk}/main.md`;
+  if (!(await Bun.file(mainFile).exists()))
+    throw new CliError("🤔 main.(sdf|md) was not found");
   try {
-    const sdfMainFile = Bun.file(`${talk}/main.sdf`);
-    const mdMainFile = Bun.file(`${talk}/main.md`);
-    if (await sdfMainFile.exists())
-      files = await content(`${talk}/main.sdf`, options, env);
-    else if (await mdMainFile.exists())
-      files = await content(`${talk}/main.md`, options, env);
-    else {
-      error("🤔 main.(sdf|md) was not found");
-      process.exit(1);
-    }
+    return await content(mainFile, options, env);
   } catch (e) {
-    files = await errorContent(options, env);
     error(e);
+    return errorContent(options, env);
   }
-  return files;
 };
 
 export default convert;

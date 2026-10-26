@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { ExitError, useTempCwd } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 import deployCmd from "./index";
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
@@ -13,12 +14,11 @@ let cwd: ReturnType<typeof useTempCwd>;
 
 const run = async (argv: string[]) => {
   try {
-    await deployCmd.ready(argv);
+    return await runCommand(() => deployCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 beforeEach(() => {

@@ -16,6 +16,7 @@ import {
   useTempCwd,
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
   throw new ExitError(code);
@@ -50,12 +51,11 @@ const stubFetch = (
 /** Runs a subcommand the way the CLI does, swallowing the exit it ends with. */
 const run = async (argv: string[]) => {
   try {
-    await componentCmd.ready(argv);
+    return await runCommand(() => componentCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 beforeEach(() => {

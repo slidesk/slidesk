@@ -22,6 +22,7 @@ import {
   fakePage,
 } from "../__testing__/browser";
 import { captured } from "../__testing__/console";
+import { runCommand } from "../utils/cliError";
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
   throw new ExitError(code);
@@ -45,12 +46,11 @@ const run = async (
   argv: string[],
 ) => {
   try {
-    await cmd.ready(argv);
+    return await runCommand(() => cmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 const TALK = join(import.meta.dir, "../__fixtures__/talk");

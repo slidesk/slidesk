@@ -13,7 +13,6 @@ componentUpdateCmd
       true,
     );
     console.log(res);
-    process.exit(0);
   });
 
 export default componentUpdateCmd;

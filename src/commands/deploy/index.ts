@@ -2,8 +2,7 @@ import { Clipse } from "clipse";
 import githubYML from "../../templates/ci/github.yml" with { type: "text" };
 import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
 import linkYML from "../../templates/ci/link.yml" with { type: "text" };
-
-const { error } = console;
+import { CliError } from "../../utils/cliError";
 
 const deployCmd = new Clipse(
   "deploy",
@@ -41,13 +40,10 @@ deployCmd
           await Bun.write(`${talkdir}/link.yml`, linkYML);
           break;
       }
-      process.exit(0);
-    } else {
-      error(
+    } else
+      throw new CliError(
         `${options.target} is not a valid deploy option (${depls.join(", ")})`,
       );
-      process.exit(1);
-    }
   });
 
 export default deployCmd;

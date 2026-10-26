@@ -1,5 +1,6 @@
 import { Clipse } from "clipse";
 import { create } from "tar";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
@@ -43,11 +44,7 @@ templatePushCmd
       } else {
         error(await response.text());
       }
-      process.exit(0);
-    } else {
-      error("Please provide a template name");
-      process.exit(1);
-    }
+    } else throw new CliError("Please provide a template name");
   });
 
 export default templatePushCmd;

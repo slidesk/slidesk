@@ -1,10 +1,9 @@
 import { existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import type { SliDeskSaveOptions } from "../types";
+import { CliError } from "./cliError";
 import convert from "./convert";
 import loadEnv from "./loadEnv";
-
-const { log } = console;
 
 const readAllFiles = (dir: string): string[] => {
   const result: string[] = [];
@@ -36,12 +35,9 @@ const save = async (
   const files = await convert(dir, options, env);
   const promises: Promise<number>[] = [];
   if (options.target === "." || options.target === dir) {
-    log(
+    throw new CliError(
       "=> It is not possible to save to the root of your talk. Try an other path",
     );
-    // `return` matters: without it the rmSync below still runs on the guarded
-    // target if process.exit is ever stubbed or overridden.
-    return process.exit(0);
   }
   if (options.target && existsSync(options.target))
     rmSync(options.target, { recursive: true, force: true });

@@ -1,11 +1,12 @@
 import { mkdirSync } from "node:fs";
 import { Clipse } from "clipse";
 import defaultThemeFiles from "../../templates/default_theme";
+import { CliError } from "../../utils/cliError";
 import { question } from "../../utils/interactCLI";
 import slugify from "../../utils/slugify";
 import { templateInstall } from "../template/install";
 
-const { error, log } = console;
+const { log } = console;
 
 const createDefault = async (dirName: string, responseTitle: string) => {
   mkdirSync(dirName, { recursive: true });
@@ -38,10 +39,8 @@ createCmd
   .addArguments([{ name: "talk", description: "name of your talk/directory" }])
   .action(async (args) => {
     const talk = args.talk ?? "";
-    if (talk.trim() === "") {
-      error("You must specify an argument (talk directory)");
-      process.exit(1);
-    }
+    if (talk.trim() === "")
+      throw new CliError("You must specify an argument (talk directory)");
     await create(talk);
     await templateInstall(
       "@gouz__split",
@@ -49,7 +48,6 @@ createCmd
       false,
       `${process.cwd()}/${talk}`,
     );
-    process.exit(0);
   });
 
 export default createCmd;

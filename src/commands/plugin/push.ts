@@ -1,5 +1,6 @@
 import { Clipse } from "clipse";
 import { create } from "tar";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
@@ -20,10 +21,10 @@ pluginPushCmd
     if (args.plugin) {
       const pluginPath = `${process.cwd()}/${args.plugin}`;
       const pluginJSON = Bun.file(`${pluginPath}/plugin.json`);
-      if (!(await pluginJSON.exists())) {
-        error("Plugin not found. Wrong name or plugin.json is missing");
-        process.exit(1);
-      }
+      if (!(await pluginJSON.exists()))
+        throw new CliError(
+          "Plugin not found. Wrong name or plugin.json is missing",
+        );
       const slideskToken = await getLinkToken();
       await create({ gzip: true, file: "link.tgz" }, [args.plugin]);
       const file = Bun.file("link.tgz");
@@ -48,11 +49,7 @@ pluginPushCmd
       } else {
         error(await response.text());
       }
-      process.exit(0);
-    } else {
-      error("Please provide a plugin name");
-      process.exit(1);
-    }
+    } else throw new CliError("Please provide a plugin name");
   });
 
 export default pluginPushCmd;

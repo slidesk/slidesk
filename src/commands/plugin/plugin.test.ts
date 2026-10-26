@@ -16,6 +16,7 @@ import {
   useTempCwd,
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
   throw new ExitError(code);
@@ -47,12 +48,11 @@ const stubFetch = (
 
 const run = async (argv: string[]) => {
   try {
-    await pluginCmd.ready(argv);
+    return await runCommand(() => pluginCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 const installedPlugin = (name: string) => {

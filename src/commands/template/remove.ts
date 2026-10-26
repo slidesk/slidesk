@@ -23,7 +23,6 @@ templateRemoveCmd
   .action(async (args) => {
     const res = await templateRemove(args.name ?? "");
     console.log(res);
-    process.exit(0);
   });
 
 export default templateRemoveCmd;
