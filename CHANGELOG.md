@@ -20,6 +20,7 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 - `--lang xx` without an `xx.lang.json` is an error listing the available languages, instead of silently showing the default one.
 - An `!image(...)` whose file does not exist is reported with a warning instead of becoming a broken image without notice.
 - The PDF export no longer adds pages after the slides for the html that plugins inject (`addHTML`, `addHTMLFromFiles`).
+- Talks saved with Windows line endings (CRLF) no longer merge an included slide into the previous one.
 - `present --telnet` crashed the whole talk when `HTTPS` was on; the telnet version now follows each rebuild too (it kept the slides of the start), and prints a TLS client command when `KEY` / `CERT` are set, since a plain `telnet` cannot connect then.
 
 ### 🧰 Internals

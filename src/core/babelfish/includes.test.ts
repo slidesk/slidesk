@@ -75,4 +75,14 @@ describe("includes function", () => {
     const result = await includes(join(scratch, "main.md"));
     expect(result.match(/## Part/g)).toHaveLength(2);
   });
+
+  it("keeps the slides of CRLF files apart", async () => {
+    talk({
+      "main.md": "## Welcome\r\n\r\n!include(part.md)\r\n",
+      "part.md": "## Part\r\n\r\nBody\r\n",
+    });
+    const result = await includes(join(scratch, "main.md"));
+    expect(result).not.toContain("\r");
+    expect(result.split("\n## ")).toHaveLength(2);
+  });
 });
