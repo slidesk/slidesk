@@ -19,7 +19,7 @@ describe("getPlugins", () => {
     );
     const handler = async () => {
       const [plugin] = await getPlugins(join(dir, "plugins"), dir);
-      return (plugin.addRoutes as unknown as () => string)();
+      return (plugin.addRoutes as unknown as () => number)();
     };
     writeFileSync(join(dir, "plugins/hot/routes.js"), "export default () => 1");
     expect(await handler()).toBe(1);
