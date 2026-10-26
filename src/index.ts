@@ -22,7 +22,8 @@ log(`\x1b[1m ____(•)${Date.now() % 2 ? "-" : "<"}
 (\x1b[4mSliDesk\x1b[0m\x1b[1m) v:\x1b[36;49m${packagejson.version}\x1b[0m
 `);
 
-await checkVersion(packagejson.version);
+// runs alongside the command instead of delaying it, reported once it is done
+const versionCheck = checkVersion(packagejson.version);
 
 const slidesk = new Clipse(
   "slidesk",
@@ -48,4 +49,5 @@ slidesk
   .defineDefaultCommand(presentCmd);
 
 const code = await runCommand(() => slidesk.ready());
+await versionCheck;
 if (code) process.exit(code);
