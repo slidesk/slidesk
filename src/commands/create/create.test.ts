@@ -17,8 +17,7 @@ import {
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
 
-// interactCLI opens a readline interface on stdin at import time, which has no
-// place in a test run
+// question would wait for an answer on stdin
 let answer = "";
 mock.module("../../utils/interactCLI", () => ({
   question: async () => answer,

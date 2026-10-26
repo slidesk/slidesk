@@ -46,9 +46,9 @@ importCmd
     }
     try {
       await importTalk(args.source, {
-        type: (options.type as string) || undefined,
-        output: options.output as string,
-        force: options.force as boolean,
+        type: options.type || undefined,
+        output: options.output,
+        force: options.force,
       });
     } catch (e) {
       error(e instanceof Error ? e.message : e);

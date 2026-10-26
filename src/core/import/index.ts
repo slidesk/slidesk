@@ -41,16 +41,18 @@ const parse = async (
   return kind === "revealjs" ? revealjs(text) : slidev(text);
 };
 
+const toKind = (type: string) => {
+  const kind = KINDS.find((k) => k === type);
+  if (!kind)
+    throw new Error(`${type} is not a valid import type (${KINDS.join(", ")})`);
+  return kind;
+};
+
 const importTalk = async (source: string, options: SliDeskImportOptions) => {
-  if (options.type && !KINDS.includes(options.type as ImportKind))
-    throw new Error(
-      `${options.type} is not a valid import type (${KINDS.join(", ")})`,
-    );
+  const forced = options.type ? toKind(options.type) : undefined;
 
   const entry = isURL(source) ? source : entryOf(source);
-  const kind =
-    (options.type as ImportKind) ??
-    detect(entry, isURL(entry) ? null : await read(entry));
+  const kind = forced ?? detect(entry, isURL(entry) ? null : await read(entry));
   const data = kind === "gslides" ? new Uint8Array() : await read(entry);
 
   log(`📥 importing as ${kind}`);

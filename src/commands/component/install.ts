@@ -43,7 +43,7 @@ componentInstallCmd
   .action(async (args, opts: { "slidesk-link-url"?: string }) => {
     const res = await componentInstall(
       (args.name ?? "").replace("/", "__"),
-      opts["slidesk-link-url"] as string,
+      opts["slidesk-link-url"],
       false,
     );
     log(res);

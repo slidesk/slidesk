@@ -24,7 +24,7 @@ const create = async (talk: string) => {
     dirName = `${dirName}_`;
   }
   const responseTitle = await question("What is the title of talk?");
-  await createDefault(dirName, responseTitle as string);
+  await createDefault(dirName, responseTitle);
   log("Presentation created");
   log();
   log(`cd ${dirName} && slidesk`);
