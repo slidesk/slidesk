@@ -82,9 +82,12 @@ if (build.exitCode !== 0) {
 {
   const { dir } = talk(18801);
   const res = await run(dir, ["save", "-t", "public"]);
+  const index = join(dir, "public/index.html");
   check(
-    "save exports the talk",
-    res.code === 0 && existsSync(join(dir, "public/index.html")),
+    "save exports the talk with its included slides",
+    res.code === 0 &&
+      existsSync(index) &&
+      (await Bun.file(index).text()).includes("Hello <strong>world</strong>"),
     res.output,
   );
   const again = await run(dir, ["save", "-t", "public"]);
@@ -137,9 +140,11 @@ if (build.exitCode !== 0) {
     stderr: "pipe",
   });
   const page = await waitFor(`http://localhost:${port}/`);
+  const html = (await page?.text()) ?? "";
   check(
     "present serves the talk despite a broken plugin.json",
-    page?.status === 200 && (await page.text()).includes("Welcome"),
+    page?.status === 200 && html.includes("Welcome"),
+    `status ${page?.status}: ${html.slice(0, 500)}`,
   );
   proc.stdin.write("q\n");
   proc.stdin.end();

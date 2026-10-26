@@ -1,5 +1,5 @@
 import { existsSync, globSync, lstatSync } from "node:fs";
-import { relative, resolve } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 import { CliError } from "../../utils/cliError";
 import replaceAsync from "../../utils/replaceAsync";
 
@@ -8,8 +8,11 @@ const includes = async (
   file: string,
   chain: string[] = [],
 ): Promise<string> => {
-  if (!import.meta.resolve(file).includes(process.cwd())) return "";
   const path = resolve(file);
+  // only files below the working directory are read (paths, not file:// urls,
+  // so that it also holds on Windows)
+  const fromCwd = relative(process.cwd(), path);
+  if (fromCwd.startsWith("..") || isAbsolute(fromCwd)) return "";
   if (chain.includes(path))
     throw new CliError(
       `!include loop: ${[...chain, path].map((f) => relative(process.cwd(), f)).join(" → ")}`,
