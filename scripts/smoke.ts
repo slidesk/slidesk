@@ -189,14 +189,13 @@ if (page) {
     );
     const pages = Math.max(objects, ...counts, 0);
     await run(pdfTalk.dir, ["save", "-t", "public"]);
-    const slides =
-      (await Bun.file(join(pdfTalk.dir, "public/index.html")).text()).match(
-        /class=sd-slide/g,
-      )?.length ?? 0;
+    const html = await Bun.file(join(pdfTalk.dir, "public/index.html")).text();
+    const slides = html.match(/class=sd-slide/g)?.length ?? 0;
+    const titles = [...html.matchAll(/<h2>([^<]*)<\/h2>/g)].map((m) => m[1]);
     check(
       "export gives one pdf page per slide",
       pdfRun.code === 0 && pages === 3,
-      `exit ${pdfRun.code}, ${pages} pages (${objects} page objects, /Count ${counts.join(",") || "none"}, ObjStm: ${pdf.includes("/ObjStm")}), ${slides} slides in the html\n${pdfRun.output}`,
+      `exit ${pdfRun.code}, ${pages} pages (${objects} page objects, /Count ${counts.join(",") || "none"}, ObjStm: ${pdf.includes("/ObjStm")}), ${slides} slides in the html: ${titles.join(" | ")}\n${pdfRun.output}`,
     );
 
     const { dir } = talk(18806);
