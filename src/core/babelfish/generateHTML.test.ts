@@ -5,6 +5,16 @@ import { join } from "node:path";
 import generateHTML from "./generateHTML";
 
 describe("generateHTML function", () => {
+  it("reports a --lang without its translation file", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(`${tempDir}en.lang.json`, '{"translations": {}}');
+    writeFileSync(`${tempDir}fr.lang.json`, '{"translations": {}}');
+    expect(
+      generateHTML("", "#SECTIONS#", tempDir, { lang: "xx" }, {}, []),
+    ).rejects.toThrow("xx.lang.json not found (available: en, fr)");
+    rmSync(tempDir, { recursive: true });
+  });
+
   it("should generate HTML without translations", async () => {
     const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     writeFileSync(`${tempDir}index.html`, "<html></html>");

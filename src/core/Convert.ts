@@ -8,6 +8,7 @@ import type {
   SliDeskPlugin,
   SliDeskPresentOptions,
 } from "../types";
+import checkImages from "./babelfish/checkImages";
 import generateHTML from "./babelfish/generateHTML";
 import getCSS from "./babelfish/getCSS";
 import getJS from "./babelfish/getJS";
@@ -93,6 +94,7 @@ export const content = async (
     env,
   );
   const { config, content } = await prepareSDF(mainFile);
+  checkImages(content, sdfPath, env);
   return {
     ...(await generateHTML(
       await getPresentation(content, env, components, templates),
