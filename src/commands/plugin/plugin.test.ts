@@ -30,8 +30,10 @@ mock.module("../../utils/getLinkToken", () => ({
 
 // These modules destructure `console` at import time and nothing else in the
 // suite imports them, so the spies above are already in place.
-const { pluginInstall } = await import("./install");
-const { pluginRemove } = await import("./remove");
+const { addonInstall, addonRemove } = await import("../../utils/addon");
+const pluginInstall = (...a: [string, string?, boolean?, string?]) =>
+  addonInstall("plugin", ...a);
+const pluginRemove = (name: string) => addonRemove("plugin", name);
 const { default: pluginCmd } = await import("./index");
 
 const LINK = "https://link.test";
@@ -79,8 +81,8 @@ afterEach(() => {
 
 describe("pluginInstall", () => {
   it("refuses an empty name", async () => {
-    expect(await pluginInstall("")).toBe(
-      "Please provide a name for the plugin",
+    await expect(pluginInstall("")).rejects.toThrow(
+      "Please provide a plugin name",
     );
   });
 
@@ -92,7 +94,7 @@ describe("pluginInstall", () => {
     const urls = stubFetch(async () => new Response(tarball));
     const res = await pluginInstall("@bob__timer", LINK);
     expect(urls).toEqual([`${LINK}/addons/download/plugin/bob/timer`]);
-    expect(res).toBe("Plugin @bob/timer installed");
+    expect(res).toBe("plugin @bob/timer installed");
     expect(existsSync(join(cwd.dir, "plugins/@bob__timer/timer.js"))).toBe(
       true,
     );
@@ -150,29 +152,34 @@ describe("pluginInstall", () => {
     const tarball = await makeTarball("timer", { "plugin.json": "{}" });
     stubFetch(async () => new Response(tarball));
     expect(await pluginInstall("bob__timer", LINK, true)).toBe(
-      "Plugin bob/timer updated",
+      "plugin bob/timer updated",
     );
   });
 
   it("reports a plugin missing from the hub", async () => {
     stubFetch(async () => new Response("", { status: 404 }));
-    expect(await pluginInstall("bob__ghost", LINK)).toBe("");
-    expect(captured.error()).toContain("Plugin bob/ghost not found");
+    await expect(pluginInstall("bob__ghost", LINK)).rejects.toThrow(
+      "plugin bob/ghost not found",
+    );
   });
 });
 
 describe("pluginRemove", () => {
   it("refuses an empty name", async () => {
-    expect(await pluginRemove("")).toBe("Please provide a name for the plugin");
+    await expect(pluginRemove("")).rejects.toThrow(
+      "Please provide the name of an installed plugin",
+    );
   });
 
   it("reports a plugin that is not installed", async () => {
-    expect(await pluginRemove("ghost")).toBe("Plugin not found");
+    await expect(pluginRemove("ghost")).rejects.toThrow(
+      "plugin ghost not found",
+    );
   });
 
   it("deletes an installed plugin", async () => {
     installedPlugin("timer");
-    expect(await pluginRemove("timer")).toBe("Plugin timer removed");
+    expect(await pluginRemove("timer")).toBe("plugin timer removed");
     expect(existsSync(join(cwd.dir, "plugins/timer"))).toBe(false);
   });
 });
@@ -275,5 +282,36 @@ describe("plugin command", () => {
   it("exits when the push has no plugin name", async () => {
     expect(await run(["push"])).toBe(1);
     expect(captured.error()).toContain("Please provide a plugin name");
+  });
+});
+
+describe("addon safety", () => {
+  it("reports a hub failure instead of extracting the error page", async () => {
+    stubFetch(async () => new Response("oops", { status: 503 }));
+    await expect(pluginInstall("bob__timer", LINK)).rejects.toThrow(
+      "plugin bob/timer could not be downloaded (503)",
+    );
+  });
+
+  it("keeps the installed plugin when the update cannot be downloaded", async () => {
+    installedPlugin("bob__timer");
+    stubFetch(async () => new Response("", { status: 503 }));
+    expect(await run(["update", "bob/timer", "--slidesk-link-url", LINK])).toBe(
+      1,
+    );
+    expect(existsSync(join(cwd.dir, "plugins/bob__timer/plugin.json"))).toBe(
+      true,
+    );
+  });
+
+  it("refuses names that escape the plugins directory", async () => {
+    const urls = stubFetch(async () => new Response(""));
+    await expect(pluginInstall("bob__../../evil", LINK)).rejects.toThrow(
+      "Please provide a plugin name",
+    );
+    await expect(pluginRemove("..")).rejects.toThrow(
+      "Please provide the name of an installed plugin",
+    );
+    expect(urls).toEqual([]);
   });
 });

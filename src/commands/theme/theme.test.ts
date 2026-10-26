@@ -30,8 +30,10 @@ mock.module("../../utils/getLinkToken", () => ({
 
 // These modules destructure `console` at import time and nothing else in the
 // suite imports them, so the spies above are already in place.
-const { themeInstall } = await import("./install");
-const { themeRemove } = await import("./remove");
+const { addonInstall, addonRemove } = await import("../../utils/addon");
+const themeInstall = (...a: [string, string?, boolean?, string?]) =>
+  addonInstall("theme", ...a);
+const themeRemove = (name: string) => addonRemove("theme", name);
 const { default: themeCmd } = await import("./index");
 
 const LINK = "https://link.test";
@@ -79,7 +81,9 @@ afterEach(() => {
 
 describe("themeInstall", () => {
   it("refuses an empty name", async () => {
-    expect(await themeInstall("")).toBe("Please provide a name for the theme");
+    await expect(themeInstall("")).rejects.toThrow(
+      "Please provide a theme name",
+    );
   });
 
   it("downloads a theme and flattens it into its own directory", async () => {
@@ -106,18 +110,21 @@ describe("themeInstall", () => {
 
   it("reports a theme missing from the hub", async () => {
     stubFetch(async () => new Response("", { status: 404 }));
-    expect(await themeInstall("bob__ghost", LINK)).toBe("");
-    expect(captured.error()).toContain("theme bob/ghost not found");
+    await expect(themeInstall("bob__ghost", LINK)).rejects.toThrow(
+      "theme bob/ghost not found",
+    );
   });
 });
 
 describe("themeRemove", () => {
   it("refuses an empty name", async () => {
-    expect(await themeRemove("")).toBe("Please provide a name for the theme");
+    await expect(themeRemove("")).rejects.toThrow(
+      "Please provide the name of an installed theme",
+    );
   });
 
   it("reports a theme that is not installed", async () => {
-    expect(await themeRemove("ghost")).toBe("theme not found");
+    await expect(themeRemove("ghost")).rejects.toThrow("theme ghost not found");
   });
 
   it("deletes an installed theme", async () => {

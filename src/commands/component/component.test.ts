@@ -32,8 +32,10 @@ mock.module("../../utils/getLinkToken", () => ({
 
 // These modules destructure `console` at import time and nothing else in the
 // suite imports them, so the spies above are already in place.
-const { componentInstall } = await import("./install");
-const { componentRemove } = await import("./remove");
+const { addonInstall, addonRemove } = await import("../../utils/addon");
+const componentInstall = (...a: [string, string?, boolean?, string?]) =>
+  addonInstall("component", ...a);
+const componentRemove = (name: string) => addonRemove("component", name);
 const { default: componentCmd } = await import("./index");
 
 const LINK = "https://link.test";
@@ -77,8 +79,8 @@ afterEach(() => {
 
 describe("componentInstall", () => {
   it("refuses an empty name", async () => {
-    expect(await componentInstall("")).toBe(
-      "Please provide a name for the component",
+    await expect(componentInstall("")).rejects.toThrow(
+      "Please provide a component name",
     );
   });
 
@@ -104,8 +106,9 @@ describe("componentInstall", () => {
 
   it("reports a component missing from the hub", async () => {
     stubFetch(async () => new Response("", { status: 404 }));
-    expect(await componentInstall("bob__ghost", LINK)).toBe("");
-    expect(captured.error()).toContain("Component bob/ghost not found");
+    await expect(componentInstall("bob__ghost", LINK)).rejects.toThrow(
+      "component bob/ghost not found",
+    );
   });
 
   it("strips escaped unicode from the name", async () => {
@@ -118,19 +121,21 @@ describe("componentInstall", () => {
 
 describe("componentRemove", () => {
   it("refuses an empty name", async () => {
-    expect(await componentRemove("")).toBe(
-      "Please provide a name for the component",
+    await expect(componentRemove("")).rejects.toThrow(
+      "Please provide the name of an installed component",
     );
   });
 
   it("reports a component that is not installed", async () => {
-    expect(await componentRemove("ghost")).toBe("Component not found");
+    await expect(componentRemove("ghost")).rejects.toThrow(
+      "component ghost not found",
+    );
   });
 
   it("deletes an installed component", async () => {
     mkdirSync(join(cwd.dir, "components"), { recursive: true });
     writeFileSync(join(cwd.dir, "components/hello.mjs"), "x");
-    expect(await componentRemove("hello")).toBe("Component hello removed");
+    expect(await componentRemove("hello")).toBe("component hello removed");
     expect(existsSync(join(cwd.dir, "components/hello.mjs"))).toBe(false);
   });
 });

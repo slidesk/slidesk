@@ -4,7 +4,7 @@ import defaultThemeFiles from "../../templates/default_theme";
 import { CliError } from "../../utils/cliError";
 import { question } from "../../utils/interactCLI";
 import slugify from "../../utils/slugify";
-import { templateInstall } from "../template/install";
+import { addonInstall } from "../../utils/addon";
 
 const { log } = console;
 
@@ -42,7 +42,8 @@ createCmd
     if (talk.trim() === "")
       throw new CliError("You must specify an argument (talk directory)");
     await create(talk);
-    await templateInstall(
+    await addonInstall(
+      "template",
       "@gouz__split",
       "https://slidesk.link",
       false,

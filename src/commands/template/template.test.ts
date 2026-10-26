@@ -30,8 +30,10 @@ mock.module("../../utils/getLinkToken", () => ({
 
 // These modules destructure `console` at import time and nothing else in the
 // suite imports them, so the spies above are already in place.
-const { templateInstall } = await import("./install");
-const { templateRemove } = await import("./remove");
+const { addonInstall, addonRemove } = await import("../../utils/addon");
+const templateInstall = (...a: [string, string?, boolean?, string?]) =>
+  addonInstall("template", ...a);
+const templateRemove = (name: string) => addonRemove("template", name);
 const { default: templateCmd } = await import("./index");
 
 const LINK = "https://link.test";
@@ -79,8 +81,8 @@ afterEach(() => {
 
 describe("templateInstall", () => {
   it("refuses an empty name", async () => {
-    expect(await templateInstall("")).toBe(
-      "Please provide a name for the template",
+    await expect(templateInstall("")).rejects.toThrow(
+      "Please provide a template name",
     );
   });
 
@@ -120,20 +122,23 @@ describe("templateInstall", () => {
 
   it("reports a template missing from the hub", async () => {
     stubFetch(async () => new Response("", { status: 404 }));
-    expect(await templateInstall("bob__ghost", LINK)).toBe("");
-    expect(captured.error()).toContain("template bob/ghost not found");
+    await expect(templateInstall("bob__ghost", LINK)).rejects.toThrow(
+      "template bob/ghost not found",
+    );
   });
 });
 
 describe("templateRemove", () => {
   it("refuses an empty name", async () => {
-    expect(await templateRemove("")).toBe(
-      "Please provide a name for the template",
+    await expect(templateRemove("")).rejects.toThrow(
+      "Please provide the name of an installed template",
     );
   });
 
   it("reports a template that is not installed", async () => {
-    expect(await templateRemove("ghost")).toBe("template not found");
+    await expect(templateRemove("ghost")).rejects.toThrow(
+      "template ghost not found",
+    );
   });
 
   it("deletes an installed template", async () => {
