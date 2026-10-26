@@ -9,7 +9,7 @@ import convert from "../../utils/convert";
 import { getAction } from "../../utils/interactCLI";
 import loadEnv from "../../utils/loadEnv";
 
-const { log } = console;
+const { log, error } = console;
 
 const server: SlideskServer = new SlideskServer();
 
@@ -40,7 +40,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
   const talkPath = talk === "" ? "" : `/${talk}`;
   const talkdir = `${process.cwd()}${talkPath}`;
   const env = await loadEnv(talkdir, options);
-  flow(talkdir, options, env, true);
+  await flow(talkdir, options, env, true);
 
   if (!options.hidden)
     log(
@@ -58,7 +58,10 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
         log(
           `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
         );
-        flow(talkdir, options, env);
+        // a file can briefly disappear while an editor saves it: report and keep presenting
+        flow(talkdir, options, env).catch((e) =>
+          error(e instanceof Error ? e.message : e),
+        );
       }
     });
   }

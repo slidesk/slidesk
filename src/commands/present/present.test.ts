@@ -7,7 +7,7 @@ import {
   mock,
   spyOn,
 } from "bun:test";
-import { cpSync, writeFileSync } from "node:fs";
+import { cpSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ExitError, useTempCwd } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
@@ -117,6 +117,17 @@ describe("present command", () => {
     const html = await (await fetch(`http://127.0.0.1:${port}/`)).text();
     expect(html).toContain("Rewritten body");
     expect(captured.log()).toContain("action");
+  });
+
+  it("keeps presenting when the main file briefly disappears", async () => {
+    const port = freePort();
+    await presentCmd.ready(talkOn(port));
+    await waitForServer(port);
+    rmSync(join(cwd.dir, "my-talk/main.sdf"));
+    for (let i = 0; i < 200 && !captured.error().includes("main."); i += 1)
+      await Bun.sleep(10);
+    expect(captured.error()).toContain("main.(sdf|md) was not found");
+    expect((await fetch(`http://127.0.0.1:${port}/`)).status).toBe(200);
   });
 
   it("does not watch the talk when WATCH is disabled", async () => {
