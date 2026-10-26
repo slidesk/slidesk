@@ -226,7 +226,7 @@ describe("template command", () => {
     mkdirSync(join(cwd.dir, "mine"), { recursive: true });
     writeFileSync(join(cwd.dir, "mine/mine.sdt"), "x");
     stubFetch(async () => new Response("nope", { status: 400 }));
-    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(1);
     expect(captured.error()).toContain("nope");
   });
 

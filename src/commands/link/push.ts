@@ -2,7 +2,7 @@ import { Clipse } from "clipse";
 import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 
-const { log, error } = console;
+const { log } = console;
 
 const linkPushCmd = new Clipse(
   "push",
@@ -21,11 +21,8 @@ linkPushCmd.action(async (_, options: { "slidesk-link-url"?: string }) => {
       "x-slidesk": slideskToken,
     },
   });
-  if (response.status === 201) {
-    log("Your talk has been added to your page, thanks");
-  } else {
-    error(await response.text());
-  }
+  if (response.status !== 201) throw new CliError(await response.text());
+  log("Your talk has been added to your page, thanks");
 });
 
 export default linkPushCmd;

@@ -89,7 +89,7 @@ describe("link push", () => {
   it("reports a rejected upload", async () => {
     writeFileSync(join(cwd.dir, "link.yml"), "title: my talk");
     stubFetch(async () => new Response("quota exceeded", { status: 400 }));
-    expect(await run(["push", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await run(["push", "--slidesk-link-url", LINK])).toBe(1);
     expect(captured.error()).toContain("quota exceeded");
   });
 });

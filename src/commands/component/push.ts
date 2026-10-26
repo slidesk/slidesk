@@ -4,7 +4,7 @@ import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
-const { log, error } = console;
+const { log } = console;
 
 const componentPushCmd = new Clipse(
   "push",
@@ -39,11 +39,8 @@ componentPushCmd
         },
       });
       await file.unlink();
-      if (response.status === 201) {
-        log("Your component has been added or updated into the hub, thanks");
-      } else {
-        error(await response.text());
-      }
+      if (response.status !== 201) throw new CliError(await response.text());
+      log("Your component has been added or updated into the hub, thanks");
     } else throw new CliError("Please provide a component name");
   });
 

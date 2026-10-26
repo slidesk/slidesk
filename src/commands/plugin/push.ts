@@ -4,7 +4,7 @@ import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
-const { log, error } = console;
+const { log } = console;
 
 const pluginPushCmd = new Clipse(
   "push",
@@ -44,11 +44,8 @@ pluginPushCmd
         },
       });
       await file.unlink();
-      if (response.status === 201) {
-        log("Your plugin has been added or updated into the hub, thanks");
-      } else {
-        error(await response.text());
-      }
+      if (response.status !== 201) throw new CliError(await response.text());
+      log("Your plugin has been added or updated into the hub, thanks");
     } else throw new CliError("Please provide a plugin name");
   });
 

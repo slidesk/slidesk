@@ -210,7 +210,7 @@ describe("component command", () => {
   it("reports a rejected push", async () => {
     writeFileSync(join(cwd.dir, "mine.mjs"), "export default 1;");
     stubFetch(async () => new Response("nope", { status: 400 }));
-    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(1);
     expect(captured.error()).toContain("nope");
   });
 
