@@ -37,30 +37,35 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
         await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
         return;
       }
-      Bun.serve({
-        port: 1337,
-        routes: {
-          "/auth/:code": async (req) => {
-            const { code } = req.params;
-            await Bun.write(globalSlidesk, code);
-            return new Response(
-              `<html>
+      const routes = {
+        "/auth/:code": async (req: Bun.BunRequest<"/auth/:code">) => {
+          const { code } = req.params;
+          await Bun.write(globalSlidesk, code);
+          return new Response(
+            `<html>
               <script>
-                fetch("http://localhost:1337/close").then(() => {
+                fetch("/close").then(() => {
                   window.close();
                 })
               </script>
               <body>You can close this tab</body>
             </html>`,
-              { headers: { "Content-Type": "text/html" } },
-            );
-          },
-          "/close": () => {
-            process.exit(0);
-          },
+            { headers: { "Content-Type": "text/html" } },
+          );
         },
-      });
-      Bun.spawn([start(), `${o["slidesk-link-url"]}/auth`]);
+        "/close": () => {
+          process.exit(0);
+        },
+      };
+      let server: ReturnType<typeof Bun.serve>;
+      try {
+        // the port older hubs redirect to
+        server = Bun.serve({ port: 1337, routes });
+      } catch {
+        // taken, for instance by a running presentation
+        server = Bun.serve({ port: 0, routes });
+      }
+      Bun.spawn([start(), `${o["slidesk-link-url"]}/auth?port=${server.port}`]);
     },
   );
 
