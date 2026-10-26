@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ExitError, useTempCwd } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
@@ -52,6 +52,21 @@ describe("deploy command", () => {
   it("writes into the named talk directory", async () => {
     expect(await run(["my-talk", "--target", "gitlab"])).toBe(0);
     expect(existsSync(join(cwd.dir, "my-talk/.gitlab-ci.yml"))).toBe(true);
+  });
+
+  it("keeps an existing file", async () => {
+    writeFileSync(join(cwd.dir, ".gitlab-ci.yml"), "mine");
+    expect(await run(["--target", "gitlab"])).toBe(1);
+    expect(captured.error()).toContain(".gitlab-ci.yml already exists");
+    expect(await Bun.file(join(cwd.dir, ".gitlab-ci.yml")).text()).toBe("mine");
+  });
+
+  it("replaces an existing file when forced", async () => {
+    writeFileSync(join(cwd.dir, ".gitlab-ci.yml"), "mine");
+    expect(await run(["--target", "gitlab", "--force"])).toBe(0);
+    expect(await Bun.file(join(cwd.dir, ".gitlab-ci.yml")).text()).not.toBe(
+      "mine",
+    );
   });
 
   it("rejects an unknown target", async () => {

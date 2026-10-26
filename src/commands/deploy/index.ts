@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { Clipse } from "clipse";
 import githubYML from "../../templates/ci/github.yml" with { type: "text" };
 import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
@@ -21,29 +22,30 @@ deployCmd
       default: "",
       optional: false,
     },
+    force: {
+      short: "f",
+      type: "boolean",
+      description: "overwrite the deploy file if it already exists",
+      default: false,
+      optional: true,
+    },
   })
   .action(async (args, options) => {
     const talkdir = `${process.cwd()}/${args.talk ?? ""}`;
-    const depls = ["github", "gitlab", "link"];
-    if (depls.includes(options.target)) {
-      switch (options.target) {
-        case "github":
-          await Bun.write(
-            `${talkdir}/.github/workflows/slidesk.yml`,
-            githubYML,
-          );
-          break;
-        case "gitlab":
-          await Bun.write(`${talkdir}/.gitlab-ci.yml`, gitlabYML);
-          break;
-        case "link":
-          await Bun.write(`${talkdir}/link.yml`, linkYML);
-          break;
-      }
-    } else
+    const files: Record<string, [string, string]> = {
+      github: [".github/workflows/slidesk.yml", githubYML],
+      gitlab: [".gitlab-ci.yml", gitlabYML],
+      link: ["link.yml", linkYML],
+    };
+    if (!Object.hasOwn(files, options.target))
       throw new CliError(
-        `${options.target} is not a valid deploy option (${depls.join(", ")})`,
+        `${options.target} is not a valid deploy option (${Object.keys(files).join(", ")})`,
       );
+    const [path, content] = files[options.target];
+    // a .gitlab-ci.yml often drives the whole repository
+    if (existsSync(`${talkdir}/${path}`) && !options.force)
+      throw new CliError(`${path} already exists, use --force to replace it`);
+    await Bun.write(`${talkdir}/${path}`, content);
   });
 
 export default deployCmd;

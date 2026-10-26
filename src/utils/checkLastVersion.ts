@@ -10,10 +10,7 @@ export default async function checkVersion(currentVersion: string) {
     if (github.ok) {
       const data = await github.json();
       if (Bun.semver.order(data.tag_name, currentVersion) > 0) {
-        const message = {
-          version: `SliDesk is out of date! Please update to ${data.tag_name}`,
-        };
-        warn({ message });
+        warn(`SliDesk is out of date! Please update to ${data.tag_name}`);
       }
     }
   } catch {

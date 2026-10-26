@@ -28,10 +28,7 @@ describe("checkVersion", () => {
     const { warns } = captureConsole();
     stubFetch(async () => Response.json({ tag_name: "2.20.0" }));
     await checkVersion("2.19.0");
-    expect(warns).toHaveLength(1);
-    expect(JSON.stringify(warns[0])).toContain(
-      "SliDesk is out of date! Please update to 2.20.0",
-    );
+    expect(warns).toEqual(["SliDesk is out of date! Please update to 2.20.0"]);
   });
 
   it("stays quiet when the version is up to date", async () => {

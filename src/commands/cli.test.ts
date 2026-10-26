@@ -222,11 +222,25 @@ describe("skills command", () => {
     expect(await run(skillsCmd, [])).toBe(0);
     expect(urls).toHaveLength(2);
     expect(
-      await Bun.file(join(cwd.dir, ".claude/skills/slidesk.md")).text(),
-    ).toContain("SKILL.md");
+      await Bun.file(join(cwd.dir, ".claude/skills/slidesk/SKILL.md")).text(),
+    ).toContain("slidesk/slidesk/");
     expect(
-      await Bun.file(join(cwd.dir, ".claude/skills/slidesk.link.md")).text(),
+      await Bun.file(
+        join(cwd.dir, ".claude/skills/slidesk-addons/SKILL.md"),
+      ).text(),
     ).toContain("slidesk.link");
     expect(captured.log()).toContain("skills added successfully");
+  });
+
+  it("does not save an error page as a skill", async () => {
+    fetchSpy = spyOn(globalThis, "fetch").mockImplementation((() =>
+      Promise.resolve(
+        new Response("404: Not Found", { status: 404 }),
+      )) as never);
+    expect(await run(skillsCmd, [])).toBe(1);
+    expect(captured.error()).toContain("Cannot download the slidesk skill");
+    expect(existsSync(join(cwd.dir, ".claude/skills/slidesk/SKILL.md"))).toBe(
+      false,
+    );
   });
 });

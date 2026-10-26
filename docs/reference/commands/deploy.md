@@ -12,4 +12,7 @@ slidesk deploy -t link mytalk
 
 ```
   -t, --target <param>      'github', 'gitlab' or 'link'
+  -f, --force               overwrite the deploy file if it already exists
 ```
+
+An existing `.github/workflows/slidesk.yml`, `.gitlab-ci.yml` or `link.yml` is kept unless you pass `--force`.
