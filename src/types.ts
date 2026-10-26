@@ -63,9 +63,12 @@ export type SliDeskPluginAddRoute = (
   path: string,
 ) => Promise<Response | null>;
 
+/** Attached to each websocket: only the speaker's own pages may drive the talk. */
+export type SliDeskSocketData = { canSend: boolean };
+
 export type SliDeskPluginAddWS = (
   _message: string,
-  _server: Server<undefined>,
+  _server: Server<SliDeskSocketData>,
 ) => Promise<object>;
 
 /** A plugin.json as read from disk, plus the name of its folder. */

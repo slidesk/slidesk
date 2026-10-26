@@ -44,6 +44,11 @@ describe("display", () => {
     expect(urls).toHaveLength(1);
   });
 
+  it("adds the speaker token to the speaker view url", async () => {
+    await display({}, { ip: "127.0.0.1", notes: "notes-abc" }, "secret");
+    expect(joined()).toContain("http://127.0.0.1:1337/notes-abc?token=secret");
+  });
+
   it("announces the speaker view and prints a qrcode", async () => {
     await display({}, { ip: "127.0.0.1", notes: "notes-abc" });
     expect(joined()).toContain("speaker view");

@@ -103,6 +103,28 @@ describe("link host", () => {
     expect(captured.log()).toContain(`${LINK}/s/abc123/`);
   });
 
+  it("uploads a speaker token and keeps it out of the public url", async () => {
+    let sent: FormDataEntryValue | null = null;
+    spies.push(
+      spyOn(globalThis, "fetch").mockImplementation((async (
+        _: string,
+        init: RequestInit,
+      ) => {
+        sent = (init.body as FormData).get("token");
+        return new Response("abc123");
+      }) as never),
+    );
+    await run(["host", talk, "--slidesk-link-url", LINK]);
+    expect(typeof sent).toBe("string");
+    expect(captured.logs).toContain(
+      `Share with your audience: ${LINK}/s/abc123/`,
+    );
+    expect(captured.log()).toContain(`${LINK}/s/abc123/?token=${sent}`);
+    expect(captured.log()).toContain(
+      `${LINK}/s/abc123/notes.html?token=${sent}`,
+    );
+  });
+
   it("cleans up the staging directory and the tarball", async () => {
     stubFetch(async () => new Response("abc123"));
     await run(["host", talk, "--slidesk-link-url", LINK]);

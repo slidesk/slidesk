@@ -5,6 +5,7 @@ import type {
   SliDeskFile,
   SliDeskServerOptions,
   SliDeskServerPlugin,
+  SliDeskSocketData,
 } from "../types";
 import display from "./server/display";
 import fetch from "./server/fetch";
@@ -12,7 +13,7 @@ import getPlugins from "./server/getPlugins";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
-let server: Server<undefined>;
+let server: Server<SliDeskSocketData>;
 
 export default class SlideskServer {
   async create(
@@ -23,6 +24,7 @@ export default class SlideskServer {
   ) {
     serverFiles = files;
     serverPath = path;
+    const token = crypto.randomUUID();
     const serverPlugins: SliDeskServerPlugin[] = [];
     const pluginsDir = `${path}/plugins`;
     const slideskEnv = env.slidesk ?? {};
@@ -38,10 +40,18 @@ export default class SlideskServer {
           serverPath,
         )),
       );
-    server = Bun.serve({
+    server = Bun.serve<SliDeskSocketData>({
       port: Number(slideskEnv?.PORT ?? 1337),
       async fetch(req) {
-        return fetch(req, this, serverFiles, serverPlugins, serverPath, env);
+        return fetch(
+          req,
+          this,
+          serverFiles,
+          serverPlugins,
+          serverPath,
+          env,
+          token,
+        );
       },
       websocket: {
         open(ws) {
@@ -65,7 +75,7 @@ export default class SlideskServer {
                 response: await addWS(message, server),
               }),
             );
-          } else {
+          } else if (ws.data.canSend) {
             ws.publish("slidesk", message);
           }
         },
@@ -86,7 +96,7 @@ export default class SlideskServer {
             : slideskEnv.PASSPHRASE,
       },
     });
-    await display(slideskEnv, options);
+    await display(slideskEnv, options, token);
   }
 
   setFiles(files: SliDeskFile) {

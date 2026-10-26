@@ -4,13 +4,19 @@ import start from "../../utils/start";
 
 const { log } = console;
 
-const display = async (env: SliDeskSettings, options: SliDeskServerOptions) => {
+const display = async (
+  env: SliDeskSettings,
+  options: SliDeskServerOptions,
+  token = "",
+) => {
+  // the token lets the speaker view drive the talk from another device
+  const query = token === "" ? "" : `?token=${token}`;
   const https = env.HTTPS ?? false;
   const port = Number(env.PORT ?? 1337);
   if (options.notes) {
     const url = `http${
       https ? "s" : ""
-    }://${options.ip}:${port}/${options.notes}`;
+    }://${options.ip}:${port}/${options.notes}${query}`;
     log(`Your speaker view is available on: \x1b[1m\x1b[36;49m${url}\x1b[0m`);
     QRCODE(
       url,
@@ -22,7 +28,7 @@ const display = async (env: SliDeskSettings, options: SliDeskServerOptions) => {
     if (options.open) {
       Bun.spawn([
         start(),
-        `http${https ? "s" : ""}://localhost:${port}/${options.notes}`,
+        `http${https ? "s" : ""}://localhost:${port}/${options.notes}${query}`,
       ]);
     }
   }

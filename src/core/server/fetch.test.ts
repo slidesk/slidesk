@@ -1,7 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import type { Server } from "bun";
-import type { SliDeskFile, SliDeskServerPlugin } from "../../types";
-import fetchHandler from "./fetch";
+import type {
+  SliDeskFile,
+  SliDeskServerPlugin,
+  SliDeskSocketData,
+} from "../../types";
+import fetchHandler, { canSend } from "./fetch";
 
 const files: SliDeskFile = {
   "index.html": {
@@ -15,7 +19,10 @@ const files: SliDeskFile = {
 };
 
 const fakeServer = (upgraded: boolean) =>
-  ({ upgrade: () => upgraded }) as unknown as Server<undefined>;
+  ({
+    upgrade: () => upgraded,
+    requestIP: () => null,
+  }) as unknown as Server<SliDeskSocketData>;
 
 const request = (path: string) =>
   new Request(`http://localhost${path}`, { headers: { host: "localhost" } });
@@ -148,5 +155,27 @@ describe("fetch", () => {
     );
     expect(res?.status).toBe(200);
     expect(await res?.text()).toContain("slidesk");
+  });
+});
+
+describe("canSend", () => {
+  it("lets the speaker's own machine drive the talk", () => {
+    expect(canSend("127.0.0.1", null, "secret")).toBe(true);
+    expect(canSend("::1", null, "secret")).toBe(true);
+    expect(canSend("::ffff:127.0.0.1", null, "secret")).toBe(true);
+  });
+
+  it("keeps any other viewer read-only", () => {
+    expect(canSend("203.0.113.7", null, "secret")).toBe(false);
+    expect(canSend("203.0.113.7", "guess", "secret")).toBe(false);
+    expect(canSend(undefined, null, "secret")).toBe(false);
+  });
+
+  it("lets a remote speaker view in with the token", () => {
+    expect(canSend("203.0.113.7", "secret", "secret")).toBe(true);
+  });
+
+  it("never matches a missing token", () => {
+    expect(canSend("203.0.113.7", null, undefined)).toBe(false);
   });
 });

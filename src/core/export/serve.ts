@@ -1,6 +1,11 @@
 import { existsSync } from "node:fs";
 import type { Server } from "bun";
-import type { SliDeskEnv, SliDeskFile, SliDeskServerPlugin } from "../../types";
+import type {
+  SliDeskEnv,
+  SliDeskFile,
+  SliDeskServerPlugin,
+  SliDeskSocketData,
+} from "../../types";
 import fetch from "../server/fetch";
 import getPlugins from "../server/getPlugins";
 
@@ -20,7 +25,7 @@ const serve = async (files: SliDeskFile, env: SliDeskEnv, talkdir: string) => {
       )),
     );
 
-  const server: Server<undefined> = Bun.serve({
+  const server: Server<SliDeskSocketData> = Bun.serve<SliDeskSocketData>({
     port: 0,
     async fetch(req) {
       return fetch(req, this, files, plugins, talkdir, env);
