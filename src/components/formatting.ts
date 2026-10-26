@@ -1,6 +1,7 @@
+import type { SliDeskEnv } from "../types";
 import envVariables from "./envVariables";
 
-const formatting = (data: string, env: object) =>
+const formatting = (data: string, env: SliDeskEnv) =>
   data
     .split("\n")
     .map((l) => envVariables(l, env))

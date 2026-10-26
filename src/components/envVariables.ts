@@ -1,24 +1,22 @@
-const getByPath = (obj: Record<string, unknown>, path: string): string => {
-  const value = path.split(".").reduce<unknown>((acc, key) => {
-    if (acc !== null && typeof acc === "object") {
-      return (acc as Record<string, unknown>)[key];
-    }
-    return undefined;
-  }, obj);
+import type { SliDeskEnv } from "../types";
 
-  if (value === undefined) return "";
-  return value as string;
+const getByPath = (env: SliDeskEnv, path: string) => {
+  const value = path
+    .split(".")
+    .reduce<unknown>(
+      (acc, key) =>
+        acc !== null && typeof acc === "object"
+          ? (acc as Record<string, unknown>)[key]
+          : undefined,
+      env,
+    );
+  return value === undefined ? "" : String(value);
 };
 
-const envVariables = (data: string, env: object) => {
+const envVariables = (data: string, env: SliDeskEnv) => {
   const splitted = data.split("++");
   if (splitted.length % 2 && splitted.length > 1)
-    return splitted
-      .map((t, i) => {
-        if (i % 2) return getByPath(env as Record<string, unknown>, t);
-        return t;
-      })
-      .join("");
+    return splitted.map((t, i) => (i % 2 ? getByPath(env, t) : t)).join("");
   return data;
 };
 
