@@ -208,12 +208,14 @@ body {
     opacity: 1;
   }
 
-  .sd-img {
-    max-width: 90vw;
+  .sd-slide .sd-img {
+    /* biome-ignore lint/complexity/noImportantStyles: overrides the inline size set by script.js */
     height: auto !important;
   }
-  .sd-img img {
+  .sd-slide .sd-img img {
+    /* biome-ignore lint/complexity/noImportantStyles: overrides the inline size set by script.js */
     width: auto !important;
+    /* biome-ignore lint/complexity/noImportantStyles: overrides the inline size set by script.js */
     height: auto !important;
     max-width: 100%;
     /* Leave room for the slide title and captions. */
