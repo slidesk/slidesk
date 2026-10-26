@@ -15,11 +15,13 @@ import getPlugins from "./server/getPlugins";
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
 let serverPlugins: SliDeskServerPlugin[] = [];
+let serverEnv: SliDeskEnv = {};
 let server: Server<SliDeskSocketData>;
 
 export default class SlideskServer {
-  /** (Re)loads the addRoutes / addWS hooks of the talk and common plugins. */
+  /** (Re)loads the configuration and the addRoutes / addWS hooks of the talk and common plugins. */
   async loadPlugins(env: SliDeskEnv) {
+    serverEnv = env;
     const plugins: SliDeskServerPlugin[] = [];
     const common = commonDir(serverPath, env);
     for (const dir of [
@@ -51,7 +53,7 @@ export default class SlideskServer {
           serverFiles,
           serverPlugins,
           serverPath,
-          env,
+          serverEnv,
           token,
         );
       },
