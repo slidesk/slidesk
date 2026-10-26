@@ -5,6 +5,7 @@ import type {
   SliDeskPlugin,
   SliDeskPresentOptions,
 } from "../../types";
+import { CliError } from "../../utils/cliError";
 import polish from "./polish";
 
 const generateHTML = async (
@@ -15,9 +16,17 @@ const generateHTML = async (
   env: SliDeskEnv,
   plugins: SliDeskPlugin[],
 ) => {
-  const langFiles = readdirSync(sdfPath).filter((item) =>
-    /.lang.json$/gi.test(item),
-  );
+  const langFiles = readdirSync(sdfPath)
+    .filter((item) => /\.lang\.json$/i.test(item))
+    .sort((a, b) => a.localeCompare(b));
+  if (options.lang && !langFiles.includes(`${options.lang}.lang.json`))
+    throw new CliError(
+      `${options.lang}.lang.json not found${
+        langFiles.length
+          ? ` (available: ${langFiles.map((f) => f.replace(/\.lang\.json$/i, "")).join(", ")})`
+          : ""
+      }`,
+    );
   let content = "";
   if (langFiles.length) {
     let translations: object | null = null;
