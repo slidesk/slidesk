@@ -13,9 +13,23 @@ import getPlugins from "./server/getPlugins";
 
 let serverFiles: SliDeskFile = {};
 let serverPath = "";
+let serverPlugins: SliDeskServerPlugin[] = [];
 let server: Server<SliDeskSocketData>;
 
 export default class SlideskServer {
+  /** (Re)loads the addRoutes / addWS hooks of the talk and common plugins. */
+  async loadPlugins(env: SliDeskEnv) {
+    const plugins: SliDeskServerPlugin[] = [];
+    const commonDir = env.slidesk?.COMMON_DIR;
+    for (const dir of [
+      `${serverPath}/plugins`,
+      commonDir ? `${serverPath}/${commonDir}/plugins` : "",
+    ])
+      if (dir && existsSync(dir))
+        plugins.push(...(await getPlugins(dir, serverPath)));
+    serverPlugins = plugins;
+  }
+
   async create(
     files: SliDeskFile,
     options: SliDeskServerOptions,
@@ -25,21 +39,8 @@ export default class SlideskServer {
     serverFiles = files;
     serverPath = path;
     const token = crypto.randomUUID();
-    const serverPlugins: SliDeskServerPlugin[] = [];
-    const pluginsDir = `${path}/plugins`;
     const slideskEnv = env.slidesk ?? {};
-    if (existsSync(pluginsDir))
-      serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
-    if (
-      slideskEnv?.COMMON_DIR &&
-      existsSync(`${path}/${slideskEnv.COMMON_DIR}/plugins`)
-    )
-      serverPlugins.push(
-        ...(await getPlugins(
-          `${path}/${slideskEnv.COMMON_DIR}/plugins`,
-          serverPath,
-        )),
-      );
+    await this.loadPlugins(env);
     server = Bun.serve<SliDeskSocketData>({
       port: Number(slideskEnv?.PORT ?? 1337),
       async fetch(req) {

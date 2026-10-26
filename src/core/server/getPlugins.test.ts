@@ -10,6 +10,24 @@ const pluginsDir = join(talk, "plugins");
 const load = () => getPlugins(pluginsDir, talk);
 
 describe("getPlugins", () => {
+  it("reloads a handler edited since the last load", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "slidesk-plugins-"));
+    mkdirSync(join(dir, "plugins/hot"), { recursive: true });
+    writeFileSync(
+      join(dir, "plugins/hot/plugin.json"),
+      '{"addRoutes":"plugins/hot/routes.js"}',
+    );
+    const handler = async () => {
+      const [plugin] = await getPlugins(join(dir, "plugins"), dir);
+      return (plugin.addRoutes as unknown as () => number)();
+    };
+    writeFileSync(join(dir, "plugins/hot/routes.js"), "export default () => 1");
+    expect(await handler()).toBe(1);
+    writeFileSync(join(dir, "plugins/hot/routes.js"), "export default () => 2");
+    expect(await handler()).toBe(2);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
   it("skips a plugin whose plugin.json or handler is not ready", async () => {
     const dir = mkdtempSync(join(tmpdir(), "slidesk-plugins-"));
     mkdirSync(join(dir, "plugins/half"), { recursive: true });

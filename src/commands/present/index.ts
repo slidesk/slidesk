@@ -32,6 +32,8 @@ const flow = async (
       telnet = await startTelnetServer(options, env);
     }
   } else {
+    // addRoutes / addWS hooks may have been written or edited too
+    await server.loadPlugins(env);
     server.setFiles(files);
   }
 };
