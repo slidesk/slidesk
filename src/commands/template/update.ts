@@ -9,7 +9,7 @@ templateUpdateCmd
     await templateRemove(args.name ?? "");
     const res = await templateInstall(
       args.name ?? "",
-      opts["slidesk-link-url"] as string,
+      opts["slidesk-link-url"],
       true,
     );
     console.log(res);

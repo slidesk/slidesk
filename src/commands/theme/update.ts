@@ -9,7 +9,7 @@ themeUpdateCmd
     await themeRemove(args.name ?? "");
     const res = await themeInstall(
       args.name ?? "",
-      opts["slidesk-link-url"] as string,
+      opts["slidesk-link-url"],
       true,
     );
     console.log(res);

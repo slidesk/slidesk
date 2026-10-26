@@ -26,7 +26,7 @@ deployCmd
   .action(async (args, options) => {
     const talkdir = `${process.cwd()}/${args.talk ?? ""}`;
     const depls = ["github", "gitlab", "link"];
-    if (depls.includes(options.target as string)) {
+    if (depls.includes(options.target)) {
       switch (options.target) {
         case "github":
           await Bun.write(

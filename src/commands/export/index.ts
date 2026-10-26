@@ -45,7 +45,7 @@ exportCmd
     },
   })
   .action(async (args, options) => {
-    const type = (options.type as string) || "pdf";
+    const type = options.type || "pdf";
     if (!TYPES.includes(type)) {
       error(`${type} is not a valid export type (${TYPES.join(", ")})`);
       process.exit(1);

@@ -9,7 +9,7 @@ pluginUpdateCmd
     await pluginRemove(args.name ?? "");
     const res = await pluginInstall(
       args.name ?? "",
-      opts["slidesk-link-url"] as string,
+      opts["slidesk-link-url"],
       true,
     );
     console.log(res);

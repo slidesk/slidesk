@@ -1,10 +1,7 @@
 import readline from "node:readline";
 import type Server from "../core/Server";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+let rl: readline.Interface | undefined;
 
 export const removeCurrentLine = () => {
   readline.moveCursor(process.stdout, 0, -1);
@@ -12,7 +9,11 @@ export const removeCurrentLine = () => {
 };
 
 export const question = (query: string) =>
-  new Promise((resolve) => {
+  new Promise<string>((resolve) => {
+    rl ??= readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
     rl.question(query === "" ? "" : `\x1b[1m> ${query}\x1b[0m\n`, (anwser) =>
       resolve(anwser.trim()),
     );
@@ -20,7 +21,7 @@ export const question = (query: string) =>
 
 export const getAction = async (server: Server, present = false) => {
   const answer = await question("");
-  const i = (answer as string).trim().toLowerCase();
+  const i = answer.toLowerCase();
   removeCurrentLine();
   if (i === "q") process.exit();
   else if (i === "p" && present) server.send("previous");

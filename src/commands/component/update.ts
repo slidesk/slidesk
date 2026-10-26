@@ -9,7 +9,7 @@ componentUpdateCmd
     await componentRemove(args.name ?? "");
     const res = await componentInstall(
       args.name ?? "",
-      opts["slidesk-link-url"] as string,
+      opts["slidesk-link-url"],
       true,
     );
     console.log(res);
