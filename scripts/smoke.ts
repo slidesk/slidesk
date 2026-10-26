@@ -7,6 +7,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import launch from "../src/core/browser";
 
 /**
  * Drives the compiled binary the way a user does, on every OS of the CI:
@@ -156,6 +157,87 @@ if (build.exitCode !== 0) {
   if (code === "timeout") proc.kill();
   const after = await fetch(`http://localhost:${port}/`).catch(() => undefined);
   check("present frees its port when it quits", after === undefined);
+}
+
+// the browser side: what #346 fixed was only visible in a real page
+const page = await launch(800, 600).catch((e) => {
+  // a missing browser must not hide these checks in CI
+  if (Bun.env.CI)
+    check("a Chromium-based browser is available", false, String(e));
+  else log(`⏭️  browser checks skipped: ${e instanceof Error ? e.message : e}`);
+  return undefined;
+});
+if (page) {
+  try {
+    // an export served over plain http has no websocket to talk to
+    const { dir } = talk(18806);
+    await run(dir, ["save", "-t", "public"]);
+    const exported = join(dir, "public");
+    const files = Bun.serve({
+      port: 0,
+      fetch: (req) => {
+        const path = new URL(req.url).pathname;
+        const file = Bun.file(
+          join(exported, path === "/" ? "index.html" : path),
+        );
+        return file.size
+          ? new Response(file)
+          : new Response("", { status: 404 });
+      },
+    });
+    await page.goto(`http://localhost:${files.port}/index.html`);
+    await Bun.sleep(1500);
+    await page.evaluate(
+      "(() => { window.__timeouts = 0; const set = window.setTimeout; window.setTimeout = (...a) => { window.__timeouts += 1; return set(...a); }; for (let i = 0; i < 3; i += 1) window.slidesk.next(); return 1; })()",
+    );
+    await Bun.sleep(1000);
+    const first = await page.evaluate<number>("window.__timeouts");
+    await Bun.sleep(1000);
+    const second = (await page.evaluate<number>("window.__timeouts")) - first;
+    check(
+      "an exported page served over http does not poll its websocket",
+      second === 0,
+      `${second} setTimeout calls in the second second`,
+    );
+    files.stop(true);
+
+    // a page left open reconnects when present is restarted
+    const port = 18807;
+    const live = talk(port);
+    const start = () =>
+      Bun.spawn([bin, "--hidden"], {
+        cwd: live.dir,
+        stdin: "pipe",
+        stdout: "ignore",
+        stderr: "ignore",
+      });
+    const quit = async (proc: ReturnType<typeof start>) => {
+      proc.stdin.write("q\n");
+      proc.stdin.end();
+      await proc.exited;
+    };
+    let present = start();
+    await waitFor(`http://localhost:${port}/`);
+    await page.goto(`http://localhost:${port}/#1`);
+    await Bun.sleep(1000);
+    await page.evaluate("(window.__marker = 'stale', 1)");
+    await quit(present);
+    await Bun.sleep(1000);
+    present = start();
+    await waitFor(`http://localhost:${port}/`);
+    await Bun.sleep(4000);
+    const state = await page.evaluate<string>(
+      "JSON.stringify([window.__marker ?? 'reloaded', window.slidesk.io?.readyState, window.slidesk.currentSlide])",
+    );
+    check(
+      "a page reconnects and reloads when present restarts",
+      state === JSON.stringify(["reloaded", 1, 1]),
+      state,
+    );
+    await quit(present);
+  } finally {
+    await page.close();
+  }
 }
 
 rmSync(work, { recursive: true, force: true });
