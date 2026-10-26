@@ -1,20 +1,10 @@
-import { afterAll, beforeEach, describe, expect, it, spyOn } from "bun:test";
+import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { captured } from "../__testing__/console";
-
-class ExitError extends Error {
-  constructor(readonly code?: number) {
-    super(`process.exit(${code})`);
-  }
-}
-const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
-  throw new ExitError(code);
-}) as never);
-
-const { default: convert } = await import("./convert");
+import convert from "./convert";
 
 const fixtures = join(import.meta.dir, "../__fixtures__");
 const fixture = join(fixtures, "talk");
@@ -29,7 +19,6 @@ afterAll(() => {
 
 beforeEach(() => {
   captured.clear();
-  exitSpy.mockClear();
 });
 
 describe("convert", () => {
@@ -46,13 +35,9 @@ describe("convert", () => {
     expect(files["index.html"].content).toContain("From markdown");
   });
 
-  it("exits when no main file is found", async () => {
+  it("fails when no main file is found", async () => {
     const dir = mkdtempSync(join(tmpdir(), "slidesk-empty-"));
-    // the exit is raised inside convert's try block, so it lands in the
-    // error presentation fallback instead of propagating
-    await convert(dir, {}, {});
-    expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(captured.error()).toContain("main.(sdf|md) was not found");
+    expect(convert(dir, {}, {})).rejects.toThrow("main.(sdf|md) was not found");
     rmSync(dir, { recursive: true, force: true });
   });
 

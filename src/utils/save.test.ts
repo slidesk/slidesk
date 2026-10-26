@@ -1,29 +1,14 @@
-import { afterAll, beforeEach, describe, expect, it, spyOn } from "bun:test";
+import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { captured } from "../__testing__/console";
-
-// The stub MUST throw: save() wipes `options.target` right after the guard,
-// so a no-op stub would let rmSync run on the guarded directory.
-class ExitError extends Error {
-  constructor(readonly code?: number) {
-    super(`process.exit(${code})`);
-  }
-}
-const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
-  throw new ExitError(code);
-}) as never);
-
-const { default: save } = await import("./save");
+import save from "./save";
 
 const fixtures = join(import.meta.dir, "../__fixtures__");
 const fixture = join(fixtures, "talk");
 const scratch = join(fixtures, ".tmp-save");
 
 beforeEach(() => {
-  captured.clear();
-  exitSpy.mockClear();
   rmSync(scratch, { recursive: true, force: true });
   mkdirSync(scratch, { recursive: true });
 });
@@ -67,14 +52,14 @@ describe("save", () => {
 
   it("refuses to save into the talk directory itself", async () => {
     expect(save(fixture, { target: fixture })).rejects.toThrow(
-      "process.exit(0)",
+      "not possible to save to the root",
     );
-    expect(captured.log()).toContain("not possible to save to the root");
   });
 
   it("refuses to save into the current directory", async () => {
-    expect(save(fixture, { target: "." })).rejects.toThrow("process.exit(0)");
-    expect(exitSpy).toHaveBeenCalledWith(0);
+    expect(save(fixture, { target: "." })).rejects.toThrow(
+      "not possible to save to the root",
+    );
   });
 
   it("leaves the talk untouched when the guard fires", async () => {

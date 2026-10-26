@@ -16,6 +16,7 @@ import {
   useTempCwd,
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
   throw new ExitError(code);
@@ -47,12 +48,11 @@ const stubFetch = (
 
 const run = async (argv: string[]) => {
   try {
-    await pluginCmd.ready(argv);
+    return await runCommand(() => pluginCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 const installedPlugin = (name: string) => {
@@ -268,7 +268,7 @@ describe("plugin command", () => {
     mkdirSync(join(cwd.dir, "mine"), { recursive: true });
     writeFileSync(join(cwd.dir, "mine/plugin.json"), "{}");
     stubFetch(async () => new Response("nope", { status: 400 }));
-    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await run(["push", "mine", "--slidesk-link-url", LINK])).toBe(1);
     expect(captured.error()).toContain("nope");
   });
 

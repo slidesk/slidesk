@@ -1,7 +1,6 @@
 import { multiselect } from "@clack/prompts";
 import { Clipse } from "clipse";
-
-const { error } = console;
+import { CliError } from "./cliError";
 
 const addonSearchCmd = (
   kind: "plugin" | "template" | "component" | "theme",
@@ -34,15 +33,8 @@ const addonSearchCmd = (
           if (Array.isArray(selection))
             for (const p of selection)
               await install(p, opts["slidesk-link-url"]);
-          process.exit(0);
-        } else {
-          error(`No ${kind} with this name is found`);
-          process.exit(1);
-        }
-      } else {
-        error("Please provide a search term");
-        process.exit(1);
-      }
+        } else throw new CliError(`No ${kind} with this name is found`);
+      } else throw new CliError("Please provide a search term");
     });
   return cmd;
 };

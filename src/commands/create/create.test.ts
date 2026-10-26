@@ -16,6 +16,7 @@ import {
   useTempCwd,
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 
 // question would wait for an answer on stdin
 let answer = "";
@@ -36,12 +37,11 @@ let fetchSpy: ReturnType<typeof spyOn> | undefined;
 
 const run = async (argv: string[]) => {
   try {
-    await createCmd.ready(argv);
+    return await runCommand(() => createCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 beforeEach(async () => {

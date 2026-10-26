@@ -1,9 +1,10 @@
 import { Clipse } from "clipse";
 import { create } from "tar";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
-const { log, error } = console;
+const { log } = console;
 
 const templatePushCmd = new Clipse(
   "push",
@@ -38,16 +39,9 @@ templatePushCmd
         },
       });
       await file.unlink();
-      if (response.status === 201) {
-        log("Your template has been added or updated into the hub, thanks");
-      } else {
-        error(await response.text());
-      }
-      process.exit(0);
-    } else {
-      error("Please provide a template name");
-      process.exit(1);
-    }
+      if (response.status !== 201) throw new CliError(await response.text());
+      log("Your template has been added or updated into the hub, thanks");
+    } else throw new CliError("Please provide a template name");
   });
 
 export default templatePushCmd;

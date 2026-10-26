@@ -1,7 +1,6 @@
 import { Clipse } from "clipse";
 import importTalk from "../../core/import";
-
-const { error } = console;
+import { CliError } from "../../utils/cliError";
 
 const importCmd = new Clipse(
   "import",
@@ -40,10 +39,8 @@ importCmd
     },
   })
   .action(async (args, options) => {
-    if (!args.source || args.source.trim() === "") {
-      error("You must specify the presentation to import");
-      process.exit(1);
-    }
+    if (!args.source || args.source.trim() === "")
+      throw new CliError("You must specify the presentation to import");
     try {
       await importTalk(args.source, {
         type: options.type || undefined,
@@ -51,10 +48,8 @@ importCmd
         force: options.force,
       });
     } catch (e) {
-      error(e instanceof Error ? e.message : e);
-      process.exit(1);
+      throw new CliError(e instanceof Error ? e.message : String(e));
     }
-    process.exit(0);
   });
 
 export default importCmd;

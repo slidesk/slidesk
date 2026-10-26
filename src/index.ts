@@ -14,6 +14,7 @@ import skillsCmd from "./commands/skills";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import checkVersion from "./utils/checkLastVersion";
+import { runCommand } from "./utils/cliError";
 
 const { log } = console;
 
@@ -44,5 +45,7 @@ slidesk
     presentCmd,
     skillsCmd,
   ])
-  .defineDefaultCommand(presentCmd)
-  .ready();
+  .defineDefaultCommand(presentCmd);
+
+const code = await runCommand(() => slidesk.ready());
+if (code) process.exit(code);

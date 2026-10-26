@@ -31,12 +31,11 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
         (await globalSlidesk.exists()) &&
         globalSlidesk.size !== 0 &&
         !o.force
-      ) {
-        process.exit(0);
-      }
+      )
+        return;
       if (o["with-token"]) {
         await Bun.write(`${home}/.slidesk`, String(o["with-token"]));
-        process.exit(0);
+        return;
       }
       Bun.serve({
         port: 1337,

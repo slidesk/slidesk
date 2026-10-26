@@ -1,9 +1,10 @@
 import { Clipse } from "clipse";
 import { create } from "tar";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 import slugify from "../../utils/slugify";
 
-const { log, error } = console;
+const { log } = console;
 
 const pluginPushCmd = new Clipse(
   "push",
@@ -20,10 +21,10 @@ pluginPushCmd
     if (args.plugin) {
       const pluginPath = `${process.cwd()}/${args.plugin}`;
       const pluginJSON = Bun.file(`${pluginPath}/plugin.json`);
-      if (!(await pluginJSON.exists())) {
-        error("Plugin not found. Wrong name or plugin.json is missing");
-        process.exit(1);
-      }
+      if (!(await pluginJSON.exists()))
+        throw new CliError(
+          "Plugin not found. Wrong name or plugin.json is missing",
+        );
       const slideskToken = await getLinkToken();
       await create({ gzip: true, file: "link.tgz" }, [args.plugin]);
       const file = Bun.file("link.tgz");
@@ -43,16 +44,9 @@ pluginPushCmd
         },
       });
       await file.unlink();
-      if (response.status === 201) {
-        log("Your plugin has been added or updated into the hub, thanks");
-      } else {
-        error(await response.text());
-      }
-      process.exit(0);
-    } else {
-      error("Please provide a plugin name");
-      process.exit(1);
-    }
+      if (response.status !== 201) throw new CliError(await response.text());
+      log("Your plugin has been added or updated into the hub, thanks");
+    } else throw new CliError("Please provide a plugin name");
   });
 
 export default pluginPushCmd;

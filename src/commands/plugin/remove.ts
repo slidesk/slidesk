@@ -23,7 +23,6 @@ pluginRemoveCmd
   .action(async (args) => {
     const res = await pluginRemove(args.name ?? "");
     console.log(res);
-    process.exit(0);
   });
 
 export default pluginRemoveCmd;

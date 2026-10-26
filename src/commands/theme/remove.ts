@@ -23,7 +23,6 @@ themeRemoveCmd
   .action(async (args) => {
     const res = await themeRemove(args.name ?? "");
     console.log(res);
-    process.exit(0);
   });
 
 export default themeRemoveCmd;

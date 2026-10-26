@@ -1,7 +1,8 @@
 import { Clipse } from "clipse";
+import { CliError } from "../../utils/cliError";
 import getLinkToken from "../../utils/getLinkToken";
 
-const { log, error } = console;
+const { log } = console;
 
 const linkPushCmd = new Clipse(
   "push",
@@ -9,10 +10,7 @@ const linkPushCmd = new Clipse(
 );
 linkPushCmd.action(async (_, options: { "slidesk-link-url"?: string }) => {
   const linkYML = Bun.file(`${process.cwd()}/link.yml`);
-  if (!(await linkYML.exists())) {
-    error("link.yml not found");
-    process.exit(1);
-  }
+  if (!(await linkYML.exists())) throw new CliError("link.yml not found");
   const slideskToken = await getLinkToken();
   const data = new FormData();
   data.set("file", linkYML);
@@ -23,12 +21,8 @@ linkPushCmd.action(async (_, options: { "slidesk-link-url"?: string }) => {
       "x-slidesk": slideskToken,
     },
   });
-  if (response.status === 201) {
-    log("Your talk has been added to your page, thanks");
-  } else {
-    error(await response.text());
-  }
-  process.exit(0);
+  if (response.status !== 201) throw new CliError(await response.text());
+  log("Your talk has been added to your page, thanks");
 });
 
 export default linkPushCmd;

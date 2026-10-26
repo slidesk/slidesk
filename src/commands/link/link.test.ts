@@ -15,6 +15,7 @@ import {
   useTempCwd,
 } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
+import { runCommand } from "../../utils/cliError";
 
 mock.module("../../utils/getLinkToken", () => ({
   default: async () => "a-token",
@@ -44,12 +45,11 @@ const stubFetch = (
 
 const run = async (argv: string[]) => {
   try {
-    await linkCmd.ready(argv);
+    return await runCommand(() => linkCmd.ready(argv));
   } catch (e) {
     if (!(e instanceof ExitError)) throw e;
     return e.code;
   }
-  return undefined;
 };
 
 beforeEach(() => {
@@ -89,7 +89,7 @@ describe("link push", () => {
   it("reports a rejected upload", async () => {
     writeFileSync(join(cwd.dir, "link.yml"), "title: my talk");
     stubFetch(async () => new Response("quota exceeded", { status: 400 }));
-    expect(await run(["push", "--slidesk-link-url", LINK])).toBe(0);
+    expect(await run(["push", "--slidesk-link-url", LINK])).toBe(1);
     expect(captured.error()).toContain("quota exceeded");
   });
 });

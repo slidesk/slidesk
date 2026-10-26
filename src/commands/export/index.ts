@@ -1,7 +1,6 @@
 import { Clipse } from "clipse";
 import exportTalk from "../../core/export";
-
-const { error } = console;
+import { CliError } from "../../utils/cliError";
 
 const TYPES = ["pdf", "pptx"];
 
@@ -46,18 +45,16 @@ exportCmd
   })
   .action(async (args, options) => {
     const type = options.type || "pdf";
-    if (!TYPES.includes(type)) {
-      error(`${type} is not a valid export type (${TYPES.join(", ")})`);
-      process.exit(1);
-    }
+    if (!TYPES.includes(type))
+      throw new CliError(
+        `${type} is not a valid export type (${TYPES.join(", ")})`,
+      );
     const talkPath = args.talk && args.talk !== "." ? `/${args.talk}` : "";
     try {
       await exportTalk(`${process.cwd()}${talkPath}`, { ...options, type });
     } catch (e) {
-      error(e instanceof Error ? e.message : e);
-      process.exit(1);
+      throw new CliError(e instanceof Error ? e.message : String(e));
     }
-    process.exit(0);
   });
 
 export default exportCmd;

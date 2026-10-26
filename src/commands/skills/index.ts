@@ -16,7 +16,6 @@ skillsCmd.action(async () => {
   await Bun.write(".claude/skills/slidesk.link.md", slideskLinkSkill);
   const { log } = console;
   log("skills added successfully");
-  process.exit(0);
 });
 
 export default skillsCmd;

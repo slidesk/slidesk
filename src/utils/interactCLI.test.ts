@@ -3,9 +3,8 @@ import { ExitError } from "../__testing__/addons";
 import type Server from "../core/Server";
 
 /**
- * interactCLI opens a readline interface on stdin at import time, which would
- * hold the test process open. Nothing else in the sources uses node:readline,
- * so the whole module is replaced.
+ * A real readline interface would wait on stdin. Nothing else in the sources
+ * uses node:readline, so the whole module is replaced.
  *
  * `question` answers from a queue; once it is empty it returns a promise that
  * never settles, which stops getAction's endless recursion without leaving a
@@ -21,6 +20,7 @@ const readlineMock = {
       prompts.push(query);
       if (answers.length) callback(answers.shift() as string);
     },
+    close: () => {},
   }),
   moveCursor: (...args: unknown[]) => {
     cursor.push(["moveCursor", ...args]);
