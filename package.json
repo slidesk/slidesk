@@ -5,7 +5,7 @@
   "version": "2.20.0",
   "main": "bin/index.js",
   "bin": {
-    "slidesk": "./bin/index.js"
+    "slidesk": "bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   "scripts": {
     "test": "bun test --coverage",
     "make": "bun build src/index.ts --outdir bin --minify --target bun",
+    "prepublishOnly": "bun run make",
     "make:exe": "bun build src/index.ts --outfile exe/slidesk --compile --minify",
     "dev": "bun src/index.ts",
     "example": "bun src/index.ts example",
