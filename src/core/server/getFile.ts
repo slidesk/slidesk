@@ -2,15 +2,10 @@ import type { SliDeskEnv } from "../../types";
 
 const getFile = (req: Request, path: string, env: SliDeskEnv) => {
   const commonDir = env.slidesk?.COMMON_DIR ?? "";
-  let fileurl = req.url.replaceAll(
-    new RegExp(`^https?://${req.headers.get("host")}`, "g"),
-    "",
-  );
+  let fileurl = new URL(req.url).pathname;
   if (fileurl.startsWith("/-=[COMMON]=-"))
     fileurl = fileurl.replace("-=[COMMON]=-", commonDir);
-  let file = Bun.file(
-    fileurl.match(/https?:\/\/(\S*)/g) ? fileurl : `${path}${fileurl}`,
-  );
+  let file = Bun.file(`${path}${fileurl}`);
   if (fileurl.startsWith("/plugins") && file.size === 0 && commonDir) {
     fileurl = fileurl.replace("/plugins", `/${commonDir}/plugins`);
     file = Bun.file(`${path}${fileurl}`);

@@ -69,6 +69,11 @@ describe("getFile", () => {
     expect(res.status).toBe(404);
   });
 
+  it("ignores the query string", () => {
+    const res = getFile(request("/styles.css?v=2"), root, {});
+    expect(res.status).toBe(200);
+  });
+
   it("does not prefix an absolute url with the talk path", () => {
     const req = new Request("http://localhost/https://example.com/a.png", {
       headers: { host: "localhost" },

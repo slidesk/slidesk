@@ -21,7 +21,7 @@ log(`\x1b[1m ____(•)${Date.now() % 2 ? "-" : "<"}
 (\x1b[4mSliDesk\x1b[0m\x1b[1m) v:\x1b[36;49m${packagejson.version}\x1b[0m
 `);
 
-await checkVersion(packagejson.version);
+checkVersion(packagejson.version);
 
 const slidesk = new Clipse(
   "slidesk",
