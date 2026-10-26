@@ -12,10 +12,27 @@ describe("loadEnv function", () => {
     rmSync(tempDir, { recursive: true });
   });
 
-  it("should return empty object when slidesk.toml file does not exist with custom conf", async () => {
+  it("reports a --conf file that does not exist", async () => {
     const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
-    const result = await loadEnv(tempDir, { conf: "config" });
-    expect(result).toEqual({});
+    expect(loadEnv(tempDir, { conf: "typo.toml" })).rejects.toThrow(
+      "typo.toml not found",
+    );
+    rmSync(tempDir, { recursive: true });
+  });
+
+  it("falls back to slidesk.toml when --conf is empty", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(`${tempDir}slidesk.toml`, 'TITLE="Default"');
+    expect(await loadEnv(tempDir, { conf: "" })).toEqual({ TITLE: "Default" });
+    rmSync(tempDir, { recursive: true });
+  });
+
+  it("names the file and the error of an invalid configuration", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(`${tempDir}slidesk.toml`, "[slidesk]\n[slidesk]\n");
+    expect(loadEnv(tempDir, {})).rejects.toThrow(
+      "slidesk.toml: Cannot redefine table 'slidesk'",
+    );
     rmSync(tempDir, { recursive: true });
   });
 

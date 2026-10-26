@@ -15,6 +15,8 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 - `COMMON_DIR` works as an absolute path, as documented; it was always read as relative to the talk.
 - The files of a `COMMON_DIR` plugin (`addHTMLFromFiles`, `addRoutes`, `addWS`) are looked up in `COMMON_DIR`, then in the talk.
 - `save` exports the `COMMON_DIR` files (`-=[COMMON]=-/…`) and plugins, which were missing from the export.
+- An invalid `slidesk.toml` is reported in one line naming the file, instead of a stack trace; a `--conf` file that does not exist is an error instead of being ignored.
+- `present` reads `slidesk.toml` again on every change: editing the title, the transition or the timers no longer needs a restart.
 
 ### 🧰 Internals
 

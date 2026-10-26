@@ -72,10 +72,11 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
             // one save often fires several events: rebuild once they settle
             clearTimeout(pending);
             pending = setTimeout(() => {
-              // a file can briefly disappear while an editor saves it: report and keep presenting
-              flow(talkdir, options, env).catch((e) =>
-                error(e instanceof Error ? e.message : e),
-              );
+              // slidesk.toml may have changed too; a file can briefly disappear
+              // while an editor saves it: report and keep presenting
+              loadEnv(talkdir, options)
+                .then((latest) => flow(talkdir, options, latest))
+                .catch((e) => error(e instanceof Error ? e.message : e));
             }, 100);
           }
         });
