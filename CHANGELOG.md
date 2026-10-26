@@ -11,6 +11,10 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 - Websocket messages only call functions defined on `window.slidesk`.
 - `import` refuses an archive that expands beyond 500 MB: a 1 MB crafted `.pptx` used to take 2 GB of memory.
 - `import` keeps only the file name of a `.pptx` media, so a crafted name cannot write outside the talk on Windows.
+- `save` and `link host` ignored the whole `[slidesk]` section of the configuration since 2.16.0 (title, transition, `COMMON_DIR`…): exported and hosted talks now follow it.
+- `COMMON_DIR` works as an absolute path, as documented; it was always read as relative to the talk.
+- The files of a `COMMON_DIR` plugin (`addHTMLFromFiles`, `addRoutes`, `addWS`) are looked up in `COMMON_DIR`, then in the talk.
+- `save` exports the `COMMON_DIR` files (`-=[COMMON]=-/…`) and plugins, which were missing from the export.
 
 ### 🧰 Internals
 
