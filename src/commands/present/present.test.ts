@@ -104,11 +104,14 @@ describe("present command", () => {
     const port = freePort();
     await presentCmd.ready(talkOn(port));
     await waitForServer(port);
-    writeFileSync(
-      join(cwd.dir, "my-talk/slides/01-intro.sdf"),
-      "## Intro\n\nRewritten body\n",
-    );
-    for (let i = 0; i < 200; i += 1) {
+    // a watcher that just started can miss an event (FSEvents on macOS):
+    // the edit is written again until the rebuild shows up
+    for (let i = 0; i < 500; i += 1) {
+      if (i % 50 === 0)
+        writeFileSync(
+          join(cwd.dir, "my-talk/slides/01-intro.sdf"),
+          `## Intro\n\nRewritten body ${i}\n`,
+        );
       if (
         (await (await fetch(`http://127.0.0.1:${port}/`)).text()).includes(
           "Rewritten body",
