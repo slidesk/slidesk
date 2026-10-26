@@ -30,7 +30,7 @@ export async function startTelnetServer(
 
   const sessions = new WeakMap<BunSocket, SliDeskTelnetSession>();
 
-  Bun.listen({
+  const listener = Bun.listen({
     hostname: "0.0.0.0",
     port: fullConfig.port,
     socket: {
@@ -98,4 +98,5 @@ export async function startTelnetServer(
   ].forEach((e, _) => {
     if (e) console.log(`[telnet] Connect with: telnet ${e} ${port}`);
   });
+  return listener;
 }

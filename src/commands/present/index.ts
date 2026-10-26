@@ -12,6 +12,7 @@ import loadEnv from "../../utils/loadEnv";
 const { log, error } = console;
 
 const server: SlideskServer = new SlideskServer();
+let telnet: Awaited<ReturnType<typeof startTelnetServer>> | undefined;
 let lastBuild = 0;
 
 const flow = async (
@@ -27,7 +28,7 @@ const flow = async (
   if (init) {
     await server.create(files, options, env, talkdir);
     if (options.telnet) {
-      await startTelnetServer(options, env);
+      telnet = await startTelnetServer(options, env);
     }
   } else {
     server.setFiles(files);
@@ -56,27 +57,31 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\nPress \x1b[1mQ\x1b[0m to quit the program.",
       "\n",
     );
-  if (env.slidesk?.WATCH !== false) {
-    let pending: Timer | undefined;
-    watch(talkdir, { recursive: true }, (eventType, filename) => {
-      if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
-        log(
-          `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
-        );
-        // one save often fires several events: rebuild once they settle
-        clearTimeout(pending);
-        pending = setTimeout(() => {
-          // a file can briefly disappear while an editor saves it: report and keep presenting
-          flow(talkdir, options, env).catch((e) =>
-            error(e instanceof Error ? e.message : e),
-          );
-        }, 100);
-      }
-    });
-  }
-  getAction(server, true);
-  process.on("SIGINT", () => {
-    process.exit(0);
+  let pending: Timer | undefined;
+  const watcher =
+    env.slidesk?.WATCH === false
+      ? undefined
+      : watch(talkdir, { recursive: true }, (eventType, filename) => {
+          if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
+            log(
+              `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
+            );
+            // one save often fires several events: rebuild once they settle
+            clearTimeout(pending);
+            pending = setTimeout(() => {
+              // a file can briefly disappear while an editor saves it: report and keep presenting
+              flow(talkdir, options, env).catch((e) =>
+                error(e instanceof Error ? e.message : e),
+              );
+            }, 100);
+          }
+        });
+  // q or Ctrl-C: release everything so the process can end on its own
+  getAction(server, true).then(() => {
+    clearTimeout(pending);
+    watcher?.close();
+    telnet?.stop(true);
+    server.stop();
   });
 };
 

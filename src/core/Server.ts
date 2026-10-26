@@ -104,6 +104,10 @@ export default class SlideskServer {
     server.publish("slidesk", JSON.stringify({ action: "reload" }));
   }
 
+  stop() {
+    server.stop(true);
+  }
+
   send(action: string, data?: object | number | string) {
     server.publish("slidesk", JSON.stringify({ action, data }));
   }

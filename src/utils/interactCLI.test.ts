@@ -1,27 +1,34 @@
-import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
-import { ExitError } from "../__testing__/addons";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import type Server from "../core/Server";
 
 /**
  * A real readline interface would wait on stdin. Nothing else in the sources
  * uses node:readline, so the whole module is replaced.
  *
- * `question` answers from a queue; once it is empty it returns a promise that
- * never settles, which stops getAction's endless recursion without leaving a
- * rejection behind.
+ * `question` answers from a queue, where `null` closes the prompt the way
+ * Ctrl-C does; once the queue is empty the prompt never settles.
  */
-let answers: string[] = [];
+let answers: (string | null)[] = [];
 const prompts: string[] = [];
 const cursor: unknown[][] = [];
 
 const readlineMock = {
-  createInterface: () => ({
-    question: (query: string, callback: (answer: string) => void) => {
-      prompts.push(query);
-      if (answers.length) callback(answers.shift() as string);
-    },
-    close: () => {},
-  }),
+  createInterface: () => {
+    let onClose = () => {};
+    return {
+      on: (_event: "close", listener: () => void) => {
+        onClose = listener;
+      },
+      question: (query: string, callback: (answer: string) => void) => {
+        prompts.push(query);
+        if (!answers.length) return;
+        const answer = answers.shift();
+        if (answer === null) onClose();
+        else callback(answer as string);
+      },
+      close: () => onClose(),
+    };
+  },
   moveCursor: (...args: unknown[]) => {
     cursor.push(["moveCursor", ...args]);
   },
@@ -33,10 +40,6 @@ mock.module("node:readline", () => ({
   ...readlineMock,
   default: readlineMock,
 }));
-
-const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
-  throw new ExitError(code);
-}) as never);
 
 const { getAction, question, removeCurrentLine } = await import(
   "./interactCLI"
@@ -54,7 +57,6 @@ beforeEach(() => {
   prompts.length = 0;
   cursor.length = 0;
   sent.length = 0;
-  exitSpy.mockClear();
 });
 
 describe("question", () => {
@@ -69,6 +71,11 @@ describe("question", () => {
     expect(await question("What is the title?")).toBe("Fight Club");
     expect(prompts[0]).toBe("\x1b[1m> What is the title?\x1b[0m\n");
   });
+
+  it("rejects when the prompt is interrupted", async () => {
+    answers = [null];
+    await expect(question("Title?")).rejects.toThrow("Interrupted");
+  });
 });
 
 describe("removeCurrentLine", () => {
@@ -82,54 +89,62 @@ describe("removeCurrentLine", () => {
 });
 
 describe("getAction", () => {
-  it("quits on q", async () => {
+  it("stops on q", async () => {
     answers = ["q"];
-    expect(getAction(fakeServer, true)).rejects.toThrow(
-      "process.exit(undefined)",
-    );
+    await getAction(fakeServer, true);
+    expect(sent).toEqual([]);
   });
 
-  it("quits on an uppercase Q", async () => {
+  it("stops on an uppercase Q", async () => {
     answers = ["Q"];
-    expect(getAction(fakeServer, true)).rejects.toThrow(
-      "process.exit(undefined)",
-    );
+    await getAction(fakeServer, true);
+    expect(sent).toEqual([]);
+  });
+
+  it("stops when the prompt is interrupted", async () => {
+    answers = [null];
+    await getAction(fakeServer, true);
+    expect(sent).toEqual([]);
   });
 
   it("goes to the previous slide on p", async () => {
-    answers = ["p"];
+    answers = ["p", "q"];
     await getAction(fakeServer, true);
     expect(sent).toEqual([["previous"]]);
   });
 
   it("jumps to the slide typed, counting from one", async () => {
-    answers = ["4"];
+    answers = ["4", "q"];
     await getAction(fakeServer, true);
     expect(sent).toEqual([["goto", 3]]);
   });
 
   it("goes to the next slide on anything else", async () => {
-    answers = [""];
+    answers = ["", "q"];
     await getAction(fakeServer, true);
     expect(sent).toEqual([["next"]]);
   });
 
   it("erases the line the user typed on", async () => {
-    answers = [""];
+    answers = ["", "q"];
     await getAction(fakeServer, true);
-    expect(cursor.map((c) => c[0])).toEqual(["moveCursor", "clearScreenDown"]);
+    expect(cursor.map((c) => c[0])).toEqual([
+      "moveCursor",
+      "clearScreenDown",
+      "moveCursor",
+      "clearScreenDown",
+    ]);
   });
 
   it("sends nothing outside of a presentation", async () => {
-    answers = ["p"];
+    answers = ["p", "q"];
     await getAction(fakeServer);
     expect(sent).toEqual([]);
   });
 
   it("keeps asking after an action", async () => {
-    answers = ["p"];
+    answers = ["p", "q"];
     await getAction(fakeServer, true);
-    // the queued answer, then the recursive call that finds it empty
     expect(prompts).toEqual(["", ""]);
   });
 });

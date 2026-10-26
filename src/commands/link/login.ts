@@ -53,8 +53,10 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
             { headers: { "Content-Type": "text/html" } },
           );
         },
+        // nothing else keeps the process alive once the server is stopped
         "/close": () => {
-          process.exit(0);
+          server.stop();
+          return new Response();
         },
       };
       let server: ReturnType<typeof Bun.serve>;

@@ -12,11 +12,15 @@ import { join } from "node:path";
 import { ExitError, useTempCwd } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
 
-// getAction would sit on stdin waiting for a keypress
+// getAction would sit on stdin waiting for a keypress: it ends when a test says so
+let quit = () => {};
 mock.module("../../utils/interactCLI", () => ({
   question: async () => "",
   removeCurrentLine: () => {},
-  getAction: async () => {},
+  getAction: () =>
+    new Promise<void>((resolve) => {
+      quit = resolve;
+    }),
 }));
 
 const exitSpy = spyOn(process, "exit").mockImplementation(((code?: number) => {
@@ -37,7 +41,6 @@ const freePort = () => {
 };
 
 let cwd: ReturnType<typeof useTempCwd>;
-const listeners = process.listeners("SIGINT").length;
 
 /** Writes a conf next to the talk and returns the argv to serve it. */
 const talkOn = (port: number, extra = "") => {
@@ -170,13 +173,13 @@ describe("present command", () => {
     );
   });
 
-  it("quits on SIGINT", async () => {
+  it("releases its port once the terminal controls are left", async () => {
     const port = freePort();
-    await presentCmd.ready(talkOn(port, "WATCH = false"));
+    await presentCmd.ready(talkOn(port));
     await waitForServer(port);
-    expect(process.listeners("SIGINT").length).toBeGreaterThan(listeners);
-    const handler = process.listeners("SIGINT").at(-1) as () => void;
-    expect(() => handler()).toThrow("process.exit(0)");
+    quit();
+    await Bun.sleep(10);
+    expect(fetch(`http://127.0.0.1:${port}/`)).rejects.toThrow();
   });
 
   it("documents its options", () => {

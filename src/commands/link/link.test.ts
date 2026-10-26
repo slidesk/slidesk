@@ -148,6 +148,7 @@ describe("link login", () => {
   // login reads and writes ~/.slidesk and binds a local port, so Bun's file,
   // server and spawn entry points are stubbed for the whole block
   let stored: { path: string; content: string }[] = [];
+  let stopped = 0;
   let served: {
     port: number;
     routes: Record<string, CallableFunction>;
@@ -159,6 +160,7 @@ describe("link login", () => {
     busy: number[] = [],
   ) => {
     stored = [];
+    stopped = 0;
     served = null;
     spawned = [];
     spies.push(
@@ -183,7 +185,12 @@ describe("link login", () => {
       }) => {
         if (busy.includes(options.port)) throw new Error("EADDRINUSE");
         served = options;
-        return { port: options.port || 4242, stop: () => {} } as never;
+        return {
+          port: options.port || 4242,
+          stop: () => {
+            stopped += 1;
+          },
+        } as never;
       }) as never),
       spyOn(Bun, "spawn").mockImplementation(((cmd: string[]) => {
         spawned.push(cmd);
@@ -254,10 +261,11 @@ describe("link login", () => {
     expect(await res.text()).toContain("You can close this tab");
   });
 
-  it("exits when the browser tab reports it is done", async () => {
+  it("stops its server when the browser tab reports it is done", async () => {
     stubBun({ exists: false, size: 0 });
     await run(["login", "--slidesk-link-url", LINK]);
     const routes = served?.routes as Record<string, CallableFunction>;
-    expect(() => routes["/close"]()).toThrow("process.exit(0)");
+    routes["/close"]();
+    expect(stopped).toBe(1);
   });
 });
