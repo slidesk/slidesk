@@ -43,14 +43,25 @@ files in, since it runs them all in a single process:
 
 ## Pull Request Process
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
-2. Update the README.md with details of changes to the interface, this includes new environment 
-   variables, exposed ports, useful file locations and container parameters.
-3. Increase the version numbers in any examples files and the README.md to the new version that this
-   Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
+1. Work on a branch and open a pull request: `main` only receives merged pull requests.
+2. Before pushing, run what the CI runs:
+   ```sh
+   bunx @biomejs/biome check ./src ./scripts
+   bun run typecheck
+   bun run test:coverage
+   bun run smoke          # drives the compiled binary like a user
+   ```
+3. Add a line to the topmost section of `CHANGELOG.md`, and label the pull request
+   (`feature`, `bug`, `documentation`, `Breaking changes`) so it lands in the right
+   category of the release notes.
+4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
+
+## Releasing
+
+Bump `version` in `package.json`, give `CHANGELOG.md` a `## <version>` section, merge,
+then push the tag `<version>`: the Build workflow publishes the binaries (Linux, macOS,
+Windows, .deb, Docker, Homebrew) with that section as release notes.
 
 ## Code of Conduct
 
