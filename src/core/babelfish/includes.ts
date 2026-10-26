@@ -1,24 +1,40 @@
-import { globSync, lstatSync } from "node:fs";
+import { existsSync, globSync, lstatSync } from "node:fs";
+import { relative, resolve } from "node:path";
+import { CliError } from "../../utils/cliError";
 import replaceAsync from "../../utils/replaceAsync";
 
-const includes = async (file: string): Promise<string> => {
+/** Expands the `!include(...)` directives of `file`; `chain` holds the files including it. */
+const includes = async (
+  file: string,
+  chain: string[] = [],
+): Promise<string> => {
   if (!import.meta.resolve(file).includes(process.cwd())) return "";
+  const path = resolve(file);
+  if (chain.includes(path))
+    throw new CliError(
+      `!include loop: ${[...chain, path].map((f) => relative(process.cwd(), f)).join(" → ")}`,
+    );
+  const including = [...chain, path];
   const data = await Bun.file(file).text();
   return replaceAsync(`${data}\n`, /\n!include\(([^()]+)\)/g, async (_, p1) => {
     let [dirOrFile, ...exts] = `${p1}`.split(",");
     if (exts.length === 0) exts = ["sdf", "md"];
     const realDirOrFile = `${file.substring(0, file.lastIndexOf("/"))}/${dirOrFile}`;
+    if (!existsSync(realDirOrFile))
+      throw new CliError(
+        `!include(${p1}) in ${relative(process.cwd(), path)}: ${dirOrFile} not found`,
+      );
     if (lstatSync(realDirOrFile).isDirectory()) {
       const files = globSync(
         exts.map((ext) => `${realDirOrFile}/**/*.${ext}`),
       ).sort((a, b) => a.localeCompare(b));
       const res: string[] = [];
       for (const file of files) {
-        res.push(await includes(file));
+        res.push(await includes(file, including));
       }
       return res.join("\n");
     }
-    return includes(realDirOrFile);
+    return includes(realDirOrFile, including);
   });
 };
 

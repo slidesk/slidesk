@@ -41,11 +41,17 @@ describe("convert", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("falls back to the error presentation when the build throws", async () => {
+  it("falls back to the error presentation when asked to", async () => {
     const dir = mkdtempSync(join(scratch, "broken-"));
     writeFileSync(join(dir, "main.sdf"), "## Broken\n\n!include(missing)\n");
-    const files = await convert(dir, {}, {});
+    const files = await convert(dir, {}, {}, true);
     expect(files["index.html"].content).toContain("ERROR");
-    expect(captured.errors).not.toEqual([]);
+    expect(captured.error()).toContain("missing not found");
+  });
+
+  it("fails on a broken talk otherwise", async () => {
+    const dir = mkdtempSync(join(scratch, "broken-"));
+    writeFileSync(join(dir, "main.sdf"), "## Broken\n\n!include(missing)\n");
+    expect(convert(dir, {}, {})).rejects.toThrow("missing not found");
   });
 });

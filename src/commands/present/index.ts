@@ -22,7 +22,8 @@ const flow = async (
   init = false,
 ) => {
   const build = ++lastBuild;
-  const files = await convert(talkdir, options, env);
+  // keep presenting a broken talk: the browser shows the error until it is fixed
+  const files = await convert(talkdir, options, env, true);
   // a slower, older build must not replace a newer one
   if (build !== lastBuild) return;
   if (init) {
