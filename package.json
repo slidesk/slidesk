@@ -12,7 +12,7 @@
     "url": "git+https://github.com/gouz/slidesk.git"
   },
   "dependencies": {
-    "@clack/prompts": "^1.7.0",
+    "@clack/prompts": "^1.8.1",
     "clipse": "v0.2.0",
     "html-minifier-terser": "^7.2.0",
     "qrcode": "^1.5.4",
@@ -22,7 +22,7 @@
     "typescript": "^7.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.10",
+    "@biomejs/biome": "^2.6.3",
     "@types/bun": "latest",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/qrcode": "^1.5.6"

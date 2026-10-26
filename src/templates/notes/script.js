@@ -254,7 +254,7 @@ window.slidesk.start_timer = () => {
 setInterval(() => {
   if (startTime) {
     const time = (Date.now() - startTime) / 1000;
-    window.slidesk.timer.innerText = toHHMMSS(time);
+    window.slidesk.timer.textContent = toHHMMSS(time);
     window.slidesk.timer.classList.remove("emergency");
     if (timerCheckpoints[currentNum]) {
       if (timerCheckpoints[currentNum] < time) {
@@ -264,7 +264,7 @@ setInterval(() => {
   }
   if (startSlideTime) {
     const subtime = (Date.now() - startSlideTime) / 1000;
-    window.slidesk.subtimer.innerText = toHHMMSS(timerSlide - subtime + 1);
+    window.slidesk.subtimer.textContent = toHHMMSS(timerSlide - subtime + 1);
     window.slidesk.subtimer.style.display = "block";
     window.slidesk.subtimer.classList.remove("emergency");
     if (subtime >= timerSlide) {
