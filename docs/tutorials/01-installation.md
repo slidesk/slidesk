@@ -28,6 +28,10 @@ Then use SliDesk directly:
 bunx slidesk
 ```
 
+## Windows
+
+Download `slidesk_windows.zip` from the [releases page](https://github.com/slidesk/slidesk/releases), unzip it and put `slidesk.exe` in a directory of your `PATH`.
+
 ## Debian / Ubuntu
 
 Download the `.deb` file from the [releases page](https://github.com/slidesk/slidesk/releases).
