@@ -23,6 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      # the notes of a release are its section of CHANGELOG.md
+      - name: Extract release notes
+        run: awk -v v="${{ github.ref_name }}" '/^## /{f = ($2 == v); next} f' CHANGELOG.md > notes.md
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -30,6 +35,7 @@ jobs:
           name: ${{ github.ref_name }}
           draft: false
           prerelease: false
+          body_path: notes.md
           generate_release_notes: true
 
   build_release:
@@ -98,7 +104,6 @@ jobs:
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
           files: slidesk_${{ matrix.release_suffix }}.tar.gz
-          generate_release_notes: true
 
   build_windows:
     name: Build Windows release
