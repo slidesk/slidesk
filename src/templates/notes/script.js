@@ -1,7 +1,9 @@
 if (window.location.origin !== "file://") {
   try {
+    // the speaker's token, when present, lets this page drive the talk
+    const token = new URLSearchParams(window.location.search).get("token");
     window.slidesk.io = new WebSocket(
-      `ws${window.location.protocol.includes("https") ? "s" : ""}://${window.location.host}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws`,
+      `ws${window.location.protocol.includes("https") ? "s" : ""}://${window.location.host}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws${token ? `?token=${encodeURIComponent(token)}` : ""}`,
     );
   } catch (_) {}
 }

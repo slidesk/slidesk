@@ -37,6 +37,9 @@ const sendToSlideskLink = async (
   const file = Bun.file("link.tgz");
   const data = new FormData();
   data.set("file", file);
+  // only pages opened with this token may drive the hosted talk
+  const speakerToken = crypto.randomUUID();
+  data.set("token", speakerToken);
   const response = await fetch(`${options["slidesk-link-url"]}/upload`, {
     method: "POST",
     body: data,
@@ -50,10 +53,14 @@ const sendToSlideskLink = async (
     await file.unlink();
     throw new CliError("Your presentation is too large");
   }
+  const url = `${options["slidesk-link-url"]}/s/${uuid}/`;
   log("Your presentation is available for 72h:");
-  log(`${options["slidesk-link-url"]}/s/${uuid}/`);
-  if (options.notes)
-    log(`${options["slidesk-link-url"]}/s/${uuid}/${options.notes}`);
+  log(`Share with your audience: ${url}`);
+  log("Keep these ones for yourself:");
+  log(`Present from: ${url}?token=${speakerToken}`);
+  log(
+    `Speaker view: ${url}${options.notes || "notes.html"}?token=${speakerToken}`,
+  );
   await file.unlink();
 };
 
