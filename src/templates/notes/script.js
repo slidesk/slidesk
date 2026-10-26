@@ -1,12 +1,50 @@
-if (window.location.origin !== "file://") {
+// actions only reach the functions slidesk and its plugins define
+window.slidesk.dispatch = (data) => {
+  if (
+    Object.hasOwn(window.slidesk, data.action) &&
+    typeof window.slidesk[data.action] === "function"
+  )
+    window.slidesk[data.action](data);
+};
+
+/**
+ * Opens the websocket; once it has been open, a lost connection (present
+ * restarted) is retried, and the page reloads to get the new build. A page
+ * that never connected (a static export) does not retry.
+ */
+window.slidesk.connect = (retry = 0) => {
+  // the speaker's token, when present, lets this page drive the talk
+  const token = new URLSearchParams(window.location.search).get("token");
+  let io;
   try {
-    // the speaker's token, when present, lets this page drive the talk
-    const token = new URLSearchParams(window.location.search).get("token");
-    window.slidesk.io = new WebSocket(
+    io = new WebSocket(
       `ws${window.location.protocol.includes("https") ? "s" : ""}://${window.location.host}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1)}ws${token ? `?token=${encodeURIComponent(token)}` : ""}`,
     );
-  } catch (_) {}
-}
+  } catch (_) {
+    return;
+  }
+  let opened = false;
+  io.onopen = () => {
+    opened = true;
+    if (retry) window.location.reload();
+  };
+  io.onclose = () => {
+    if (opened || retry)
+      setTimeout(
+        () => window.slidesk.connect(retry + 1),
+        Math.min(500 * 2 ** retry, 5000),
+      );
+  };
+  io.onmessage = (event) => window.slidesk.onSocketMessage(event);
+  window.slidesk.io = io;
+};
+
+if (window.location.origin !== "file://") window.slidesk.connect();
+
+const send = (payload) => {
+  if (window.slidesk.io?.readyState === WebSocket.OPEN)
+    window.slidesk.io.send(JSON.stringify(payload));
+};
 
 window.slidesk.channel = null;
 window.slidesk.checkpoints = null;
@@ -140,8 +178,13 @@ window.slidesk.loadInitialState = () => {
   }
 };
 
-window.slidesk.io.onmessage = (event) => {
-  const data = JSON.parse(event.data);
+window.slidesk.onSocketMessage = (event) => {
+  let data;
+  try {
+    data = JSON.parse(event.data);
+  } catch (_) {
+    return;
+  }
   if (data.action === "current") {
     timerSlide = "";
     startSlideTime = null;
@@ -181,16 +224,16 @@ window.slidesk.io.onmessage = (event) => {
       }
       timerCheckpoints[i] = lastCheckpoint;
     }
-  } else if (window.slidesk[data.action]) window.slidesk[data.action](data);
+  } else window.slidesk.dispatch(data);
 };
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") {
-    window.slidesk.io?.send(JSON.stringify({ action: "previous" }));
+    send({ action: "previous" });
     if (window.slidesk.channel) {
       window.slidesk.channel.postMessage({ action: "previous" });
     }
   } else if (e.key === "ArrowRight") {
-    window.slidesk.io?.send(JSON.stringify({ action: "next" }));
+    send({ action: "next" });
     if (window.slidesk.channel) {
       window.slidesk.channel.postMessage({ action: "next" });
     }

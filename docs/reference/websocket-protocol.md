@@ -67,7 +67,11 @@ When the client receives an action it does not recognise, it falls through to:
 window.slidesk[data.action](data);
 ```
 
-This allows any method on `window.slidesk` (e.g. `fullscreen`, `next`, `previous`, `goto`) to be called remotely by setting the `action` to the method name.
+This allows any method on `window.slidesk` (e.g. `fullscreen`, `next`, `previous`, `goto`) to be called remotely by setting the `action` to the method name. Only functions defined directly on `window.slidesk`, by SliDesk or a plugin, are called: other names are ignored.
+
+### Reconnection
+
+When `slidesk present` is restarted, the pages that were connected retry the websocket (from 0.5 s up to every 5 s) and reload once it is back, so they show the new build. A page that never connected, such as a static export, does not retry.
 
 ### Plugin WebSocket messages
 
@@ -93,7 +97,7 @@ All clients subscribed to `"slidesk"` receive the response.
 
 ### Unrecognised messages
 
-Any message that does not match the built-in actions is **broadcast as-is** to all clients on the `"slidesk"` channel. On the receiving end, if `window.slidesk[data.action]` exists, it is called with `data` as the argument.
+Any message that does not match the built-in actions is **broadcast as-is** to all clients on the `"slidesk"` channel. On the receiving end, if `window.slidesk[data.action]` is a function defined on `window.slidesk`, it is called with `data` as the argument.
 
 ## Example flow: slide change
 

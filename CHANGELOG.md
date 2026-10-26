@@ -2,6 +2,14 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### 🐛 Fixes
+
+- A page that cannot reach its websocket (an export served over http, or a page left open after `present` quit) no longer polls every 5 ms forever: each slide change used to add three endless loops.
+- Pages reconnect when `present` is restarted, and reload to show the new build.
+- Websocket messages only call functions defined on `window.slidesk`.
+
 ## 2.20.0
 
 ### ⚠️ Behaviour changes
