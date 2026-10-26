@@ -1,21 +1,16 @@
 import type { Server } from "bun";
-import type {
-  SliDeskFile,
-  SliDeskPlugin,
-  SliDeskPluginAddRoute,
-} from "../../types";
+import type { SliDeskEnv, SliDeskFile, SliDeskServerPlugin } from "../../types";
 import getFile from "./getFile";
 
 const fetch = async (
   req: Request,
   server: Server<undefined>,
   serverFiles: SliDeskFile,
-  serverPlugins: SliDeskPlugin[],
+  serverPlugins: SliDeskServerPlugin[],
   serverPath: string,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
 ) => {
   const url = new URL(req.url);
-  let res: Response | null = null;
   switch (url.pathname) {
     case "/ws":
       return server.upgrade(req)
@@ -34,16 +29,10 @@ const fetch = async (
         return new Response(serverFiles[url.pathname.substring(1)].content, {
           headers: serverFiles[url.pathname.substring(1)].headers,
         });
-      for (const plugin of Object.values(serverPlugins)) {
-        if (plugin.addRoutes) {
-          res = await (plugin.addRoutes as SliDeskPluginAddRoute)(
-            req,
-            env,
-            serverPath,
-          );
-        }
+      for (const plugin of serverPlugins) {
+        const res = await plugin.addRoutes?.(req, env, serverPath);
+        if (res) return res;
       }
-      if (res !== null) return res;
       return getFile(req, serverPath, env);
   }
 };

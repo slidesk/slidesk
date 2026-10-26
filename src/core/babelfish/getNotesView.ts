@@ -28,13 +28,13 @@ const getNotesView = (
   const js = ['<script src="slidesk-notes.js"></script>'];
   plugins.forEach((p, _) => {
     if (p.addSpeakerStyles) {
-      (p.addSpeakerStyles as string[]).forEach((k: string, _) => {
+      p.addSpeakerStyles.forEach((k) => {
         css.push(`<link href="${k}" rel="stylesheet" />`);
       });
     }
 
     if (p.addSpeakerScripts) {
-      (p.addSpeakerScripts as string[]).forEach((k: string, _) => {
+      p.addSpeakerScripts.forEach((k) => {
         js.push(`<script src="${k}"></script>`);
       });
     }

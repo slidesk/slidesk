@@ -1,15 +1,12 @@
 import { toString as QRCODE } from "qrcode";
-import type { SliDeskServerOptions } from "../../types";
+import type { SliDeskServerOptions, SliDeskSettings } from "../../types";
 import start from "../../utils/start";
 
 const { log } = console;
 
-const display = async (
-  env: Record<string, unknown>,
-  options: SliDeskServerOptions,
-) => {
-  const https = env?.HTTPS ?? false;
-  const port = Number(env?.PORT ?? 1337);
+const display = async (env: SliDeskSettings, options: SliDeskServerOptions) => {
+  const https = env.HTTPS ?? false;
+  const port = Number(env.PORT ?? 1337);
   if (options.notes) {
     const url = `http${
       https ? "s" : ""
@@ -29,20 +26,16 @@ const display = async (
       ]);
     }
   }
-  [
-    ...new Set([
-      options.ip,
-      (env?.DOMAIN as string) ?? "localhost",
-      "localhost",
-    ]),
-  ].forEach((e, _) => {
-    if (e)
-      log(
-        `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
-          https ? "s" : ""
-        }://${e}:${port}\x1b[0m`,
-      );
-  });
+  [...new Set([options.ip, env.DOMAIN ?? "localhost", "localhost"])].forEach(
+    (e, _) => {
+      if (e)
+        log(
+          `Your presentation is available on: \x1b[1m\x1b[36;49mhttp${
+            https ? "s" : ""
+          }://${e}:${port}\x1b[0m`,
+        );
+    },
+  );
   if (options.open && !options.notes) {
     Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${port}`]);
   }

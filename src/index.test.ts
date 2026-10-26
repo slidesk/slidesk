@@ -1,4 +1,11 @@
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  setDefaultTimeout,
+} from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -13,6 +20,9 @@ import packagejson from "../package.json";
  * The trade-off is that this process is not the one bun measures, so
  * src/index.ts stays outside the coverage report.
  */
+
+// Each test spawns the CLI, which is slower than the default 5s budget allows.
+setDefaultTimeout(30000);
 
 const entry = join(import.meta.dir, "index.ts");
 let cwd: string;
@@ -80,4 +90,4 @@ describe("slidesk", () => {
     expect(stderr).toContain("main.(sdf|md) was not found");
     expect(exitCode).toBe(1);
   });
-}, 30000);
+});

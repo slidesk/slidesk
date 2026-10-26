@@ -1,6 +1,13 @@
 import { styles } from "../templates/notes";
 import { manifest } from "../templates/present";
-import type { SliDeskPlugin, SliDeskPresentOptions } from "../types";
+import type {
+  SliDeskConfig,
+  SliDeskEnv,
+  SliDeskFavicon,
+  SliDeskFile,
+  SliDeskPlugin,
+  SliDeskPresentOptions,
+} from "../types";
 import generateHTML from "./babelfish/generateHTML";
 import getCSS from "./babelfish/getCSS";
 import getJS from "./babelfish/getJS";
@@ -12,34 +19,16 @@ import prepareSDF from "./babelfish/prepareSDF";
 import prepareTPL from "./babelfish/prepareTPL";
 
 const commonContent = (
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
   plugins: SliDeskPlugin[],
-  favicon:
-    | {
-        name: string;
-        content: Uint8Array<ArrayBuffer>;
-        type: string;
-      }
-    | {
-        name: string;
-        content: string;
-        type: string;
-      },
+  favicon: SliDeskFavicon,
   options: SliDeskPresentOptions,
-  config:
-    | {
-        css: never[];
-        js: never[];
-      }
-    | {
-        css: string[];
-        js: string[];
-      },
+  config: SliDeskConfig,
   sdfPath: string,
-) => {
+): SliDeskFile => {
   return {
     "slidesk.css": {
-      content: getCSS(env as { slidesk: { TRANSITION?: number } }),
+      content: getCSS(env),
       headers: { "Content-type": "text/css" },
     },
     "slidesk-notes.css": {
@@ -71,17 +60,15 @@ const commonContent = (
 
 export const errorContent = async (
   options: SliDeskPresentOptions,
-  env: Record<string, unknown>,
-) => {
+  env: SliDeskEnv,
+): Promise<SliDeskFile> => {
   const sdfPath = `${process.cwd()}`;
   const { plugins, templates, favicon, components } = await preload(
     sdfPath,
     env,
   );
-  const { config, content } = {
-    config: { css: [], js: [] },
-    content: "ERROR",
-  };
+  const config: SliDeskConfig = { css: [], js: [] };
+  const content = "ERROR";
   return {
     ...(await generateHTML(
       await getPresentation(content, env, components, templates),
@@ -98,8 +85,8 @@ export const errorContent = async (
 export const content = async (
   mainFile: string,
   options: SliDeskPresentOptions,
-  env: Record<string, unknown>,
-) => {
+  env: SliDeskEnv,
+): Promise<SliDeskFile> => {
   const sdfPath = `${mainFile.substring(0, mainFile.lastIndexOf("/"))}`;
   const { plugins, templates, favicon, components } = await preload(
     sdfPath,

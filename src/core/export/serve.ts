@@ -1,25 +1,21 @@
 import { existsSync } from "node:fs";
 import type { Server } from "bun";
-import type { SliDeskFile, SliDeskPlugin } from "../../types";
+import type { SliDeskEnv, SliDeskFile, SliDeskServerPlugin } from "../../types";
 import fetch from "../server/fetch";
 import getPlugins from "../server/getPlugins";
 
-const serve = async (
-  files: SliDeskFile,
-  env: Record<string, unknown>,
-  talkdir: string,
-) => {
-  const plugins: SliDeskPlugin[] = [];
-  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+const serve = async (files: SliDeskFile, env: SliDeskEnv, talkdir: string) => {
+  const plugins: SliDeskServerPlugin[] = [];
+  const slideskEnv = env.slidesk ?? {};
   if (existsSync(`${talkdir}/plugins`))
     plugins.push(...(await getPlugins(`${talkdir}/plugins`, talkdir)));
   if (
     slideskEnv?.COMMON_DIR &&
-    existsSync(`${talkdir}/${slideskEnv.COMMON_DIR as string}/plugins`)
+    existsSync(`${talkdir}/${slideskEnv.COMMON_DIR}/plugins`)
   )
     plugins.push(
       ...(await getPlugins(
-        `${talkdir}/${slideskEnv.COMMON_DIR as string}/plugins`,
+        `${talkdir}/${slideskEnv.COMMON_DIR}/plugins`,
         talkdir,
       )),
     );

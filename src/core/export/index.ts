@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { SliDeskExportOptions } from "../../types";
+import type { SliDeskEnv, SliDeskExportOptions } from "../../types";
 import convert from "../../utils/convert";
 import loadEnv from "../../utils/loadEnv";
 import progress from "../../utils/progress";
@@ -15,8 +15,8 @@ const { log } = console;
 const WIDTH = 1920;
 const HEIGHT = 1080;
 
-const defaultOutput = (talkdir: string, env: Record<string, unknown>) => {
-  const title = (env.slidesk as Record<string, unknown>)?.TITLE as string;
+const defaultOutput = (talkdir: string, env: SliDeskEnv) => {
+  const title = env.slidesk?.TITLE;
   const name = slugify(
     (title ?? path.basename(talkdir))
       .normalize("NFD")
@@ -28,7 +28,7 @@ const defaultOutput = (talkdir: string, env: Record<string, unknown>) => {
 const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
   const type = options.type ?? "pdf";
   const env = await loadEnv(talkdir, options);
-  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+  const slideskEnv = env.slidesk ?? {};
   const files = await convert(talkdir, options, env);
   const target =
     options.output && options.output !== ""
@@ -52,7 +52,7 @@ const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
             total,
             WIDTH,
             HEIGHT,
-            (slideskEnv.TITLE as string) ?? "SliDesk presentation",
+            slideskEnv.TITLE ?? "SliDesk presentation",
             transition,
             onSlide,
           )

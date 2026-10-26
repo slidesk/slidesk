@@ -31,17 +31,17 @@ describe("getPlugins", () => {
   it("loads the addRoutes handler", async () => {
     const plugin = await pluginNamed("with-routes");
     expect(typeof plugin.addRoutes).toBe("function");
-    expect((plugin.addRoutes as () => string)()).toBe("routed");
+    expect((plugin.addRoutes as unknown as () => string)()).toBe("routed");
   });
 
   it("loads the addWS handler", async () => {
     const plugin = await pluginNamed("with-ws");
-    expect((plugin.addWS as () => string)()).toBe("socketed");
+    expect((plugin.addWS as unknown as () => string)()).toBe("socketed");
   });
 
   it("loads both handlers when both are declared", async () => {
     const plugin = await pluginNamed("with-both");
-    expect((plugin.addRoutes as () => string)()).toBe("both-routes");
-    expect((plugin.addWS as () => string)()).toBe("both-ws");
+    expect((plugin.addRoutes as unknown as () => string)()).toBe("both-routes");
+    expect((plugin.addWS as unknown as () => string)()).toBe("both-ws");
   });
 });

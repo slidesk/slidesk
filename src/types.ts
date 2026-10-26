@@ -35,9 +35,31 @@ export type SliDeskPublishOptions = {
   "slidesk-link-url"?: string;
 };
 
+export type SliDeskSettings = {
+  PORT?: number;
+  TELNET_PORT?: number;
+  HTTPS?: boolean;
+  DOMAIN?: string;
+  TITLE?: string;
+  TRANSITION?: number;
+  COMMON_DIR?: string;
+  KEY?: string;
+  CERT?: string;
+  PASSPHRASE?: string;
+  WATCH?: boolean;
+  WIDTH?: number;
+  deployed?: boolean;
+};
+
+/** Content of slidesk.toml; any other section is exposed to the talk as is. */
+export type SliDeskEnv = {
+  slidesk?: SliDeskSettings;
+  [section: string]: unknown;
+};
+
 export type SliDeskPluginAddRoute = (
   req: Request,
-  env: object,
+  env: SliDeskEnv,
   path: string,
 ) => Promise<Response | null>;
 
@@ -46,27 +68,35 @@ export type SliDeskPluginAddWS = (
   _server: Server<undefined>,
 ) => Promise<object>;
 
+/** A plugin.json as read from disk, plus the name of its folder. */
 export type SliDeskPlugin = {
   name: string;
   type?: string;
-  addRoutes: string | SliDeskPluginAddRoute;
-  addWS: string | SliDeskPluginAddWS;
-  addHTML: string;
-  addHTMLFromFiles: string[] | Record<string, string>;
-  addScripts: string[] | Record<string, string>;
-  addStyles: string[] | Record<string, string>;
-  addSpeakerScripts: string[] | Record<string, string>;
-  addSpeakerStyles: string[] | Record<string, string>;
-  onSlideChange: string;
-  onSpeakerViewSlideChange: string;
-  addScriptModules?: string[] | Record<string, string>;
-  theme: string;
+  addRoutes?: string;
+  addWS?: string;
+  addHTML?: string;
+  addHTMLFromFiles?: string[] | Record<string, string>;
+  addScripts?: string[];
+  addStyles?: string[];
+  addSpeakerScripts?: string[];
+  addSpeakerStyles?: string[];
+  onSlideChange?: string;
+  onSpeakerViewSlideChange?: string;
+  addScriptModules?: string[];
+  theme?: string;
+};
+
+/** A plugin whose server hooks have been imported. */
+export type SliDeskServerPlugin = {
+  name: string;
+  addRoutes?: SliDeskPluginAddRoute;
+  addWS?: SliDeskPluginAddWS;
 };
 
 export type SliDeskFile = {
   [key: string]: {
     headers?: Record<string, string>;
-    content?: string;
+    content?: string | Uint8Array<ArrayBuffer>;
   };
 };
 
@@ -76,7 +106,7 @@ export type SliDeskConfig = { css: string[]; js: string[] };
 
 export type SliDeskFavicon = {
   name: string;
-  content: string | Uint8Array;
+  content: string | Uint8Array<ArrayBuffer>;
   type: string;
 };
 

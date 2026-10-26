@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import type { SliDeskPlugin } from "../../types";
+import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 
 const loadExternalPlugins = async (
   pluginsDir: string,
@@ -12,33 +12,30 @@ const loadExternalPlugins = async (
       const pluginFile = Bun.file(`${pluginsDir}/${plugin}/plugin.json`);
       const exists = await pluginFile.exists();
       if (exists) {
-        const json = await pluginFile.json();
-        ["addHTMLFromFiles"].forEach((t, _) => {
-          if (json[t]) {
-            const files = json[t];
-            json[t] = {};
-            files.forEach((s: string, _: number) => {
-              const p = `plugins/${plugin}/`;
-              json[t][s] = readFileSync(
+        const json: Omit<SliDeskPlugin, "name"> = await pluginFile.json();
+        if (Array.isArray(json.addHTMLFromFiles)) {
+          const p = `plugins/${plugin}/`;
+          json.addHTMLFromFiles = Object.fromEntries(
+            json.addHTMLFromFiles.map((s) => [
+              s,
+              readFileSync(
                 `${sdfPath}/${s.replaceAll(/plugins\/([^/]+)\//g, p)}`,
-                {
-                  encoding: "utf8",
-                },
-              );
-            });
-          }
-        });
+                { encoding: "utf8" },
+              ),
+            ]),
+          );
+        }
         plugins.push({ ...json, name: plugin, theme });
       }
     }
   return plugins;
 };
 
-const loadPlugins = async (sdfPath: string, env: Record<string, unknown>) => {
+const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
   const plugins: SliDeskPlugin[] = [];
   plugins.push(...(await loadExternalPlugins(`${sdfPath}/plugins`, sdfPath)));
-  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
-  const commonDir = (slideskEnv.COMMON_DIR as string) ?? "";
+  const slideskEnv = env.slidesk ?? {};
+  const commonDir = slideskEnv.COMMON_DIR ?? "";
   if (commonDir !== "")
     plugins.push(
       ...(await loadExternalPlugins(
