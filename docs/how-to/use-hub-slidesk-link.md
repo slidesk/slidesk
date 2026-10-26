@@ -8,7 +8,9 @@ The hub at https://slidesk.link lets you share and discover addons, host present
 slidesk link login
 ```
 
-Creates an account and stores a token in `~/.slidesk`.
+Creates an account and stores a token in `~/.slidesk`. The browser hands the
+token back to the CLI on port 1337, or on a free port when 1337 is taken (for
+instance by a running presentation).
 
 ## Host a presentation
 
@@ -17,6 +19,12 @@ Send your presentation to slidesk.link for 72 hours (max 100 MB):
 ```sh
 slidesk link host -n mynotes.html
 ```
+
+The command prints three URLs:
+
+- **Share with your audience**: the presentation, which follows your slides
+- **Present from** and **Speaker view**: the same pages with a token that lets
+  them drive the talk. Keep them to yourself.
 
 ## Push talk metadata
 

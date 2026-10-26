@@ -20,6 +20,13 @@ Open the speaker view with:
 slidesk -n my-talk
 ```
 
+To open the speaker view on another device, such as your phone, use the URL
+or scan the QR code printed in the terminal: it carries a token that lets the
+speaker view drive the talk. Keep it to yourself.
+
+Anyone else who opens the presentation on the network follows your slides but
+cannot change them.
+
 The speaker view shows:
 
 - the current slide
