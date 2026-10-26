@@ -36,6 +36,7 @@
     "gendocs": "bun src/index.ts example --save docs",
     "format": "bunx @biomejs/biome format ./ --write",
     "lint": "bunx @biomejs/biome lint ./ --write",
+    "typecheck": "tsc --noEmit",
     "test:coverage": "bun test --coverage && bun scripts/coverage-gate.ts"
   }
 }

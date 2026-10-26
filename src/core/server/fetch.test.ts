@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import type { Server } from "bun";
-import type { SliDeskFile, SliDeskPlugin } from "../../types";
+import type { SliDeskFile, SliDeskServerPlugin } from "../../types";
 import fetchHandler from "./fetch";
 
 const files: SliDeskFile = {
@@ -74,7 +74,7 @@ describe("fetch", () => {
   it("lets a plugin answer an unknown route", async () => {
     const plugins = [
       { name: "p", addRoutes: async () => new Response("from plugin") },
-    ] as unknown as SliDeskPlugin[];
+    ] satisfies SliDeskServerPlugin[];
     const res = await fetchHandler(
       request("/custom"),
       fakeServer(false),
@@ -96,7 +96,7 @@ describe("fetch", () => {
           return new Response("ok");
         },
       },
-    ] as unknown as SliDeskPlugin[];
+    ] satisfies SliDeskServerPlugin[];
     await fetchHandler(
       request("/custom"),
       fakeServer(false),
@@ -108,8 +108,24 @@ describe("fetch", () => {
     expect(seen).toEqual(["http://localhost/custom", { LANG: "fr" }, "/talk"]);
   });
 
+  it("keeps the first plugin answer when a later plugin declines", async () => {
+    const plugins = [
+      { name: "a", addRoutes: async () => new Response("from a") },
+      { name: "b", addRoutes: async () => null },
+    ] satisfies SliDeskServerPlugin[];
+    const res = await fetchHandler(
+      request("/custom"),
+      fakeServer(false),
+      files,
+      plugins,
+      ".",
+      {},
+    );
+    expect(await res?.text()).toBe("from a");
+  });
+
   it("skips plugins without an addRoutes hook", async () => {
-    const plugins = [{ name: "p" }] as unknown as SliDeskPlugin[];
+    const plugins = [{ name: "p" }] satisfies SliDeskServerPlugin[];
     const res = await fetchHandler(
       request("/missing.png"),
       fakeServer(false),

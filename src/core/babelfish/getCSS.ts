@@ -1,9 +1,10 @@
 import { styles } from "../../templates/present";
+import type { SliDeskEnv } from "../../types";
 
-const getCSS = (env: Record<string, unknown>) =>
+const getCSS = (env: SliDeskEnv) =>
   styles.replace(
     ":root {",
-    `:root { --animationTimer: ${Number((env.slidesk as Record<string, unknown>)?.TRANSITION ?? 300)}ms; `,
+    `:root { --animationTimer: ${Number(env.slidesk?.TRANSITION ?? 300)}ms; `,
   );
 
 export default getCSS;

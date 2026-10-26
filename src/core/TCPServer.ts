@@ -1,5 +1,6 @@
 import type {
   BunSocket,
+  SliDeskEnv,
   SliDeskServerOptions,
   SliDeskTelnetSession,
   SliDeskTelnetSlidesConfig,
@@ -12,9 +13,9 @@ import { renderSlide } from "./tcpserver/session";
 
 export async function startTelnetServer(
   options: SliDeskServerOptions,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
 ) {
-  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+  const slideskEnv = env.slidesk ?? {};
   const port = Number(slideskEnv?.TELNET_PORT ?? 2323);
   const slideServerUrl = `http://localhost:${Number(slideskEnv?.PORT ?? 1337)}`;
 
@@ -81,28 +82,19 @@ export async function startTelnetServer(
       drain(_socket) {},
     },
     tls: {
-      key:
-        slideskEnv?.KEY === undefined
-          ? undefined
-          : Bun.file(slideskEnv.KEY as string),
+      key: slideskEnv?.KEY === undefined ? undefined : Bun.file(slideskEnv.KEY),
       cert:
-        slideskEnv?.CERT === undefined
-          ? undefined
-          : Bun.file(slideskEnv.CERT as string),
+        slideskEnv?.CERT === undefined ? undefined : Bun.file(slideskEnv.CERT),
       passphrase:
         slideskEnv?.PASSPHRASE === undefined
           ? undefined
-          : (slideskEnv?.PASSPHRASE as string),
+          : slideskEnv.PASSPHRASE,
     },
   });
 
   console.log(`[telnet] Server started on port ${port}`);
   [
-    ...new Set([
-      options.ip,
-      (slideskEnv?.DOMAIN as string) ?? "localhost",
-      "localhost",
-    ]),
+    ...new Set([options.ip, slideskEnv.DOMAIN ?? "localhost", "localhost"]),
   ].forEach((e, _) => {
     if (e) console.log(`[telnet] Connect with: telnet ${e} ${port}`);
   });

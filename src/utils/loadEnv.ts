@@ -1,16 +1,16 @@
 import { TOML } from "bun";
-import type { SliDeskPresentOptions } from "../types";
+import type { SliDeskEnv, SliDeskPresentOptions } from "../types";
 
 const loadEnv = async (
   sdfPath: string,
   options: SliDeskPresentOptions,
-): Promise<Record<string, unknown>> => {
+): Promise<SliDeskEnv> => {
   const slideskEnvFile = Bun.file(
     `${sdfPath}/${options.conf ?? "slidesk.toml"}`,
   );
   if (await slideskEnvFile.exists()) {
     const buf = await slideskEnvFile.text();
-    return TOML.parse(buf) as Record<string, unknown>;
+    return TOML.parse(buf) as SliDeskEnv;
   }
   return {};
 };

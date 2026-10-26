@@ -4,7 +4,7 @@ import process from "node:process";
 import { Clipse } from "clipse";
 import SlideskServer from "../../core/Server";
 import { startTelnetServer } from "../../core/TCPServer";
-import type { SliDeskPresentOptions } from "../../types";
+import type { SliDeskEnv, SliDeskPresentOptions } from "../../types";
 import convert from "../../utils/convert";
 import { getAction } from "../../utils/interactCLI";
 import loadEnv from "../../utils/loadEnv";
@@ -16,7 +16,7 @@ const server: SlideskServer = new SlideskServer();
 const flow = async (
   talkdir: string,
   options: SliDeskPresentOptions,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
   init = false,
 ) => {
   const files = await convert(talkdir, options, env);
@@ -52,7 +52,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\nPress \x1b[1mQ\x1b[0m to quit the program.",
       "\n",
     );
-  if ((env.slidesk as Record<string, unknown>)?.WATCH !== false) {
+  if (env.slidesk?.WATCH !== false) {
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
         log(

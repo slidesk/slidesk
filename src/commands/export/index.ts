@@ -54,7 +54,7 @@ exportCmd
     try {
       await exportTalk(`${process.cwd()}${talkPath}`, { ...options, type });
     } catch (e) {
-      error((e as Error).message);
+      error(e instanceof Error ? e.message : e);
       process.exit(1);
     }
     process.exit(0);

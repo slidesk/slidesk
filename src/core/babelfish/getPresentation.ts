@@ -1,12 +1,12 @@
 import comments from "../../components/comments";
 import formatting from "../../components/formatting";
 import image from "../../components/image";
-import type { SliDeskTemplate } from "../../types";
+import type { SliDeskEnv, SliDeskTemplate } from "../../types";
 import treatSlide from "./treatSlide";
 
 const getPresentation = async (
   sdf: string,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
   components: string[],
   templates: SliDeskTemplate,
 ) => {

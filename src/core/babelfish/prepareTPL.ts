@@ -48,21 +48,21 @@ const prepareTPL = (
   plugins.forEach((p, _) => {
     const pname = `plugins/${p.name}/`;
     if (p.addStyles) {
-      (p.addStyles as string[]).forEach((k: string, _) => {
+      p.addStyles.forEach((k) => {
         css.push(
           `<link href="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}" rel="stylesheet"/>`,
         );
       });
     }
     if (p.addScripts) {
-      (p.addScripts as string[]).forEach((k: string, _) => {
+      p.addScripts.forEach((k) => {
         js.push(
           `<script src="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}"></script>`,
         );
       });
     }
     if (p.addScriptModules) {
-      (p.addScriptModules as string[]).forEach((k: string, _) => {
+      p.addScriptModules.forEach((k) => {
         js.push(
           `<script src="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}" type="module"></script>`,
         );

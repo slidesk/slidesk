@@ -1,16 +1,15 @@
 import { minify } from "html-minifier-terser";
-import type { SliDeskPlugin } from "../../types";
+import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 
 const polish = async (
   presentation: string,
   template: string,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
   plugins: SliDeskPlugin[],
 ) => {
   let tpl = template;
-  const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
-  if (slideskEnv.TITLE)
-    tpl = tpl.replace("#TITLE#", slideskEnv.TITLE as string);
+  const slideskEnv = env.slidesk ?? {};
+  if (slideskEnv.TITLE) tpl = tpl.replace("#TITLE#", slideskEnv.TITLE);
   else
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
       tpl = tpl.replace("#TITLE#", title[1]);
@@ -30,10 +29,8 @@ const polish = async (
     "</body>",
     `${plugins.map((p) => p.addHTML ?? "").join("")}${plugins
       .map((p) =>
-        p.addHTMLFromFiles
-          ? Object.keys(p.addHTMLFromFiles)
-              .map((k) => (p.addHTMLFromFiles as { [key: string]: string })[k])
-              .join("")
+        p.addHTMLFromFiles && !Array.isArray(p.addHTMLFromFiles)
+          ? Object.values(p.addHTMLFromFiles).join("")
           : "",
       )
       .join("")}</body>`,

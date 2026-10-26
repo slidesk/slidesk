@@ -1,14 +1,19 @@
 import { content, errorContent } from "../core/Convert";
-import type { SliDeskPresentOptions, SliDeskSaveOptions } from "../types";
+import type {
+  SliDeskEnv,
+  SliDeskFile,
+  SliDeskPresentOptions,
+  SliDeskSaveOptions,
+} from "../types";
 
 const { error } = console;
 
 const convert = async (
   talk: string,
   options: SliDeskSaveOptions | SliDeskPresentOptions,
-  env: Record<string, unknown>,
+  env: SliDeskEnv,
 ) => {
-  let files: { [key: string]: { content: string } } = {};
+  let files: SliDeskFile = {};
   try {
     const sdfMainFile = Bun.file(`${talk}/main.sdf`);
     const mdMainFile = Bun.file(`${talk}/main.md`);
@@ -23,9 +28,6 @@ const convert = async (
   } catch (e) {
     files = await errorContent(options, env);
     error(e);
-  }
-  if (files === null) {
-    process.exit();
   }
   return files;
 };

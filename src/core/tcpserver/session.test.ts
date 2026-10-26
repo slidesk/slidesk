@@ -24,7 +24,11 @@ const makeSession = (
     cols: 40,
     loading: false,
     started: true,
-    config: { slides: ["<p>first</p>", "<p>second</p>"] },
+    config: {
+      port: 2323,
+      totalSlides: 2,
+      slides: ["<p>first</p>", "<p>second</p>"],
+    },
     ...overrides,
   }) as SliDeskTelnetSession;
 
@@ -85,7 +89,11 @@ describe("renderSlide", () => {
     const slide = `<p>${["a", "b", "c", "d", "e", "f"].join("</p><p>")}</p>`;
     await renderSlide(
       socket,
-      makeSession({ rows: 4, config: { slides: [slide] }, totalSlides: 1 }),
+      makeSession({
+        rows: 4,
+        config: { port: 2323, totalSlides: 1, slides: [slide] },
+        totalSlides: 1,
+      }),
     );
     const rendered = writes.join("");
     expect(rendered).toContain("Slide 1 / 1");

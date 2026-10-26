@@ -77,7 +77,8 @@ const open = (width: number, height: number) => {
   try {
     return spawn(width, height, fromEnv);
   } catch (e) {
-    if (!(e as Error).message.includes("Failed to spawn Chrome")) throw e;
+    if (!(e instanceof Error && e.message.includes("Failed to spawn Chrome")))
+      throw e;
     const other = fromEnv ? undefined : fallback();
     if (!other) throw new Error(NOT_FOUND_MESSAGE);
     return spawn(width, height, other);

@@ -65,7 +65,9 @@ describe("content", () => {
 
   it("uses the talk favicon", async () => {
     const files = await content(mainFile, {}, {});
-    expect(files["favicon.svg"].headers["Content-Type"]).toBe("image/svg+xml");
+    expect(files["favicon.svg"].headers?.["Content-Type"]).toBe(
+      "image/svg+xml",
+    );
     const html = files["index.html"].content as string;
     expect(html).toContain("favicon.svg");
   });

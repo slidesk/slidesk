@@ -1,10 +1,10 @@
 import { existsSync } from "node:fs";
 import type { Server } from "bun";
 import type {
+  SliDeskEnv,
   SliDeskFile,
-  SliDeskPlugin,
-  SliDeskPluginAddWS,
   SliDeskServerOptions,
+  SliDeskServerPlugin,
 } from "../types";
 import display from "./server/display";
 import fetch from "./server/fetch";
@@ -18,23 +18,23 @@ export default class SlideskServer {
   async create(
     files: SliDeskFile,
     options: SliDeskServerOptions,
-    env: Record<string, unknown>,
+    env: SliDeskEnv,
     path: string,
   ) {
     serverFiles = files;
     serverPath = path;
-    const serverPlugins: SliDeskPlugin[] = [];
+    const serverPlugins: SliDeskServerPlugin[] = [];
     const pluginsDir = `${path}/plugins`;
-    const slideskEnv = (env.slidesk ?? {}) as Record<string, unknown>;
+    const slideskEnv = env.slidesk ?? {};
     if (existsSync(pluginsDir))
       serverPlugins.push(...(await getPlugins(pluginsDir, serverPath)));
     if (
       slideskEnv?.COMMON_DIR &&
-      existsSync(`${path}/${slideskEnv?.COMMON_DIR as string}/plugins`)
+      existsSync(`${path}/${slideskEnv.COMMON_DIR}/plugins`)
     )
       serverPlugins.push(
         ...(await getPlugins(
-          `${path}/${slideskEnv?.COMMON_DIR as string}/plugins`,
+          `${path}/${slideskEnv.COMMON_DIR}/plugins`,
           serverPath,
         )),
       );
@@ -57,7 +57,7 @@ export default class SlideskServer {
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await (addWS as SliDeskPluginAddWS)(message, server),
+                response: await addWS(message, server),
               }),
             );
           } else {
@@ -70,17 +70,15 @@ export default class SlideskServer {
       },
       tls: {
         key:
-          slideskEnv?.KEY === undefined
-            ? undefined
-            : Bun.file(slideskEnv.KEY as string),
+          slideskEnv?.KEY === undefined ? undefined : Bun.file(slideskEnv.KEY),
         cert:
           slideskEnv?.CERT === undefined
             ? undefined
-            : Bun.file(slideskEnv.CERT as string),
+            : Bun.file(slideskEnv.CERT),
         passphrase:
           slideskEnv?.PASSPHRASE === undefined
             ? undefined
-            : (slideskEnv?.PASSPHRASE as string),
+            : slideskEnv.PASSPHRASE,
       },
     });
     await display(slideskEnv, options);
