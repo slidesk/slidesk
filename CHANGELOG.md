@@ -9,6 +9,12 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 - A page that cannot reach its websocket (an export served over http, or a page left open after `present` quit) no longer polls every 5 ms forever: each slide change used to add three endless loops.
 - Pages reconnect when `present` is restarted, and reload to show the new build.
 - Websocket messages only call functions defined on `window.slidesk`.
+- `import` refuses an archive that expands beyond 500 MB: a 1 MB crafted `.pptx` used to take 2 GB of memory.
+- `import` keeps only the file name of a `.pptx` media, so a crafted name cannot write outside the talk on Windows.
+
+### 🧰 Internals
+
+- The smoke tests drive a headless browser too: an exported page served over http, and a page left open while `present` restarts.
 
 ## 2.20.0
 

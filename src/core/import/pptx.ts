@@ -159,8 +159,10 @@ const readSlide = (
       const blip = scan(node.inner, ["a:blip"])[0];
       const rId = blip ? attr(blip.attrs, "r:embed") : null;
       const target = rId ? rels[rId] : null;
-      if (target && files[target]) {
-        const name = target.split("/").pop() as string;
+      // the media name becomes a file of the talk: anything but a plain file
+      // name (a `..\` path on Windows, for instance) is left out
+      const name = target?.split(/[/\\]/).pop() ?? "";
+      if (target && files[target] && /^\w[\w.-]*$/.test(name)) {
         assets[name] = files[target];
         const props = scan(node.inner, ["p:cNvPr"])[0]?.attrs ?? "";
         const alt = cleanAlt(attr(props, "descr") ?? attr(props, "name") ?? "");

@@ -1,6 +1,8 @@
 import { inflateRawSync } from "node:zlib";
 
 const EOCD_SIG = 0x06054b50;
+// a deck is far below this; a crafted archive could otherwise inflate to gigabytes
+export const MAX_UNZIPPED = 500 * 1024 * 1024;
 const CENTRAL_SIG = 0x02014b50;
 
 const findEOCD = (data: Uint8Array) => {
@@ -12,7 +14,7 @@ const findEOCD = (data: Uint8Array) => {
   return -1;
 };
 
-const unzip = (archive: Uint8Array) => {
+const unzip = (archive: Uint8Array, max = MAX_UNZIPPED) => {
   const dv = new DataView(
     archive.buffer,
     archive.byteOffset,
@@ -24,6 +26,11 @@ const unzip = (archive: Uint8Array) => {
   const total = dv.getUint16(eocd + 10, true);
   let offset = dv.getUint32(eocd + 16, true);
   const files: Record<string, Uint8Array> = {};
+  let unzipped = 0;
+  const tooLarge = () =>
+    new Error(
+      `this archive expands beyond ${Math.round(max / 1024 / 1024)} MB, it is not imported`,
+    );
 
   for (let i = 0; i < total; i += 1) {
     if (dv.getUint32(offset, true) !== CENTRAL_SIG)
@@ -42,9 +49,24 @@ const unzip = (archive: Uint8Array) => {
     const localExtraLen = dv.getUint16(localOffset + 28, true);
     const start = localOffset + 30 + localNameLen + localExtraLen;
     const payload = archive.subarray(start, start + compSize);
-    if (!name.endsWith("/"))
-      files[name] =
-        method === 0 ? payload : new Uint8Array(inflateRawSync(payload));
+    if (!name.endsWith("/")) {
+      const budget = max - unzipped;
+      if (budget <= 0) throw tooLarge();
+      let content = payload;
+      if (method !== 0)
+        try {
+          content = new Uint8Array(
+            inflateRawSync(payload, { maxOutputLength: budget }),
+          );
+        } catch (e) {
+          if ((e as { code?: string }).code === "ERR_BUFFER_TOO_LARGE")
+            throw tooLarge();
+          throw e;
+        }
+      unzipped += content.length;
+      if (unzipped > max) throw tooLarge();
+      files[name] = content;
+    }
 
     offset += 46 + nameLen + extraLen + commentLen;
   }

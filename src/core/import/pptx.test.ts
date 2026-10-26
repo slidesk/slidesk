@@ -226,6 +226,29 @@ describe("pptx importer", () => {
     );
   });
 
+  const picture = (name: string) =>
+    pptx(
+      buildPptx([
+        {
+          tree: '<p:pic><p:nvPicPr><p:cNvPr id="2" name="Pic"/></p:nvPicPr><p:blipFill><a:blip r:embed="rIdI"/></p:blipFill></p:pic>',
+          rels: [`<Relationship Id="rIdI" Target="../media/${name}"/>`],
+          media: { [name]: new Uint8Array([1]) },
+        },
+      ]),
+    );
+
+  it("keeps only the file name of a media with a Windows path", () => {
+    const deck = picture("..\\..\\evil.png");
+    expect(Object.keys(deck.assets)).toEqual(["evil.png"]);
+    expect(deck.slides[0].content).toContain("assets/evil.png");
+  });
+
+  it("leaves out a media whose name is not a plain file name", () => {
+    const deck = picture("C:evil.png");
+    expect(deck.assets).toEqual({});
+    expect(deck.slides[0].content).not.toContain("evil");
+  });
+
   it("ignores a picture whose media part is missing", () => {
     const tree =
       '<p:pic><p:nvPicPr><p:cNvPr id="2" name="Gone"/></p:nvPicPr><p:blipFill><a:blip r:embed="rIdI"/></p:blipFill></p:pic>';

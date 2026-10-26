@@ -5,6 +5,20 @@ import zip from "./zip";
 const text = (data: Uint8Array) => new TextDecoder().decode(data);
 
 describe("unzip function", () => {
+  it("refuses an entry that inflates beyond the limit", () => {
+    const archive = zip([{ name: "zeros.bin", data: new Uint8Array(10_000) }]);
+    expect(() => unzip(archive, 1_000)).toThrow("expands beyond");
+  });
+
+  it("refuses entries that inflate beyond the limit together", () => {
+    const archive = zip([
+      { name: "a.bin", data: new Uint8Array(600) },
+      { name: "b.bin", data: new Uint8Array(600) },
+    ]);
+    expect(() => unzip(archive, 1_000)).toThrow("expands beyond");
+    expect(Object.keys(unzip(archive, 2_000))).toEqual(["a.bin", "b.bin"]);
+  });
+
   it("should read back a deflated entry", () => {
     const archive = zip([{ name: "a.txt", data: "hello ".repeat(100) }]);
     expect(text(unzip(archive)["a.txt"])).toBe("hello ".repeat(100));
