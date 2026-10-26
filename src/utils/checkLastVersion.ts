@@ -4,7 +4,7 @@ export default async function checkVersion(currentVersion: string) {
     const github = await fetch(
       "https://api.github.com/repos/slidesk/slidesk/releases/latest",
       {
-        signal: AbortSignal.timeout(2000), // wait at least 2 seconds before aborting
+        signal: AbortSignal.timeout(500),
       },
     );
     if (github.ok) {
