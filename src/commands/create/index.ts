@@ -1,10 +1,10 @@
 import { mkdirSync } from "node:fs";
 import { Clipse } from "clipse";
 import defaultThemeFiles from "../../templates/default_theme";
+import { addonInstall } from "../../utils/addon";
 import { CliError } from "../../utils/cliError";
 import { question } from "../../utils/interactCLI";
 import slugify from "../../utils/slugify";
-import { addonInstall } from "../../utils/addon";
 
 const { log } = console;
 
