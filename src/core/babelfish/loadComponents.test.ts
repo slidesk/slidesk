@@ -27,9 +27,10 @@ describe("loadComponents function", () => {
   });
 
   it("should load components from theme directories", () => {
-    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
-    mkdirSync(`${tempDir}themes/dark/components`, { recursive: true });
-    writeFileSync(`${tempDir}themes/dark/components/themeComp.mjs`, "");
+    // the talk directory comes without a trailing slash
+    const tempDir = mkdtempSync(join(tmpdir(), "slidesk-test-"));
+    mkdirSync(`${tempDir}/themes/dark/components`, { recursive: true });
+    writeFileSync(`${tempDir}/themes/dark/components/themeComp.mjs`, "");
 
     const result = loadComponents(tempDir);
     expect(

@@ -19,7 +19,8 @@ const getPresentation = async (
   fusion = formatting(fusion, env);
   // custom components
   for (const c of components) {
-    const { default: comp } = await import(c);
+    // the query defeats the module cache, so an edited component is picked up while watching
+    const { default: comp } = await import(`${c}?t=${Date.now()}`);
     fusion = await comp(fusion);
   }
   // slice & treatment

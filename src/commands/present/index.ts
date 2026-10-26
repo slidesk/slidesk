@@ -12,6 +12,7 @@ import loadEnv from "../../utils/loadEnv";
 const { log, error } = console;
 
 const server: SlideskServer = new SlideskServer();
+let lastBuild = 0;
 
 const flow = async (
   talkdir: string,
@@ -19,7 +20,10 @@ const flow = async (
   env: SliDeskEnv,
   init = false,
 ) => {
+  const build = ++lastBuild;
   const files = await convert(talkdir, options, env);
+  // a slower, older build must not replace a newer one
+  if (build !== lastBuild) return;
   if (init) {
     await server.create(files, options, env, talkdir);
     if (options.telnet) {
@@ -53,15 +57,20 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       "\n",
     );
   if (env.slidesk?.WATCH !== false) {
+    let pending: Timer | undefined;
     watch(talkdir, { recursive: true }, (eventType, filename) => {
       if (!filename?.startsWith(".git") && !filename?.endsWith("~")) {
         log(
           `♻️  \x1b[4m${filename}\x1b[0m has "\x1b[1m${eventType}\x1b[0m" action`,
         );
-        // a file can briefly disappear while an editor saves it: report and keep presenting
-        flow(talkdir, options, env).catch((e) =>
-          error(e instanceof Error ? e.message : e),
-        );
+        // one save often fires several events: rebuild once they settle
+        clearTimeout(pending);
+        pending = setTimeout(() => {
+          // a file can briefly disappear while an editor saves it: report and keep presenting
+          flow(talkdir, options, env).catch((e) =>
+            error(e instanceof Error ? e.message : e),
+          );
+        }, 100);
       }
     });
   }
