@@ -1,27 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { relative } from "node:path";
 import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 import commonDir from "../../utils/commonDir";
-import { pluginFilePath } from "../server/getPlugins";
-
-/**
- * A plugin being written (empty or half-typed plugin.json, a file it names
- * that does not exist yet) is skipped with a warning rather than stopping the
- * talk; the next save brings it back.
- */
-export const skipBrokenPlugin = async <T>(
-  pluginFile: string,
-  load: () => Promise<T>,
-) => {
-  try {
-    return await load();
-  } catch (e) {
-    console.warn(
-      `⚠️  ${relative(process.cwd(), pluginFile)} skipped: ${e instanceof Error ? e.message : e}`,
-    );
-    return undefined;
-  }
-};
+import { pluginFilePath, skipBrokenPlugin } from "../../utils/pluginFiles";
 
 const loadExternalPlugins = async (
   pluginsDir: string,

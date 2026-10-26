@@ -1,23 +1,9 @@
-import { existsSync, readdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { readdirSync } from "node:fs";
 import type { SliDeskPlugin, SliDeskServerPlugin } from "../../types";
-import { skipBrokenPlugin } from "../babelfish/loadPlugins";
+import { pluginFilePath, skipBrokenPlugin } from "../../utils/pluginFiles";
 
 // a new query string on every import bypasses the module cache, so edited hooks are reloaded
 let importCount = 0;
-
-/**
- * A plugin file is looked up next to the directory holding the plugins (the
- * talk, its COMMON_DIR or a theme), then, as before, in the talk itself.
- */
-export const pluginFilePath = (
-  pluginsDir: string,
-  talkdir: string,
-  file: string,
-) => {
-  const own = `${dirname(pluginsDir)}/${file}`;
-  return existsSync(own) ? own : `${talkdir}/${file}`;
-};
 
 const getPlugins = async (pluginsDir: string, serverPath: string) => {
   const hook = (file: string) => pluginFilePath(pluginsDir, serverPath, file);
