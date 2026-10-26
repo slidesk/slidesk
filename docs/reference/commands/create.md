@@ -8,6 +8,8 @@ slidesk create mytalk
 
 Prompts for a title, then scaffolds the talk directory and auto-installs the `@gouz/split` template for multi-column layouts.
 
+Pressing `Ctrl-C` at the prompt aborts: nothing is created and the command exits with code `1`.
+
 ## Generated structure
 
 ```

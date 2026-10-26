@@ -10,7 +10,8 @@ slidesk link login
 
 Creates an account and stores a token in `~/.slidesk`. The browser hands the
 token back to the CLI on port 1337, or on a free port when 1337 is taken (for
-instance by a running presentation).
+instance by a running presentation). The command ends once the browser tab
+reports it is done.
 
 ## Host a presentation
 

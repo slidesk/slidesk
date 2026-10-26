@@ -140,6 +140,17 @@ describe("componentRemove", () => {
   });
 });
 
+describe("component remove by hub name", () => {
+  it("finds the component installed without its author", async () => {
+    mkdirSync(join(cwd.dir, "components"), { recursive: true });
+    writeFileSync(join(cwd.dir, "components/hello.mjs"), "x");
+    expect(await componentRemove("@bob__hello")).toBe(
+      "component @bob__hello removed",
+    );
+    expect(existsSync(join(cwd.dir, "components/hello.mjs"))).toBe(false);
+  });
+});
+
 describe("component command", () => {
   it("exposes the five subcommands", () => {
     expect(componentCmd.name).toBe("component");

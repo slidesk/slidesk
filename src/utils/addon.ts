@@ -63,8 +63,11 @@ export const addonInstall = async (
 export const addonRemove = async (kind: AddonKind, name: string) => {
   if (!LOCAL_NAME.test(name))
     throw new CliError(`Please provide the name of an installed ${kind}`);
+  // a component is installed as a bare `<name>.mjs`, without its author
   const path =
-    kind === "component" ? `components/${name}.mjs` : `${kind}s/${name}`;
+    kind === "component"
+      ? `components/${name.split("__").at(-1)}.mjs`
+      : `${kind}s/${name}`;
   const marker = kind === "component" ? path : `${path}/${kind}.json`;
   if (!(await Bun.file(marker).exists()))
     throw new CliError(`${kind} ${name} not found`);

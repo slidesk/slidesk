@@ -26,9 +26,11 @@ slidesk -l fr my-talk       # present in French
 ```
 Press Enter          next slide
 Press P + Enter      previous slide
-Press Q              quit
+Press Q + Enter      quit
 Type a number        jump to that slide
 ```
+
+`Ctrl-C` and `Ctrl-D` quit too. Quitting stops the server and the telnet server, so the port is free for the next run.
 
 ## Browser navigation
 

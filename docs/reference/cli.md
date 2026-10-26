@@ -28,6 +28,8 @@ Arguments:
 
 The `talk` argument is a directory containing `main.sdf` or `main.md`. If omitted, SliDesk uses the current directory.
 
+A command that fails prints the reason and exits with code `1`.
+
 `present` is the default subcommand — you can omit it:
 
 ```sh
