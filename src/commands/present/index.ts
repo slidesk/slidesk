@@ -29,12 +29,17 @@ const flow = async (
   if (init) {
     await server.create(files, options, env, talkdir);
     if (options.telnet) {
-      telnet = await startTelnetServer(options, env);
+      telnet = await startTelnetServer(
+        options,
+        env,
+        String(files["index.html"].content ?? ""),
+      );
     }
   } else {
     // addRoutes / addWS hooks may have been written or edited too
     await server.loadPlugins(env);
     server.setFiles(files);
+    telnet?.update(String(files["index.html"].content ?? ""));
   }
 };
 
@@ -84,7 +89,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
   getAction(server, true).then(() => {
     clearTimeout(pending);
     watcher?.close();
-    telnet?.stop(true);
+    telnet?.stop();
     server.stop();
   });
 };

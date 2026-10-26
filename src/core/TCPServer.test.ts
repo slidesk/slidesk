@@ -9,7 +9,13 @@ const SLIDES = `<html><body>
 <section class="sd-slide" data-num="2"><h2>Third</h2><p>three</p></section>
 </body></html>`;
 
-/** The telnet server binds its port and never releases it, so each test takes a free one. */
+const servers: Awaited<ReturnType<typeof startTelnetServer>>[] = [];
+
+afterAll(() => {
+  for (const server of servers) server.stop();
+});
+
+/** Each test takes a free port for its own telnet server. */
 const freePort = () => {
   const probe = Bun.serve({ port: 0, fetch: () => new Response("") });
   const { port } = probe;
@@ -18,22 +24,14 @@ const freePort = () => {
   return port;
 };
 
-const slideServer = Bun.serve({
-  port: 0,
-  fetch: () =>
-    new Response(SLIDES, { headers: { "Content-Type": "text/html" } }),
-});
-
-afterAll(() => {
-  slideServer.stop(true);
-});
-
-const start = async (extra: Record<string, unknown> = {}) => {
+const start = async (extra: Record<string, unknown> = {}, html = SLIDES) => {
   const telnetPort = freePort();
-  await startTelnetServer(
+  const telnet = await startTelnetServer(
     { ip: "127.0.0.1" },
-    { slidesk: { PORT: slideServer.port, TELNET_PORT: telnetPort, ...extra } },
+    { slidesk: { TELNET_PORT: telnetPort, ...extra } },
+    html,
   );
+  servers.push(telnet);
   return telnetPort;
 };
 
@@ -117,6 +115,24 @@ describe("startTelnetServer", () => {
     // the status bar is drawn last, so it marks the end of a render
     expect(await client.waitFor("Slide 1 / 3")).toBe(true);
     expect(client.output()).toContain("First");
+    client.close();
+  });
+
+  it("shows the rebuilt talk to a connected session", async () => {
+    const port = await start();
+    const client = await connect(port);
+    await client.waitFor("Press any key to start...");
+    client.send(" ");
+    await client.waitFor("Slide 1 / 3");
+    servers
+      .at(-1)
+      ?.update(
+        '<section class="sd-slide" data-num="0"><h2>Rewritten</h2></section>',
+      );
+    client.clear();
+    client.send("r");
+    expect(await client.waitFor("Slide 1 / 1")).toBe(true);
+    expect(client.output()).toContain("Rewritten");
     client.close();
   });
 

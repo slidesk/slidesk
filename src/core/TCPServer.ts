@@ -11,22 +11,29 @@ import { handleInput } from "./tcpserver/input";
 import { parseSlides } from "./tcpserver/parse";
 import { renderSlide } from "./tcpserver/session";
 
-export async function startTelnetServer(
+/**
+ * Serves the talk over telnet from the html SliDesk built (rather than asking
+ * the web server for it, which failed over https); `update` takes each rebuild.
+ */
+export function startTelnetServer(
   options: SliDeskServerOptions,
   env: SliDeskEnv,
+  html: string,
 ) {
   const slideskEnv = env.slidesk ?? {};
   const port = Number(slideskEnv?.TELNET_PORT ?? 2323);
-  const slideServerUrl = `http://localhost:${Number(slideskEnv?.PORT ?? 1337)}`;
-
-  const html = await (await fetch(slideServerUrl)).text();
-  const { total, list } = parseSlides(html);
 
   const fullConfig: Required<SliDeskTelnetSlidesConfig> = {
     port,
-    totalSlides: total,
-    slides: list.map((l) => l.content),
+    totalSlides: 0,
+    slides: [],
   };
+  const update = (latest: string) => {
+    const { total, list } = parseSlides(latest);
+    fullConfig.totalSlides = total;
+    fullConfig.slides = list.map((l) => l.content);
+  };
+  update(html);
 
   const sessions = new WeakMap<BunSocket, SliDeskTelnetSession>();
 
@@ -68,6 +75,12 @@ export async function startTelnetServer(
           return;
         }
 
+        // the talk may have been rebuilt since the last key
+        session.totalSlides = fullConfig.totalSlides || 1;
+        session.currentSlide = Math.min(
+          session.currentSlide,
+          session.totalSlides - 1,
+        );
         handleInput(socket, session, Buffer.from(data));
       },
 
@@ -96,7 +109,15 @@ export async function startTelnetServer(
   [
     ...new Set([options.ip, slideskEnv.DOMAIN ?? "localhost", "localhost"]),
   ].forEach((e, _) => {
-    if (e) console.log(`[telnet] Connect with: telnet ${e} ${port}`);
+    // over tls, a plain telnet client cannot connect
+    if (e)
+      console.log(
+        `[telnet] Connect with: ${
+          slideskEnv.KEY && slideskEnv.CERT
+            ? `openssl s_client -quiet -connect ${e}:${port}`
+            : `telnet ${e} ${port}`
+        }`,
+      );
   });
-  return listener;
+  return { update, stop: () => listener.stop(true) };
 }

@@ -17,6 +17,7 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 - `save` exports the `COMMON_DIR` files (`-=[COMMON]=-/…`) and plugins, which were missing from the export.
 - An invalid `slidesk.toml` is reported in one line naming the file, instead of a stack trace; a `--conf` file that does not exist is an error instead of being ignored.
 - `present` reads `slidesk.toml` again on every change: editing the title, the transition or the timers no longer needs a restart.
+- `present --telnet` crashed the whole talk when `HTTPS` was on; the telnet version now follows each rebuild too (it kept the slides of the start), and prints a TLS client command when `KEY` / `CERT` are set, since a plain `telnet` cannot connect then.
 
 ### 🧰 Internals
 
