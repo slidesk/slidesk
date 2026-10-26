@@ -1,4 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import getPresentation from "./getPresentation";
 
@@ -57,6 +59,20 @@ describe("getPresentation", () => {
     );
     expect(html).toContain("SHOUTED");
     expect(html).toContain("whispered");
+  });
+
+  it("picks up a component edited since the last build", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "slidesk-comp-"));
+    const component = join(dir, "edit.mjs");
+    writeFileSync(component, 'export default (d) => d.replace("X", "v1");');
+    expect(await getPresentation("## X\n", {}, [component], {})).toContain(
+      "v1",
+    );
+    writeFileSync(component, 'export default (d) => d.replace("X", "v2");');
+    expect(await getPresentation("## X\n", {}, [component], {})).toContain(
+      "v2",
+    );
+    rmSync(dir, { recursive: true, force: true });
   });
 
   it("renders a slide through the template named in its classes", async () => {
