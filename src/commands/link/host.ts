@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import type { SliDeskPublishOptions } from "../../types";
 import { CliError } from "../../utils/cliError";
@@ -16,7 +17,7 @@ const sendToSlideskLink = async (
   const speakerToken = crypto.randomUUID();
   const uuid = await withTempDir(async (dir) => {
     await save(
-      `${process.cwd()}/${talk ?? ""}`,
+      resolve(talk ?? ""),
       { ...options, target: `${dir}/__SLIDESKLINK__` },
       {
         slidesk: {

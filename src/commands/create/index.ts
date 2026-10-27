@@ -1,4 +1,5 @@
 import { mkdirSync } from "node:fs";
+import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import defaultThemeFiles from "../../templates/default_theme";
 import { addonInstall } from "../../utils/addon";
@@ -49,7 +50,7 @@ createCmd
       "@gouz__split",
       "https://slidesk.link",
       false,
-      `${process.cwd()}/${talk}`,
+      resolve(talk),
     );
   });
 
