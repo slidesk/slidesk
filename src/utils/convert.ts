@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { content, errorContent } from "../core/Convert";
 import type {
   SliDeskEnv,
@@ -15,8 +16,10 @@ const convert = async (
   env: SliDeskEnv,
   errorPage = false,
 ) => {
-  let mainFile = `${talk}/main.sdf`;
-  if (!(await Bun.file(mainFile).exists())) mainFile = `${talk}/main.md`;
+  // a relative talk would make its components relative imports of slidesk
+  const dir = resolve(talk);
+  let mainFile = `${dir}/main.sdf`;
+  if (!(await Bun.file(mainFile).exists())) mainFile = `${dir}/main.md`;
   if (!(await Bun.file(mainFile).exists()))
     throw new CliError("🤔 main.(sdf|md) was not found");
   try {
