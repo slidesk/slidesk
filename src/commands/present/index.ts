@@ -90,7 +90,7 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
     .then(async () => {
       clearTimeout(pending);
       watcher?.close();
-      await telnet?.stop();
+      telnet?.stop();
       await server.stop();
     })
     .catch((e) => error(e instanceof Error ? e.message : e));
