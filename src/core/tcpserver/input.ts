@@ -1,6 +1,6 @@
 import type { BunSocket, SliDeskTelnetSession } from "../../types";
 import { ANSI } from "./ansi";
-import { renderSlide } from "./session";
+import { renderSlide, renderStatusBar } from "./session";
 import { send } from "./transitions";
 
 export async function handleInput(
@@ -10,10 +10,28 @@ export async function handleInput(
 ) {
   if (data[0] === 255) return;
 
-  const key = data.toString("utf8");
+  // telnet sends Enter as \r\0 or \r\n
+  const key = data.toString("utf8").replace(/^\r[\0\n]$/, "\r");
+
+  // digits -> the slide Enter goes to; each key arrives on its own
+  if (/^\d+$/.test(key)) {
+    session.typed = `${session.typed ?? ""}${key}`;
+    renderStatusBar(socket, session);
+    return;
+  }
+  const typed = session.typed;
+  session.typed = undefined;
+  if (typed && key === "\r") {
+    const num = Number.parseInt(typed, 10);
+    if (num >= 1 && num <= session.totalSlides) {
+      session.currentSlide = num - 1;
+      await renderSlide(socket, session);
+    } else renderStatusBar(socket, session);
+    return;
+  }
 
   // Right arrow / space / enter -> next slide
-  if (key === "\x1b[C" || key === " " || key === "\r" || key === "\r\n") {
+  if (key === "\x1b[C" || key === " " || key === "\r") {
     if (session.currentSlide < session.totalSlides - 1) {
       session.currentSlide++;
       await renderSlide(socket, session);
@@ -27,14 +45,6 @@ export async function handleInput(
       session.currentSlide--;
       await renderSlide(socket, session);
     }
-    return;
-  }
-
-  // Digit -> direct jump
-  const num = Number.parseInt(key, 10);
-  if (!Number.isNaN(num) && num >= 1 && num <= session.totalSlides) {
-    session.currentSlide = num - 1;
-    await renderSlide(socket, session);
     return;
   }
 

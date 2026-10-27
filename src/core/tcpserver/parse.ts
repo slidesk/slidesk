@@ -28,7 +28,9 @@ export function parseSlides(html: string): SlideIndex {
         .trim()
         .replace("<h2></h2>", "")
         .replace("</body></html>", "")
-        .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")}`,
+        .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+        // the speaker notes are not for the audience
+        .replaceAll(/<aside class="sd-notes">[\s\S]*?<\/aside>/gi, "")}`,
     });
   });
 

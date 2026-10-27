@@ -149,7 +149,7 @@ describe("startTelnetServer", () => {
     client.close();
   });
 
-  it("jumps to a slide by its number", async () => {
+  it("jumps to a slide by its number and Enter", async () => {
     const port = await start();
     const client = await connect(port);
     await client.waitFor("Press any key to start...");
@@ -157,6 +157,8 @@ describe("startTelnetServer", () => {
     await client.waitFor("Slide 1 / 3");
     client.clear();
     client.send("3");
+    expect(await client.waitFor("Go to slide 3_")).toBe(true);
+    client.send("\r\0");
     expect(await client.waitFor("Slide 3 / 3")).toBe(true);
     expect(client.output()).toContain("Third");
     client.close();

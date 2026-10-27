@@ -54,4 +54,13 @@ describe("parseSlides", () => {
     );
     expect(parseSlides("<section class=sd-slide>a</section>").total).toBe(1);
   });
+
+  it("leaves the speaker notes out", () => {
+    const { list } = parseSlides(
+      '<section class="sd-slide" data-num="0"><p>shown</p><aside class="sd-notes">c2VjcmV0</aside></section>',
+    );
+    expect(list[0].content).toContain("shown");
+    expect(list[0].content).not.toContain("sd-notes");
+    expect(list[0].content).not.toContain("c2VjcmV0");
+  });
 });
