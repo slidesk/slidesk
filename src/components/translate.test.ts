@@ -20,13 +20,13 @@ describe("translate function", () => {
     const presentation = "Hello $$unknown$$!";
     const translations = { translations: {} };
     const result = translate(presentation, translations);
-    expect(result).toBe("Hello $unknown$!");
+    expect(result).toBe("Hello $$unknown$$!");
   });
 
   it("should handle null translations", () => {
     const presentation = "Hello $$greeting$$!";
     const result = translate(presentation, null);
-    expect(result).toBe("Hello $greeting$!");
+    expect(result).toBe("Hello $$greeting$$!");
   });
 
   it("should handle no matches", () => {
@@ -34,5 +34,11 @@ describe("translate function", () => {
     const translations = { translations: { greeting: "Bonjour" } };
     const result = translate(presentation, translations);
     expect(result).toBe("Hello World!");
+  });
+
+  it("inserts a translation containing $ as written", () => {
+    expect(
+      translate("$$price$$", { translations: { price: "$5, $$key$$ and $&" } }),
+    ).toBe("$5, $$key$$ and $&");
   });
 });

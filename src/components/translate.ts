@@ -4,7 +4,11 @@ const translate = (
 ) => {
   let pres = presentation;
   [...pres.matchAll(/\${2}(\w+)\${2}/g)].forEach((match, _) => {
-    pres = pres.replace(match[0], json?.translations[match[1]] ?? match[0]);
+    // a function, so that "$$" or "$&" in a translation are inserted as written
+    pres = pres.replace(
+      match[0],
+      () => json?.translations[match[1]] ?? match[0],
+    );
   });
   return pres;
 };

@@ -69,10 +69,10 @@ const prepareTPL = (
       });
     }
   });
-  template = template.replace("#STYLES#", `${css.join("")}`);
-  template = template.replace("#SCRIPTS#", `${js.join("")}`);
-  template = template.replace("#FAVICON#", favicon.name);
-  template = template.replace("#FAVICON_TYPE#", favicon.type);
+  template = template.replace("#STYLES#", () => css.join(""));
+  template = template.replace("#SCRIPTS#", () => js.join(""));
+  template = template.replace("#FAVICON#", () => favicon.name);
+  template = template.replace("#FAVICON_TYPE#", () => favicon.type);
   return template;
 };
 

@@ -2,6 +2,13 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### 🐛 Fixes
+
+- A `$$` in a slide is kept as written: `$$E = mc^2$$` (LaTeX math), `echo $$` or `$&` were turned into `$…$`, `$` and `#SECTIONS#`. Titles, template blocks, translations and plugin html had the same problem.
+- A `$$key$$` without translation stays visible as written, instead of becoming `$key$`.
+
 ## 2.20.2
 
 ### 🐛 Fixes

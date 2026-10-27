@@ -39,8 +39,8 @@ const getNotesView = (
       });
     }
   });
-  template = template.replace("#STYLES#", `${css.join("")}`);
-  template = template.replace("#SCRIPTS#", `${js.join("")}`);
+  template = template.replace("#STYLES#", () => css.join(""));
+  template = template.replace("#SCRIPTS#", () => js.join(""));
   return template;
 };
 
