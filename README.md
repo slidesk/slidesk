@@ -15,6 +15,10 @@
   <a href="https://github.com/slidesk/slidesk/releases">Releases</a>
 </p>
 
+<p align="center">
+  <img alt="A SliDesk talk: Markdown slides, then an edit that reloads live" src="https://raw.githubusercontent.com/slidesk/slidesk/main/docs/_media/demo.gif" width="720" />
+</p>
+
 ---
 
 Write your talk in Markdown, present it in the browser with a speaker view on your phone, and export it to PDF or PowerPoint. SliDesk is a single [Bun](https://bun.sh) binary: there is no `node_modules`, no front-end app to maintain, and nothing to configure before your first slide.

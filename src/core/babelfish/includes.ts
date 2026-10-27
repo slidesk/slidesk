@@ -1,30 +1,8 @@
 import { existsSync, globSync, lstatSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { CliError } from "../../utils/cliError";
+import { fencedBlocks } from "../../utils/fences";
 import replaceAsync from "../../utils/replaceAsync";
-
-const FENCE = /^\s*(```|~~~)/;
-
-/** Start and end offsets of the fenced code blocks of `data`. */
-const fencedBlocks = (data: string) => {
-  const blocks: [number, number][] = [];
-  let open = -1;
-  let marker = "";
-  let at = 0;
-  for (const line of data.split("\n")) {
-    const fence = FENCE.exec(line)?.[1];
-    if (fence && open === -1) {
-      open = at;
-      marker = fence;
-    } else if (fence && line.trim().startsWith(marker)) {
-      blocks.push([open, at + line.length]);
-      open = -1;
-    }
-    at += line.length + 1;
-  }
-  if (open !== -1) blocks.push([open, data.length]);
-  return blocks;
-};
 
 /** Expands the `!include(...)` directives of `file`; `chain` holds the files including it. */
 const includes = async (

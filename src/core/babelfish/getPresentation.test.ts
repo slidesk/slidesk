@@ -108,4 +108,17 @@ describe("getPresentation", () => {
     expect(html).toContain('data-timer-checkpoint="30"');
     expect(html).not.toContain("dropped");
   });
+
+  it("shows a code block as written: no slide split, no notes", async () => {
+    const html = await getPresentation(
+      "## Code\n\n```markdown\n## Inside\n\n/*\nnot a note\n*/\n```\n\n## Next\n",
+      {},
+      [],
+      {},
+    );
+    expect(html.match(/<section/g)).toHaveLength(2);
+    expect(html).toContain("## Inside");
+    expect(html).toContain("/*");
+    expect(html).not.toContain("sd-notes");
+  });
 });

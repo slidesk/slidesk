@@ -2,6 +2,7 @@ import comments from "../../components/comments";
 import formatting from "../../components/formatting";
 import image from "../../components/image";
 import type { SliDeskEnv, SliDeskTemplate } from "../../types";
+import { outsideFences, splitOutsideFences } from "../../utils/fences";
 import treatSlide from "./treatSlide";
 
 let importCount = 0;
@@ -13,10 +14,9 @@ const getPresentation = async (
   templates: SliDeskTemplate,
 ) => {
   let fusion = sdf;
-  // comments
-  fusion = comments(fusion);
-  // image
-  fusion = image(fusion);
+  // notes and images; a code block shows them as written
+  fusion = outsideFences(fusion, comments);
+  fusion = outsideFences(fusion, image);
   // format text
   fusion = formatting(fusion, env);
   // custom components
@@ -29,7 +29,7 @@ const getPresentation = async (
   // slice & treatment
   const slides: string[] = [];
   let cpt = 0;
-  for (const slide of fusion.split("\n## "))
+  for (const slide of splitOutsideFences(fusion, "\n## "))
     slides.push(treatSlide(slide, cpt++, templates));
   return slides.join("");
 };

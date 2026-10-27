@@ -61,6 +61,7 @@
     "lint": "bunx @biomejs/biome lint ./ --write",
     "typecheck": "tsc --noEmit",
     "smoke": "bun scripts/smoke.ts",
+    "demo:gif": "bun scripts/demo-gif.ts",
     "test:coverage": "bun test --coverage && bun scripts/coverage-gate.ts"
   }
 }
