@@ -1,5 +1,5 @@
-import { existsSync } from "node:fs";
-import { rm } from "node:fs/promises";
+import { existsSync, readdirSync } from "node:fs";
+import { mkdir, rename, rm } from "node:fs/promises";
 import { multiselect } from "@clack/prompts";
 import { Clipse } from "clipse";
 import { extract } from "tar";
@@ -16,11 +16,38 @@ type LinkOpts = { "slidesk-link-url"?: string };
 // a hub name is `user__addon`, an installed one a single path segment
 const LOCAL_NAME = /^@?[\w-][\w.-]*$/;
 const SEGMENT = /^[\w-][\w.-]*$/;
-const isHubName = (name: string) => {
+export const isHubName = (name: string) => {
   const [user, ...addon] = name.split("__");
   return (
     addon.length > 0 && LOCAL_NAME.test(user) && SEGMENT.test(addon.join("__"))
   );
+};
+
+/**
+ * A component is kept as `components/user__name.mjs`, so `slidesk update`
+ * knows where it comes from; the `.mjs` may sit anywhere in the tarball.
+ */
+const installComponent = async (
+  tarball: Blob,
+  target: string,
+  addonName: string,
+  addon: string,
+) => {
+  const dir = `${target}/components`;
+  const tmp = `${dir}/.${addonName}`;
+  await rm(tmp, { recursive: true, force: true });
+  await mkdir(tmp, { recursive: true });
+  try {
+    await Bun.write(`${tmp}/link.tgz`, tarball);
+    await extract({ file: `${tmp}/link.tgz`, C: tmp });
+    const [file] = await Array.fromAsync(new Bun.Glob("**/*.mjs").scan(tmp));
+    if (!file) throw new CliError(`component ${addonName} holds no .mjs file`);
+    await rename(`${tmp}/${file}`, `${dir}/${addonName}.mjs`);
+    // the same component installed before its author was kept would run twice
+    await rm(`${dir}/${addon}.mjs`, { force: true });
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
 };
 
 /** Downloads `user/addon` (or `user__addon`) from slidesk.link, replacing any installed version. */
@@ -46,16 +73,17 @@ export const addonInstall = async (
       `${kind} ${label} could not be downloaded (${response.status})`,
     );
   const tarball = await response.blob();
+  if (kind === "component") {
+    await installComponent(tarball, target, addonName, addon);
+    return `${kind} ${label} ${update ? "updated" : "installed"}`;
+  }
   // the installed version is only dropped once the new one is downloaded
-  const dir =
-    kind === "component"
-      ? `${target}/components`
-      : `${target}/${kind}s/${addonName}`;
-  if (kind !== "component") await rm(dir, { recursive: true, force: true });
+  const dir = `${target}/${kind}s/${addonName}`;
+  await rm(dir, { recursive: true, force: true });
   const tmp = `${dir}/link.tgz`;
   await Bun.write(tmp, tarball);
   // plugins, themes and templates are packed inside a directory named after them
-  await extract({ file: tmp, C: dir, strip: kind === "component" ? 0 : 1 });
+  await extract({ file: tmp, C: dir, strip: 1 });
   await rm(tmp);
   if (kind === "plugin") {
     const manifest = Bun.file(`${dir}/plugin.json`);
@@ -73,16 +101,34 @@ export const addonInstall = async (
 export const addonRemove = async (kind: AddonKind, name: string) => {
   if (!LOCAL_NAME.test(name))
     throw new CliError(`Please provide the name of an installed ${kind}`);
-  // a component is installed as a bare `<name>.mjs`, without its author
+  // a component is `user__name.mjs`, or a bare `name.mjs` when installed
+  // before its author was kept
   const path =
     kind === "component"
-      ? `components/${name.split("__").at(-1)}.mjs`
+      ? ([
+          `components/${name}.mjs`,
+          `components/${name.split("__").at(-1)}.mjs`,
+        ].find(existsSync) ?? `components/${name}.mjs`)
       : `${kind}s/${name}`;
   const marker = kind === "component" ? path : `${path}/${kind}.json`;
   if (!(await Bun.file(marker).exists()))
     throw new CliError(`${kind} ${name} not found`);
   await rm(path, { recursive: true, force: true });
   return `${kind} ${name} removed`;
+};
+
+/** The addons of `kind` installed from slidesk.link: those named `user__addon`. */
+export const installedAddons = (kind: AddonKind, target = process.cwd()) => {
+  const dir = `${target}/${kind}s`;
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((d) =>
+      kind === "component"
+        ? d.isFile() && d.name.endsWith(".mjs")
+        : d.isDirectory(),
+    )
+    .map((d) => d.name.replace(/\.mjs$/, ""))
+    .filter(isHubName);
 };
 
 const searchCmd = (kind: AddonKind) =>

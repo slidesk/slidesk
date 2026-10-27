@@ -65,6 +65,7 @@ describe("slidesk", () => {
       "link",
       "template",
       "theme",
+      "update",
       "deploy",
       "save",
       "export",

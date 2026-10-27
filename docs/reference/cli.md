@@ -10,6 +10,7 @@ Subcommands:
   link        interact with slidesk.link
   template    template management
   theme       theme management
+  update      update the addons installed from slidesk.link
   deploy      create CI/CD deploy files
   save        export presentation as HTML + assets
   export      export presentation as a pdf or a pptx file

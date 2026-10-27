@@ -24,7 +24,7 @@ slidesk template install @gouz/split
 slidesk theme install @gouz/night
 ```
 
-Plugins, templates and themes land in their own directory, for instance `plugins/@gouz__steps/`. Components are dropped into `components/` as `<name>.mjs`.
+Plugins, templates and themes land in their own directory, for instance `plugins/@gouz__steps/`. Components are dropped into `components/` as `<user>__<name>.mjs`, for instance `components/@gouz__qrcode.mjs`.
 
 Installing an addon that is already there replaces it, files of the previous version included.
 
@@ -35,6 +35,13 @@ slidesk plugin update @gouz/steps
 slidesk component update @gouz/qrcode
 slidesk template update @gouz/split
 slidesk theme update @gouz/night
+```
+
+Or update every addon of the talk at once, or every addon of one kind:
+
+```sh
+slidesk update
+slidesk update plugins
 ```
 
 The installed version is only replaced once the new one is downloaded: when the hub cannot be reached, you keep the version you had.
