@@ -2,12 +2,21 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
-## Unreleased
+## 2.20.3
 
 ### 🐛 Fixes
 
-- A `$$` in a slide is kept as written: `$$E = mc^2$$` (LaTeX math), `echo $$` or `$&` were turned into `$…$`, `$` and `#SECTIONS#`. Titles, template blocks, translations and plugin html had the same problem.
+- **A `$$` in a slide is kept as written**: `$$E = mc^2$$` (LaTeX math with a KaTeX or MathJax plugin), `echo $$` or `$&` were turned into `$E = mc^2$`, `$` and `#SECTIONS#`. Titles, template blocks, translations and plugin html had the same problem.
 - A `$$key$$` without translation stays visible as written, instead of becoming `$key$`.
+
+### 📝 Documentation
+
+- [An online demo](https://slidesk.github.io/slidesk/demo/), itself a SliDesk talk, in English and [in French](https://slidesk.github.io/slidesk/demo/fr/) from the same source.
+- The comparison tables include Typst.
+
+### 🧰 Internals
+
+- The release merges the Homebrew formula pull request with retries: merging it right after its creation failed for 2.20.2.
 
 ## 2.20.2
 
