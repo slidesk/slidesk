@@ -283,13 +283,31 @@ window.onload = () => {
     });
   });
   window.slidesk.timeoutResize = false;
+  // entering or leaving fullscreen resizes the page, and a reload would leave
+  // fullscreen: that resize is skipped, whichever event comes first
+  // ponytail: images keep their pre-fullscreen size when WIDTH is set,
+  // resize them in place instead of reloading if that shows
+  window.slidesk.fullscreenChange = 0;
+  document.addEventListener("fullscreenchange", () => {
+    window.slidesk.fullscreenChange = Date.now();
+    clearTimeout(window.slidesk.timeoutResize);
+  });
   window.addEventListener("resize", () => {
     clearTimeout(window.slidesk.timeoutResize);
+    if (Date.now() - window.slidesk.fullscreenChange < 1000) return;
     window.slidesk.timeoutResize = setTimeout(() => {
       window.location.reload();
     }, 250);
   });
 };
+
+// shortcuts of the browser (Cmd/Ctrl/Alt) and typing in a field are left alone
+window.slidesk.ignoreKey = (e) =>
+  e.metaKey ||
+  e.ctrlKey ||
+  e.altKey ||
+  e.target.isContentEditable ||
+  !!e.target.closest?.("input, textarea, select, .xterm");
 
 // key -> action; the keyboard plugin removes the keys it maps itself
 window.slidesk.keys = {
@@ -312,11 +330,12 @@ document.addEventListener("keydown", (e) => {
     window.location.origin === "file://" ||
     window.slidesk.deployed
   ) {
+    if (window.slidesk.ignoreKey(e)) return;
     const action = window.slidesk.keys[e.key];
-    if (action) {
-      e.preventDefault();
-      window.slidesk[action]();
-    }
+    if (!action) return;
+    e.preventDefault();
+    // a held key does not skip slides
+    if (!e.repeat) window.slidesk[action]();
   }
 });
 

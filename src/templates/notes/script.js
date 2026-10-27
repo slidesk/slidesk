@@ -227,6 +227,14 @@ window.slidesk.onSocketMessage = (event) => {
   } else window.slidesk.dispatch(data);
 };
 
+// shortcuts of the browser (Cmd/Ctrl/Alt) and typing in a field are left alone
+window.slidesk.ignoreKey = (e) =>
+  e.metaKey ||
+  e.ctrlKey ||
+  e.altKey ||
+  e.target.isContentEditable ||
+  !!e.target.closest?.("input, textarea, select, .xterm");
+
 // key -> action; the keyboard plugin removes the keys it maps itself
 window.slidesk.keys = {
   ArrowLeft: "previous",
@@ -243,12 +251,14 @@ window.slidesk.keys = {
 };
 
 document.addEventListener("keydown", (e) => {
+  if (window.slidesk.ignoreKey(e)) return;
   const action = window.slidesk.keys[e.key];
   if (!action) return;
   e.preventDefault();
   // the speaker view scrolls its notes, the rest drives the presentation
   if (Object.hasOwn(window.slidesk, action)) window.slidesk[action]();
-  else {
+  // a held key scrolls the notes, it does not skip slides
+  else if (!e.repeat) {
     send({ action });
     if (window.slidesk.channel) window.slidesk.channel.postMessage({ action });
   }
