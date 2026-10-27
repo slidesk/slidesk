@@ -3,8 +3,8 @@ import { platform } from "node:process";
 const { log } = console;
 
 // `start` is a cmd builtin, not a program Bun can spawn
-export const opener = () => {
-  switch (platform) {
+export const opener = (os: string = platform) => {
+  switch (os) {
     case "darwin":
       return ["open"];
     case "win32":
