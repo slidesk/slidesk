@@ -83,26 +83,34 @@ const after = (source: string, from: number, marker: string) => {
   return end === -1 ? source.length : end + marker.length;
 };
 
+/** How the nesting depth of `name` changes at `at`, and where to look next; null when the markup is cut off. */
+const stepClose = (source: string, name: string, at: number) => {
+  if (source.startsWith("</", at)) {
+    const end = source.indexOf(">", at);
+    if (end === -1) return null;
+    const closing = source.slice(at + 2, end).trim() === name;
+    return { delta: closing ? -1 : 0, next: end + 1 };
+  }
+  if (source.startsWith("<!--", at))
+    return { delta: 0, next: after(source, at, "-->") };
+  const tag = tagAt(source, at);
+  if (tag === null) return null;
+  const opening = tag.name === name && !tag.selfClosing;
+  return { delta: opening ? 1 : 0, next: tag.end + 1 };
+};
+
+/** Index of the tag closing the `name` element opened before `from`, or -1. */
 const closeOf = (source: string, name: string, from: number) => {
   let depth = 1;
   let i = from;
   while (i < source.length) {
-    const next = source.indexOf("<", i);
-    if (next === -1) return -1;
-    if (source.startsWith("</", next)) {
-      const end = source.indexOf(">", next);
-      if (end === -1) return -1;
-      if (source.slice(next + 2, end).trim() === name) depth -= 1;
-      if (depth === 0) return next;
-      i = end + 1;
-    } else if (source.startsWith("<!--", next)) {
-      i = after(source, next, "-->");
-    } else {
-      const tag = tagAt(source, next);
-      if (tag === null) return -1;
-      if (tag.name === name && !tag.selfClosing) depth += 1;
-      i = tag.end + 1;
-    }
+    const at = source.indexOf("<", i);
+    if (at === -1) return -1;
+    const step = stepClose(source, name, at);
+    if (step === null) return -1;
+    depth += step.delta;
+    if (depth === 0) return at;
+    i = step.next;
   }
   return -1;
 };
