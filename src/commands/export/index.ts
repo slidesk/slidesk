@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import exportTalk from "../../core/export";
 import { CliError } from "../../utils/cliError";
@@ -49,9 +50,8 @@ exportCmd
       throw new CliError(
         `${type} is not a valid export type (${TYPES.join(", ")})`,
       );
-    const talkPath = args.talk && args.talk !== "." ? `/${args.talk}` : "";
     try {
-      await exportTalk(`${process.cwd()}${talkPath}`, { ...options, type });
+      await exportTalk(resolve(args.talk ?? ""), { ...options, type });
     } catch (e) {
       throw new CliError(e instanceof Error ? e.message : String(e));
     }

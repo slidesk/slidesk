@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import githubYML from "../../templates/ci/github.yml" with { type: "text" };
 import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
@@ -31,7 +32,7 @@ deployCmd
     },
   })
   .action(async (args, options) => {
-    const talkdir = `${process.cwd()}/${args.talk ?? ""}`;
+    const talkdir = resolve(args.talk ?? "");
     const files: Record<string, [string, string]> = {
       github: [".github/workflows/slidesk.yml", githubYML],
       gitlab: [".gitlab-ci.yml", gitlabYML],

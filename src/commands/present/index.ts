@@ -1,6 +1,6 @@
 import { watch } from "node:fs";
 import { networkInterfaces } from "node:os";
-import process from "node:process";
+import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import SlideskServer from "../../core/Server";
 import { startTelnetServer } from "../../core/TCPServer";
@@ -50,8 +50,8 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
       .flat()
       .find((e) => e?.family === "IPv4" && e?.address !== "127.0.0.1")
       ?.address ?? "127.0.0.1";
-  const talkPath = talk === "" ? "" : `/${talk}`;
-  const talkdir = `${process.cwd()}${talkPath}`;
+  // relative to the working directory, or absolute
+  const talkdir = resolve(talk);
   const env = await loadEnv(talkdir, options);
   await flow(talkdir, options, env, true);
 

@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import includes from "./includes";
 
-// includes only follows files under the working directory
+// throwaway talks inside the repository, below the working directory
 const scratch = join(process.cwd(), ".tmp-includes");
 
 afterEach(() => {
@@ -19,9 +20,26 @@ const talk = (files: Record<string, string>) => {
 const fixture = join(import.meta.dir, "../../__fixtures__/talk");
 
 describe("includes function", () => {
-  it("should return empty string when file path is outside cwd", async () => {
-    const result = await includes("/outside/path/file.sdf");
-    expect(result).toBe("");
+  it("reads a talk outside the working directory", async () => {
+    const outside = mkdtempSync(join(tmpdir(), "slidesk-outside-"));
+    mkdirSync(join(outside, "slides"));
+    writeFileSync(join(outside, "main.md"), "# T\n\n!include(slides)\n");
+    writeFileSync(join(outside, "slides/01.md"), "## Included\n");
+    expect(await includes(join(outside, "main.md"))).toContain("## Included");
+    rmSync(outside, { recursive: true, force: true });
+  });
+
+  it("ignores an include outside both the talk and the working directory", async () => {
+    const outside = mkdtempSync(join(tmpdir(), "slidesk-outside-"));
+    const elsewhere = mkdtempSync(join(tmpdir(), "slidesk-elsewhere-"));
+    writeFileSync(join(elsewhere, "secret.md"), "## Secret\n");
+    writeFileSync(
+      join(outside, "main.md"),
+      `# T\n\n!include(../${elsewhere.split("/").pop()}/secret.md)\n`,
+    );
+    expect(await includes(join(outside, "main.md"))).not.toContain("Secret");
+    rmSync(outside, { recursive: true, force: true });
+    rmSync(elsewhere, { recursive: true, force: true });
   });
 
   it("reads a file that has no include directive", async () => {
