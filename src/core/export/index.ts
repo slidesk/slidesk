@@ -17,11 +17,7 @@ const HEIGHT = 1080;
 
 const defaultOutput = (talkdir: string, env: SliDeskEnv) => {
   const title = env.slidesk?.TITLE;
-  const name = slugify(
-    (title ?? path.basename(talkdir))
-      .normalize("NFD")
-      .replaceAll(/\p{M}/gu, ""),
-  );
+  const name = slugify(title ?? path.basename(talkdir));
   return name === "" ? "presentation" : name;
 };
 

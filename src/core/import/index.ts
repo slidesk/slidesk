@@ -63,8 +63,7 @@ const importTalk = async (source: string, options: SliDeskImportOptions) => {
   const target =
     options.output && options.output !== ""
       ? options.output
-      : slugify(deck.title.normalize("NFD").replaceAll(/\p{M}/gu, "")) ||
-        "imported-talk";
+      : slugify(deck.title) || "imported-talk";
   if (existsSync(target) && readdirSync(target).length && !options.force)
     throw new Error(`${target} already exists and is not empty (use --force)`);
 

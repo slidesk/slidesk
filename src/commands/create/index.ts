@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { Clipse } from "clipse";
 import defaultThemeFiles from "../../templates/default_theme";
@@ -22,13 +22,30 @@ const createDefault = async (dirName: string, responseTitle: string) => {
 };
 
 const create = async (talk: string) => {
+  // the template, the message and the files all go to this one directory
+  const slug = slugify(talk);
+  const dirName = slug === "create" ? "create_" : slug;
+  if (existsSync(dirName) && readdirSync(dirName).length > 0)
+    throw new CliError(
+      `${dirName} already exists and is not empty, choose another name`,
+    );
   log(`Creation of your talk: ${talk}`);
-  let dirName = slugify(talk);
-  if (dirName === "create") {
-    dirName = `${dirName}_`;
-  }
   const responseTitle = await question("What is the title of talk?");
   await createDefault(dirName, responseTitle);
+  try {
+    await addonInstall(
+      "template",
+      "@gouz__split",
+      "https://slidesk.link",
+      false,
+      resolve(dirName),
+    );
+  } catch (e) {
+    // the talk is there: the template can be added later
+    log(
+      `⚠️  The split template was not installed (${e instanceof Error ? e.message : e}), add it later with: slidesk template install @gouz/split`,
+    );
+  }
   log("Presentation created");
   log();
   log(`cd ${dirName} && slidesk`);
@@ -45,13 +62,6 @@ createCmd
     if (talk.trim() === "")
       throw new CliError("You must specify an argument (talk directory)");
     await create(talk);
-    await addonInstall(
-      "template",
-      "@gouz__split",
-      "https://slidesk.link",
-      false,
-      resolve(talk),
-    );
   });
 
 export default createCmd;

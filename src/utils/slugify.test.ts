@@ -29,4 +29,7 @@ describe("slugify function", () => {
   it("should handle empty string", () => {
     expect(slugify("")).toBe("");
   });
+  it("keeps accented letters without their accent", () => {
+    expect(slugify("Démo à Noël")).toBe("demo-a-noel");
+  });
 });
