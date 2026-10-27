@@ -1,7 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 import { captured } from "../__testing__/console";
 import convert from "./convert";
@@ -26,6 +26,18 @@ describe("convert", () => {
     const files = await convert(fixture, {}, {});
     expect(files["index.html"].content).toContain("Welcome");
     expect(captured.errors).toEqual([]);
+  });
+
+  it("runs the components of a talk given as a relative path", async () => {
+    const dir = mkdtempSync(join(scratch, "relative-"));
+    mkdirSync(join(dir, "components"));
+    writeFileSync(
+      join(dir, "components", "shout.mjs"),
+      'export default (c) => c.replaceAll("[[shout]]", "SHOUTED");',
+    );
+    writeFileSync(join(dir, "main.sdf"), "## Loud\n\n[[shout]]\n");
+    const files = await convert(relative(process.cwd(), dir), {}, {});
+    expect(files["index.html"].content).toContain("SHOUTED");
   });
 
   it("builds the talk from main.md when there is no main.sdf", async () => {
