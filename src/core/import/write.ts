@@ -1,8 +1,7 @@
 import slugify from "../../utils/slugify";
 import type { ImportedDeck, ImportedSlide } from "./types";
 
-const asciify = (value: string) =>
-  slugify(value.normalize("NFD").replaceAll(/\p{M}/gu, ""));
+const asciify = (value: string) => slugify(value);
 
 /** `\n## ` starts a new slide in SliDesk: no heading above level 3 may survive. */
 const demoteHeadings = (content: string) =>

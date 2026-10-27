@@ -7,7 +7,13 @@ import {
   mock,
   spyOn,
 } from "bun:test";
-import { existsSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import {
   ExitError,
@@ -88,17 +94,34 @@ describe("create command", () => {
     ).toBe(true);
   });
 
-  it("installs the template beside the talk when the name is not a slug", async () => {
-    // the talk directory is slugified but the template install still uses the
-    // raw argument, so the template lands in a directory of its own
-    await run(["My Talk"]);
-    expect(existsSync(join(cwd.dir, "my-talk/main.md"))).toBe(true);
+  it("installs the template into the talk when the name is not a slug", async () => {
+    await run(["Démo Talk"]);
+    expect(existsSync(join(cwd.dir, "demo-talk/main.md"))).toBe(true);
     expect(
-      existsSync(join(cwd.dir, "My Talk/templates/@gouz__split/split.sdt")),
+      existsSync(join(cwd.dir, "demo-talk/templates/@gouz__split/split.sdt")),
     ).toBe(true);
-    expect(
-      existsSync(join(cwd.dir, "my-talk/templates/@gouz__split/split.sdt")),
-    ).toBe(false);
+    expect(readdirSync(cwd.dir)).toEqual(["demo-talk"]);
+  });
+
+  it("refuses a directory that is not empty", async () => {
+    mkdirSync(join(cwd.dir, "my-talk"));
+    writeFileSync(join(cwd.dir, "my-talk/main.md"), "my own talk");
+    expect(await run(["my-talk"])).toBe(1);
+    expect(captured.error()).toContain(
+      "my-talk already exists and is not empty",
+    );
+    expect(readFileSync(join(cwd.dir, "my-talk/main.md"), "utf8")).toBe(
+      "my own talk",
+    );
+  });
+
+  it("creates the talk when the hub cannot be reached", async () => {
+    fetchSpy?.mockImplementation((async () => {
+      throw new TypeError("fetch failed");
+    }) as never);
+    expect(await run(["my-talk"])).toBe(0);
+    expect(existsSync(join(cwd.dir, "my-talk/main.md"))).toBe(true);
+    expect(captured.log()).toContain("slidesk template install @gouz/split");
   });
 
   it("tells the user how to start the talk", async () => {
@@ -111,6 +134,9 @@ describe("create command", () => {
   it("avoids naming a directory after the command itself", async () => {
     await run(["create"]);
     expect(existsSync(join(cwd.dir, "create_/main.md"))).toBe(true);
+    expect(
+      existsSync(join(cwd.dir, "create_/templates/@gouz__split/split.sdt")),
+    ).toBe(true);
   });
 
   it("exits when no name is given", async () => {
