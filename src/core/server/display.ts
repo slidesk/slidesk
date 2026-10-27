@@ -1,6 +1,6 @@
 import { toString as QRCODE } from "qrcode";
 import type { SliDeskServerOptions, SliDeskSettings } from "../../types";
-import start from "../../utils/start";
+import openUrl from "../../utils/openUrl";
 
 const { log } = console;
 
@@ -26,10 +26,9 @@ const display = (
       },
     );
     if (options.open) {
-      Bun.spawn([
-        start(),
+      openUrl(
         `http${https ? "s" : ""}://localhost:${port}/${options.notes}${query}`,
-      ]);
+      );
     }
   }
   [...new Set([options.ip, env.DOMAIN ?? "localhost", "localhost"])].forEach(
@@ -43,7 +42,7 @@ const display = (
     },
   );
   if (options.open && !options.notes) {
-    Bun.spawn([start(), `http${https ? "s" : ""}://localhost:${port}`]);
+    openUrl(`http${https ? "s" : ""}://localhost:${port}`);
   }
   log();
 };

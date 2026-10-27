@@ -206,11 +206,12 @@ describe("link login", () => {
     );
   };
 
-  it("does nothing when a token is already stored", async () => {
+  it("says so when a token is already stored", async () => {
     stubBun({ exists: true, size: 42 });
     expect(await run(["login", "--slidesk-link-url", LINK])).toBe(0);
     expect(savedTokens).toEqual([]);
     expect(served).toBeNull();
+    expect(captured.log()).toContain("already logged in, use --force");
   });
 
   it("stores the token given on the command line", async () => {
@@ -225,6 +226,7 @@ describe("link login", () => {
       ]),
     ).toBe(0);
     expect(savedTokens).toEqual(["tok-42"]);
+    expect(captured.log()).toContain("You are logged in to slidesk.link");
   });
 
   it("refreshes an existing token when forced", async () => {
@@ -242,28 +244,50 @@ describe("link login", () => {
     expect(savedTokens).toEqual(["tok-99"]);
   });
 
-  it("opens the browser on the hub authentication page", async () => {
+  it("opens the browser on the hub authentication page, and prints it", async () => {
     stubBun({ exists: false, size: 0 });
     await run(["login", "--slidesk-link-url", LINK]);
     expect(served).not.toBeNull();
     expect(spawned).toHaveLength(1);
-    expect(spawned[0][1]).toBe(`${LINK}/auth?port=1337`);
+    const url = String(spawned[0].at(-1));
+    expect(url).toMatch(
+      new RegExp(`^${LINK}/auth\\?port=1337&state=[\\w-]{36}$`),
+    );
+    expect(captured.log()).toContain(url);
   });
 
   it("falls back to a free port when 1337 is taken", async () => {
     stubBun({ exists: false, size: 0 }, [1337]);
     await run(["login", "--slidesk-link-url", LINK]);
     expect(served?.port).toBe(0);
-    expect(spawned[0][1]).toBe(`${LINK}/auth?port=4242`);
+    expect(String(spawned[0].at(-1))).toStartWith(`${LINK}/auth?port=4242&`);
   });
 
   it("stores the code the hub redirects back with", async () => {
     stubBun({ exists: false, size: 0 });
     await run(["login", "--slidesk-link-url", LINK]);
     const routes = served?.routes as Record<string, CallableFunction>;
-    const res = await routes["/auth/:code"]({ params: { code: "from-hub" } });
+    const state = new URL(String(spawned[0].at(-1))).searchParams.get("state");
+    const res = await routes["/auth/:code"]({
+      params: { code: "from-hub" },
+      url: `http://localhost:1337/auth/from-hub?state=${state}`,
+    });
     expect(savedTokens).toEqual(["from-hub"]);
     expect(await res.text()).toContain("You can close this tab");
+  });
+
+  it("refuses a token that does not carry its state", async () => {
+    stubBun({ exists: false, size: 0 });
+    await run(["login", "--slidesk-link-url", LINK]);
+    const routes = served?.routes as Record<string, CallableFunction>;
+    for (const query of ["", "?state=forged"]) {
+      const res = await routes["/auth/:code"]({
+        params: { code: "someone-else" },
+        url: `http://localhost:1337/auth/someone-else${query}`,
+      });
+      expect(res.status).toBe(403);
+    }
+    expect(savedTokens).toEqual([]);
   });
 
   it("stops its server when the browser tab reports it is done", async () => {
