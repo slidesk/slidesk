@@ -41,9 +41,12 @@ window.slidesk.connect = (retry = 0) => {
 
 if (window.location.origin !== "file://") window.slidesk.connect();
 
+// a key pressed while the socket opens is sent once it is open
 const send = (payload) => {
-  if (window.slidesk.io?.readyState === WebSocket.OPEN)
-    window.slidesk.io.send(JSON.stringify(payload));
+  const io = window.slidesk.io;
+  if (io?.readyState === WebSocket.OPEN) io.send(JSON.stringify(payload));
+  else if (io?.readyState === WebSocket.CONNECTING)
+    setTimeout(() => send(payload), 5);
 };
 
 window.slidesk.channel = null;
@@ -84,42 +87,61 @@ window.slidesk.getPresentationPath = () => {
   return `${currentPath.substring(0, currentPath.lastIndexOf("/") + 1)}index.html`;
 };
 
+// the current slide and its notes, its timer, and the notes back at the top
+const showCurrent = (html) => {
+  timerSlide = "";
+  startSlideTime = null;
+  const current = document.querySelector("#sd-sv-current");
+  current.innerHTML = html.replaceAll("img data-src=", "img src=");
+  const notes = document.querySelector("#sd-sv-notes");
+  notes.innerHTML = [...current.querySelectorAll("aside.sd-notes")]
+    .map((a) =>
+      decodeURIComponent(
+        atob(a.innerHTML).replaceAll(
+          /[\x80-\uffff]/g,
+          (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
+        ),
+      ),
+    )
+    .join("");
+  notes.scrollTo(0, 0);
+  const slide = current.querySelector(".sd-slide");
+  currentNum = slide?.getAttribute("data-num");
+  const slidetime = slide?.getAttribute("data-timer-slide");
+  if (slidetime) {
+    timerSlide = fromHHMMSS(slidetime);
+    startSlideTime = Date.now();
+  }
+};
+
+const showFuture = (html) => {
+  document.querySelector("#sd-sv-future").innerHTML = html.replaceAll(
+    "img data-src=",
+    "img src=",
+  );
+};
+
+// a slide without a checkpoint keeps the one of the next slides
+const setCheckpoints = (data) => {
+  let lastCheckpoint = null;
+  for (let i = Number(data.nbSlides); i >= 0; i -= 1) {
+    if (data.timerCheckpoints[i]) {
+      lastCheckpoint = fromHHMMSS(data.timerCheckpoints[i]);
+    }
+    timerCheckpoints[i] = lastCheckpoint;
+  }
+  window.slidesk.checkpoints = timerCheckpoints;
+};
+
 window.slidesk.setupChannel = () => {
   window.slidesk.channel = new BroadcastChannel("slidesk_sync");
   window.slidesk.channel.onmessage = (event) => {
     const data = event.data;
     if (data.action === "current") {
-      timerSlide = "";
-      startSlideTime = null;
-      const current = document.querySelector("#sd-sv-current");
-      current.innerHTML = data.payload.replaceAll("img data-src=", "img src=");
-      document.querySelector("#sd-sv-notes").innerHTML = [
-        ...current.querySelectorAll("aside.sd-notes"),
-      ]
-        .map((a) =>
-          decodeURIComponent(
-            atob(a.innerHTML).replaceAll(
-              /[\x80-\uffff]/g,
-              (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
-            ),
-          ),
-        )
-        .join("");
-
-      currentNum = current.querySelector(".sd-slide")?.getAttribute("data-num");
-
-      const slidetime = current
-        .querySelector(".sd-slide")
-        ?.getAttribute("data-timer-slide");
-      if (slidetime) {
-        timerSlide = fromHHMMSS(slidetime);
-        startSlideTime = Date.now();
-      }
+      showCurrent(data.payload);
       window.slidesk.onSpeakerViewSlideChange();
-    } else if (data.action === "future") {
-      document.querySelector("#sd-sv-future").innerHTML =
-        data.payload.replaceAll("img data-src=", "img src=");
-    } else if (data.action === "goto") {
+    } else if (data.action === "future") showFuture(data.payload);
+    else if (data.action === "goto") {
       const slideNum = data.payload;
       if (slideNum !== undefined && window.slidesk.checkpoints) {
         currentNum = slideNum;
@@ -127,57 +149,24 @@ window.slidesk.setupChannel = () => {
     }
   };
 };
-
-window.slidesk.loadInitialState = () => {
-  const savedSlide = localStorage.getItem("slidesk_current_slide");
-  if (savedSlide) {
-    const slideData = JSON.parse(savedSlide);
-    const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = slideData.currentSlideHTML.replaceAll(
-      "img data-src=",
-      "img src=",
-    );
-    document.querySelector("#sd-sv-future").innerHTML =
-      slideData.futureSlideHTML.replaceAll("img data-src=", "img src=");
-    document.querySelector("#sd-sv-notes").innerHTML = [
-      ...current.querySelectorAll("aside.sd-notes"),
-    ]
-      .map((a) =>
-        decodeURIComponent(
-          atob(a.innerHTML).replaceAll(
-            /[\x80-\uffff]/g,
-            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
-          ),
-        ),
-      )
-      .join("");
-
-    currentNum = current.querySelector(".sd-slide")?.getAttribute("data-num");
-
-    const slidetime = current
-      .querySelector(".sd-slide")
-      ?.getAttribute("data-timer-slide");
-    if (slidetime) {
-      timerSlide = fromHHMMSS(slidetime);
-      startSlideTime = Date.now();
-    }
-  }
-
-  // Load checkpoints
-  const savedCheckpoints = localStorage.getItem("slidesk_checkpoints");
-  if (savedCheckpoints) {
-    const checkpointsData = JSON.parse(savedCheckpoints);
-    let lastCheckpoint = null;
-    for (let i = Number(checkpointsData.nbSlides); i >= 0; i -= 1) {
-      if (checkpointsData.timerCheckpoints[i]) {
-        lastCheckpoint = fromHHMMSS(checkpointsData.timerCheckpoints[i]);
-      }
-      timerCheckpoints[i] = lastCheckpoint;
-    }
-    window.slidesk.checkpoints = timerCheckpoints;
+// a value left by another version must not stop the speaker view
+const loadSaved = (key) => {
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch (_) {
+    return null;
   }
 };
 
+window.slidesk.loadInitialState = () => {
+  const savedSlide = loadSaved("slidesk_current_slide");
+  if (savedSlide?.currentSlideHTML) {
+    showCurrent(savedSlide.currentSlideHTML);
+    showFuture(savedSlide.futureSlideHTML ?? "");
+  }
+  const savedCheckpoints = loadSaved("slidesk_checkpoints");
+  if (savedCheckpoints?.timerCheckpoints) setCheckpoints(savedCheckpoints);
+};
 window.slidesk.onSocketMessage = (event) => {
   let data;
   try {
@@ -186,45 +175,11 @@ window.slidesk.onSocketMessage = (event) => {
     return;
   }
   if (data.action === "current") {
-    timerSlide = "";
-    startSlideTime = null;
-    const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = data.payload.replaceAll("img data-src=", "img src=");
-    document.querySelector("#sd-sv-notes").innerHTML = [
-      ...current.querySelectorAll("aside.sd-notes"),
-    ]
-      .map((a) =>
-        decodeURIComponent(
-          atob(a.innerHTML).replaceAll(
-            /[\x80-\uffff]/g,
-            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
-          ),
-        ),
-      )
-      .join("");
-    currentNum = current.querySelector(".sd-slide").getAttribute("data-num");
-    const slidetime = current
-      .querySelector(".sd-slide")
-      .getAttribute("data-timer-slide");
-    if (slidetime) {
-      timerSlide = fromHHMMSS(slidetime);
-      startSlideTime = Date.now();
-    }
+    showCurrent(data.payload);
     window.slidesk.onSpeakerViewSlideChange();
-  } else if (data.action === "future") {
-    document.querySelector("#sd-sv-future").innerHTML = data.payload.replaceAll(
-      "img data-src=",
-      "img src=",
-    );
-  } else if (data.action === "checkpoints") {
-    let lastCheckpoint = null;
-    for (let i = Number(data.payload.nbSlides); i >= 0; i -= 1) {
-      if (data.payload.timerCheckpoints[i]) {
-        lastCheckpoint = fromHHMMSS(data.payload.timerCheckpoints[i]);
-      }
-      timerCheckpoints[i] = lastCheckpoint;
-    }
-  } else window.slidesk.dispatch(data);
+  } else if (data.action === "future") showFuture(data.payload);
+  else if (data.action === "checkpoints") setCheckpoints(data.payload);
+  else window.slidesk.dispatch(data);
 };
 
 // shortcuts of the browser (Cmd/Ctrl/Alt) and typing in a field are left alone
@@ -300,18 +255,11 @@ window.slidesk.createButtons = async () => {
 };
 
 window.slidesk.notes_up = () => {
-  window.slidesk.scrollPosition -= 100;
-  if (window.slidesk.scrollPosition < 0) window.slidesk.scrollPosition = 0;
-  document
-    .getElementById("sd-sv-notes")
-    .scroll({ top: window.slidesk.scrollPosition });
+  document.getElementById("sd-sv-notes").scrollBy({ top: -100 });
 };
 
 window.slidesk.notes_down = () => {
-  window.slidesk.scrollPosition += 100;
-  document
-    .getElementById("sd-sv-notes")
-    .scroll({ top: window.slidesk.scrollPosition });
+  document.getElementById("sd-sv-notes").scrollBy({ top: 100 });
 };
 
 window.slidesk.start_timer = () => {
@@ -355,45 +303,9 @@ window.slidesk.loadInitialState();
 
 // Listen for localStorage changes from the presentation
 window.addEventListener("storage", (event) => {
-  if (event.key === "slidesk_current_slide" && event.newValue) {
-    const slideData = JSON.parse(event.newValue);
-    const current = document.querySelector("#sd-sv-current");
-    current.innerHTML = slideData.currentSlideHTML.replaceAll(
-      "img data-src=",
-      "img src=",
-    );
-    document.querySelector("#sd-sv-future").innerHTML =
-      slideData.futureSlideHTML.replaceAll("img data-src=", "img src=");
-    document.querySelector("#sd-sv-notes").innerHTML = [
-      ...current.querySelectorAll("aside.sd-notes"),
-    ]
-      .map((a) =>
-        decodeURIComponent(
-          atob(a.innerHTML).replaceAll(
-            /[\x80-\uffff]/g,
-            (m) => `%${m.codePointAt(0).toString(16).padStart(2, "0")}`,
-          ),
-        ),
-      )
-      .join("");
-
-    currentNum = current.querySelector(".sd-slide")?.getAttribute("data-num");
-
-    const slidetime = current
-      .querySelector(".sd-slide")
-      ?.getAttribute("data-timer-slide");
-    if (slidetime) {
-      timerSlide = fromHHMMSS(slidetime);
-      startSlideTime = Date.now();
-    }
-  } else if (event.key === "slidesk_checkpoints" && event.newValue) {
-    const checkpointsData = JSON.parse(event.newValue);
-    let lastCheckpoint = null;
-    for (let i = Number(checkpointsData.nbSlides); i >= 0; i -= 1) {
-      if (checkpointsData.timerCheckpoints[i]) {
-        lastCheckpoint = fromHHMMSS(checkpointsData.timerCheckpoints[i]);
-      }
-      timerCheckpoints[i] = lastCheckpoint;
-    }
-  }
+  if (
+    event.key === "slidesk_current_slide" ||
+    event.key === "slidesk_checkpoints"
+  )
+    window.slidesk.loadInitialState();
 });
