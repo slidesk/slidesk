@@ -65,6 +65,12 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 | Speaker view with timers | limited | ✅ | ✅ | via pdfpc | ✅ |
 | Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ |
+| Code highlighting | ✅ | ✅ | ✅ | ✅ | via plugin |
+| Math (LaTeX) | ✅ | ✅ | ✅ | ✅ | ✗ |
+| Overview of all slides | ✗ | ✅ | ✅ | via pdfpc | ✗ |
+| Draw on slides while presenting | ✗ | ✅ | via plugin | via pdfpc | ✗ |
+| Live preview in the editor | ✅ | ✅ | ✗ | ✅ | ✗ (live reload in the browser) |
+| Export slides as images | ✅ | ✅ | via DeckTape | ✅ | ✗ |
 
 More in [Why SliDesk?](https://slidesk.github.io/slidesk/explanation/why-slidesk/)
 
