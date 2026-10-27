@@ -77,23 +77,30 @@ export const addonInstall = async (
     await installComponent(tarball, target, addonName, addon);
     return `${kind} ${label} ${update ? "updated" : "installed"}`;
   }
-  // the installed version is only dropped once the new one is downloaded
+  // unpacked aside first: the installed version is only replaced by a
+  // complete new one
   const dir = `${target}/${kind}s/${addonName}`;
-  await rm(dir, { recursive: true, force: true });
-  const tmp = `${dir}/link.tgz`;
-  await Bun.write(tmp, tarball);
-  // plugins, themes and templates are packed inside a directory named after them
-  await extract({ file: tmp, C: dir, strip: 1 });
-  await rm(tmp);
-  if (kind === "plugin") {
-    const manifest = Bun.file(`${dir}/plugin.json`);
-    await Bun.write(
-      manifest,
-      (await manifest.text()).replaceAll(
-        `plugins/${addon}/`,
-        `plugins/${addonName}/`,
-      ),
-    );
+  const tmp = `${target}/${kind}s/.${addonName}`;
+  await rm(tmp, { recursive: true, force: true });
+  await mkdir(`${tmp}/addon`, { recursive: true });
+  try {
+    await Bun.write(`${tmp}/link.tgz`, tarball);
+    // plugins, themes and templates are packed inside a directory named after them
+    await extract({ file: `${tmp}/link.tgz`, C: `${tmp}/addon`, strip: 1 });
+    if (kind === "plugin") {
+      const manifest = Bun.file(`${tmp}/addon/plugin.json`);
+      await Bun.write(
+        manifest,
+        (await manifest.text()).replaceAll(
+          `plugins/${addon}/`,
+          `plugins/${addonName}/`,
+        ),
+      );
+    }
+    await rm(dir, { recursive: true, force: true });
+    await rename(`${tmp}/addon`, dir);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
   }
   return `${kind} ${label} ${update ? "updated" : "installed"}`;
 };
@@ -139,7 +146,7 @@ const searchCmd = (kind: AddonKind) =>
     .action(async (args, opts: LinkOpts) => {
       if (!args.search) throw new CliError("Please provide a search term");
       const response = await hubFetch(
-        `${opts["slidesk-link-url"]}/addons/search/${kind}/${args.search}`,
+        `${opts["slidesk-link-url"]}/addons/search/${kind}/${encodeURIComponent(args.search)}`,
       );
       if (response.status !== 200)
         throw new CliError(`No ${kind} with this name is found`);
