@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="https://slidesk.github.io/slidesk/demo/"><b>Live demo</b></a> ·
   <a href="https://slidesk.github.io/slidesk/">Documentation</a> ·
   <a href="https://github.com/slidesk/talk-slidesk">Example talk</a> ·
   <a href="https://slidesk.link">Addons hub</a> ·

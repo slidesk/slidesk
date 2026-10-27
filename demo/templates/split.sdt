@@ -1,0 +1,9 @@
+<div class="split">
+  <div class="split-left">
+    <sd-title />
+    <sd-left />
+  </div>
+  <div class="split-right">
+    <sd-right />
+  </div>
+</div>

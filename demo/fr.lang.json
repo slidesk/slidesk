@@ -1,0 +1,29 @@
+{
+  "translations": {
+    "coverTitle": "SliDesk",
+    "coverTagline": "Des slides en Markdown, avec traductions et includes intégrés. Un seul binaire, aucune étape de build.",
+    "navHint": "→ / ← ou balayez pour changer de slide",
+    "markdownTitle": "Écrire en Markdown",
+    "markdownText": "Ni Vue, ni React, ni configuration : un fichier <code>.md</code> suffit pour un talk.",
+    "includesTitle": "Découper en fichiers",
+    "includesText": "Un seul <code>!include(slides)</code> reprend tout un dossier, dans l'ordre. Ce talk est construit ainsi.",
+    "languagesTitle": "Un talk, plusieurs langues",
+    "languagesText": "Les slides contiennent des variables <code>$$clé$$</code>, les mots sont dans <code>en.lang.json</code>, <code>fr.lang.json</code>…",
+    "switchLanguage": "<a href=\"../#3\">See this demo in English →</a>",
+    "layoutsTitle": "Mises en page",
+    "layoutsLeft": "Les templates sont du HTML avec des blocs nommés. Thèmes, composants et plugins se partagent sur le <a href=\"https://slidesk.link\">hub</a>.",
+    "speakerTitle": "Une vraie vue orateur",
+    "speakerNotes": "Les notes, la slide en cours et la suivante",
+    "speakerTimers": "Un minuteur par slide et des points de passage",
+    "speakerPhone": "Pilotez le talk depuis votre téléphone grâce à un QR code",
+    "openSpeakerView": "<a href=\"notes.html\" target=\"_blank\">Ouvrir la vue orateur de cette démo ↗</a>",
+    "shareTitle": "Exporter et partager",
+    "shareText": "PDF, PowerPoint, site statique pour GitHub ou GitLab Pages, ou hébergement sur slidesk.link.",
+    "importTitle": "Reprendre vos présentations",
+    "importText": "Les présentations PowerPoint, Google Slides, Slidev et reveal.js deviennent des talks SliDesk.",
+    "telnetTitle": "Présenter depuis un terminal",
+    "telnetText": "Oui, vraiment : <code>--telnet</code> sert une version texte de votre talk.",
+    "startTitle": "Pour commencer",
+    "startLinks": "<a href=\"https://slidesk.github.io/slidesk/\">Documentation</a> · <a href=\"https://github.com/slidesk/slidesk\">GitHub</a> · <a href=\"https://slidesk.link\">Hub</a>"
+  }
+}

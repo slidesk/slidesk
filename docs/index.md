@@ -4,6 +4,8 @@
 
 **Markdown-first slides with native internationalisation and file includes — no Vue project, no build step, no plugin hunting.**
 
+[**See the live demo →**](demo/){ .md-button .md-button--primary } (also [in French](demo/fr/), from the same source)
+
 SliDesk is a talk engine that turns Markdown into web-based presentations. If you want the simplicity of Marp with the capabilities of Slidev, but without maintaining a Vue/Vite app to get there, this is what SliDesk is for.
 
 Three things are built in, not bolted on:
