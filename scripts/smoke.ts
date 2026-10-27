@@ -169,7 +169,35 @@ const page = await launch(800, 600).catch((e) => {
 });
 if (page) {
   try {
-    // an export served over plain http has no websocket to talk to
+    // the test talk has a plugin adding html after the slides
+    const pdfTalk = talk(18808);
+    const pdfRun = await run(pdfTalk.dir, [
+      "export",
+      "-t",
+      "pdf",
+      "-o",
+      "talk.pdf",
+    ]);
+    const pdf = await Bun.file(join(pdfTalk.dir, "talk.pdf"))
+      .text()
+      .catch(() => "");
+    // page objects may sit in compressed object streams: the page tree's
+    // /Count is read too, and whichever is found is used
+    const objects = pdf.match(/\/Type\s*\/Page[^s]/g)?.length ?? 0;
+    const counts = [...pdf.matchAll(/\/Count\s+(\d+)/g)].map((m) =>
+      Number(m[1]),
+    );
+    const pages = Math.max(objects, ...counts, 0);
+    await run(pdfTalk.dir, ["save", "-t", "public"]);
+    const html = await Bun.file(join(pdfTalk.dir, "public/index.html")).text();
+    const slides = html.match(/class=sd-slide/g)?.length ?? 0;
+    const titles = [...html.matchAll(/<h2>([^<]*)<\/h2>/g)].map((m) => m[1]);
+    check(
+      "export gives one pdf page per slide",
+      pdfRun.code === 0 && pages === 3,
+      `exit ${pdfRun.code}, ${pages} pages (${objects} page objects, /Count ${counts.join(",") || "none"}, ObjStm: ${pdf.includes("/ObjStm")}), ${slides} slides in the html: ${titles.join(" | ")}\n${pdfRun.output}`,
+    );
+
     const { dir } = talk(18806);
     await run(dir, ["save", "-t", "public"]);
     const exported = join(dir, "public");

@@ -18,7 +18,9 @@ const includes = async (
       `!include loop: ${[...chain, path].map((f) => relative(process.cwd(), f)).join(" → ")}`,
     );
   const including = [...chain, path];
-  const data = await Bun.file(file).text();
+  // CRLF files (Windows editors, git checkouts) would glue an included
+  // "## " slide to the previous one: slides are split on "\n## "
+  const data = (await Bun.file(file).text()).replaceAll("\r\n", "\n");
   return replaceAsync(`${data}\n`, /\n!include\(([^()]+)\)/g, async (_, p1) => {
     let [dirOrFile, ...exts] = `${p1}`.split(",");
     if (exts.length === 0) exts = ["sdf", "md"];
