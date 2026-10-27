@@ -70,11 +70,11 @@ telnet localhost 2323
 
 Controls:
 
-- **Enter** or **right arrow** — next slide
-- **Left arrow** — previous slide
-- **Number + Enter** — go to a specific slide
+- **Enter**, **Space** or **right arrow** — next slide
+- **Left arrow** or **Backspace** — previous slide
+- **Number + Enter** — go to that slide (the number shows in the status bar as you type it)
 - **r** — reload presentation
-- **q** — quit
+- **q** or **Ctrl-C** — quit
 
 Combine both:
 

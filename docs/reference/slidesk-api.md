@@ -18,7 +18,12 @@ Plugins and scripts interact with the presentation at runtime through the global
 | `next()` | function | Go to next slide |
 | `previous()` | function | Go to previous slide |
 | `goto(num)` | function | Jump to a specific slide (number or `{data: number}`) |
+| `first()` | function | Go to the first slide |
+| `last()` | function | Go to the last slide |
+| `black()` | function | Toggle the black screen (`sd-black` on `.sd-app`) |
 | `fullscreen()` | function | Toggle fullscreen mode |
+| `keys` | object | Key → action of the keyboard shortcuts (`{ ArrowRight: "next", … }`); the keyboard plugin removes the keys it binds itself |
+| `ignoreKey(event)` | function | Whether a key event is left alone: typing in a field, or a Cmd/Ctrl/Alt shortcut |
 | `changeSlide()` | function | Apply current slide CSS, send sync data, call `onSlideChange()` |
 | `cleanOldSlide(id)` | function | Remove `sd-current` and `no-sd-animation` classes from a slide |
 | `saveCheckpoints()` | function | Save timer checkpoints to `localStorage` |
@@ -38,7 +43,6 @@ Plugins and scripts interact with the presentation at runtime through the global
 | `channel` | BroadcastChannel | BroadcastChannel fallback (`"slidesk_sync"`), set by `setupChannel()` |
 | `timer` | Element | `#sd-sv-timer` DOM element |
 | `subtimer` | Element | `#sd-sv-subtimer` DOM element |
-| `scrollPosition` | number | Current notes scroll position (px) |
 | `checkpoints` | array | Timer checkpoints loaded from `localStorage` |
 | `presentationPath` | string | Path to `index.html` derived from the notes URL |
 | `getPresentationPath()` | function | Derive the presentation path from the current URL |
@@ -47,8 +51,10 @@ Plugins and scripts interact with the presentation at runtime through the global
 | `createButtons()` | async function | Create "Open presentation" buttons for each screen |
 | `notes_up()` | function | Scroll notes up by 100px |
 | `notes_down()` | function | Scroll notes down by 100px |
+| `keys` | object | Key → action of the speaker view; actions it does not define itself are sent to the presentation |
+| `ignoreKey(event)` | function | Whether a key event is left alone: typing in a field, or a Cmd/Ctrl/Alt shortcut |
 | `start_timer()` | function | Start the presentation timer |
-| `onSpeakerViewSlideChange()` | function | Called after slide change in speaker view (resets scroll, runs plugin hooks) |
+| `onSpeakerViewSlideChange()` | function | Called after slide change in speaker view (runs the plugin hooks; the notes are already back at the top) |
 
 ## Slide change lifecycle
 

@@ -84,7 +84,9 @@ notes as plain text in the notes pane.
 ## Terminal navigation
 
 Terminal navigation while presenting: **Enter** = next, **P + Enter** = previous, **Q** = quit,
-type a **number** = jump. Browser: arrows / swipe, **f** = fullscreen.
+type a **number** = jump. Browser: → / Page Down / Space = next, ← / Page Up = previous,
+Home / End = first / last, **b** or **.** = black screen, **f** = fullscreen, swipe on touch screens;
+in the speaker view the same keys drive the talk and ↑ / ↓ scroll the notes.
 
 ## Talk structure
 
@@ -195,7 +197,7 @@ A plugin is `plugins/<name>/plugin.json` mapping **hooks** to resources:
 
 Presentation view (`index.html`) exposes: `slides`, `currentSlide`, `env`, `domain`, `deployed`,
 `animationTimer`, `io` (WebSocket `/ws`), `channel` (BroadcastChannel fallback), and methods
-`next()`, `previous()`, `goto(num)`, `fullscreen()`, `changeSlide()`, `sendMessage(payload)`,
+`next()`, `previous()`, `goto(num)`, `first()`, `last()`, `black()`, `fullscreen()`, `keys`, `changeSlide()`, `sendMessage(payload)`,
 `onSlideChange()`. Speaker view (`notes.html`) exposes timer elements, `checkpoints`,
 `start_timer()`, `notes_up()/notes_down()`, and syncs via the same WebSocket/BroadcastChannel.
 

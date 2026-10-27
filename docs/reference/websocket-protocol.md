@@ -38,6 +38,11 @@ The speaker view sends these actions on keyboard input:
 |---|---|---|
 | `"next"` | — | Advance to next slide |
 | `"previous"` | — | Go back to previous slide |
+| `"first"` | — | Go to the first slide |
+| `"last"` | — | Go to the last slide |
+| `"black"` | — | Toggle the black screen |
+
+Any other function of `window.slidesk` in the presentation can be called the same way, which is how the keyboard plugin sends its actions.
 
 ### Server → Client
 
