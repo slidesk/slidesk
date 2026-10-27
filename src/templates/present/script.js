@@ -231,9 +231,11 @@ window.onload = () => {
       },
     });
   } else window.slidesk.setupChannel();
-  const loadingHash = window.location.hash.replace("#", "");
-  window.slidesk.currentSlide = Number(loadingHash ?? 0);
-  if (window.slidesk.currentSlide < 0) window.slidesk.currentSlide = 0;
+  // a slide removed since, or an old #slug link: the closest slide that exists
+  window.slidesk.currentSlide = Math.min(
+    Math.max(Number.parseInt(window.location.hash.slice(1), 10) || 0, 0),
+    window.slidesk.slides.length - 1,
+  );
   if (window.slidesk.currentSlide) {
     for (let i = 0; i < window.slidesk.currentSlide; i += 1) {
       window.slidesk.slides[i].classList.add("sd-previous", "no-sd-animation");
