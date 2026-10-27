@@ -1,7 +1,7 @@
 import type { SliDeskEnv } from "../types";
 
-const getByPath = (env: SliDeskEnv, path: string) => {
-  const value = path
+const getByPath = (env: SliDeskEnv, path: string) =>
+  path
     .split(".")
     .reduce<unknown>(
       (acc, key) =>
@@ -10,14 +10,18 @@ const getByPath = (env: SliDeskEnv, path: string) => {
           : undefined,
       env,
     );
-  return value === undefined ? "" : String(value);
-};
 
-const envVariables = (data: string, env: SliDeskEnv) => {
-  const splitted = data.split("++");
-  if (splitted.length % 2 && splitted.length > 1)
-    return splitted.map((t, i) => (i % 2 ? getByPath(env, t) : t)).join("");
-  return data;
-};
+/**
+ * Replaces `++KEY++` / `++section.KEY++` with its value from slidesk.toml.
+ * Only a key name is replaced, so `C++ vs C++` or `i++; j++` stay as they are;
+ * a key missing from the configuration is left visible, with a warning.
+ */
+const envVariables = (data: string, env: SliDeskEnv) =>
+  data.replaceAll(/\+\+([A-Za-z_]\w*(?:\.\w+)*)\+\+/g, (match, key) => {
+    const value = getByPath(env, key);
+    if (value !== undefined) return String(value);
+    console.warn(`⚠️  ${match} is not set in the configuration`);
+    return match;
+  });
 
 export default envVariables;
