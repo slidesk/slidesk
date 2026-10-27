@@ -58,7 +58,7 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
       .replaceAll(/^#/g, "");
     if (tpl && templates[tpl])
       content = replaceWithTemplate(tpl, content, spl[0], templates);
-    else content = content.replace(slideTitle[0], `<h2>${spl[0]}</h2>`);
+    else content = content.replace(slideTitle[0], () => `<h2>${spl[0]}</h2>`);
   }
   return { content, classes };
 };

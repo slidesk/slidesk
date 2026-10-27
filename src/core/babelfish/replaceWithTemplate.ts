@@ -11,15 +11,18 @@ const replaceWithTemplate = (
   let newContent = content;
   const blocs = parseText(content);
   Object.keys(blocs).forEach((key, _) => {
-    text = text.replace(`<sd-${key} />`, blocs[key]);
+    // functions, so that a "$$" in a block is inserted as written
+    text = text.replace(`<sd-${key} />`, () => blocs[key]);
     newContent = newContent.replace(
       `<p>[[${key}]]</p>${blocs[key]}<p>[[/${key}]]</p>`,
       "",
     );
   });
   return text
-    .replaceAll("<sd-title />", `<h2>${title}</h2>`)
-    .replaceAll("<sd-content />", newContent.replaceAll(/<h2>(.*)<\/h2>/g, ""))
+    .replaceAll("<sd-title />", () => `<h2>${title}</h2>`)
+    .replaceAll("<sd-content />", () =>
+      newContent.replaceAll(/<h2>(.*)<\/h2>/g, ""),
+    )
     .replaceAll(/<sd-[^>]+\/>/g, "");
 };
 

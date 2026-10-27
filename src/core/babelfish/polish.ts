@@ -9,13 +9,15 @@ const polish = async (
 ) => {
   let tpl = template;
   const slideskEnv = env.slidesk ?? {};
-  if (slideskEnv.TITLE) tpl = tpl.replace("#TITLE#", slideskEnv.TITLE);
+  // replacements are functions: a "$$" or "$&" in the talk is kept as written
+  const configuredTitle = slideskEnv.TITLE;
+  if (configuredTitle) tpl = tpl.replace("#TITLE#", () => configuredTitle);
   else
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
-      tpl = tpl.replace("#TITLE#", title[1]);
+      tpl = tpl.replace("#TITLE#", () => title[1]);
     });
   tpl = tpl.replace("#TITLE#", "SliDesk");
-  tpl = tpl.replace("#SECTIONS#", presentation);
+  tpl = tpl.replace("#SECTIONS#", () => presentation);
 
   tpl = await minify(tpl, {
     collapseWhitespace: true,
@@ -27,13 +29,14 @@ const polish = async (
   });
   return tpl.replace(
     "</body>",
-    `${plugins.map((p) => p.addHTML ?? "").join("")}${plugins
-      .map((p) =>
-        p.addHTMLFromFiles && !Array.isArray(p.addHTMLFromFiles)
-          ? Object.values(p.addHTMLFromFiles).join("")
-          : "",
-      )
-      .join("")}</body>`,
+    () =>
+      `${plugins.map((p) => p.addHTML ?? "").join("")}${plugins
+        .map((p) =>
+          p.addHTMLFromFiles && !Array.isArray(p.addHTMLFromFiles)
+            ? Object.values(p.addHTMLFromFiles).join("")
+            : "",
+        )
+        .join("")}</body>`,
   );
 };
 

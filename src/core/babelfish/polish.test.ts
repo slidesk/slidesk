@@ -105,4 +105,15 @@ describe("polish function", () => {
     const result = await polish(presentation, template, env, plugins);
     expect(result).not.toContain("  ");
   });
+
+  it("keeps $ sequences of the slides as written", async () => {
+    const html = await polish(
+      "<p>$$E = mc^2$$, echo $$ and $&amp;</p>",
+      "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>",
+      { slidesk: { TITLE: "Cost: $$" } },
+      [],
+    );
+    expect(html).toContain("$$E = mc^2$$, echo $$ and $&amp;");
+    expect(html).toContain("Cost: $$");
+  });
 });

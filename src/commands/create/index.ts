@@ -15,7 +15,7 @@ const createDefault = async (dirName: string, responseTitle: string) => {
     Object.keys(defaultThemeFiles).map((file) => {
       let content = defaultThemeFiles[file];
       if (file === "main.md")
-        content = content.replace("# TITLE", ` ${responseTitle}`);
+        content = content.replace("# TITLE", () => ` ${responseTitle}`);
       return Bun.write(`${dirName}/${file}`, content, { createPath: true });
     }),
   );
