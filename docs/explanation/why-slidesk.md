@@ -22,6 +22,14 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 | Live reload while editing | ✅ | ✅ | via tooling | ✅ `typst watch` | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ telnet |
 | Embed raw HTML / Vue / React / Svelte | limited | Vue-centric | ✅ | ✗ (PDF) | ✅ unrestricted |
+| Code highlighting | ✅ | ✅ Shiki | ✅ bundled plugin | ✅ | via plugin (`@gouz/shiki`, `@gouz/highlightjs`) |
+| Math (LaTeX) | ✅ KaTeX / MathJax | ✅ KaTeX | ✅ bundled plugin | ✅ native | ✗ |
+| Step-by-step reveal | fragmented lists | ✅ `v-click` | ✅ fragments | ✅ `#pause` (Touying, Polylux) | via plugin (`@gouz/steps`) |
+| Overview of all slides | ✗ | ✅ | ✅ | via pdfpc | ✗ |
+| Draw on slides while presenting | ✗ | ✅ | via plugin (chalkboard) | via pdfpc | ✗ |
+| Live preview in the editor | ✅ VS Code | ✅ VS Code | ✗ | ✅ Tinymist, typst.app | ✗ live reload in the browser; the VS Code extension only colours the syntax |
+| Export slides as images | ✅ PNG | ✅ PNG | via DeckTape | ✅ PNG / SVG | ✗ |
+| Ecosystem and community | large | large | very large | growing | small |
 
 To be precise about where SliDesk actually differs:
 

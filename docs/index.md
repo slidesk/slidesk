@@ -82,6 +82,12 @@ Details: [internationalisation syntax](reference/syntax/internationalisation), [
 | Slide includes | ✗ | per file, via `src:` frontmatter | per file, `#include` | ✅ file **or** directory, one line |
 | Speaker view with timers & notes | limited | ✅ | via pdfpc | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✅ telnet |
+| Code highlighting | ✅ | ✅ | ✅ | via plugin |
+| Math (LaTeX) | ✅ | ✅ | ✅ native | ✗ |
+| Overview of all slides | ✗ | ✅ | via pdfpc | ✗ |
+| Draw on slides while presenting | ✗ | ✅ | via pdfpc | ✗ |
+| Live preview in the editor | ✅ VS Code | ✅ VS Code | ✅ | ✗ live reload in the browser |
+| Export slides as images | ✅ | ✅ | ✅ | ✗ |
 
 Read the full rationale in [Why SliDesk?](explanation/why-slidesk).
 
