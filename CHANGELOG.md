@@ -2,12 +2,24 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
-## Unreleased
+## 2.20.2
 
 ### 🐛 Fixes
 
-- A fenced code block is shown as written: a `## ` inside it no longer starts a new slide, and `!include(...)`, `/* notes */` and `!image(...)` inside it are no longer run (showing SliDesk syntax on a slide broke the slide or the build).
+- **Code blocks are shown as written**: a `## ` inside a fenced code block no longer starts a new slide, and `!include(...)`, `/* notes */` and `!image(...)` inside it are no longer run. Showing SliDesk syntax on a slide used to split it or break the build.
 - A talk given as an absolute path, or outside the working directory (`../talk`), works with every command: `present` and `export` did not find it, and `save` dropped its included slides.
+- `slidesk skills` writes nothing unless both skills could be downloaded.
+- A `++section++` variable that points to a whole section of `slidesk.toml` is shown as json instead of `[object Object]`.
+
+### 📝 Documentation
+
+- A new README, with a demo GIF, an example, the comparison with Marp, Slidev and reveal.js, and install instructions for every platform.
+- The npm package has a description, keywords and a homepage.
+
+### 🧰 Internals
+
+- SliDesk is clean on SonarCloud: every promise is handled, values coming from the network are sanitized before being logged, regexes without risky backtracking, smaller functions in the import scanner, and independent loading (plugins, included files…) runs in parallel.
+- `bun run demo:gif` records the README demo.
 
 ## 2.20.1
 
