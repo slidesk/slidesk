@@ -72,7 +72,7 @@ export const errorContent = async (
   const content = "ERROR";
   return {
     ...(await generateHTML(
-      await getPresentation(content, env, components, templates),
+      await getPresentation(content, env, components, templates, sdfPath),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
@@ -97,7 +97,7 @@ export const content = async (
   checkImages(content, sdfPath, env);
   return {
     ...(await generateHTML(
-      await getPresentation(content, env, components, templates),
+      await getPresentation(content, env, components, templates, sdfPath),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
