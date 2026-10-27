@@ -55,7 +55,14 @@ While running, the terminal lets you control the presentation:
 - **Q** — quit
 - Type a **number** — jump to that slide
 
-In the browser, use arrow keys, swipe gestures, or **f** for fullscreen.
+In the browser:
+
+- **Right arrow**, **Page Down** or **Space**: next slide
+- **Left arrow** or **Page Up**: previous slide
+- **Home** / **End**: first / last slide
+- **b** or **.**: black screen (again to come back)
+- **f**: fullscreen
+- swipe gestures on touch screens
 
 ## What's next?
 

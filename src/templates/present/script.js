@@ -183,6 +183,15 @@ window.slidesk.goto = (num) => {
   }
 };
 
+window.slidesk.first = () => window.slidesk.goto(0);
+
+window.slidesk.last = () =>
+  window.slidesk.goto(window.slidesk.slides.length - 1);
+
+window.slidesk.black = () => {
+  document.querySelector(".sd-app").classList.toggle("sd-black");
+};
+
 window.slidesk.fullscreen = () => {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
@@ -282,6 +291,20 @@ window.onload = () => {
   });
 };
 
+// key -> action; the keyboard plugin removes the keys it maps itself
+window.slidesk.keys = {
+  ArrowLeft: "previous",
+  ArrowRight: "next",
+  PageUp: "previous",
+  PageDown: "next",
+  " ": "next",
+  Home: "first",
+  End: "last",
+  b: "black",
+  ".": "black",
+  f: "fullscreen",
+};
+
 document.addEventListener("keydown", (e) => {
   if (
     window.location.hostname === window.slidesk.domain ||
@@ -289,10 +312,10 @@ document.addEventListener("keydown", (e) => {
     window.location.origin === "file://" ||
     window.slidesk.deployed
   ) {
-    if (e.key === "ArrowLeft") {
-      window.slidesk.previous();
-    } else if (e.key === "ArrowRight") {
-      window.slidesk.next();
+    const action = window.slidesk.keys[e.key];
+    if (action) {
+      e.preventDefault();
+      window.slidesk[action]();
     }
   }
 });
