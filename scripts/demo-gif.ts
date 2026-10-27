@@ -115,10 +115,13 @@ try {
 
 // the concat demuxer gives each screenshot its own duration
 const list = join(work, "frames.txt");
-writeFileSync(
-  list,
-  `${shots.map((s) => `file '${s.file}'\nduration ${s.seconds}`).join("\n")}\nfile '${shots.at(-1)?.file}'\n`,
-);
+// the last file is repeated so that its duration is honoured
+const entries = shots.flatMap((s) => [
+  `file '${s.file}'`,
+  `duration ${s.seconds}`,
+]);
+entries.push(`file '${shots.at(-1)?.file}'`);
+writeFileSync(list, `${entries.join("\n")}\n`);
 const ffmpeg = Bun.spawnSync(
   [
     "ffmpeg",
