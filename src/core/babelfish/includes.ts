@@ -1,5 +1,5 @@
 import { existsSync, globSync, lstatSync } from "node:fs";
-import { dirname, isAbsolute, relative, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { CliError } from "../../utils/cliError";
 import { fencedBlocks } from "../../utils/fences";
 import replaceAsync from "../../utils/replaceAsync";
@@ -36,7 +36,8 @@ const includes = async (
         return match;
       let [dirOrFile, ...exts] = `${p1}`.split(",");
       if (exts.length === 0) exts = ["sdf", "md"];
-      const realDirOrFile = `${file.substring(0, file.lastIndexOf("/"))}/${dirOrFile}`;
+      // dirname: the files of an included directory use backslashes on Windows
+      const realDirOrFile = join(dirname(file), dirOrFile);
       if (!existsSync(realDirOrFile))
         throw new CliError(
           `!include(${p1}) in ${relative(process.cwd(), path)}: ${dirOrFile} not found`,
