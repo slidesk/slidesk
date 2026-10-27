@@ -226,17 +226,31 @@ window.slidesk.onSocketMessage = (event) => {
     }
   } else window.slidesk.dispatch(data);
 };
+
+// key -> action; the keyboard plugin removes the keys it maps itself
+window.slidesk.keys = {
+  ArrowLeft: "previous",
+  ArrowRight: "next",
+  PageUp: "previous",
+  PageDown: "next",
+  " ": "next",
+  Home: "first",
+  End: "last",
+  b: "black",
+  ".": "black",
+  ArrowUp: "notes_up",
+  ArrowDown: "notes_down",
+};
+
 document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowLeft") {
-    send({ action: "previous" });
-    if (window.slidesk.channel) {
-      window.slidesk.channel.postMessage({ action: "previous" });
-    }
-  } else if (e.key === "ArrowRight") {
-    send({ action: "next" });
-    if (window.slidesk.channel) {
-      window.slidesk.channel.postMessage({ action: "next" });
-    }
+  const action = window.slidesk.keys[e.key];
+  if (!action) return;
+  e.preventDefault();
+  // the speaker view scrolls its notes, the rest drives the presentation
+  if (Object.hasOwn(window.slidesk, action)) window.slidesk[action]();
+  else {
+    send({ action });
+    if (window.slidesk.channel) window.slidesk.channel.postMessage({ action });
   }
 });
 

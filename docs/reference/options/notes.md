@@ -15,6 +15,8 @@ The speaker view shows the current slide, next slide, a timer, and your notes.
 
 When active, keyboard navigation works from the speaker view, not the presentation.
 
+In the speaker view, the presentation keys drive the talk, and the **up/down arrows** scroll the notes.
+
 Communication between views happens via `window.slidesk.io`:
 
 ```js
