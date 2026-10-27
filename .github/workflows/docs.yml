@@ -25,6 +25,11 @@ jobs:
           python-version: 3.x
       - run: pip install zensical
       - run: zensical build --clean
+      # the online demo, built with the SliDesk of this commit
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun src/index.ts save demo -t site/demo
+      - run: bun src/index.ts save demo -l fr -t site/demo/fr
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site

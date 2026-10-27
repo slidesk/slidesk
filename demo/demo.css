@@ -1,0 +1,36 @@
+:root {
+  --sd-heading2-size: 4vw;
+  --sd-text-size: 1.9vw;
+  --sd-primary-color: rgb(37, 186, 146);
+}
+
+.sd-slide pre {
+  font-size: 1.5vw;
+  text-align: left;
+  padding: 1vw 2vw;
+  border-radius: 0.6vw;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sd-slide a {
+  color: var(--sd-primary-color);
+}
+
+.sd-slide .hint {
+  font-size: 1.2vw;
+  opacity: 0.6;
+}
+
+.sd-slide .switch,
+.sd-slide .links {
+  font-size: 1.6vw;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4vw;
+  align-items: center;
+  width: 85vw;
+  text-align: left;
+}

@@ -1,0 +1,30 @@
+{
+  "default": true,
+  "translations": {
+    "coverTitle": "SliDesk",
+    "coverTagline": "Markdown slides with native translations and file includes. One binary, no build step.",
+    "navHint": "→ / ← or swipe to move between slides",
+    "markdownTitle": "Write in Markdown",
+    "markdownText": "No Vue, no React, no config: a <code>.md</code> file is a talk.",
+    "includesTitle": "Split it into files",
+    "includesText": "One <code>!include(slides)</code> pulls a whole directory, in order. This talk is built that way.",
+    "languagesTitle": "One talk, many languages",
+    "languagesText": "Slides hold <code>$$key$$</code> variables, the words live in <code>en.lang.json</code>, <code>fr.lang.json</code>…",
+    "switchLanguage": "<a href=\"fr/#3\">Voir cette démo en français →</a>",
+    "layoutsTitle": "Layouts",
+    "layoutsLeft": "Templates are plain HTML with named blocks. Themes, components and plugins are shared on the <a href=\"https://slidesk.link\">hub</a>.",
+    "speakerTitle": "A real speaker view",
+    "speakerNotes": "Notes, current and next slide",
+    "speakerTimers": "A timer per slide and checkpoints",
+    "speakerPhone": "Drive the talk from your phone with a QR code",
+    "openSpeakerView": "<a href=\"notes.html\" target=\"_blank\">Open the speaker view of this demo ↗</a>",
+    "shareTitle": "Export and share",
+    "shareText": "PDF, PowerPoint, a static site for GitHub or GitLab Pages, or hosted on slidesk.link.",
+    "importTitle": "Bring your existing decks",
+    "importText": "PowerPoint, Google Slides, Slidev and reveal.js decks become SliDesk talks.",
+    "telnetTitle": "Present from a terminal",
+    "telnetText": "Yes, really: <code>--telnet</code> serves a text version of your talk.",
+    "startTitle": "Get started",
+    "startLinks": "<a href=\"https://slidesk.github.io/slidesk/\">Documentation</a> · <a href=\"https://github.com/slidesk/slidesk\">GitHub</a> · <a href=\"https://slidesk.link\">Hub</a>"
+  }
+}
