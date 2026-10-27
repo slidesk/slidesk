@@ -80,18 +80,34 @@ describe("handleInput", () => {
     expect(session.currentSlide).toBe(0);
   });
 
-  it("jumps to the slide matching the pressed digit", () => {
-    const { socket } = fakeSocket();
-    const session = makeSession();
-    handleInput(socket, session, Buffer.from("3"));
-    expect(session.currentSlide).toBe(2);
+  it("goes to the slide typed, Enter included, past slide 9", async () => {
+    const { socket, writes } = fakeSocket();
+    const session = makeSession({ totalSlides: 12 });
+    await handleInput(socket, session, Buffer.from("1"));
+    await handleInput(socket, session, Buffer.from("2"));
+    expect(session.currentSlide).toBe(0);
+    expect(writes.join("")).toContain("Go to slide 12_");
+    await handleInput(socket, session, Buffer.from("\r\0"));
+    expect(session.currentSlide).toBe(11);
+    expect(session.typed).toBeUndefined();
   });
 
-  it("ignores a digit outside the deck", () => {
+  it("ignores a typed slide outside the deck", async () => {
     const { socket } = fakeSocket();
     const session = makeSession({ currentSlide: 1 });
-    handleInput(socket, session, Buffer.from("9"));
+    await handleInput(socket, session, Buffer.from("9"));
+    await handleInput(socket, session, Buffer.from("\r"));
     expect(session.currentSlide).toBe(1);
+  });
+
+  it("drops the typed digits on another key", async () => {
+    const { socket } = fakeSocket();
+    const session = makeSession();
+    await handleInput(socket, session, Buffer.from("3"));
+    await handleInput(socket, session, Buffer.from("\x1b[C"));
+    expect(session.currentSlide).toBe(1);
+    await handleInput(socket, session, Buffer.from("\r\n"));
+    expect(session.currentSlide).toBe(2);
   });
 
   it.each([["r"], ["R"]])("reloads the slide on %j", (key) => {

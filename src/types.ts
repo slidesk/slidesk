@@ -127,6 +127,8 @@ export interface SliDeskTelnetSession {
   loading: boolean;
   started: boolean;
   config: Required<SliDeskTelnetSlidesConfig>;
+  /** digits typed so far, the slide Enter goes to */
+  typed?: string;
 }
 
 export type BunSocket = Socket;

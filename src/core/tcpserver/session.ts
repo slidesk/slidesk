@@ -18,7 +18,9 @@ export function renderStatusBar(
 ) {
   const { currentSlide, totalSlides, cols, rows } = session;
   const left = " << >> Navigate  |  q Quit  |  r Reload ";
-  const right = ` Slide ${currentSlide + 1} / ${totalSlides} `;
+  const right = session.typed
+    ? ` Go to slide ${session.typed}_ `
+    : ` Slide ${currentSlide + 1} / ${totalSlides} `;
   const mid = " ".repeat(Math.max(0, cols - left.length - right.length));
   send(
     socket,
