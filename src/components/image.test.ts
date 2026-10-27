@@ -23,4 +23,22 @@ describe("image function", () => {
     const result = image(input);
     expect(result).toBe("Regular text with no image syntax");
   });
+
+  it("keeps $$ and $& of the talk as written", () => {
+    const result = image("!image(price.png, Costs $$ and $& less)");
+    expect(result).toContain('alt="Costs $$ and $&amp; less"');
+  });
+
+  it("keeps two images on one line apart", () => {
+    const result = image("!image(a.png, first) and !image(b.png, second)");
+    expect(result).toContain('data-src="a.png" alt="first"');
+    expect(result).toContain('data-src="b.png" alt="second"');
+    expect(result).toContain(" and <figure");
+  });
+
+  it("escapes the alt text, which the caption reuses", () => {
+    const result = image('!image(q.png, a "quoted" <word>,,,,true)');
+    expect(result).toContain('alt="a &quot;quoted&quot; &lt;word>"');
+    expect(result).toContain(">a &quot;quoted&quot; &lt;word></figcaption>");
+  });
 });
