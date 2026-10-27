@@ -66,7 +66,7 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 | Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Code highlighting | ✅ | ✅ | ✅ | ✅ | via plugin |
-| Math (LaTeX) | ✅ | ✅ | ✅ | ✅ | ✗ |
+| Math (LaTeX) | ✅ | ✅ | ✅ | ✅ | via plugin |
 | Overview of all slides | ✗ | ✅ | ✅ | via pdfpc | ✗ |
 | Draw on slides while presenting | ✗ | ✅ | via plugin | via pdfpc | ✗ |
 | Live preview in the editor | ✅ | ✅ | ✗ | ✅ | ✗ (live reload in the browser) |

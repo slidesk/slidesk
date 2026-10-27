@@ -221,6 +221,8 @@ Create `XX.lang.json` files; reference values with `$$key$$`; switch with `-l <c
 
 Install ready-made addons from the hub (https://slidesk.link):
 `slidesk plugin install @gouz/mermaid`, `slidesk theme install @gouz/night`, etc.
+LaTeX formulas need `slidesk plugin install @gouz/maths`, then a ```` ```math ```` block (keeps `\\`, `\,`…),
+`$$…$$` in the text for simple ones, or `` `$…$` `` inline code in a sentence; a single `$` stays text.
 `slidesk update` updates them all (or `slidesk update plugins`, `components`, `themes`, `templates`).
 Publish your own with `slidesk <plugin|theme|template|component> push <name>` after `slidesk link login`.
 

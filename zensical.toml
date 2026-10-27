@@ -86,6 +86,7 @@ nav = [
             "reference/syntax/images.md",
             "reference/syntax/includes.md",
             "reference/syntax/internationalisation.md",
+            "reference/syntax/maths.md",
             "reference/syntax/speaker-notes.md",
             "reference/syntax/urls.md"
         ]}

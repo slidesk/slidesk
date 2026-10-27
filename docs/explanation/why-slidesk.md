@@ -23,7 +23,7 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ telnet |
 | Embed raw HTML / Vue / React / Svelte | limited | Vue-centric | ✅ | ✗ (PDF) | ✅ unrestricted |
 | Code highlighting | ✅ | ✅ Shiki | ✅ bundled plugin | ✅ | via plugin (`@gouz/shiki`, `@gouz/highlightjs`) |
-| Math (LaTeX) | ✅ KaTeX / MathJax | ✅ KaTeX | ✅ bundled plugin | ✅ native | ✗ |
+| Math (LaTeX) | ✅ KaTeX / MathJax | ✅ KaTeX | ✅ bundled plugin | ✅ native | via plugin (`@gouz/maths`, KaTeX) |
 | Step-by-step reveal | fragmented lists | ✅ `v-click` | ✅ fragments | ✅ `#pause` (Touying, Polylux) | via plugin (`@gouz/steps`) |
 | Overview of all slides | ✗ | ✅ | ✅ | via pdfpc | ✗ |
 | Draw on slides while presenting | ✗ | ✅ | via plugin (chalkboard) | via pdfpc | ✗ |
