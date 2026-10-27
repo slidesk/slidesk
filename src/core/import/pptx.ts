@@ -2,8 +2,8 @@ import unzip from "../../utils/unzip";
 import scan, { attr, unescapeXML } from "./scan";
 import type { ImportedDeck, ImportedSlide } from "./types";
 
-const TITLE_PH = ["title", "ctrTitle"];
-const BULLET_PH = ["body", "subTitle", "outline"];
+const TITLE_PH = new Set(["title", "ctrTitle"]);
+const BULLET_PH = new Set(["body", "subTitle", "outline"]);
 
 const decode = (data?: Uint8Array) =>
   data ? new TextDecoder().decode(data) : "";
@@ -69,7 +69,7 @@ const tableMarkdown = (table: string, rels: Record<string, string>) => {
       scan(cell.inner, ["a:p"])
         .map((p) => paragraphText(p.inner, rels))
         .join(" ")
-        .replaceAll("|", "\\|"),
+        .replaceAll("|", String.raw`\|`),
     ),
   );
   if (!rows.length) return "";
@@ -86,12 +86,12 @@ const tableMarkdown = (table: string, rels: Record<string, string>) => {
 const shapeMarkdown = (shape: string, rels: Record<string, string>) => {
   const ph = scan(shape, ["p:ph"])[0];
   const phType = ph ? (attr(ph.attrs, "type") ?? "body") : null;
-  if (phType && TITLE_PH.includes(phType)) return "";
+  if (phType && TITLE_PH.has(phType)) return "";
 
   const table = scan(shape, ["a:tbl"])[0];
   if (table) return tableMarkdown(table.inner, rels);
 
-  const bulleted = phType !== null && BULLET_PH.includes(phType);
+  const bulleted = phType !== null && BULLET_PH.has(phType);
   return scan(shape, ["a:p"])
     .map((paragraph) => {
       const text = paragraphText(paragraph.inner, rels);
@@ -111,7 +111,7 @@ const shapeMarkdown = (shape: string, rels: Record<string, string>) => {
 const shapeTitle = (shape: string, rels: Record<string, string>) => {
   const ph = scan(shape, ["p:ph"])[0];
   const phType = ph ? attr(ph.attrs, "type") : null;
-  if (phType === null || !TITLE_PH.includes(phType)) return "";
+  if (phType === null || !TITLE_PH.has(phType)) return "";
   return scan(shape, ["a:p"])
     .map((p) => paragraphText(p.inner, rels))
     .filter((t) => t !== "")

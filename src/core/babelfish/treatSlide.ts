@@ -63,7 +63,7 @@ const treatTitle = (slide: string, templates: SliDeskTemplate) => {
   return { content, classes };
 };
 
-const treatSlide = async (
+const treatSlide = (
   slide: string,
   cptSlide: number,
   templates: SliDeskTemplate,

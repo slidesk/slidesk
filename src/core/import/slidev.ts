@@ -57,7 +57,7 @@ const split = (source: string): Chunk[] => {
 
   while (i < lines.length) {
     const line = lines[i];
-    const fenceMatch = line.match(FENCE);
+    const fenceMatch = FENCE.exec(line);
     if (fenceMatch) {
       if (fence === "") fence = fenceMatch[1];
       else if (line.trim().startsWith(fence)) fence = "";
@@ -76,7 +76,7 @@ const split = (source: string): Chunk[] => {
 };
 
 const takeNotes = (body: string) => {
-  const match = body.match(/<!--([\s\S]*?)-->\s*$/);
+  const match = /<!--([\s\S]*?)-->\s*$/.exec(body);
   if (!match) return { notes: "", rest: body.trim() };
   return {
     notes: match[1].trim(),

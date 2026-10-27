@@ -44,8 +44,8 @@ export const IAC_ENABLE_CHAR_MODE = Buffer.from([
   31, // DO NAWS   (Negotiate About Window Size)
 ]);
 
-const ESC = String.fromCharCode(27);
-const ANSI_ESCAPE_REGEX = new RegExp(`${ESC}\\[[^m]*m`, "g");
+const ESC = String.fromCodePoint(27);
+const ANSI_ESCAPE_REGEX = new RegExp(String.raw`${ESC}\[[^m]*m`, "g");
 
 export function parseNAWS(data: Buffer): { cols: number; rows: number } | null {
   // IAC SB NAWS <cols-hi> <cols-lo> <rows-hi> <rows-lo> IAC SE

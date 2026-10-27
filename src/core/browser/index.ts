@@ -31,9 +31,10 @@ const fallback = () => {
   const candidates = FALLBACKS[platform()] ?? [];
   return (
     candidates
-      .map((c) =>
-        c.startsWith("/") ? (existsSync(c) ? c : null) : Bun.which(c),
-      )
+      .map((c) => {
+        if (!c.startsWith("/")) return Bun.which(c);
+        return existsSync(c) ? c : null;
+      })
       .find((c) => c !== null && c !== undefined) ?? undefined
   );
 };
@@ -98,9 +99,7 @@ const launch = async (width: number, height: number): Promise<Page> => {
       return new Uint8Array(Buffer.from(data, "base64"));
     },
     screenshot: () => view.screenshot({ encoding: "buffer" }),
-    close: async () => {
-      view.close();
-    },
+    close: () => Promise.resolve(view.close()),
   };
 };
 

@@ -23,13 +23,10 @@ const collapse = (value: string) => value.replaceAll(/\s+/g, " ");
 
 const rawText = (nodes: Node[]): string =>
   nodes
-    .map((node) =>
-      node.type === "text"
-        ? node.value
-        : node.name.toLowerCase() === "br"
-          ? "\n"
-          : rawText(node.children),
-    )
+    .map((node) => {
+      if (node.type === "text") return node.value;
+      return node.name.toLowerCase() === "br" ? "\n" : rawText(node.children);
+    })
     .join("");
 
 const inline = (nodes: Node[]): string =>
@@ -77,9 +74,7 @@ const rawClass = (node: Node) => {
   const code = node.children.find(
     (child) => child.type === "element" && child.name.toLowerCase() === "code",
   );
-  return code && code.type === "element"
-    ? (attr(code.attrs, "class") ?? "")
-    : "";
+  return code?.type === "element" ? (attr(code.attrs, "class") ?? "") : "";
 };
 
 const list = (node: Node, ordered: boolean, depth: number): string => {
@@ -126,7 +121,7 @@ const table = (node: Node): string => {
             )
             .map((cell) =>
               cell.type === "element"
-                ? inline(cell.children).trim().replaceAll("|", "\\|")
+                ? inline(cell.children).trim().replaceAll("|", String.raw`\|`)
                 : "",
             ),
         );
@@ -173,8 +168,8 @@ const block = (nodes: Node[]): string[] => {
       out.push(list(node, name === "ol", 0));
     } else if (name === "pre") {
       const lang =
-        (attr(node.attrs, "class") ?? rawClass(node)).match(
-          /language-([\w+-]+)/,
+        /language-([\w+-]+)/.exec(
+          attr(node.attrs, "class") ?? rawClass(node),
         )?.[1] ?? "";
       out.push(
         `\`\`\`${lang}\n${rawText(node.children).replace(/^\n+|\s+$/g, "")}\n\`\`\``,

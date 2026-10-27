@@ -29,7 +29,7 @@ const getPresentation = async (
   const slides: string[] = [];
   let cpt = 0;
   for (const slide of fusion.split("\n## "))
-    slides.push(await treatSlide(slide, cpt++, templates));
+    slides.push(treatSlide(slide, cpt++, templates));
   return slides.join("");
 };
 

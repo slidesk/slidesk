@@ -41,11 +41,13 @@ export const unescapeXML = (value: string) =>
 
 export const attr = (attrs: string, name: string) => {
   const quoted =
-    attrs.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*"([^"]*)"`))?.[1] ??
-    attrs.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*'([^']*)'`))?.[1];
+    new RegExp(String.raw`(?:^|\s)${name}\s*=\s*"([^"]*)"`).exec(attrs)?.[1] ??
+    new RegExp(String.raw`(?:^|\s)${name}\s*=\s*'([^']*)'`).exec(attrs)?.[1];
   if (quoted !== undefined) return quoted;
   // valueless html attribute, e.g. <section data-markdown>
-  return new RegExp(`(?:^|\\s)${name}(?=\\s|$)`).test(attrs) ? "" : null;
+  return new RegExp(String.raw`(?:^|\s)${name}(?=\s|$)`).test(attrs)
+    ? ""
+    : null;
 };
 
 const skipQuoted = (source: string, from: number) => {
@@ -66,7 +68,7 @@ const tagAt = (source: string, start: number) => {
   const end = skipQuoted(source, start + 1);
   if (end === -1) return null;
   const raw = source.slice(start + 1, end);
-  const name = raw.match(/^[^\s/>]+/)?.[0] ?? "";
+  const name = /^[^\s/>]+/.exec(raw)?.[0] ?? "";
   return {
     name,
     attrs: raw.slice(name.length).replace(/\/$/, ""),
@@ -159,8 +161,8 @@ export const parse = (source: string): Node[] => {
   const roots: Node[] = [];
   const stack: Node[] = [];
   const push = (node: Node) => {
-    const parent = stack[stack.length - 1];
-    if (parent && parent.type === "element") parent.children.push(node);
+    const parent = stack.at(-1);
+    if (parent?.type === "element") parent.children.push(node);
     else roots.push(node);
   };
   const text = (value: string) => {

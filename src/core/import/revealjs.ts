@@ -85,7 +85,7 @@ const revealjs = (source: string): ImportedDeck => {
       node.type === "element" &&
       (attr(node.attrs, "class") ?? "").split(/\s+/).includes("slides"),
   );
-  if (container === null || container.type !== "element")
+  if (container?.type !== "element")
     throw new Error(
       "no reveal.js slides container found (expected an element with class 'slides')",
     );
@@ -111,7 +111,7 @@ const revealjs = (source: string): ImportedDeck => {
 
   const head = find(tree, (node) => isElement(node, "title"));
   const title =
-    (head && head.type === "element" ? rawText(head.children).trim() : "") ||
+    (head?.type === "element" ? rawText(head.children).trim() : "") ||
     slides.find((s) => s.title !== "")?.title ||
     "Imported presentation";
 

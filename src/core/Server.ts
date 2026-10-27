@@ -94,13 +94,10 @@ export default class SlideskServer {
           slideskEnv?.CERT === undefined
             ? undefined
             : Bun.file(slideskEnv.CERT),
-        passphrase:
-          slideskEnv?.PASSPHRASE === undefined
-            ? undefined
-            : slideskEnv.PASSPHRASE,
+        passphrase: slideskEnv?.PASSPHRASE,
       },
     });
-    await display(slideskEnv, options, token);
+    display(slideskEnv, options, token);
   }
 
   setFiles(files: SliDeskFile) {
