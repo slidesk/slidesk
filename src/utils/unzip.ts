@@ -14,6 +14,41 @@ const findEOCD = (data: Uint8Array) => {
   return -1;
 };
 
+/** Reads the central directory entry at `offset`: its name, method and data. */
+const readEntry = (archive: Uint8Array, dv: DataView, offset: number) => {
+  if (dv.getUint32(offset, true) !== CENTRAL_SIG)
+    throw new Error("corrupted zip central directory");
+  const method = dv.getUint16(offset + 10, true);
+  const compSize = dv.getUint32(offset + 20, true);
+  const nameLen = dv.getUint16(offset + 28, true);
+  const extraLen = dv.getUint16(offset + 30, true);
+  const commentLen = dv.getUint16(offset + 32, true);
+  const localOffset = dv.getUint32(offset + 42, true);
+  const name = new TextDecoder().decode(
+    archive.subarray(offset + 46, offset + 46 + nameLen),
+  );
+  const localNameLen = dv.getUint16(localOffset + 26, true);
+  const localExtraLen = dv.getUint16(localOffset + 28, true);
+  const start = localOffset + 30 + localNameLen + localExtraLen;
+  return {
+    name,
+    method,
+    payload: archive.subarray(start, start + compSize),
+    next: offset + 46 + nameLen + extraLen + commentLen,
+  };
+};
+
+/** Inflates a deflated entry without letting it grow past `budget` bytes. */
+const inflate = (payload: Uint8Array, budget: number) => {
+  if (budget < 1) return null;
+  try {
+    return new Uint8Array(inflateRawSync(payload, { maxOutputLength: budget }));
+  } catch (e) {
+    if ((e as { code?: string }).code === "ERR_BUFFER_TOO_LARGE") return null;
+    throw e;
+  }
+};
+
 const unzip = (archive: Uint8Array, max = MAX_UNZIPPED) => {
   const dv = new DataView(
     archive.buffer,
@@ -22,55 +57,23 @@ const unzip = (archive: Uint8Array, max = MAX_UNZIPPED) => {
   );
   const eocd = findEOCD(archive);
   if (eocd === -1) throw new Error("not a zip archive");
-
-  const total = dv.getUint16(eocd + 10, true);
-  let offset = dv.getUint32(eocd + 16, true);
-  const files: Record<string, Uint8Array> = {};
-  let unzipped = 0;
   const tooLarge = () =>
     new Error(
       `this archive expands beyond ${Math.round(max / 1024 / 1024)} MB, it is not imported`,
     );
 
-  for (let i = 0; i < total; i += 1) {
-    if (dv.getUint32(offset, true) !== CENTRAL_SIG)
-      throw new Error("corrupted zip central directory");
-    const method = dv.getUint16(offset + 10, true);
-    const compSize = dv.getUint32(offset + 20, true);
-    const nameLen = dv.getUint16(offset + 28, true);
-    const extraLen = dv.getUint16(offset + 30, true);
-    const commentLen = dv.getUint16(offset + 32, true);
-    const localOffset = dv.getUint32(offset + 42, true);
-    const name = new TextDecoder().decode(
-      archive.subarray(offset + 46, offset + 46 + nameLen),
-    );
-
-    const localNameLen = dv.getUint16(localOffset + 26, true);
-    const localExtraLen = dv.getUint16(localOffset + 28, true);
-    const start = localOffset + 30 + localNameLen + localExtraLen;
-    const payload = archive.subarray(start, start + compSize);
-    if (!name.endsWith("/")) {
-      const budget = max - unzipped;
-      if (budget <= 0) throw tooLarge();
-      let content = payload;
-      if (method !== 0)
-        try {
-          content = new Uint8Array(
-            inflateRawSync(payload, { maxOutputLength: budget }),
-          );
-        } catch (e) {
-          if ((e as { code?: string }).code === "ERR_BUFFER_TOO_LARGE")
-            throw tooLarge();
-          throw e;
-        }
-      unzipped += content.length;
-      if (unzipped > max) throw tooLarge();
-      files[name] = content;
-    }
-
-    offset += 46 + nameLen + extraLen + commentLen;
+  const files: Record<string, Uint8Array> = {};
+  let unzipped = 0;
+  let offset = dv.getUint32(eocd + 16, true);
+  for (let i = 0; i < dv.getUint16(eocd + 10, true); i += 1) {
+    const { name, method, payload, next } = readEntry(archive, dv, offset);
+    offset = next;
+    if (name.endsWith("/")) continue;
+    const content = method === 0 ? payload : inflate(payload, max - unzipped);
+    if (content === null || unzipped + content.length > max) throw tooLarge();
+    unzipped += content.length;
+    files[name] = content;
   }
-
   return files;
 };
 
