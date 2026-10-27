@@ -7,7 +7,7 @@ import {
   mock,
   spyOn,
 } from "bun:test";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   ExitError,
@@ -233,6 +233,12 @@ describe("plugin command", () => {
     expect(urls[1]).toBe(`${LINK}/addons/download/plugin/bob/timer`);
   });
 
+  it("encodes the search term", async () => {
+    const urls = stubFetch(async () => new Response("", { status: 404 }));
+    await run(["search", "c#/x", "--slidesk-link-url", LINK]);
+    expect(urls[0]).toBe(`${LINK}/addons/search/plugin/c%23%2Fx`);
+  });
+
   it("exits when the search finds nothing", async () => {
     stubFetch(async () => new Response("", { status: 404 }));
     expect(await run(["search", "nope", "--slidesk-link-url", LINK])).toBe(1);
@@ -326,6 +332,16 @@ describe("addon safety", () => {
     expect(existsSync(join(cwd.dir, "plugins/bob__timer/plugin.json"))).toBe(
       true,
     );
+  });
+
+  it("keeps the installed plugin when the update is not a tarball", async () => {
+    installedPlugin("bob__timer");
+    stubFetch(async () => new Response("<html>not a tarball</html>"));
+    await expect(pluginInstall("bob__timer", LINK, true)).rejects.toThrow();
+    expect(existsSync(join(cwd.dir, "plugins/bob__timer/plugin.json"))).toBe(
+      true,
+    );
+    expect(readdirSync(join(cwd.dir, "plugins"))).toEqual(["bob__timer"]);
   });
 
   it("refuses names that escape the plugins directory", async () => {

@@ -161,6 +161,21 @@ if (build.exitCode !== 0) {
   check("present frees its port when it quits", after === undefined);
 }
 
+/** Polls the page until `expression` holds, at most `ms`: a slow runner gets the time it needs. */
+const until = async (
+  page: { evaluate: <T>(expression: string) => Promise<T> },
+  expression: string,
+  ms = 10_000,
+) => {
+  for (let waited = 0; waited < ms; waited += 100) {
+    // polling: each attempt waits for the previous one
+    if (await page.evaluate<boolean>(`!!(${expression})`).catch(() => false))
+      // NOSONAR
+      return;
+    await Bun.sleep(100); // NOSONAR
+  }
+};
+
 // the browser side: what #346 fixed was only visible in a real page
 const page = await launch(800, 600).catch((e) => {
   // a missing browser must not hide these checks in CI
@@ -216,7 +231,7 @@ if (page) {
       },
     });
     await page.goto(`http://localhost:${files.port}/index.html`);
-    await Bun.sleep(1500);
+    await until(page, "window.slidesk?.slides?.length");
     await page.evaluate(
       "(() => { window.__timeouts = 0; const set = window.setTimeout; window.setTimeout = (...a) => { window.__timeouts += 1; return set(...a); }; for (let i = 0; i < 3; i += 1) window.slidesk.next(); return 1; })()",
     );
@@ -249,13 +264,16 @@ if (page) {
     let present = start();
     await waitFor(`http://localhost:${port}/`);
     await page.goto(`http://localhost:${port}/#1`);
-    await Bun.sleep(1000);
+    await until(page, "window.slidesk?.io?.readyState === 1");
     await page.evaluate("(window.__marker = 'stale', 1)");
     await quit(present);
     await Bun.sleep(1000);
     present = start();
     await waitFor(`http://localhost:${port}/`);
-    await Bun.sleep(4000);
+    await until(
+      page,
+      "window.__marker === undefined && window.slidesk?.io?.readyState === 1",
+    );
     const state = await page.evaluate<string>(
       "JSON.stringify([window.__marker ?? 'reloaded', window.slidesk.io?.readyState, window.slidesk.currentSlide])",
     );

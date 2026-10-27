@@ -27,6 +27,32 @@ describe("hubFetch", () => {
   });
 });
 
+describe("hubFetch timeout", () => {
+  it("gives up on a request that gets no answer, not on an upload", async () => {
+    const signals: (AbortSignal | null | undefined)[] = [];
+    fetchSpy = spyOn(globalThis, "fetch").mockImplementation((async (
+      _: string,
+      init?: RequestInit,
+    ) => {
+      signals.push(init?.signal);
+      return new Response("ok");
+    }) as never);
+    await hubFetch("https://link.test/x");
+    await hubFetch("https://link.test/x", { method: "post", body: "data" });
+    expect(signals[0]).toBeInstanceOf(AbortSignal);
+    expect(signals[1]).toBeUndefined();
+  });
+
+  it("reports a hub that does not answer in time", async () => {
+    fetchSpy = spyOn(globalThis, "fetch").mockImplementation((async () => {
+      throw new DOMException("timed out", "TimeoutError");
+    }) as never);
+    expect(hubFetch("https://link.test/x")).rejects.toThrow(
+      "https://link.test/x did not answer within 60s",
+    );
+  });
+});
+
 describe("withTempDir", () => {
   it("removes the directory even when its user fails", async () => {
     let used = "";

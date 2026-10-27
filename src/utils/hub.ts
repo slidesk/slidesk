@@ -5,11 +5,19 @@ import type { BunFile } from "bun";
 import { create } from "tar";
 import { CliError } from "./cliError";
 
+const TIMEOUT = 60_000;
+
 /** fetch towards slidesk.link, reporting an unreachable hub rather than a stack trace. */
 export const hubFetch = async (url: string, init?: RequestInit) => {
   try {
-    return await fetch(url, init);
-  } catch {
+    // a stalled network must not hang the command; an upload may take longer
+    return await fetch(url, {
+      signal: init?.body ? undefined : AbortSignal.timeout(TIMEOUT),
+      ...init,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "TimeoutError")
+      throw new CliError(`${url} did not answer within ${TIMEOUT / 1000}s`);
     throw new CliError(`Cannot reach ${url}, check your connection`);
   }
 };
