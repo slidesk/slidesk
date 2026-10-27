@@ -85,4 +85,22 @@ describe("includes function", () => {
     expect(result).not.toContain("\r");
     expect(result.split("\n## ")).toHaveLength(2);
   });
+
+  it("leaves a directive shown in a code block as text", async () => {
+    talk({
+      "main.md":
+        "## Code\n\n```markdown\n!include(part.md)\n```\n\n!include(part.md)\n",
+      "part.md": "## Part\n",
+    });
+    const result = await includes(join(scratch, "main.md"));
+    expect(result).toContain("```markdown\n!include(part.md)\n```");
+    expect(result.match(/## Part/g)).toHaveLength(1);
+  });
+
+  it("treats an unclosed code block as running to the end", async () => {
+    talk({ "main.md": "~~~\n!include(missing.md)\n" });
+    expect(await includes(join(scratch, "main.md"))).toContain(
+      "!include(missing.md)",
+    );
+  });
 });

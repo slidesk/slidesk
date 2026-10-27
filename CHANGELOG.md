@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### 🐛 Fixes
+
+- An `!include(...)` shown in a fenced code block is displayed instead of being run (it failed when the path did not exist from there).
+
 ## 2.20.1
 
 ### ⚠️ Behaviour changes
