@@ -36,12 +36,17 @@ Type a number        jump to that slide
 
 | Key | Action |
 |-----|--------|
-| Right / Down arrow | Next slide |
-| Left / Up arrow | Previous slide |
-| Number + Enter | Go to slide |
+| Right arrow, Page Down, Space | Next slide |
+| Left arrow, Page Up | Previous slide |
+| Home / End | First / last slide |
+| b or . | Black screen, press again to come back |
 | f | Toggle fullscreen |
 | Esc | Exit fullscreen |
 
 Swipe gestures are supported on touch devices.
+
+In the speaker view, the same keys drive the presentation, except **f**, which only acts on its own window, and the **up/down arrows** scroll the notes.
+
+The keys do nothing while you type in a field, and the shortcuts with Cmd, Ctrl or Alt are left to the browser. A held key moves one slide only. The [keyboard plugin](https://github.com/slidesk/extras/tree/main/plugins/keyboard) can bind other keys, or take over these ones, with a `keyboard.json` file.
 
 The talk is served to everyone who can reach your machine. Hidden files and directories (`.git`, `.env`…), `.toml` files, `.pem` and `.key` files, and the `KEY` and `CERT` files of the configuration are never served.
