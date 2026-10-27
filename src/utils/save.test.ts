@@ -85,6 +85,28 @@ describe("save", () => {
     );
   });
 
+  it("leaves the private files out of the export, which a deploy publishes", async () => {
+    const talk = join(scratch, "talk");
+    cpSync(fixture, talk, { recursive: true });
+    const secrets = [
+      ".env.local",
+      ".npmrc",
+      ".github/workflows/slidesk.yml",
+      "certs/key.pem",
+      "certs/tls.key",
+      "certs/tls.crt",
+      "link.yml",
+    ];
+    for (const f of secrets) {
+      mkdirSync(join(talk, f, ".."), { recursive: true });
+      writeFileSync(join(talk, f), "secret");
+    }
+    const target = join(scratch, "public");
+    await save(talk, { target }, { slidesk: { CERT: "certs/tls.crt" } });
+    for (const f of secrets) expect(existsSync(join(target, f))).toBe(false);
+    expect(existsSync(join(target, "themes/dark/theme.css"))).toBe(true);
+  });
+
   it("leaves the components out of the export", async () => {
     const target = join(scratch, "nocomponents");
     await save(fixture, { target });
