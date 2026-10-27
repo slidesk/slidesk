@@ -55,15 +55,15 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 - **Present from a terminal.** `--telnet` serves a text version of your talk. Yes, really.
 - **Extensible.** Themes, templates, components and plugins, shared on the [hub](https://slidesk.link).
 
-| | Marp | Slidev | reveal.js | SliDesk |
-| --- | --- | --- | --- | --- |
-| Authoring format | Markdown | Markdown + Vue | HTML / Markdown | Markdown |
-| Install footprint | Node / CLI | Node project | Node project | **single binary** |
-| Multi-language from one source | ✗ | ✗ | ✗ | ✅ |
-| Directory includes | ✗ | per file | per section | ✅ |
-| Speaker view with timers | limited | ✅ | ✅ | ✅ |
-| Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✅ |
-| Present from a terminal | ✗ | ✗ | ✗ | ✅ |
+| | Marp | Slidev | reveal.js | Typst | SliDesk |
+| --- | --- | --- | --- | --- | --- |
+| Authoring format | Markdown | Markdown + Vue | HTML / Markdown | Typst markup | Markdown |
+| Install footprint | Node / CLI | Node project | Node project | single binary | **single binary** |
+| Multi-language from one source | ✗ | ✗ | ✗ | ✗ (scriptable) | ✅ |
+| Directory includes | ✗ | per file | per section | per file | ✅ |
+| Speaker view with timers | limited | ✅ | ✅ | via pdfpc | ✅ |
+| Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✗ | ✅ |
+| Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ |
 
 More in [Why SliDesk?](https://slidesk.github.io/slidesk/explanation/why-slidesk/)
 
