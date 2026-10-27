@@ -172,7 +172,7 @@ const block = (nodes: Node[]): string[] => {
           attr(node.attrs, "class") ?? rawClass(node),
         )?.[1] ?? "";
       out.push(
-        `\`\`\`${lang}\n${rawText(node.children).replace(/^\n+|\s+$/g, "")}\n\`\`\``,
+        `\`\`\`${lang}\n${rawText(node.children).replace(/^\n+/, "").trimEnd()}\n\`\`\``,
       );
     } else if (name === "blockquote") {
       out.push(

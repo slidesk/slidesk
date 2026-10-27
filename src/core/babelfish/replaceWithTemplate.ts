@@ -20,7 +20,7 @@ const replaceWithTemplate = (
   return text
     .replaceAll("<sd-title />", `<h2>${title}</h2>`)
     .replaceAll("<sd-content />", newContent.replaceAll(/<h2>(.*)<\/h2>/g, ""))
-    .replaceAll(/<sd-[^>]+\s*\/>/g, "");
+    .replaceAll(/<sd-[^>]+\/>/g, "");
 };
 
 export default replaceWithTemplate;

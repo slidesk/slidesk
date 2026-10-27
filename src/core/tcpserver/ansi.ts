@@ -60,7 +60,7 @@ export function parseNAWS(data: Buffer): { cols: number; rows: number } | null {
 }
 
 export function stripTags(html: string): string {
-  return html.replaceAll(/<[^>]+>/g, "").trim();
+  return html.replaceAll(/<[^<>]+>/g, "").trim();
 }
 
 export function htmlToAnsi(html: string, width: number): string {
@@ -140,7 +140,7 @@ export function htmlToAnsi(html: string, width: number): string {
       )
       .replaceAll(/<div[^>]*>([\s\S]*?)<\/div>/gi, (_, c) => `${c}\r\n`)
       // Remaining tags
-      .replaceAll(/<[^>]+>/g, "")
+      .replaceAll(/<[^<>]+>/g, "")
       // HTML entities
       .replaceAll("&amp;", "&")
       .replaceAll("&lt;", "<")
