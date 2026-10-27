@@ -4,7 +4,7 @@ import start from "../../utils/start";
 
 const { log } = console;
 
-const display = async (
+const display = (
   env: SliDeskSettings,
   options: SliDeskServerOptions,
   token = "",

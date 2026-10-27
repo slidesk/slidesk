@@ -8,13 +8,13 @@ const loadExternalPlugins = async (
   sdfPath: string,
   theme = "",
 ) => {
-  const plugins: SliDeskPlugin[] = [];
-  if (existsSync(pluginsDir))
-    for (const plugin of readdirSync(pluginsDir)) {
-      const path = `${pluginsDir}/${plugin}/plugin.json`;
-      const pluginFile = Bun.file(path);
-      const exists = await pluginFile.exists();
-      if (exists) {
+  if (!existsSync(pluginsDir)) return [];
+  const loaded = await Promise.all(
+    readdirSync(pluginsDir).map(
+      async (plugin): Promise<SliDeskPlugin | undefined> => {
+        const path = `${pluginsDir}/${plugin}/plugin.json`;
+        const pluginFile = Bun.file(path);
+        if (!(await pluginFile.exists())) return undefined;
         const json = await skipBrokenPlugin(path, async () => {
           const json: Omit<SliDeskPlugin, "name"> = await pluginFile.json();
           if (Array.isArray(json.addHTMLFromFiles)) {
@@ -35,34 +35,35 @@ const loadExternalPlugins = async (
           }
           return json;
         });
-        if (json) plugins.push({ ...json, name: plugin, theme });
-      }
-    }
-  return plugins;
+        return json ? { ...json, name: plugin, theme } : undefined;
+      },
+    ),
+  );
+  return loaded.filter((p): p is SliDeskPlugin => p !== undefined);
 };
 
 const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
-  const plugins: SliDeskPlugin[] = [];
-  plugins.push(...(await loadExternalPlugins(`${sdfPath}/plugins`, sdfPath)));
   const common = commonDir(sdfPath, env);
-  if (common)
-    plugins.push(...(await loadExternalPlugins(`${common}/plugins`, sdfPath)));
-  if (existsSync(`${sdfPath}/themes`)) {
-    const themes = readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
-      .filter((d) => d.isDirectory())
-      .map((d) => d.name);
-    for (const t of themes) {
-      if (existsSync(`${sdfPath}/themes/${t}/plugins`))
-        plugins.push(
-          ...(await loadExternalPlugins(
-            `${sdfPath}/themes/${t}/plugins`,
-            sdfPath,
-            `/themes/${t}/`,
-          )),
-        );
-    }
-  }
-  return plugins;
+  const themes = existsSync(`${sdfPath}/themes`)
+    ? readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name)
+    : [];
+  // the talk, then its COMMON_DIR, then each theme: the order is kept
+  const sources = [
+    loadExternalPlugins(`${sdfPath}/plugins`, sdfPath),
+    common
+      ? loadExternalPlugins(`${common}/plugins`, sdfPath)
+      : Promise.resolve([]),
+    ...themes.map((t) =>
+      loadExternalPlugins(
+        `${sdfPath}/themes/${t}/plugins`,
+        sdfPath,
+        `/themes/${t}/`,
+      ),
+    ),
+  ];
+  return (await Promise.all(sources)).flat();
 };
 
 export default loadPlugins;

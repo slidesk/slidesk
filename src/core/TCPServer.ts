@@ -98,10 +98,7 @@ export function startTelnetServer(
       key: slideskEnv?.KEY === undefined ? undefined : Bun.file(slideskEnv.KEY),
       cert:
         slideskEnv?.CERT === undefined ? undefined : Bun.file(slideskEnv.CERT),
-      passphrase:
-        slideskEnv?.PASSPHRASE === undefined
-          ? undefined
-          : slideskEnv.PASSPHRASE,
+      passphrase: slideskEnv?.PASSPHRASE,
     },
   });
 

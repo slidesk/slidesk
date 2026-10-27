@@ -41,11 +41,13 @@ export const unescapeXML = (value: string) =>
 
 export const attr = (attrs: string, name: string) => {
   const quoted =
-    attrs.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*"([^"]*)"`))?.[1] ??
-    attrs.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*'([^']*)'`))?.[1];
+    new RegExp(String.raw`(?:^|\s)${name}\s*=\s*"([^"]*)"`).exec(attrs)?.[1] ??
+    new RegExp(String.raw`(?:^|\s)${name}\s*=\s*'([^']*)'`).exec(attrs)?.[1];
   if (quoted !== undefined) return quoted;
   // valueless html attribute, e.g. <section data-markdown>
-  return new RegExp(`(?:^|\\s)${name}(?=\\s|$)`).test(attrs) ? "" : null;
+  return new RegExp(String.raw`(?:^|\s)${name}(?=\s|$)`).test(attrs)
+    ? ""
+    : null;
 };
 
 const skipQuoted = (source: string, from: number) => {
@@ -66,13 +68,19 @@ const tagAt = (source: string, start: number) => {
   const end = skipQuoted(source, start + 1);
   if (end === -1) return null;
   const raw = source.slice(start + 1, end);
-  const name = raw.match(/^[^\s/>]+/)?.[0] ?? "";
+  const name = /^[^\s/>]+/.exec(raw)?.[0] ?? "";
   return {
     name,
     attrs: raw.slice(name.length).replace(/\/$/, ""),
     selfClosing: raw.endsWith("/") || VOID_TAGS.has(name.toLowerCase()),
     end,
   };
+};
+
+/** Index just after `marker` searched from `from`, or the end of `source`. */
+const after = (source: string, from: number, marker: string) => {
+  const end = source.indexOf(marker, from);
+  return end === -1 ? source.length : end + marker.length;
 };
 
 const closeOf = (source: string, name: string, from: number) => {
@@ -84,14 +92,11 @@ const closeOf = (source: string, name: string, from: number) => {
     if (source.startsWith("</", next)) {
       const end = source.indexOf(">", next);
       if (end === -1) return -1;
-      if (source.slice(next + 2, end).trim() === name) {
-        depth -= 1;
-        if (depth === 0) return next;
-      }
+      if (source.slice(next + 2, end).trim() === name) depth -= 1;
+      if (depth === 0) return next;
       i = end + 1;
     } else if (source.startsWith("<!--", next)) {
-      const end = source.indexOf("-->", next);
-      i = end === -1 ? source.length : end + 3;
+      i = after(source, next, "-->");
     } else {
       const tag = tagAt(source, next);
       if (tag === null) return -1;
@@ -100,6 +105,33 @@ const closeOf = (source: string, name: string, from: number) => {
     }
   }
   return -1;
+};
+
+/** Where scanning resumes after a comment, CDATA, closing tag or declaration at `at`; -1 for an opening tag. */
+const skipMarkup = (source: string, at: number) => {
+  if (source.startsWith("<!--", at)) return after(source, at, "-->");
+  if (source.startsWith("<![CDATA[", at)) return after(source, at, "]]>");
+  if (source.startsWith("</", at) || source.startsWith("<?", at))
+    return after(source, at, ">");
+  return -1;
+};
+
+type Tag = NonNullable<ReturnType<typeof tagAt>>;
+
+/** Records the element opened by `tag` and returns where scanning resumes. */
+const collect = (source: string, tag: Tag, found: Element[]) => {
+  if (tag.selfClosing) {
+    found.push({ name: tag.name, attrs: tag.attrs, inner: "" });
+    return tag.end + 1;
+  }
+  const close = closeOf(source, tag.name, tag.end + 1);
+  if (close === -1) return tag.end + 1;
+  found.push({
+    name: tag.name,
+    attrs: tag.attrs,
+    inner: source.slice(tag.end + 1, close),
+  });
+  return close + tag.name.length + 3;
 };
 
 /**
@@ -113,38 +145,14 @@ const scan = (source: string, names: string[]): Element[] => {
   while (i < source.length) {
     const next = source.indexOf("<", i);
     if (next === -1) break;
-    if (source.startsWith("<!--", next)) {
-      const end = source.indexOf("-->", next);
-      i = end === -1 ? source.length : end + 3;
-    } else if (source.startsWith("<![CDATA[", next)) {
-      const end = source.indexOf("]]>", next);
-      i = end === -1 ? source.length : end + 3;
-    } else if (source.startsWith("</", next) || source.startsWith("<?", next)) {
-      const end = source.indexOf(">", next);
-      i = end === -1 ? source.length : end + 1;
-    } else {
-      const tag = tagAt(source, next);
-      if (tag === null) break;
-      const match = wanted.has(tag.name);
-      if (match && tag.selfClosing) {
-        found.push({ name: tag.name, attrs: tag.attrs, inner: "" });
-        i = tag.end + 1;
-      } else if (match) {
-        const close = closeOf(source, tag.name, tag.end + 1);
-        if (close === -1) {
-          i = tag.end + 1;
-        } else {
-          found.push({
-            name: tag.name,
-            attrs: tag.attrs,
-            inner: source.slice(tag.end + 1, close),
-          });
-          i = close + tag.name.length + 3;
-        }
-      } else {
-        i = tag.end + 1;
-      }
+    const skipped = skipMarkup(source, next);
+    if (skipped !== -1) {
+      i = skipped;
+      continue;
     }
+    const tag = tagAt(source, next);
+    if (tag === null) break;
+    i = wanted.has(tag.name) ? collect(source, tag, found) : tag.end + 1;
   }
   return found;
 };
@@ -155,12 +163,49 @@ export type Node =
 
 const RAW_TAGS = new Set(["script", "style"]);
 
+/** Closes the element named by the closing tag at `at`; returns where parsing resumes. */
+const closeElement = (source: string, at: number, stack: Node[]) => {
+  const end = source.indexOf(">", at);
+  const name = source.slice(at + 2, end === -1 ? source.length : end).trim();
+  const open = stack.findLastIndex(
+    (node) => node.type === "element" && node.name === name,
+  );
+  if (open !== -1) stack.length = open;
+  return end === -1 ? source.length : end + 1;
+};
+
+/** Opens `tag` as a child of the current element; returns where parsing resumes. */
+const openElement = (
+  source: string,
+  tag: Tag,
+  push: (node: Node) => void,
+  stack: Node[],
+) => {
+  const node: Node = {
+    type: "element",
+    name: tag.name,
+    attrs: tag.attrs,
+    children: [],
+  };
+  push(node);
+  if (!RAW_TAGS.has(tag.name.toLowerCase())) {
+    if (!tag.selfClosing) stack.push(node);
+    return tag.end + 1;
+  }
+  // script and style hold raw text up to their closing tag
+  const close = source.indexOf(`</${tag.name}`, tag.end + 1);
+  const end = close === -1 ? source.length : close;
+  node.children.push({ type: "text", value: source.slice(tag.end + 1, end) });
+  const afterClose = source.indexOf(">", end);
+  return close === -1 || afterClose === -1 ? source.length : afterClose + 1;
+};
+
 export const parse = (source: string): Node[] => {
   const roots: Node[] = [];
   const stack: Node[] = [];
   const push = (node: Node) => {
-    const parent = stack[stack.length - 1];
-    if (parent && parent.type === "element") parent.children.push(node);
+    const parent = stack.at(-1);
+    if (parent?.type === "element") parent.children.push(node);
     else roots.push(node);
   };
   const text = (value: string) => {
@@ -176,51 +221,22 @@ export const parse = (source: string): Node[] => {
     }
     text(source.slice(i, next));
     if (source.startsWith("<!--", next)) {
-      const end = source.indexOf("-->", next);
-      i = end === -1 ? source.length : end + 3;
+      i = after(source, next, "-->");
     } else if (source.startsWith("<![CDATA[", next)) {
       const end = source.indexOf("]]>", next);
       text(source.slice(next + 9, end === -1 ? source.length : end));
-      i = end === -1 ? source.length : end + 3;
+      i = after(source, next, "]]>");
     } else if (source.startsWith("<!", next) || source.startsWith("<?", next)) {
-      const end = source.indexOf(">", next);
-      i = end === -1 ? source.length : end + 1;
+      i = after(source, next, ">");
     } else if (source.startsWith("</", next)) {
-      const end = source.indexOf(">", next);
-      const name = source
-        .slice(next + 2, end === -1 ? source.length : end)
-        .trim();
-      const at = stack.findLastIndex(
-        (node) => node.type === "element" && node.name === name,
-      );
-      if (at !== -1) stack.length = at;
-      i = end === -1 ? source.length : end + 1;
+      i = closeElement(source, next, stack);
     } else {
       const tag = tagAt(source, next);
       if (tag === null) {
         text(source.slice(next));
         break;
       }
-      const node: Node = {
-        type: "element",
-        name: tag.name,
-        attrs: tag.attrs,
-        children: [],
-      };
-      push(node);
-      if (RAW_TAGS.has(tag.name.toLowerCase())) {
-        const close = source.indexOf(`</${tag.name}`, tag.end + 1);
-        const end = close === -1 ? source.length : close;
-        node.children.push({
-          type: "text",
-          value: source.slice(tag.end + 1, end),
-        });
-        const after = source.indexOf(">", end);
-        i = close === -1 || after === -1 ? source.length : after + 1;
-      } else {
-        if (!tag.selfClosing) stack.push(node);
-        i = tag.end + 1;
-      }
+      i = openElement(source, tag, push, stack);
     }
   }
   return roots;

@@ -11,9 +11,10 @@ const walk = async (
   onSlide?: (num: number) => Promise<void> | void,
 ) => {
   for (let i = 0; i < total; i += 1) {
-    await page.evaluate(`window.slidesk.goto(${i})`);
-    await Bun.sleep(transition + SETTLE);
-    await onSlide?.(i + 1);
+    // sequential on purpose: the page shows one slide at a time
+    await page.evaluate(`window.slidesk.goto(${i})`); // NOSONAR
+    await Bun.sleep(transition + SETTLE); // NOSONAR
+    await onSlide?.(i + 1); // NOSONAR
   }
 };
 

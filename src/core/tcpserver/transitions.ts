@@ -8,6 +8,6 @@ export function send(socket: BunSocket, data: string) {
 export async function transition(socket: BunSocket, rows: number) {
   for (let r = 1; r <= rows - 2; r++) {
     send(socket, ANSI.moveTo(r, 1) + ANSI.eraseLine);
-    await Bun.sleep(12);
+    await Bun.sleep(12); // NOSONAR: the wipe is animated line by line
   }
 }

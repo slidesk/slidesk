@@ -1,6 +1,6 @@
 const ID = /\/presentation\/d\/(?:e\/)?([\w-]+)/;
 
-export const presentationId = (source: string) => source.match(ID)?.[1] ?? null;
+export const presentationId = (source: string) => ID.exec(source)?.[1] ?? null;
 
 const gslides = async (source: string) => {
   const id = presentationId(source);

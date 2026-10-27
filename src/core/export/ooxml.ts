@@ -15,7 +15,7 @@ export const escapeXML = (value: string) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&apos;");
 
-const range = (total: number) => [...Array(total).keys()];
+const range = (total: number) => Array.from({ length: total }, (_, i) => i);
 
 const EMPTY_TREE = `<p:spTree>
   <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>

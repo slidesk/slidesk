@@ -10,6 +10,14 @@ describe("unzip function", () => {
     expect(() => unzip(archive, 1_000)).toThrow("expands beyond");
   });
 
+  it("refuses a deflated entry once the limit is reached exactly", () => {
+    const archive = zip([
+      { name: "a.bin", data: new Uint8Array(1_000), store: true },
+      { name: "b.txt", data: "hello ".repeat(50) },
+    ]);
+    expect(() => unzip(archive, 1_000)).toThrow("expands beyond");
+  });
+
   it("refuses entries that inflate beyond the limit together", () => {
     const archive = zip([
       { name: "a.bin", data: new Uint8Array(600) },

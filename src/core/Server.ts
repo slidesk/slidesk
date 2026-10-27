@@ -22,15 +22,14 @@ export default class SlideskServer {
   /** (Re)loads the configuration and the addRoutes / addWS hooks of the talk and common plugins. */
   async loadPlugins(env: SliDeskEnv) {
     serverEnv = env;
-    const plugins: SliDeskServerPlugin[] = [];
     const common = commonDir(serverPath, env);
-    for (const dir of [
-      `${serverPath}/plugins`,
-      common ? `${common}/plugins` : "",
-    ])
-      if (dir && existsSync(dir))
-        plugins.push(...(await getPlugins(dir, serverPath)));
-    serverPlugins = plugins;
+    const dirs = [`${serverPath}/plugins`, common ? `${common}/plugins` : ""];
+    const plugins = await Promise.all(
+      dirs
+        .filter((dir) => dir && existsSync(dir))
+        .map((dir) => getPlugins(dir, serverPath)),
+    );
+    serverPlugins = plugins.flat();
   }
 
   async create(
@@ -94,13 +93,10 @@ export default class SlideskServer {
           slideskEnv?.CERT === undefined
             ? undefined
             : Bun.file(slideskEnv.CERT),
-        passphrase:
-          slideskEnv?.PASSPHRASE === undefined
-            ? undefined
-            : slideskEnv.PASSPHRASE,
+        passphrase: slideskEnv?.PASSPHRASE,
       },
     });
-    await display(slideskEnv, options, token);
+    display(slideskEnv, options, token);
   }
 
   setFiles(files: SliDeskFile) {

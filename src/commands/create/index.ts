@@ -10,12 +10,14 @@ const { log } = console;
 
 const createDefault = async (dirName: string, responseTitle: string) => {
   mkdirSync(dirName, { recursive: true });
-  for (const file of Object.keys(defaultThemeFiles)) {
-    let content = defaultThemeFiles[file];
-    if (file === "main.md")
-      content = content.replace("# TITLE", ` ${responseTitle}`);
-    await Bun.write(`${dirName}/${file}`, content, { createPath: true });
-  }
+  await Promise.all(
+    Object.keys(defaultThemeFiles).map((file) => {
+      let content = defaultThemeFiles[file];
+      if (file === "main.md")
+        content = content.replace("# TITLE", ` ${responseTitle}`);
+      return Bun.write(`${dirName}/${file}`, content, { createPath: true });
+    }),
+  );
 };
 
 const create = async (talk: string) => {

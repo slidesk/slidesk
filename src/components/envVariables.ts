@@ -19,6 +19,8 @@ const getByPath = (env: SliDeskEnv, path: string) =>
 const envVariables = (data: string, env: SliDeskEnv) =>
   data.replaceAll(/\+\+([A-Za-z_]\w*(?:\.\w+)*)\+\+/g, (match, key) => {
     const value = getByPath(env, key);
+    if (typeof value === "object" && value !== null)
+      return JSON.stringify(value);
     if (value !== undefined) return String(value);
     console.warn(`⚠️  ${match} is not set in the configuration`);
     return match;

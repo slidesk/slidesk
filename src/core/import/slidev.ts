@@ -21,6 +21,14 @@ const looksLikeYAML = (lines: string[]) =>
   !lines.some((line) => HEADING.test(line)) &&
   lines.every((line) => line.trim() === "" || YAML_LINE.test(line));
 
+/** The code fence still open after `line`: opened by a ``` or ~~~ line, closed by the same marker. */
+const fenceAfter = (fence: string, line: string) => {
+  const marker = FENCE.exec(line)?.[1];
+  if (!marker) return fence;
+  if (fence === "") return marker;
+  return line.trim().startsWith(fence) ? "" : fence;
+};
+
 /**
  * Slidev separates slides with a bare `---`; a slide may open with its own
  * frontmatter, closed by a second `---`. Fenced code blocks are left alone.
@@ -57,16 +65,12 @@ const split = (source: string): Chunk[] => {
 
   while (i < lines.length) {
     const line = lines[i];
-    const fenceMatch = line.match(FENCE);
-    if (fenceMatch) {
-      if (fence === "") fence = fenceMatch[1];
-      else if (line.trim().startsWith(fence)) fence = "";
-      body.push(line);
-      i += 1;
-    } else if (fence === "" && SEPARATOR.test(line)) {
+    // a fence line never matches the separator, so it is safe to test first
+    if (fence === "" && SEPARATOR.test(line)) {
       flush();
       if (!readFrontmatter()) i += 1;
     } else {
+      fence = fenceAfter(fence, line);
       body.push(line);
       i += 1;
     }
@@ -76,7 +80,7 @@ const split = (source: string): Chunk[] => {
 };
 
 const takeNotes = (body: string) => {
-  const match = body.match(/<!--([\s\S]*?)-->\s*$/);
+  const match = /<!--([\s\S]*?)-->\s*$/.exec(body);
   if (!match) return { notes: "", rest: body.trim() };
   return {
     notes: match[1].trim(),

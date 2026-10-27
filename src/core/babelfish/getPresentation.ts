@@ -22,14 +22,15 @@ const getPresentation = async (
   // custom components
   for (const c of components) {
     // a fresh query defeats the module cache, so an edited component is picked up while watching
-    const { default: comp } = await import(`${c}?v=${++importCount}`);
-    fusion = await comp(fusion);
+    // sequential on purpose: each component transforms the previous output
+    const { default: comp } = await import(`${c}?v=${++importCount}`); // NOSONAR
+    fusion = await comp(fusion); // NOSONAR
   }
   // slice & treatment
   const slides: string[] = [];
   let cpt = 0;
   for (const slide of fusion.split("\n## "))
-    slides.push(await treatSlide(slide, cpt++, templates));
+    slides.push(treatSlide(slide, cpt++, templates));
   return slides.join("");
 };
 
