@@ -27,6 +27,30 @@ afterAll(() => {
 });
 
 describe("getFile", () => {
+  it("keeps hidden files, the configuration and the TLS keys private", () => {
+    mkdirSync(join(root, ".git"), { recursive: true });
+    mkdirSync(join(root, "certs"), { recursive: true });
+    for (const f of [
+      ".git/config",
+      ".env",
+      "slidesk.toml",
+      "certs/key.pem",
+      "certs/tls.crt",
+    ])
+      writeFileSync(join(root, f), "secret");
+    const env = { slidesk: { CERT: join(root, "certs/tls.crt") } };
+    for (const p of [
+      "/.git/config",
+      "/.env",
+      "/%2eenv",
+      "/slidesk.toml",
+      "/certs/key.pem",
+      "/certs/tls.crt",
+      "/%E0",
+    ])
+      expect(getFile(request(p), root, env).status).toBe(404);
+  });
+
   it("serves an existing file with its content type", async () => {
     const res = getFile(request("/styles.css"), root, {});
     expect(res.status).toBe(200);

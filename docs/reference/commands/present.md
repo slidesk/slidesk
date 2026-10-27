@@ -43,3 +43,5 @@ Type a number        jump to that slide
 | Esc | Exit fullscreen |
 
 Swipe gestures are supported on touch devices.
+
+The talk is served to everyone who can reach your machine. Hidden files and directories (`.git`, `.env`…), `.toml` files, `.pem` and `.key` files, and the `KEY` and `CERT` files of the configuration are never served.
