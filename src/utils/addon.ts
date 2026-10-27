@@ -105,8 +105,9 @@ const searchCmd = (kind: AddonKind) =>
       });
       // multiselect returns a symbol when the prompt is cancelled
       if (Array.isArray(selection))
+        // one at a time: components share components/link.tgz while installing
         for (const p of selection)
-          log(await addonInstall(kind, p, opts["slidesk-link-url"]));
+          log(await addonInstall(kind, p, opts["slidesk-link-url"])); // NOSONAR
     });
 
 /** The manifest sent along an addon: plugin.json, or the preview images of a theme. */

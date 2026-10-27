@@ -6,15 +6,17 @@ const loadFavicon = async (sdfPath: string) => {
     { name: "favicon.ico", type: "image/x-icon" },
     { name: "favicon.png", type: "image/png" },
   ];
-  for (const f of ftypes) {
-    if (await Bun.file(`${sdfPath}/${f.name}`).exists()) {
-      return {
-        name: f.name,
-        content: await Bun.file(`${sdfPath}/${f.name}`).bytes(),
-        type: f.type,
-      };
-    }
-  }
+  const found = await Promise.all(
+    ftypes.map((f) => Bun.file(`${sdfPath}/${f.name}`).exists()),
+  );
+  // the first existing one wins, in the order above
+  const f = ftypes[found.indexOf(true)];
+  if (f)
+    return {
+      name: f.name,
+      content: await Bun.file(`${sdfPath}/${f.name}`).bytes(),
+      type: f.type,
+    };
   return {
     name: "favicon.svg",
     content: faviconSVG,

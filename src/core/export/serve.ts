@@ -11,11 +11,14 @@ import fetch from "../server/fetch";
 import getPlugins from "../server/getPlugins";
 
 const serve = async (files: SliDeskFile, env: SliDeskEnv, talkdir: string) => {
-  const plugins: SliDeskServerPlugin[] = [];
   const common = commonDir(talkdir, env);
-  for (const dir of [`${talkdir}/plugins`, common ? `${common}/plugins` : ""])
-    if (dir && existsSync(dir))
-      plugins.push(...(await getPlugins(dir, talkdir)));
+  const plugins: SliDeskServerPlugin[] = (
+    await Promise.all(
+      [`${talkdir}/plugins`, common ? `${common}/plugins` : ""]
+        .filter((dir) => dir && existsSync(dir))
+        .map((dir) => getPlugins(dir, talkdir)),
+    )
+  ).flat();
 
   const server: Server<SliDeskSocketData> = Bun.serve<SliDeskSocketData>({
     port: 0,

@@ -33,10 +33,9 @@ const includes = async (
       const files = globSync(
         exts.map((ext) => `${realDirOrFile}/**/*.${ext}`),
       ).sort((a, b) => a.localeCompare(b));
-      const res: string[] = [];
-      for (const file of files) {
-        res.push(await includes(file, including));
-      }
+      const res = await Promise.all(
+        files.map((file) => includes(file, including)),
+      );
       return res.join("\n");
     }
     return includes(realDirOrFile, including);

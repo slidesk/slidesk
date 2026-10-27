@@ -7,13 +7,12 @@ let importCount = 0;
 
 const getPlugins = async (pluginsDir: string, serverPath: string) => {
   const hook = (file: string) => pluginFilePath(pluginsDir, serverPath, file);
-  const serverPlugins: SliDeskServerPlugin[] = [];
-  for (const plugin of readdirSync(pluginsDir)) {
-    const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
-    const pluginFile = Bun.file(pluginPath);
-    const exists = await pluginFile.exists();
-    if (exists) {
-      const obj = await skipBrokenPlugin(pluginPath, async () => {
+  const loaded = await Promise.all(
+    readdirSync(pluginsDir).map(async (plugin) => {
+      const pluginPath = `${pluginsDir}/${plugin}/plugin.json`;
+      const pluginFile = Bun.file(pluginPath);
+      if (!(await pluginFile.exists())) return undefined;
+      return skipBrokenPlugin(pluginPath, async () => {
         const json: Partial<SliDeskPlugin> = await pluginFile.json();
         if (!json.addRoutes && !json.addWS) return undefined;
         const obj: SliDeskServerPlugin = { name: plugin };
@@ -27,10 +26,9 @@ const getPlugins = async (pluginsDir: string, serverPath: string) => {
           ).default;
         return obj;
       });
-      if (obj) serverPlugins.push(obj);
-    }
-  }
-  return serverPlugins;
+    }),
+  );
+  return loaded.filter((p): p is SliDeskServerPlugin => p !== undefined);
 };
 
 export default getPlugins;

@@ -63,10 +63,11 @@ const talk = (port: number, main?: string) => {
 
 const waitFor = async (url: string) => {
   for (let i = 0; i < 100; i += 1) {
+    // polling: each attempt waits for the previous one
     try {
-      return await fetch(url);
+      return await fetch(url); // NOSONAR
     } catch {
-      await Bun.sleep(100);
+      await Bun.sleep(100); // NOSONAR
     }
   }
   return undefined;

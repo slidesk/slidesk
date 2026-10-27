@@ -12,14 +12,22 @@ const SKILLS = {
 
 const skillsCmd = new Clipse("skills", "add AI skills for your presentations");
 skillsCmd.action(async () => {
-  for (const [name, url] of Object.entries(SKILLS)) {
-    const response = await hubFetch(url);
-    if (!response.ok)
-      throw new CliError(
-        `Cannot download the ${name} skill (${response.status})`,
-      );
-    await Bun.write(`.claude/skills/${name}/SKILL.md`, await response.text());
-  }
+  const skills = await Promise.all(
+    Object.entries(SKILLS).map(async ([name, url]) => {
+      const response = await hubFetch(url);
+      if (!response.ok)
+        throw new CliError(
+          `Cannot download the ${name} skill (${response.status})`,
+        );
+      return [name, await response.text()] as const;
+    }),
+  );
+  // nothing is written unless every skill could be downloaded
+  await Promise.all(
+    skills.map(([name, text]) =>
+      Bun.write(`.claude/skills/${name}/SKILL.md`, text),
+    ),
+  );
   const { log } = console;
   log("skills added successfully");
 });
