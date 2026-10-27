@@ -86,21 +86,23 @@ const open = (width: number, height: number) => {
   }
 };
 
-const launch = async (width: number, height: number): Promise<Page> => {
-  const view = open(width, height);
-  return {
-    goto: (url) => view.navigate(url),
-    evaluate: <T>(expression: string) =>
-      view.evaluate(expression) as Promise<T>,
-    printToPDF: async (params) => {
-      const { data } = (await view.cdp("Page.printToPDF", params)) as {
-        data: string;
-      };
-      return new Uint8Array(Buffer.from(data, "base64"));
-    },
-    screenshot: () => view.screenshot({ encoding: "buffer" }),
-    close: () => Promise.resolve(view.close()),
-  };
-};
+// a missing browser throws inside the executor, so it comes out as a rejection
+const launch = (width: number, height: number) =>
+  new Promise<Page>((resolve) => {
+    const view = open(width, height);
+    resolve({
+      goto: (url) => view.navigate(url),
+      evaluate: <T>(expression: string) =>
+        view.evaluate(expression) as Promise<T>,
+      printToPDF: async (params) => {
+        const { data } = (await view.cdp("Page.printToPDF", params)) as {
+          data: string;
+        };
+        return new Uint8Array(Buffer.from(data, "base64"));
+      },
+      screenshot: () => view.screenshot({ encoding: "buffer" }),
+      close: () => Promise.resolve(view.close()),
+    });
+  });
 
 export default launch;
