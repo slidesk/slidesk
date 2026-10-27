@@ -2,31 +2,37 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
-## Unreleased
+## 2.20.1
+
+### ⚠️ Behaviour changes
+
+- `save` and `link host` follow the `[slidesk]` section of `slidesk.toml` again (title, transition, `COMMON_DIR`…): since 2.16.0, exported and hosted talks ignored it.
+- A `--conf` file that does not exist, an invalid `slidesk.toml` and a `--lang` without its `.lang.json` are errors (exit code 1), instead of being silently ignored.
+- A `++KEY++` missing from the configuration stays visible on the slide, with a warning, instead of disappearing.
+
+### 🔒 Security
+
+- `import` refuses an archive that expands beyond 500 MB: a 1 MB crafted `.pptx` used to take 2 GB of memory.
+- `import` keeps only the file name of a `.pptx` media, so a crafted name cannot write outside the talk on Windows.
+- Websocket messages only call functions defined on `window.slidesk`.
 
 ### 🐛 Fixes
 
+- **Windows**: talks saved with CRLF line endings no longer merge an included slide into the previous one.
+- `++KEY++` variables: a line with two `++` that are not a variable (`C++ vs C++`, `i++; j++` in code) lost the text between them.
+- `present --telnet` crashed the whole talk when `HTTPS` was on; the telnet version now follows each rebuild too, and prints a TLS client command when `KEY` / `CERT` are set, since a plain `telnet` cannot connect then.
 - A page that cannot reach its websocket (an export served over http, or a page left open after `present` quit) no longer polls every 5 ms forever: each slide change used to add three endless loops.
 - Pages reconnect when `present` is restarted, and reload to show the new build.
-- Websocket messages only call functions defined on `window.slidesk`.
-- `import` refuses an archive that expands beyond 500 MB: a 1 MB crafted `.pptx` used to take 2 GB of memory.
-- `import` keeps only the file name of a `.pptx` media, so a crafted name cannot write outside the talk on Windows.
-- `save` and `link host` ignored the whole `[slidesk]` section of the configuration since 2.16.0 (title, transition, `COMMON_DIR`…): exported and hosted talks now follow it.
-- `COMMON_DIR` works as an absolute path, as documented; it was always read as relative to the talk.
-- The files of a `COMMON_DIR` plugin (`addHTMLFromFiles`, `addRoutes`, `addWS`) are looked up in `COMMON_DIR`, then in the talk.
-- `save` exports the `COMMON_DIR` files (`-=[COMMON]=-/…`) and plugins, which were missing from the export.
-- An invalid `slidesk.toml` is reported in one line naming the file, instead of a stack trace; a `--conf` file that does not exist is an error instead of being ignored.
 - `present` reads `slidesk.toml` again on every change: editing the title, the transition or the timers no longer needs a restart.
-- `--lang xx` without an `xx.lang.json` is an error listing the available languages, instead of silently showing the default one.
+- `COMMON_DIR` works as an absolute path, as documented; the files of its plugins (`addHTMLFromFiles`, `addRoutes`, `addWS`) are looked up in it, and `save` exports its files and plugins, which were missing.
+- The PDF export no longer adds pages after the slides for the html that plugins inject.
+- An invalid `slidesk.toml` is reported in one line naming the file, instead of a stack trace.
 - An `!image(...)` whose file does not exist is reported with a warning instead of becoming a broken image without notice.
-- The PDF export no longer adds pages after the slides for the html that plugins inject (`addHTML`, `addHTMLFromFiles`).
-- Talks saved with Windows line endings (CRLF) no longer merge an included slide into the previous one.
-- `++KEY++` variables: a line with two `++` that are not a variable (`C++ vs C++`, `i++; j++` in code) lost the text between them; only key names are replaced now, and a key missing from the configuration stays visible with a warning instead of disappearing.
-- `present --telnet` crashed the whole talk when `HTTPS` was on; the telnet version now follows each rebuild too (it kept the slides of the start), and prints a TLS client command when `KEY` / `CERT` are set, since a plain `telnet` cannot connect then.
 
 ### 🧰 Internals
 
-- The smoke tests drive a headless browser too: an exported page served over http, and a page left open while `present` restarts.
+- The smoke tests drive a headless browser too (an exported page served over http, a page left open while `present` restarts) and count the pages of a PDF export.
+- A flaky watcher test is stabilized, and the plugin loaders no longer import each other.
 
 ## 2.20.0
 
