@@ -1,4 +1,6 @@
 [test]
+# the console spy has to be in place before a module pins console.error
+preload = ["./src/__testing__/console.ts"]
 coverage = true
 coverageReporter = ["text", "lcov"]
 coverageSkipTestFiles = true
