@@ -2,6 +2,49 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.21.0
+
+### ✨ Features
+
+- **`slidesk update`** updates every addon of the talk installed from slidesk.link; `slidesk update plugins` (or `components`, `themes`, `templates`) one kind only. An addon that fails is reported and the others are updated anyway.
+- **Keyboard**: Space, Page Up / Page Down, Home / End (first / last slide) and `b` or `.` (black screen) join the arrows and `f`. In the speaker view, the same keys drive the talk and ↑ / ↓ scroll the notes. The keyboard plugin can take over any of them with its `keyboard.json`.
+
+### ⚠️ Behaviour changes
+
+- **Components are installed as `components/user__name.mjs`**, so that `slidesk update` knows where they come from. A component installed by an older SliDesk (`components/name.mjs`) is left alone by `update`: install it again once with `slidesk component install user/name`, which also removes the old copy.
+- `slidesk create` refuses a directory that is not empty, instead of overwriting its `main.md` and slides.
+- In telnet, a slide is reached with its number **then Enter**, as the docs said: a digit used to jump at once, so slides 10 and up could not be reached.
+- An image path containing `)` is no longer read whole: `!image(...)` stops at the first `)`, so that two images on one line stay two images.
+
+### 🔒 Security
+
+- **`present` no longer serves private files of the talk** to the network: hidden files and directories (`.git`, `.env`, `.npmrc`…), `.toml` files (with `PASSPHRASE`), `.pem` and `.key` files, and the `KEY` / `CERT` files answer 404.
+- **`save` no longer exports them** either, nor `link.yml`: a deploy published `.env.local`, `.npmrc`, TLS keys or `.github/`. If a talk was deployed before, deploy it again, and revoke any secret it held.
+- `slidesk link login` only accepts the token of the login it started: a page open at the same time could log the CLI in to another account. This needs slidesk.link to hand back the login state; `--with-token` works in any case.
+- The speaker notes are no longer printed on the audience's telnet terminal.
+
+### 🐛 Fixes
+
+- **Fullscreen**: `f` left fullscreen at once, the page reloading on the resize it caused.
+- Keys typed in a field, a contenteditable or the xterm plugin, and Cmd / Ctrl / Alt shortcuts (Cmd+F…) are left alone; a held key moves one slide only.
+- A link to a slide that no longer exists (one removed while presenting) or an old `#slug` link showed no slide at all: the closest slide is shown.
+- Speaker view: ↑ / ↓ scroll the notes from where they are, a new slide shows its notes from the top, and a corrupted `localStorage` no longer stops it.
+- **Windows**: `present --open` and `link login` could not open the browser (`start` is not a program); without any browser, the URL is printed instead. `!include` inside an included directory finds its files.
+- `link login` says what it does: the URL to open, "already logged in", "logged in".
+- Requests to slidesk.link give up after 60 s instead of hanging; an update whose download is broken keeps the installed addon; a search with `#`, `?` or `/` works.
+- `save` with a relative path runs the components of the talk; components run from the talk directory.
+- `slidesk create "My Talk"` puts the split template into `my-talk/` instead of a stray `My Talk/`, keeps the letters of accented names (`Démo` → `demo`, not `dmo`), and keeps the talk when slidesk.link cannot be reached.
+- `!image(...)`: `$$` and `$&` kept as written, two images on one line, quotes in the alt text.
+- In telnet, Enter sent as `\r\0` (macOS and BSD telnet) is understood.
+
+### 📝 Documentation
+
+- The keyboard shortcuts, `window.slidesk` (`first()`, `last()`, `black()`, `keys`, `ignoreKey()`), the telnet keys and the websocket actions match the code; a page for `slidesk update`.
+
+### 🧰 Internals
+
+- The tests no longer depend on the order of their files (the console spy is preloaded), and the smoke test waits for the page instead of fixed delays.
+
 ## 2.20.3
 
 ### 🐛 Fixes
