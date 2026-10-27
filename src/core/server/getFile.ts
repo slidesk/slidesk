@@ -6,7 +6,8 @@ const COMMON = "/-=[COMMON]=-/";
 
 // hidden files (.git, .env), the configuration and TLS keys stay on the
 // speaker's machine: the talk is served to everyone on the network
-const PRIVATE = /(^|\/)\.|\.(toml|pem|key)$/i;
+const HIDDEN = /(?:^|\/)\./;
+const SECRET = /\.(?:toml|pem|key)$/i;
 
 const isPrivate = (fileurl: string, path: string, env: SliDeskEnv) => {
   let decoded: string;
@@ -15,7 +16,7 @@ const isPrivate = (fileurl: string, path: string, env: SliDeskEnv) => {
   } catch {
     return true;
   }
-  if (PRIVATE.test(decoded)) return true;
+  if (HIDDEN.test(decoded) || SECRET.test(decoded)) return true;
   const served = resolve(join(path, decoded));
   // KEY and CERT are read from the working directory, or set from the talk
   return [env.slidesk?.KEY, env.slidesk?.CERT].some(
