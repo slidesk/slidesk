@@ -136,9 +136,25 @@ jobs:
           owner: gouz
           repo: homebrew-tools
           version: ${{ github.ref_name }}
+          # the action reads `fields` and `auto_merge` (its action.yml lists
+          # other names, hence a harmless "unexpected input" warning)
           fields: ${{ toJSON(needs.build_release.outputs) }}
           token: ${{ secrets.BREW_TOKEN }}
-          auto_merge: true
+          # merging right after creating the pull request races GitHub's
+          # mergeability check ("405 Base branch was modified"): merged below
+          auto_merge: false
+      - name: Merge formula pull request
+        env:
+          GH_TOKEN: ${{ secrets.BREW_TOKEN }}
+          TITLE: Update slidesk.rb to ${{ github.ref_name }}
+        run: |
+          pr=$(gh pr list --repo gouz/homebrew-tools --state open --search "$TITLE in:title" --json number,title --jq "map(select(.title == env.TITLE))[0].number")
+          if [ -z "$pr" ]; then echo "no open pull request titled: $TITLE"; exit 1; fi
+          for attempt in 1 2 3 4 5 6; do
+            gh pr merge "$pr" --repo gouz/homebrew-tools --merge && exit 0
+            sleep 10
+          done
+          exit 1
 
   push_docker_hub:
     name: Push on Docker Hub
