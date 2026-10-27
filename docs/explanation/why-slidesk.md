@@ -10,21 +10,23 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 
 ## Compared to the alternatives
 
-| | Marp | Slidev | Reveal.js | SliDesk |
-| --- | --- | --- | --- | --- |
-| Authoring format | Markdown | Markdown + Vue | HTML / Markdown | Markdown (`.md` / `.sdf`) |
-| Runtime you must learn | — | Vue + Vite | JS API | — |
-| Install footprint | Node / CLI | Node project | Node project | single Bun binary |
-| Multi-language from one source | ✗ | ✗ | ✗ | ✅ `.lang.json` + `--lang` |
-| Slide includes | ✗ (plugin / preprocessor) | per file, via `src:` frontmatter | external Markdown per section | ✅ file **or** directory, one line |
-| Speaker view (next slide, timers, notes) | limited | ✅ | ✅ | ✅ |
-| Live reload while editing | ✅ | ✅ | via tooling | ✅ |
-| Present from a terminal | ✗ | ✗ | ✗ | ✅ telnet |
-| Embed raw HTML / Vue / React / Svelte | limited | Vue-centric | ✅ | ✅ unrestricted |
+| | Marp | Slidev | Reveal.js | Typst | SliDesk |
+| --- | --- | --- | --- | --- | --- |
+| Authoring format | Markdown | Markdown + Vue | HTML / Markdown | Typst markup | Markdown (`.md` / `.sdf`) |
+| Runtime you must learn | — | Vue + Vite | JS API | Typst language + a slides package (Touying, Polylux) | — |
+| Install footprint | Node / CLI | Node project | Node project | single binary | single Bun binary |
+| Output | HTML, PDF, PPTX | web app, PDF, PPTX | web page (PDF via print) | PDF (HTML experimental) | web page, PDF, PPTX |
+| Multi-language from one source | ✗ | ✗ | ✗ | ✗ (scriptable with `sys.inputs`) | ✅ `.lang.json` + `--lang` |
+| Slide includes | ✗ (plugin / preprocessor) | per file, via `src:` frontmatter | external Markdown per section | per file, `#include` | ✅ file **or** directory, one line |
+| Speaker view (next slide, timers, notes) | limited | ✅ | ✅ | via an external viewer (pdfpc) | ✅ |
+| Live reload while editing | ✅ | ✅ | via tooling | ✅ `typst watch` | ✅ |
+| Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ telnet |
+| Embed raw HTML / Vue / React / Svelte | limited | Vue-centric | ✅ | ✗ (PDF) | ✅ unrestricted |
 
 To be precise about where SliDesk actually differs:
 
-- **Multi-language from one source is the outlier.** Marp, Slidev, and Reveal.js have no built-in equivalent — the usual answer is "duplicate the deck" or "write a preprocessor".
+- **Multi-language from one source is the outlier.** Marp, Slidev, Reveal.js and Typst have no built-in equivalent — the usual answer is "duplicate the deck", "write a preprocessor" or, with Typst, script it yourself from `sys.inputs`.
+- **Typst is the closest on the install side**: it is a single binary too, and a superb typesetter. But you write Typst markup rather than Markdown, slides come from a package, the result is a PDF, and the speaker view needs an external viewer such as pdfpc.
 - **Includes exist elsewhere, but they cost you the project.** Slidev imports one file per `src:` frontmatter block, and you get that only inside a Vue/Vite app. SliDesk includes a file *or a whole directory* with a single `!include()` line, from a plain Markdown file and a single binary.
 
 So the claim is not "SliDesk does more than everyone". It is that **Markdown-first + native i18n + directory-level includes, with no front-end project to maintain**, is a combination you cannot currently get anywhere else.

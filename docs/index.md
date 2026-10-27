@@ -72,14 +72,14 @@ Details: [internationalisation syntax](reference/syntax/internationalisation), [
 
 ## Where SliDesk fits
 
-| | Marp | Slidev | SliDesk |
-| --- | --- | --- | --- |
-| Markdown-first | ✅ | ✅ | ✅ |
-| Runtime to learn | — | Vue + Vite | — |
-| Multi-language from one source | ✗ | ✗ | ✅ `.lang.json` + `--lang` |
-| Slide includes | ✗ | per file, via `src:` frontmatter | ✅ file **or** directory, one line |
-| Speaker view with timers & notes | limited | ✅ | ✅ |
-| Present from a terminal | ✗ | ✗ | ✅ telnet |
+| | Marp | Slidev | Typst | SliDesk |
+| --- | --- | --- | --- | --- |
+| Markdown-first | ✅ | ✅ | ✗ Typst markup | ✅ |
+| Runtime to learn | — | Vue + Vite | Typst language + a slides package | — |
+| Multi-language from one source | ✗ | ✗ | ✗ (scriptable) | ✅ `.lang.json` + `--lang` |
+| Slide includes | ✗ | per file, via `src:` frontmatter | per file, `#include` | ✅ file **or** directory, one line |
+| Speaker view with timers & notes | limited | ✅ | via pdfpc | ✅ |
+| Present from a terminal | ✗ | ✗ | ✗ | ✅ telnet |
 
 Read the full rationale in [Why SliDesk?](explanation/why-slidesk).
 
