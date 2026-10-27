@@ -6,7 +6,7 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 
 ### 🐛 Fixes
 
-- An `!include(...)` shown in a fenced code block is displayed instead of being run (it failed when the path did not exist from there).
+- A fenced code block is shown as written: a `## ` inside it no longer starts a new slide, and `!include(...)`, `/* notes */` and `!image(...)` inside it are no longer run (showing SliDesk syntax on a slide broke the slide or the build).
 
 ## 2.20.1
 

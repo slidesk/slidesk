@@ -51,4 +51,9 @@ describe("checkImages", () => {
     checkImages("!image(-=[COMMON]=-/missing.svg)", talk, env);
     expect(warnings()).toContain("image not found: -=[COMMON]=-/missing.svg");
   });
+
+  it("does not check an image shown in a code block", () => {
+    checkImages("```md\n!image(assets/gone.png)\n```", talk, {});
+    expect(captured.warns).toEqual([]);
+  });
 });
