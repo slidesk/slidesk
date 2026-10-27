@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### 🧰 Internals
+
+- The release finds the Homebrew formula pull request right after its creation: it looked it up through GitHub's search, which missed it for 2.20.2 and 2.21.0, and the formula had to be merged by hand.
+
 ## 2.21.0
 
 ### ✨ Features

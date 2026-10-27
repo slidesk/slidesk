@@ -147,8 +147,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BREW_TOKEN }}
           TITLE: Update slidesk.rb to ${{ github.ref_name }}
+        # the open pull requests are listed rather than searched: the search
+        # index missed the one created a second before (2.20.2, 2.21.0)
         run: |
-          pr=$(gh pr list --repo gouz/homebrew-tools --state open --search "$TITLE in:title" --json number,title --jq "map(select(.title == env.TITLE))[0].number")
+          for attempt in 1 2 3 4 5 6; do
+            pr=$(gh pr list --repo gouz/homebrew-tools --state open --json number,title --jq "map(select(.title == env.TITLE))[0].number // empty")
+            [ -n "$pr" ] && break
+            sleep 10
+          done
           if [ -z "$pr" ]; then echo "no open pull request titled: $TITLE"; exit 1; fi
           for attempt in 1 2 3 4 5 6; do
             gh pr merge "$pr" --repo gouz/homebrew-tools --merge && exit 0
