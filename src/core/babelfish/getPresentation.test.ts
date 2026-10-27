@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import getPresentation from "./getPresentation";
@@ -72,6 +72,20 @@ describe("getPresentation", () => {
     expect(await getPresentation("## X\n", {}, [component], {})).toContain(
       "v2",
     );
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("runs the components from the talk directory", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "slidesk-cwd-"));
+    const component = join(dir, "cwd.mjs");
+    writeFileSync(
+      component,
+      'export default (d) => d.replace("X", process.cwd());',
+    );
+    const cwd = process.cwd();
+    const html = await getPresentation("## X\n", {}, [component], {}, dir);
+    expect(html).toContain(realpathSync(dir));
+    expect(process.cwd()).toBe(cwd);
     rmSync(dir, { recursive: true, force: true });
   });
 

@@ -12,6 +12,7 @@ const getPresentation = async (
   env: SliDeskEnv,
   components: string[],
   templates: SliDeskTemplate,
+  dir = process.cwd(),
 ) => {
   let fusion = sdf;
   // notes and images; a code block shows them as written
@@ -19,12 +20,19 @@ const getPresentation = async (
   fusion = outsideFences(fusion, image);
   // format text
   fusion = formatting(fusion, env);
-  // custom components
-  for (const c of components) {
-    // a fresh query defeats the module cache, so an edited component is picked up while watching
-    // sequential on purpose: each component transforms the previous output
-    const { default: comp } = await import(`${c}?v=${++importCount}`); // NOSONAR
-    fusion = await comp(fusion); // NOSONAR
+  // custom components run from the talk, so their process.cwd() paths hold
+  // when slidesk is launched from another directory
+  const cwd = process.cwd();
+  process.chdir(dir);
+  try {
+    for (const c of components) {
+      // a fresh query defeats the module cache, so an edited component is picked up while watching
+      // sequential on purpose: each component transforms the previous output
+      const { default: comp } = await import(`${c}?v=${++importCount}`); // NOSONAR
+      fusion = await comp(fusion); // NOSONAR
+    }
+  } finally {
+    process.chdir(cwd);
   }
   // slice & treatment
   const slides: string[] = [];
