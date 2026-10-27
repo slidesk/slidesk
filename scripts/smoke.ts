@@ -28,7 +28,8 @@ const check = (name: string, ok: boolean, details = "") => {
   log(`${ok ? "✅" : "❌"} ${name}`);
   if (!ok) {
     failures += 1;
-    if (details) error(details);
+    // a single line, so a failing check cannot fake other entries of the log
+    if (details) error(details.replaceAll(/[\r\n]+/g, " ⏎ "));
   }
 };
 

@@ -74,7 +74,8 @@ log(`Lines covered  : ${hit}/${found} of the measured files`);
 
 if (missing.length) {
   log(`\nNever loaded by a test (~${missingLines} lines, counted as 0%):`);
-  for (const path of missing.sort()) log(`  ${path}`);
+  for (const path of missing.toSorted((a, b) => a.localeCompare(b)))
+    log(`  ${path}`);
 }
 
 const partial = Object.entries(report)

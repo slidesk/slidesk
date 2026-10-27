@@ -3,7 +3,7 @@ import { ANSI } from "./ansi";
 import { renderSlide } from "./session";
 import { send } from "./transitions";
 
-export function handleInput(
+export async function handleInput(
   socket: BunSocket,
   session: SliDeskTelnetSession,
   data: Buffer,
@@ -16,7 +16,7 @@ export function handleInput(
   if (key === "\x1b[C" || key === " " || key === "\r" || key === "\r\n") {
     if (session.currentSlide < session.totalSlides - 1) {
       session.currentSlide++;
-      renderSlide(socket, session);
+      await renderSlide(socket, session);
     }
     return;
   }
@@ -25,7 +25,7 @@ export function handleInput(
   if (key === "\x1b[D" || key === "\x7f" || key === "\x08") {
     if (session.currentSlide > 0) {
       session.currentSlide--;
-      renderSlide(socket, session);
+      await renderSlide(socket, session);
     }
     return;
   }
@@ -34,13 +34,13 @@ export function handleInput(
   const num = Number.parseInt(key, 10);
   if (!Number.isNaN(num) && num >= 1 && num <= session.totalSlides) {
     session.currentSlide = num - 1;
-    renderSlide(socket, session);
+    await renderSlide(socket, session);
     return;
   }
 
   // r -> reload
   if (key === "r" || key === "R") {
-    renderSlide(socket, session);
+    await renderSlide(socket, session);
     return;
   }
 

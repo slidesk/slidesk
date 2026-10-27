@@ -56,7 +56,8 @@ const linkLoginCmd = new Clipse("login", "login to slidesk.link")
         },
         // nothing else keeps the process alive once the server is stopped
         "/close": () => {
-          server.stop();
+          // the response goes out while the server winds down
+          void server.stop();
           return new Response();
         },
       };

@@ -14,8 +14,14 @@ export type AddonKind = "plugin" | "template" | "component" | "theme";
 type LinkOpts = { "slidesk-link-url"?: string };
 
 // a hub name is `user__addon`, an installed one a single path segment
-const HUB_NAME = /^@?[\w-][\w.-]*__[\w-][\w.-]*$/;
 const LOCAL_NAME = /^@?[\w-][\w.-]*$/;
+const SEGMENT = /^[\w-][\w.-]*$/;
+const isHubName = (name: string) => {
+  const [user, ...addon] = name.split("__");
+  return (
+    addon.length > 0 && LOCAL_NAME.test(user) && SEGMENT.test(addon.join("__"))
+  );
+};
 
 /** Downloads `user/addon` (or `user__addon`) from slidesk.link, replacing any installed version. */
 export const addonInstall = async (
@@ -26,7 +32,7 @@ export const addonInstall = async (
   target = process.cwd(),
 ) => {
   const addonName = name.replace("/", "__").replaceAll(/\\u[\da-fA-F]{4}/g, "");
-  if (!HUB_NAME.test(addonName))
+  if (!isHubName(addonName))
     throw new CliError(`Please provide a ${kind} name like user/${kind}`);
   const [user, ...rest] = addonName.split("__");
   const addon = rest.join("__");

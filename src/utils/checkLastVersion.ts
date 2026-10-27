@@ -9,8 +9,10 @@ export default async function checkVersion(currentVersion: string) {
     );
     if (github.ok) {
       const data = await github.json();
-      if (Bun.semver.order(data.tag_name, currentVersion) > 0) {
-        warn(`SliDesk is out of date! Please update to ${data.tag_name}`);
+      // the tag comes from the network: keep version characters only
+      const latest = String(data.tag_name ?? "").replaceAll(/[^\w.+-]/g, "");
+      if (latest && Bun.semver.order(latest, currentVersion) > 0) {
+        warn(`SliDesk is out of date! Please update to ${latest}`);
       }
     }
   } catch {

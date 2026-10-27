@@ -109,7 +109,7 @@ export default class SlideskServer {
   }
 
   stop() {
-    server.stop(true);
+    return server.stop(true);
   }
 
   send(action: string, data?: object | number | string) {

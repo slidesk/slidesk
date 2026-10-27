@@ -63,7 +63,7 @@ const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
   } finally {
     bar?.stop();
     await page.close();
-    server.stop();
+    await server.stop();
   }
 };
 
