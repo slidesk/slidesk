@@ -83,7 +83,7 @@ Details: [internationalisation syntax](reference/syntax/internationalisation), [
 | Speaker view with timers & notes | limited | ✅ | via pdfpc | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✅ telnet |
 | Code highlighting | ✅ | ✅ | ✅ | via plugin |
-| Math (LaTeX) | ✅ | ✅ | ✅ native | ✗ |
+| Math (LaTeX) | ✅ | ✅ | ✅ native | via plugin |
 | Overview of all slides | ✗ | ✅ | via pdfpc | ✗ |
 | Draw on slides while presenting | ✗ | ✅ | via pdfpc | ✗ |
 | Live preview in the editor | ✅ VS Code | ✅ VS Code | ✅ | ✗ live reload in the browser |

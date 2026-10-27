@@ -96,6 +96,8 @@ Then add the plugin's syntax to your slides. For example, with `@gouz/mermaid`:
   ```
 ```
 
+Formulas work the same way: install `@gouz/maths` and write LaTeX in a ` ```math ` block, see [Maths](../reference/syntax/maths.md).
+
 Browse all available plugins at [slidesk.link/plugins](https://slidesk.link/plugins).
 
 ## Includes

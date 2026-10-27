@@ -4,6 +4,10 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 
 ## Unreleased
 
+### 📝 Documentation
+
+- [Maths](https://slidesk.github.io/slidesk/reference/syntax/maths/): LaTeX formulas with the new `@gouz/maths` plugin (KaTeX, offline), and the comparison tables say so.
+
 ### 🧰 Internals
 
 - The release finds the Homebrew formula pull request right after its creation: it looked it up through GitHub's search, which missed it for 2.20.2 and 2.21.0, and the formula had to be merged by hand.

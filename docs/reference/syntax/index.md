@@ -56,6 +56,10 @@ console.log(greeting);
 ```
 ````
 
+## Maths
+
+LaTeX formulas, in ` ```math ` blocks, between `$$` or as `` `$…$` `` inline code, need the `@gouz/maths` plugin: see [Maths](maths.md).
+
 ## Blockquotes
 
 ```markdown
