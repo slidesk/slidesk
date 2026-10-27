@@ -13,6 +13,7 @@ import saveCmd from "./commands/save";
 import skillsCmd from "./commands/skills";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
+import updateCmd from "./commands/update";
 import checkVersion from "./utils/checkLastVersion";
 import { runCommand } from "./utils/cliError";
 
@@ -39,6 +40,7 @@ slidesk
     linkCmd,
     templateCmd,
     themeCmd,
+    updateCmd,
     deployCmd,
     saveCmd,
     exportCmd,

@@ -7,7 +7,13 @@ import {
   mock,
   spyOn,
 } from "bun:test";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import {
   ExitError,
@@ -92,8 +98,39 @@ describe("componentInstall", () => {
     const res = await componentInstall("@bob__hello", LINK);
     expect(urls).toEqual([`${LINK}/addons/download/component/bob/hello`]);
     expect(res).toBe("component @bob/hello installed");
-    expect(existsSync(join(cwd.dir, "components/hello/hello.mjs"))).toBe(true);
-    expect(existsSync(join(cwd.dir, "components/link.tgz"))).toBe(false);
+    expect(existsSync(join(cwd.dir, "components/@bob__hello.mjs"))).toBe(true);
+    expect(readdirSync(join(cwd.dir, "components"))).toEqual([
+      "@bob__hello.mjs",
+    ]);
+  });
+
+  it("takes the .mjs at the root of the tarball, as push packs it", async () => {
+    const tarball = await makeTarball(".", { "hello.mjs": "x" });
+    stubFetch(async () => new Response(tarball));
+    await componentInstall("bob__hello", LINK);
+    expect(readdirSync(join(cwd.dir, "components"))).toEqual([
+      "bob__hello.mjs",
+    ]);
+  });
+
+  it("replaces the copy installed before its author was kept", async () => {
+    mkdirSync(join(cwd.dir, "components"), { recursive: true });
+    writeFileSync(join(cwd.dir, "components/hello.mjs"), "old");
+    const tarball = await makeTarball("hello", { "hello.mjs": "new" });
+    stubFetch(async () => new Response(tarball));
+    await componentInstall("bob__hello", LINK, true);
+    expect(readdirSync(join(cwd.dir, "components"))).toEqual([
+      "bob__hello.mjs",
+    ]);
+  });
+
+  it("refuses a tarball without a component", async () => {
+    const tarball = await makeTarball("hello", { "README.md": "x" });
+    stubFetch(async () => new Response(tarball));
+    await expect(componentInstall("bob__hello", LINK)).rejects.toThrow(
+      "holds no .mjs file",
+    );
+    expect(readdirSync(join(cwd.dir, "components"))).toEqual([]);
   });
 
   it("reports an update rather than an install", async () => {
@@ -141,6 +178,15 @@ describe("componentRemove", () => {
 });
 
 describe("component remove by hub name", () => {
+  it("deletes the component installed with its author", async () => {
+    mkdirSync(join(cwd.dir, "components"), { recursive: true });
+    writeFileSync(join(cwd.dir, "components/bob__hello.mjs"), "x");
+    expect(await componentRemove("bob__hello")).toBe(
+      "component bob__hello removed",
+    );
+    expect(existsSync(join(cwd.dir, "components/bob__hello.mjs"))).toBe(false);
+  });
+
   it("finds the component installed without its author", async () => {
     mkdirSync(join(cwd.dir, "components"), { recursive: true });
     writeFileSync(join(cwd.dir, "components/hello.mjs"), "x");
@@ -185,9 +231,10 @@ describe("component command", () => {
     ).toBe(0);
     expect(captured.log()).toContain("updated");
     // the install has to complete before the command exits
-    expect(existsSync(join(cwd.dir, "components/bob__hello/hello.mjs"))).toBe(
-      true,
-    );
+    expect(
+      readFileSync(join(cwd.dir, "components/bob__hello.mjs"), "utf8"),
+    ).toBe("new");
+    expect(existsSync(join(cwd.dir, "components/hello.mjs"))).toBe(false);
   });
 
   it("installs the components picked in the search results", async () => {
