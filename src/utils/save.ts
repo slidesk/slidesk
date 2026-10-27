@@ -5,24 +5,27 @@ import { CliError } from "./cliError";
 import commonDir from "./commonDir";
 import convert from "./convert";
 import loadEnv from "./loadEnv";
+import isPrivateFile from "./privateFiles";
 
 // sources and tooling the exported presentation does not need
-const SOURCES =
-  /\.(sdf|sdt|md|toml|env)$|\.lang\.json$|plugin\.json$|^\.git(ignore)?$|^\.ds_store$/;
+const SOURCES = /\.(sdf|sdt|md)$|\.lang\.json$|plugin\.json$|^link\.yml$/;
 
-const readAllFiles = (dir: string): string[] => {
+/** The files of `root` to export: neither sources nor private files, which a deploy would publish. */
+const readAllFiles = (root: string, env: SliDeskEnv, dir = root): string[] => {
   const result: string[] = [];
   const files = readdirSync(dir, { withFileTypes: true });
   files.forEach((file, _) => {
+    const full = path.join(dir, file.name);
     if (
       !SOURCES.test(file.name.toLowerCase()) &&
+      !isPrivateFile(path.relative(root, full), root, env) &&
       // components run at build time, their output is already in the html
       !(file.isDirectory() && file.name === "components")
     ) {
       if (file.isDirectory()) {
-        result.push(...readAllFiles(path.join(dir, file.name)));
+        result.push(...readAllFiles(root, env, full));
       } else {
-        result.push(path.join(dir, file.name));
+        result.push(full);
       }
     }
   });
@@ -66,14 +69,14 @@ const save = async (
       );
     rmSync(target, { recursive: true, force: true });
   }
-  readAllFiles(dir).forEach((file, _) => {
+  readAllFiles(dir, env).forEach((file, _) => {
     const nfile = file.replace(dir, "");
     promises.push(Bun.write(`${target}/${nfile}`, Bun.file(file)));
   });
   // the shared files are served at -=[COMMON]=-/ and its plugins at plugins/
   const common = commonDir(dir, env);
   if (common && existsSync(common))
-    for (const file of readAllFiles(common)) {
+    for (const file of readAllFiles(common, env)) {
       const shared = path.relative(common, file);
       promises.push(
         Bun.write(`${target}/-=[COMMON]=-/${shared}`, Bun.file(file)),

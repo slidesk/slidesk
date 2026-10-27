@@ -1,28 +1,17 @@
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import type { SliDeskEnv } from "../../types";
 import commonDir from "../../utils/commonDir";
+import isPrivateFile from "../../utils/privateFiles";
 
 const COMMON = "/-=[COMMON]=-/";
 
-// hidden files (.git, .env), the configuration and TLS keys stay on the
-// speaker's machine: the talk is served to everyone on the network
-const HIDDEN = /(?:^|\/)\./;
-const SECRET = /\.(?:toml|pem|key)$/i;
-
 const isPrivate = (fileurl: string, path: string, env: SliDeskEnv) => {
-  let decoded: string;
   try {
-    decoded = decodeURIComponent(fileurl);
+    return isPrivateFile(decodeURIComponent(fileurl), path, env);
   } catch {
+    // a path that does not decode
     return true;
   }
-  if (HIDDEN.test(decoded) || SECRET.test(decoded)) return true;
-  const served = resolve(join(path, decoded));
-  // KEY and CERT are read from the working directory, or set from the talk
-  return [env.slidesk?.KEY, env.slidesk?.CERT].some(
-    (f) =>
-      f !== undefined && (resolve(f) === served || resolve(path, f) === served),
-  );
 };
 
 const getFile = (req: Request, path: string, env: SliDeskEnv) => {
