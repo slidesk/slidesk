@@ -3,6 +3,28 @@
   "author": "Sylvain Gougouzian",
   "license": "MIT",
   "version": "2.20.1",
+  "description": "Markdown slides with native translations and file includes: present with a speaker view, export to PDF or PowerPoint. A single Bun binary.",
+  "keywords": [
+    "slides",
+    "presentation",
+    "markdown",
+    "slideshow",
+    "slides-as-code",
+    "talk",
+    "speaker-notes",
+    "speaker-view",
+    "i18n",
+    "pdf",
+    "pptx",
+    "powerpoint",
+    "reveal",
+    "slidev",
+    "marp",
+    "bun",
+    "cli"
+  ],
+  "homepage": "https://slidesk.github.io/slidesk/",
+  "bugs": "https://github.com/slidesk/slidesk/issues",
   "main": "bin/index.js",
   "bin": {
     "slidesk": "bin/index.js"
