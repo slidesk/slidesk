@@ -26,7 +26,9 @@ MYVAR="test"
 ++MYVAR++
 ```
 
-Renders as `test`.
+Renders as `test`. A key of a section is reached with a dot: `++info.NAME++` reads `NAME` in `[info]`.
+
+Only a key name between `++` is replaced, so text such as `C++ vs C++` or `i++; j++` is left as it is. A key missing from the configuration stays visible on the slide, and the build warns about it.
 
 ## Config values in plugins
 
