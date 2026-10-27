@@ -52,7 +52,9 @@ const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
   // the talk, then its COMMON_DIR, then each theme: the order is kept
   const sources = [
     loadExternalPlugins(`${sdfPath}/plugins`, sdfPath),
-    common ? loadExternalPlugins(`${common}/plugins`, sdfPath) : [],
+    common
+      ? loadExternalPlugins(`${common}/plugins`, sdfPath)
+      : Promise.resolve([]),
     ...themes.map((t) =>
       loadExternalPlugins(
         `${sdfPath}/themes/${t}/plugins`,
