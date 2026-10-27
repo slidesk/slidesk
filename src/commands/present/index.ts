@@ -29,7 +29,7 @@ const flow = async (
   if (init) {
     await server.create(files, options, env, talkdir);
     if (options.telnet) {
-      telnet = await startTelnetServer(
+      telnet = startTelnetServer(
         options,
         env,
         String(files["index.html"].content ?? ""),
@@ -86,12 +86,14 @@ const present = async (talk: string, options: SliDeskPresentOptions) => {
           }
         });
   // q or Ctrl-C: release everything so the process can end on its own
-  getAction(server, true).then(() => {
-    clearTimeout(pending);
-    watcher?.close();
-    telnet?.stop();
-    server.stop();
-  });
+  getAction(server, true)
+    .then(async () => {
+      clearTimeout(pending);
+      watcher?.close();
+      await telnet?.stop();
+      await server.stop();
+    })
+    .catch((e) => error(e instanceof Error ? e.message : e));
 };
 
 const presentCmd = new Clipse("present", "serve your presentation");

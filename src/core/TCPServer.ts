@@ -65,7 +65,7 @@ export function startTelnetServer(
         if (size) {
           session.rows = size.rows;
           session.cols = size.cols;
-          if (session.started) renderSlide(socket, session);
+          if (session.started) await renderSlide(socket, session);
           return;
         }
 
@@ -81,7 +81,7 @@ export function startTelnetServer(
           session.currentSlide,
           session.totalSlides - 1,
         );
-        handleInput(socket, session, Buffer.from(data));
+        await handleInput(socket, session, Buffer.from(data));
       },
 
       close(socket) {
