@@ -21,6 +21,7 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 | Speaker view (next slide, timers, notes) | limited | ✅ | ✅ | via an external viewer (pdfpc) | ✅ |
 | Live reload while editing | ✅ | ✅ | via tooling | ✅ `typst watch` | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ telnet |
+| Theme generated from a website | ✗ | ✗ | ✗ | ✗ | ✅ `slidesk design` |
 | Embed raw HTML / Vue / React / Svelte | limited | Vue-centric | ✅ | ✗ (PDF) | ✅ unrestricted |
 | Code highlighting | ✅ | ✅ Shiki | ✅ bundled plugin | ✅ | via plugin (`@gouz/shiki`, `@gouz/highlightjs`) |
 | Math (LaTeX) | ✅ KaTeX / MathJax | ✅ KaTeX | ✅ bundled plugin | ✅ native | via plugin (`@gouz/maths`, KaTeX) |

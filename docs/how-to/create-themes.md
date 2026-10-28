@@ -145,6 +145,8 @@ The default theme includes `.speaker` and `.chapter` helper classes:
 
 Use them in your slides with the add class syntax: `## Chapter title {.chapter}`.
 
+Start from the look of a website with `slidesk design https://example.com`, which writes `themes/example-com/theme.css`.
+
 ## Usage
 
 Place the theme in your talk's `themes/` directory. SliDesk loads it automatically. Theme CSS is loaded after `slidesk.css`, so it overrides the defaults.

@@ -52,6 +52,7 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 - **Includes.** Split a talk across files and directories with a single `!include(slides)`.
 - **A real speaker view.** Current and next slide, notes, timers and checkpoints, drivable from your phone with a QR code, and only by you.
 - **Bring your existing decks.** `slidesk import` turns a PowerPoint, Google Slides, Slidev or reveal.js deck into a SliDesk talk.
+- **Your brand in one command.** `slidesk design https://your-company.com` makes a theme with the colours, fonts and logo of your website.
 - **Share it everywhere.** Export to PDF or PPTX, save a static site for GitHub or GitLab Pages, or host it on [slidesk.link](https://slidesk.link) in one command.
 - **Present from a terminal.** `--telnet` serves a text version of your talk. Yes, really.
 - **Extensible.** Themes, templates, components and plugins, shared on the [hub](https://slidesk.link).
@@ -65,6 +66,7 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 | Speaker view with timers | limited | ✅ | ✅ | via pdfpc | ✅ |
 | Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ |
+| Theme generated from a website | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Code highlighting | ✅ | ✅ | ✅ | ✅ | via plugin |
 | Math (LaTeX) | ✅ | ✅ | ✅ | ✅ | via plugin |
 | Overview of all slides | ✗ | ✅ | ✅ | via pdfpc | ✗ |

@@ -58,6 +58,7 @@ nav = [
             "reference/commands/component.md",
             "reference/commands/create.md",
             "reference/commands/deploy.md",
+            "reference/commands/design.md",
             "reference/commands/export.md",
             "reference/commands/import.md",
             "reference/commands/link.md",

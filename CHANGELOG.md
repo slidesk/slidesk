@@ -4,6 +4,10 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 
 ## Unreleased
 
+### ✨ Features
+
+- **[`slidesk design <url>`](https://slidesk.github.io/slidesk/reference/commands/design/)** creates a theme from a website: its background, text and primary colours (headings take the primary one), its fonts and its logo as a watermark at the bottom right of the slides. `--local` downloads the fonts into the theme, so it works offline.
+
 ### 📝 Documentation
 
 - [Maths](https://slidesk.github.io/slidesk/reference/syntax/maths/): LaTeX formulas with the new `@gouz/maths` plugin (KaTeX, offline), and the comparison tables say so.
