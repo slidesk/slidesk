@@ -14,6 +14,8 @@ Three things are built in, not bolted on:
 - **File includes** — split a talk across files and directories with `!include()`
 - **Zero project scaffolding** — a `.md` file and a single [Bun](https://bun.sh) binary is a working talk
 
+And your slides can wear your company's colours with one command: `slidesk design`.
+
 ## Prove the i18n in 30 seconds
 
 Give the same talk in French and in English from **one** source file. Three files, no duplication:
@@ -72,6 +74,26 @@ That is the whole feature. No duplicated deck to keep in sync, no per-language b
 
 Details: [internationalisation syntax](reference/syntax/internationalisation), [`--lang` option](reference/options/lang), [includes](reference/syntax/includes).
 
+## Your brand in one command
+
+Point SliDesk at your website, get a theme that looks like it:
+
+```sh
+slidesk design https://example.com          # themes/example-com/theme.css
+slidesk design https://example.com --local  # with the fonts downloaded, for offline talks
+```
+
+SliDesk reads the page and its stylesheets and keeps:
+
+- the **background and text colours**, the text forced readable on the background
+- the **primary colour**, used for headings, bold text and links
+- the **fonts** of the body and of the headings
+- the **logo**, as a discreet watermark at the bottom right of every slide
+
+No colour picker, no hunting for font names: the result is a plain `theme.css` you can tweak.
+
+Details: [`design` command](reference/commands/design), [create themes](how-to/create-themes).
+
 ## Where SliDesk fits
 
 | | Marp | Slidev | Typst | SliDesk |
@@ -88,6 +110,7 @@ Details: [internationalisation syntax](reference/syntax/internationalisation), [
 | Draw on slides while presenting | ✗ | ✅ | via pdfpc | ✗ |
 | Live preview in the editor | ✅ VS Code | ✅ VS Code | ✅ | ✗ live reload in the browser |
 | Export slides as images | ✅ | ✅ | ✅ | ✗ |
+| Theme generated from a website | ✗ | ✗ | ✗ | ✅ `slidesk design` |
 
 Read the full rationale in [Why SliDesk?](explanation/why-slidesk).
 
@@ -101,6 +124,7 @@ Read the full rationale in [Why SliDesk?](explanation/why-slidesk).
 - **Telnet mode** — present from any terminal via telnet
 - **Plugin system** — extend with front-end scripts, back-end routes, WebSocket handlers
 - **Templates & themes** — reusable layouts and visual styles
+- **Theme from a website** — `slidesk design <url>` takes the colours, fonts and logo of a site
 - **Components** — custom `.mjs` modules that transform your slide HTML
 - **Hub integration** — share and discover addons at [slidesk.link](https://slidesk.link)
 - **Deploy** — export static HTML, or CI/CD for GitHub/GitLab Pages

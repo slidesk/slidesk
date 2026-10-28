@@ -4,6 +4,7 @@ import packagejson from "../package.json";
 import componentCmd from "./commands/component";
 import createCmd from "./commands/create";
 import deployCmd from "./commands/deploy";
+import designCmd from "./commands/design";
 import exportCmd from "./commands/export";
 import importCmd from "./commands/import";
 import linkCmd from "./commands/link";
@@ -40,6 +41,7 @@ slidesk
     linkCmd,
     templateCmd,
     themeCmd,
+    designCmd,
     updateCmd,
     deployCmd,
     saveCmd,

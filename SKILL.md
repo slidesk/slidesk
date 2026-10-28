@@ -28,6 +28,7 @@ slidesk my-talk                  # present → serves on http://localhost:1337 (
 slidesk save -t public my-talk   # export standalone static HTML site to ./public
 slidesk export -t pdf my-talk    # export to my-talk.pdf (-t pdf | pptx, -o file)
 slidesk import deck.pptx -o mine # import a pptx/gslides/slidev/reveal.js deck
+slidesk design https://site.com  # create themes/site-com/theme.css from the colours, fonts and logo of a website
 slidesk deploy -t github my-talk # generate CI/CD files: -t github | gitlab | link
 ```
 
@@ -153,6 +154,7 @@ blank lines. Apply with `## Title .[#template-name]`.
 ## Themes
 
 A theme is `themes/<name>/` with `theme.css` (plus optional `script.js`, `templates/`, `plugins/`).
+`slidesk design <url> [-n name] [-f] [-l]` generates one from the colours, fonts and logo (as a watermark) of a website. `-l` downloads its fonts into the theme so it works offline.
 Theme CSS loads after `slidesk.css`, so it overrides defaults. Customize via CSS variables such as
 `--sd-background-color`, `--sd-heading-color`, `--sd-text-color`, `--sd-primary-color`,
 `--sd-heading1-size`, `--sd-heading2-size`, `--sd-text-size`, and speaker-view variables
