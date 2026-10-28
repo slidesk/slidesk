@@ -2,7 +2,7 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
-## Unreleased
+## 2.22.0
 
 ### ✨ Features
 
