@@ -2,7 +2,7 @@
   "name": "slidesk",
   "author": "Sylvain Gougouzian",
   "license": "MIT",
-  "version": "2.21.0",
+  "version": "2.22.0",
   "description": "Markdown slides with native translations and file includes: present with a speaker view, export to PDF or PowerPoint. A single Bun binary.",
   "keywords": [
     "slides",
