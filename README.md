@@ -22,7 +22,7 @@
 
 ---
 
-Write your talk in Markdown, present it in the browser with a speaker view on your phone, and export it to PDF or PowerPoint. SliDesk is a single [Bun](https://bun.sh) binary: there is no `node_modules`, no front-end app to maintain, and nothing to configure before your first slide.
+Write your talk in Markdown, present it in the browser with a speaker view on your phone, let the audience follow it on theirs, and export it to PDF or PowerPoint. SliDesk is a single [Bun](https://bun.sh) binary: there is no `node_modules`, no front-end app to maintain, and nothing to configure before your first slide.
 
 ```markdown
 # My talk
@@ -48,6 +48,7 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 
 ## Why SliDesk
 
+- **Your audience follows on their phone.** SliDesk serves your talk live while you present: the room opens it, or scans a QR code on your first slide, and follows your slides as you change them, with links to click and code to copy. Only you drive it. In the room over the network, or from anywhere with [slidesk.link](https://slidesk.link). [How →](https://slidesk.github.io/slidesk/how-to/share-with-audience/)
 - **One talk, many languages.** Slides hold `$$variables$$`, the words live in `en.lang.json`, `fr.lang.json`… and `--lang` picks one. No duplicated deck to keep in sync.
 - **Includes.** Split a talk across files and directories with a single `!include(slides)`.
 - **A real speaker view.** Current and next slide, notes, timers and checkpoints, drivable from your phone with a QR code, and only by you.
@@ -63,6 +64,7 @@ slidesk export my-talk   # my-talk.pdf (or -t pptx)
 | Install footprint | Node / CLI | Node project | Node project | single binary | **single binary** |
 | Multi-language from one source | ✗ | ✗ | ✗ | ✗ (scriptable) | ✅ |
 | Directory includes | ✗ | per file | per section | per file | ✅ |
+| Audience follows on their own device | ✗ | on the network (`--remote`) | via plugin + server | ✗ | ✅ network or hosted |
 | Speaker view with timers | limited | ✅ | ✅ | via pdfpc | ✅ |
 | Import PowerPoint / Slidev / reveal.js | ✗ | ✗ | ✗ | ✗ | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ |

@@ -8,8 +8,9 @@
 
 SliDesk is a talk engine that turns Markdown into web-based presentations. If you want the simplicity of Marp with the capabilities of Slidev, but without maintaining a Vue/Vite app to get there, this is what SliDesk is for.
 
-Three things are built in, not bolted on:
+Four things are built in, not bolted on:
 
+- **A live audience** — the room follows your slides on their phone as you present, in the room or from anywhere ([how](how-to/share-with-audience.md))
 - **Native i18n** — one source file, many languages, switched by a single CLI flag
 - **File includes** — split a talk across files and directories with `!include()`
 - **Zero project scaffolding** — a `.md` file and a single [Bun](https://bun.sh) binary is a working talk
