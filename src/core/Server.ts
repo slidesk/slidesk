@@ -75,7 +75,7 @@ export default class SlideskServer {
               "slidesk",
               JSON.stringify({
                 action: `${json.plugin}_response`,
-                response: await addWS(message, server),
+                response: await addWS(message, server, ws.data),
               }),
             );
           } else if (ws.data.canSend) {
