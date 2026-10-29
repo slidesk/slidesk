@@ -65,6 +65,7 @@ nav = [
             "reference/commands/plugin.md",
             "reference/commands/present.md",
             "reference/commands/save.md",
+            "reference/commands/studio.md",
             "reference/commands/template.md",
             "reference/commands/theme.md",
             "reference/commands/update.md"

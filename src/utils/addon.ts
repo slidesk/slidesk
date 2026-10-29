@@ -105,7 +105,11 @@ export const addonInstall = async (
   return `${kind} ${label} ${update ? "updated" : "installed"}`;
 };
 
-export const addonRemove = async (kind: AddonKind, name: string) => {
+export const addonRemove = async (
+  kind: AddonKind,
+  name: string,
+  target = process.cwd(),
+) => {
   if (!LOCAL_NAME.test(name))
     throw new CliError(`Please provide the name of an installed ${kind}`);
   // a component is `user__name.mjs`, or a bare `name.mjs` when installed
@@ -113,13 +117,14 @@ export const addonRemove = async (kind: AddonKind, name: string) => {
   const path =
     kind === "component"
       ? ([
-          `components/${name}.mjs`,
-          `components/${name.split("__").at(-1)}.mjs`,
-        ].find(existsSync) ?? `components/${name}.mjs`)
-      : `${kind}s/${name}`;
-  const marker = kind === "component" ? path : `${path}/${kind}.json`;
-  if (!(await Bun.file(marker).exists()))
-    throw new CliError(`${kind} ${name} not found`);
+          `${target}/components/${name}.mjs`,
+          `${target}/components/${name.split("__").at(-1)}.mjs`,
+        ].find(existsSync) ?? `${target}/components/${name}.mjs`)
+      : `${target}/${kind}s/${name}`;
+  // only a plugin carries a manifest: the templates and themes of
+  // slidesk.link are a bare directory
+  const marker = kind === "plugin" ? `${path}/plugin.json` : path;
+  if (!existsSync(marker)) throw new CliError(`${kind} ${name} not found`);
   await rm(path, { recursive: true, force: true });
   return `${kind} ${name} removed`;
 };

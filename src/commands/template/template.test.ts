@@ -146,6 +146,15 @@ describe("templateRemove", () => {
     expect(await templateRemove("cover")).toBe("template cover removed");
     expect(existsSync(join(cwd.dir, "templates/cover"))).toBe(false);
   });
+
+  it("deletes a template of slidesk.link, which has no template.json", async () => {
+    mkdirSync(join(cwd.dir, "templates/bob__split"), { recursive: true });
+    writeFileSync(join(cwd.dir, "templates/bob__split/split.sdt"), "");
+    expect(await templateRemove("bob__split")).toBe(
+      "template bob__split removed",
+    );
+    expect(existsSync(join(cwd.dir, "templates/bob__split"))).toBe(false);
+  });
 });
 
 describe("template command", () => {

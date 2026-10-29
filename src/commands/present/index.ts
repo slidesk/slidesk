@@ -43,7 +43,7 @@ const flow = async (
   }
 };
 
-const present = async (talk: string, options: SliDeskPresentOptions) => {
+export const present = async (talk: string, options: SliDeskPresentOptions) => {
   const nets = networkInterfaces();
   options.ip =
     Object.values(nets)

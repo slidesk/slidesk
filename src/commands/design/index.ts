@@ -184,7 +184,7 @@ export const themeCSS = (d: ReturnType<typeof extractDesign>, logo?: string) =>
     .join("\n\n")
     .concat("\n");
 
-const text = async (url: string, init?: RequestInit) => {
+export const text = async (url: string, init?: RequestInit) => {
   const response = await hubFetch(url, init);
   if (!response.ok)
     throw new CliError(`Cannot download ${url} (${response.status})`);
@@ -192,7 +192,7 @@ const text = async (url: string, init?: RequestInit) => {
 };
 
 // Google Fonts only serves woff2 files to the browsers it knows
-const BROWSER = {
+export const BROWSER = {
   headers: {
     "user-agent":
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
@@ -216,7 +216,7 @@ const inlineGoogleFonts = async (design: ReturnType<typeof extractDesign>) => {
 };
 
 /** Downloads the files the css loads from the web into `dir/fonts`, pointing the css at them. */
-const localize = async (css: string, dir: string) => {
+export const localize = async (css: string, dir: string) => {
   const urls = new Set(
     [...css.matchAll(/url\(\s*['"]?(https?:\/\/[^'")]+)/g)].map(([, u]) => u),
   );

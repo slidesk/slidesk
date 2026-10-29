@@ -12,6 +12,7 @@ import pluginCmd from "./commands/plugin";
 import presentCmd from "./commands/present";
 import saveCmd from "./commands/save";
 import skillsCmd from "./commands/skills";
+import studioCmd from "./commands/studio";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import updateCmd from "./commands/update";
@@ -48,6 +49,7 @@ slidesk
     exportCmd,
     importCmd,
     presentCmd,
+    studioCmd,
     skillsCmd,
   ])
   .defineDefaultCommand(presentCmd);

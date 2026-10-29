@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SliDesk Studio</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f6f4;
+        --panel: #ffffff;
+        --line: #deded9;
+        --text: #242424;
+        --muted: #707070;
+        --accent: rgb(37, 186, 146);
+        font: 14px/1.4 system-ui, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1b1b1b;
+          --panel: #242424;
+          --line: #3a3a3a;
+          --text: #ececec;
+          --muted: #9a9a9a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        height: 100vh;
+        display: grid;
+        grid-template: auto 1fr / 16rem 1fr 22rem;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--panel);
+        border-bottom: 1px solid var(--line);
+      }
+      header strong {
+        margin-right: 1rem;
+      }
+      header .sep {
+        flex: 1;
+      }
+      button,
+      label.button {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 0.3rem 0.6rem;
+        cursor: pointer;
+      }
+      button:hover,
+      label.button:hover {
+        border-color: var(--line);
+      }
+      select {
+        font: inherit;
+        color: inherit;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0.25rem;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      #status.error {
+        color: #d33;
+      }
+      #status {
+        color: var(--muted);
+        min-width: 5rem;
+        text-align: right;
+      }
+      ol {
+        margin: 0;
+        padding: 0.5rem;
+        overflow-y: auto;
+        border-right: 1px solid var(--line);
+        list-style: none;
+        counter-reset: slide;
+      }
+      #slides li {
+        counter-increment: slide;
+        border-radius: 6px;
+        border: 2px solid transparent;
+      }
+      #slides li.current {
+        border-color: var(--accent);
+      }
+      #slides li.drop-before {
+        border-top-color: var(--accent);
+      }
+      #slides li.drop-after {
+        border-bottom-color: var(--accent);
+      }
+      #slides li small {
+        display: block;
+        padding: 0.5rem 0.5rem 0.1rem;
+        color: var(--muted);
+      }
+      #slides li small:empty {
+        display: none;
+      }
+      #slides li button {
+        display: block;
+        width: 100%;
+        padding: 0.3rem;
+        text-align: left;
+      }
+      /* the slide drawn at 1280×720, then scaled down to 192px wide */
+      .thumb {
+        display: block;
+        width: 192px;
+        height: 108px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+      .thumb iframe {
+        width: 1280px;
+        height: 720px;
+        border: 0;
+        transform: scale(0.15);
+        transform-origin: 0 0;
+        pointer-events: none;
+      }
+      .title {
+        display: block;
+        padding-top: 0.2rem;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .title::before {
+        content: counter(slide) ". ";
+        color: var(--muted);
+      }
+      .probe {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border: 0;
+        visibility: hidden;
+      }
+      textarea {
+        resize: none;
+        border: 0;
+        padding: 1rem;
+        font: 15px/1.5 ui-monospace, monospace;
+        background: var(--panel);
+        color: inherit;
+        outline: none;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      #stage-area {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      /* the slide drawn at 1280×720, scaled to fit */
+      #stage {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        box-shadow: 0 2px 12px rgb(0 0 0 / 0.12);
+      }
+      #stage iframe {
+        width: 1280px;
+        height: 720px;
+        border: 0;
+        transform-origin: 0 0;
+      }
+      #notes {
+        height: 7rem;
+        border-top: 1px solid var(--line);
+        font: inherit;
+      }
+      #side {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        overflow-y: auto;
+        border-left: 1px solid var(--line);
+      }
+      #source {
+        width: 100%;
+        height: 45vh;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-size: 13px;
+      }
+      header a {
+        color: inherit;
+        text-decoration: none;
+        padding: 0.3rem 0.6rem;
+      }
+      dialog {
+        width: min(34rem, 90vw);
+        max-height: 80vh;
+        background: var(--panel);
+        color: inherit;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      #addons .bar {
+        display: flex;
+        gap: 0.5rem;
+      }
+      #addons input {
+        flex: 1;
+        font: inherit;
+      }
+      #addons h3 {
+        margin: 1rem 0 0.25rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      #addons ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      #addons li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.15rem 0;
+      }
+      details label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.2rem 0;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>SliDesk Studio</strong>
+      <button type="button" data-before="**" data-after="**" data-command="bold" title="Bold (⌘B)"><b>B</b></button>
+      <button type="button" data-before="_" data-after="_" data-command="italic" title="Italic (⌘I)"><i>I</i></button>
+      <button type="button" data-block="Text" title="Add a paragraph">+ Text</button>
+      <button type="button" data-block="### Subtitle" title="Add a subtitle">+ Subtitle</button>
+      <button type="button" data-block="- Item" title="Add a list item">+ List</button>
+      <button type="button" data-block="```&#10;code&#10;```" title="Add a code block">+ Code</button>
+      <label class="button" title="Insert an image">
+        Image <input id="image" type="file" accept="image/*" hidden />
+      </label>
+      <select id="template" title="Template of this slide">
+        <option value="">No template</option>
+      </select>
+      <button type="button" id="open-addons" title="Templates, plugins, components and themes of slidesk.link">Add-ons</button>
+      <span class="sep"></span>
+      <a id="present" href="/preview/" target="_blank" title="The presentation, on this slide">▶ Present</a>
+      <button type="button" id="add" title="Add a slide after this one">+ Slide</button>
+      <button type="button" id="remove" title="Remove this slide">Remove</button>
+      <span id="status"></span>
+    </header>
+    <ol id="slides"></ol>
+    <main>
+      <div id="stage-area">
+        <div id="stage">
+          <!-- not sandboxed: Safari runs no listener of the studio in a sandboxed frame;
+               the scripts of the slides are kept off by the policy of its document -->
+          <iframe id="stage-frame" title="Slide"></iframe>
+        </div>
+      </div>
+      <textarea id="notes" placeholder="Speaker notes" disabled></textarea>
+    </main>
+    <section id="side">
+      <details>
+        <summary>Source</summary>
+        <textarea id="source" spellcheck="false" disabled></textarea>
+      </details>
+      <details>
+        <summary>Theme</summary>
+        <form id="theme">
+          <label>Background <input type="color" name="--sd-background-color" /></label>
+          <label>Text <input type="color" name="--sd-text-color" /></label>
+          <label>Titles <input type="color" name="--sd-heading-color" /></label>
+          <label>Primary <input type="color" name="--sd-primary-color" /></label>
+          <label>Font <input name="font" list="fonts" /></label>
+          <label>Titles font <input name="heading-font" list="fonts" /></label>
+          <datalist id="fonts"></datalist>
+          <button type="reset">Reset</button>
+        </form>
+      </details>
+    </section>
+    <dialog id="addons">
+      <div class="bar">
+        <select id="addon-kind" aria-label="Kind">
+          <option value="template">Templates</option>
+          <option value="plugin">Plugins</option>
+          <option value="component">Components</option>
+          <option value="theme">Themes</option>
+        </select>
+        <input id="addon-search" type="search" placeholder="Search slidesk.link" />
+        <button type="button" id="close-addons">Close</button>
+      </div>
+      <h3>In this talk</h3>
+      <ul id="addon-installed"></ul>
+      <h3>On slidesk.link</h3>
+      <ul id="addon-found"></ul>
+    </dialog>
+    <script type="module">
+      import {
+        images,
+        insertUnit,
+        notesOf,
+        placeImage,
+        plain,
+        setUnit,
+        sizeImage,
+        toMarkdown,
+        units,
+        withNotes,
+      } from "/stage.js";
+
+      const $ = (s) => document.querySelector(s);
+      const $list = $("#slides");
+      const $source = $("#source");
+      const $status = $("#status");
+      const $theme = $("#theme");
+
+      let slides = [];
+      let preview = "";
+      let current;
+      // what the file holds for the current slide, as far as the studio knows
+      let saved = "";
+      let timer;
+
+      const api = async (path, body) => {
+        const res = await fetch(
+          `/api/${path}`,
+          body && {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          },
+        );
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      };
+
+      const same = (a, b) => a && b && a.file === b.file && a.n === b.n;
+
+      // the real presentation, with its scripts, on the current slide
+      const present = (s) => {
+        $("#present").href = `${preview}/#${s.index}`;
+      };
+
+      // the presentation as last built: its stylesheets and its slides
+      let head = "";
+      let themeVersion = 0;
+      // same origin but no scripts: the studio can read the styles it computes
+      const $probe = document.createElement("iframe");
+      $probe.sandbox = "allow-same-origin";
+      $probe.className = "probe";
+      $probe.setAttribute("aria-hidden", "true");
+      document.body.append($probe);
+      let sections = [];
+
+      const thumb = (s) =>
+        sections[s.index] === undefined
+          ? ""
+          : `<!doctype html><html><head><base href="/preview/">${head}<style>.sd-slide{transition:none}</style></head><body class="sd-app">${sections[s.index]}</body></html>`;
+
+      // the items stay in place: a thumbnail moved in the page would load again
+      const render = () => {
+        while ($list.children.length > slides.length) $list.lastChild.remove();
+        slides.forEach((s, i) => {
+          let li = $list.children[i];
+          if (!li) {
+            li = document.createElement("li");
+            // no allow-scripts: the scripts of the slides do not run in the studio
+            li.innerHTML = `<small></small><button type="button"><span class="thumb"><iframe sandbox="allow-same-origin" tabindex="-1" aria-hidden="true"></iframe></span><span class="title"></span></button>`;
+            li.querySelector("button").onclick = () =>
+              select(slides[li.dataset.i]);
+            $list.append(li);
+          }
+          li.dataset.i = i;
+          li.querySelector("small").textContent =
+            s.file === slides[i - 1]?.file ? "" : s.file;
+          li.querySelector(".title").textContent = s.title;
+          const frame = li.querySelector("iframe");
+          const doc = thumb(s);
+          if (frame.srcdoc !== doc) frame.srcdoc = doc;
+          li.classList.toggle("current", same(s, current));
+          // what precedes the first title of a file stays in place
+          li.draggable = s.n > 0;
+        });
+      };
+
+      const drawThumbs = async () => {
+        const res = await fetch("/preview/");
+        if (!res.ok) return;
+        const doc = new DOMParser().parseFromString(
+          await res.text(),
+          "text/html",
+        );
+        // a stylesheet edited from the theme panel keeps its url: a new
+        // version makes the thumbnails load it again
+        // ponytail: a stylesheet edited in another editor shows once the studio is reloaded
+        for (const link of doc.head.querySelectorAll("link[rel=stylesheet]"))
+          link.setAttribute("href", `${link.getAttribute("href")}?v=${themeVersion}`);
+        head = [...doc.head.querySelectorAll("link[rel=stylesheet], style")]
+          .map((e) => e.outerHTML)
+          .join("");
+        const probe = `<!doctype html><html><head><base href="/preview/">${head}</head><body class="sd-app"><section class="sd-slide"><h2></h2></section></body></html>`;
+        if ($probe.srcdoc !== probe) $probe.srcdoc = probe;
+        sections = [...doc.querySelectorAll(".sd-slide")].map((section) => {
+          section.classList.add("sd-current");
+          // the presentation loads the images of a slide when showing it
+          for (const img of section.querySelectorAll("img[data-src]"))
+            img.setAttribute("src", img.dataset.src);
+          return section.outerHTML;
+        });
+        render();
+        // not under the caret: what is typed would be lost
+        if (!editing) renderStage();
+      };
+
+      // the current slide, its texts typed in place
+      const $frame = $("#stage-frame");
+      const $notes = $("#notes");
+      let editing = false;
+      // a text just added, to select once on the slide
+      let focusText;
+      const STAGE_STYLE = `<style>
+        .sd-app { cursor: auto; }
+        .sd-slide { transition: none; }
+        [contenteditable] { outline: none; cursor: text; }
+        [contenteditable]:hover { outline: 2px dashed rgb(37 186 146 / 0.6); outline-offset: 4px; }
+        [contenteditable]:focus { outline: 2px solid rgb(37 186 146); outline-offset: 4px; }
+        [data-image] { position: relative; cursor: move; touch-action: none; }
+        [data-image]:hover { outline: 2px dashed rgb(37 186 146 / 0.6); outline-offset: 4px; }
+        /* the handle that resizes it */
+        [data-image]:hover::after { content: ""; position: absolute; right: -10px; bottom: -10px; width: 12px; height: 12px; background: rgb(37 186 146); cursor: nwse-resize; }
+      </style>`;
+      const renderStage = () => {
+        const section = sections[current?.index];
+        if (section === undefined) return;
+        const doc = `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="script-src 'none'"><base href="/preview/">${head}${STAGE_STYLE}</head><body class="sd-app">${section}</body></html>`;
+        if ($frame.srcdoc !== doc) $frame.srcdoc = doc;
+        else bind();
+      };
+
+      // each text of the slide found back in its source becomes editable
+      const EDITABLE = "h1, h2, h3, h4, h5, h6, p, li";
+      const bind = () => {
+        const doc = $frame.contentDocument;
+        if (!doc?.body) return;
+        const all = units($source.value);
+        const used = new Set();
+        for (const el of doc.querySelectorAll(EDITABLE)) {
+          if (
+            el.closest("pre, figure, aside, table") ||
+            el.querySelector("ul, ol, p, pre, figure, img")
+          )
+            continue;
+          const text = el.textContent.replaceAll(/\s+/g, " ").trim();
+          const k = all.findIndex((u, i) => !used.has(i) && plain(u.body) === text);
+          if (k === -1) continue;
+          used.add(k);
+          el.contentEditable = "true";
+          el.dataset.unit = k;
+          if (focusText !== undefined && text === focusText) {
+            focusText = undefined;
+            el.focus();
+            doc.getSelection().selectAllChildren(el);
+          }
+        }
+        // each image found back in its source can be moved
+        const paths = images($source.value);
+        let from = 0;
+        for (const figure of doc.querySelectorAll("figure.sd-img")) {
+          const k = paths.indexOf(figure.querySelector("img")?.dataset.src, from);
+          if (k === -1) continue;
+          from = k + 1;
+          figure.dataset.image = k;
+        }
+      };
+
+      // an image dragged by its corner: resized, its height following
+      const resize = (e, figure) => {
+        const img = figure.querySelector("img");
+        const dx = e.clientX - img.offsetWidth;
+        let moved = false;
+        figure.setPointerCapture(e.pointerId);
+        figure.onpointermove = (m) => {
+          moved = true;
+          img.removeAttribute("height");
+          img.width = Math.max(16, Math.round(m.clientX - dx));
+        };
+        figure.onpointerup = () => {
+          figure.onpointermove = figure.onpointerup = null;
+          if (moved)
+            write(sizeImage($source.value, Number(figure.dataset.image), img.width));
+        };
+      };
+
+      // an image dragged on the slide: placed where it is dropped, in % of
+      // the slide so that it stays there whatever the size of the screen
+      const drag = (e) => {
+        const figure = e.target.closest?.("[data-image]");
+        if (!figure || e.button !== 0) return;
+        e.preventDefault();
+        const corner = figure.getBoundingClientRect();
+        if (e.clientX > corner.right - 4 && e.clientY > corner.bottom - 4)
+          return resize(e, figure);
+        const dx = e.clientX - figure.offsetLeft;
+        const dy = e.clientY - figure.offsetTop;
+        let moved = false;
+        figure.setPointerCapture(e.pointerId);
+        figure.onpointermove = (m) => {
+          moved = true;
+          Object.assign(figure.style, {
+            position: "absolute",
+            margin: "0",
+            left: `${m.clientX - dx}px`,
+            top: `${m.clientY - dy}px`,
+          });
+        };
+        figure.onpointerup = () => {
+          figure.onpointermove = figure.onpointerup = null;
+          if (!moved) return;
+          const box = figure.offsetParent;
+          const pct = (v, size) => Math.round((v / size) * 1000) / 10;
+          write(
+            placeImage(
+              $source.value,
+              Number(figure.dataset.image),
+              pct(figure.offsetLeft, box.clientWidth),
+              pct(figure.offsetTop, box.clientHeight),
+            ),
+          );
+        };
+      };
+
+      // the texts after a text added or removed are one further or closer
+      const shift = (from, by) => {
+        for (const key of ["unit", "after"])
+          for (const el of $frame.contentDocument.querySelectorAll(`[data-${key}]`))
+            if (Number(el.dataset[key]) >= from)
+              el.dataset[key] = Number(el.dataset[key]) + by;
+      };
+
+      const write = (text) => {
+        if (text === $source.value) return;
+        $source.value = text;
+        $source.dispatchEvent(new Event("input"));
+      };
+
+      const commit = (el, done = false) => {
+        if (!el.dataset) return;
+        const body = toMarkdown(el);
+        // an item or a paragraph added on the slide: in the source once typed
+        if (el.dataset.after !== undefined) {
+          const k = Number(el.dataset.after);
+          const unit = units($source.value)[k];
+          if (!unit || !body.trim()) return;
+          shift(k + 1, 1);
+          delete el.dataset.after;
+          el.dataset.unit = k + 1;
+          return write(insertUnit($source.value, unit, body));
+        }
+        const k = Number(el.dataset.unit);
+        const unit = units($source.value)[k];
+        if (!unit) return;
+        // an emptied text goes once left: meanwhile the others keep their place
+        if (!body.trim() && !done) return;
+        if (!body.trim() && unit.prefix !== "## ") {
+          delete el.dataset.unit;
+          shift(k + 1, -1);
+        }
+        write(setUnit($source.value, unit, body));
+      };
+
+      const caret = (doc, node, atEnd) => {
+        const range = doc.createRange();
+        range.selectNodeContents(node);
+        range.collapse(!atEnd);
+        doc.getSelection().removeAllRanges();
+        doc.getSelection().addRange(range);
+        return range;
+      };
+      const atStart = (doc, el) => {
+        const selection = doc.getSelection();
+        if (!selection.rangeCount) return false;
+        const before = doc.createRange();
+        before.selectNodeContents(el);
+        before.setEnd(
+          selection.getRangeAt(0).startContainer,
+          selection.getRangeAt(0).startOffset,
+        );
+        return before.toString() === "";
+      };
+
+      // Enter: another item or paragraph after this one, with what follows the caret
+      const split = (doc, el) => {
+        if (el.dataset.unit === undefined && !el.textContent.trim()) return;
+        const next = doc.createElement(el.tagName);
+        next.contentEditable = "true";
+        next.dataset.after = el.dataset.unit ?? el.dataset.after;
+        if (!atStart(doc, el) && el.lastChild) {
+          const rest = doc.getSelection().getRangeAt(0);
+          rest.setEndAfter(el.lastChild);
+          next.append(rest.extractContents());
+        }
+        el.after(next);
+        commit(el);
+        commit(next);
+        next.focus();
+        caret(doc, next, false);
+      };
+
+      // Backspace at the start: into the previous item, or away when empty
+      const join = (doc, el) => {
+        const previous = el.previousElementSibling;
+        const into = previous?.isContentEditable ? previous : undefined;
+        if (!into && el.textContent.trim()) return false;
+        const k = el.dataset.unit;
+        delete el.dataset.unit;
+        delete el.dataset.after;
+        const unit = units($source.value)[k];
+        if (unit) {
+          shift(Number(k) + 1, -1);
+          write(setUnit($source.value, unit, ""));
+        }
+        if (into) {
+          into.focus();
+          const range = caret(doc, into, true);
+          // an empty text holds at most the <br> Safari keeps it open with
+          if (el.textContent) into.append(...el.childNodes);
+          doc.getSelection().removeAllRanges();
+          doc.getSelection().addRange(range);
+        }
+        el.remove();
+        if (into) commit(into);
+        return true;
+      };
+
+      $frame.onload = () => {
+        const doc = $frame.contentDocument;
+        doc.addEventListener("focusin", () => {
+          editing = true;
+        });
+        doc.addEventListener("focusout", (e) => {
+          editing = false;
+          commit(e.target, true);
+          // an item added then left empty was never written
+          if (e.target.dataset?.after !== undefined && !e.target.textContent.trim())
+            e.target.remove();
+        });
+        doc.addEventListener("input", (e) => commit(e.target));
+        const flowing = (el) => el.matches?.("li, p");
+        const back = (e) => {
+          if (
+            flowing(e.target) &&
+            doc.getSelection().isCollapsed &&
+            atStart(doc, e.target) &&
+            join(doc, e.target)
+          )
+            e.preventDefault();
+        };
+        // Enter and Backspace as the browser edits them, whatever the key
+        // events it sends
+        doc.addEventListener("beforeinput", (e) => {
+          if (e.inputType === "insertParagraph") {
+            e.preventDefault();
+            if (flowing(e.target)) split(doc, e.target);
+            else e.target.blur();
+          } else if (e.inputType === "deleteContentBackward") back(e);
+        });
+        doc.addEventListener("keydown", (e) => {
+          const el = e.target;
+          // Safari sends no beforeinput on an empty text: nothing to delete
+          if (e.key === "Backspace") back(e);
+          else if (e.key === "Escape") {
+            e.preventDefault();
+            el.blur();
+          } else if ((e.metaKey || e.ctrlKey) && (e.key === "b" || e.key === "i")) {
+            e.preventDefault();
+            doc.execCommand(e.key === "b" ? "bold" : "italic");
+          }
+        });
+        doc.addEventListener("pointerdown", drag);
+        // the image moves, not a copy of it the browser drags away
+        doc.addEventListener("dragstart", (e) => e.preventDefault());
+        // what is pasted comes as text, not as the html of another page
+        doc.addEventListener("paste", (e) => {
+          e.preventDefault();
+          doc.execCommand("insertText", false, e.clipboardData.getData("text/plain"));
+        });
+        bind();
+      };
+
+      // the slide as large as its place allows
+      const $area = $("#stage-area");
+      new ResizeObserver(() => {
+        const scale =
+          Math.min($area.clientWidth / 1280, $area.clientHeight / 720) * 0.94;
+        $("#stage").style.width = `${1280 * scale}px`;
+        $("#stage").style.height = `${720 * scale}px`;
+        $frame.style.transform = `scale(${scale})`;
+      }).observe($area);
+
+      const showNotes = () => {
+        if (document.activeElement !== $notes) $notes.value = notesOf($source.value);
+      };
+      $notes.oninput = () => {
+        $source.value = withNotes($source.value, $notes.value);
+        $source.dispatchEvent(new Event("input"));
+      };
+
+      /** Adds a block at the end of the slide, before its notes. */
+      const addBlock = (block) => {
+        $frame.contentDocument?.activeElement?.blur();
+        const notes = notesOf($source.value);
+        const text = withNotes($source.value, "").trimEnd();
+        // an item following a list goes into it
+        const list = /^\s*([-*+]|\d+[.)])\s/.test(text.split("\n").at(-1));
+        const sep = list && block.startsWith("- ") ? "\n" : "\n\n";
+        $source.value = withNotes(`${text}${sep}${block}\n`, notes);
+        const unit = units(block)[0];
+        focusText = unit && plain(unit.body);
+        $source.dispatchEvent(new Event("input"));
+      };
+      for (const button of document.querySelectorAll("[data-block]"))
+        button.onclick = () => addBlock(button.dataset.block);
+
+      // a click on the toolbar leaves the caret where it is on the slide
+      $("header").addEventListener("mousedown", (e) => {
+        if (e.target.closest("button")) e.preventDefault();
+      });
+
+      const flush = async () => {
+        if (!timer) return;
+        clearTimeout(timer);
+        await save();
+      };
+
+      const select = async (s) => {
+        await flush();
+        current = s;
+        saved = s.text;
+        $source.value = s.text;
+        $source.disabled = false;
+        $notes.disabled = false;
+        showNotes();
+        showTemplate();
+        render();
+        present(s);
+        renderStage();
+      };
+
+      const load = (data) => {
+        preview = data.preview;
+        slides = data.slides;
+        const s = slides.find((x) => same(x, current));
+        if (!s) return slides[0] && select(slides[0]);
+        current = s;
+        present(s);
+        // the file changed elsewhere, or a typed "## " made a new slide of the end
+        if (s.text !== saved) {
+          saved = s.text;
+          $source.value = s.text;
+          showNotes();
+        }
+        render();
+      };
+
+      const save = async () => {
+        timer = undefined;
+        saved = $source.value;
+        try {
+          load(await api("slides", { action: "save", ...current, text: saved }));
+          $status.textContent = "Saved";
+          $status.classList.remove("error");
+        } catch {
+          // the studio was stopped: what is typed stays in the page
+          $status.textContent = "Not saved: is slidesk studio running?";
+          $status.classList.add("error");
+        }
+      };
+
+      $source.addEventListener("input", () => {
+        clearTimeout(timer);
+        $status.textContent = "Editing…";
+        timer = setTimeout(save, 500);
+      });
+
+      const insert = (before, after = "") => {
+        const { selectionStart: a, selectionEnd: b, value } = $source;
+        $source.setRangeText(before + value.slice(a, b) + after, a, b, "end");
+        $source.focus();
+        $source.dispatchEvent(new Event("input"));
+      };
+
+      // on the slide, or in the source
+      for (const button of document.querySelectorAll("[data-before]"))
+        button.onclick = () =>
+          editing
+            ? $frame.contentDocument.execCommand(button.dataset.command)
+            : insert(button.dataset.before, button.dataset.after);
+      $source.addEventListener("input", showNotes);
+
+      $source.addEventListener("keydown", (e) => {
+        if (!(e.metaKey || e.ctrlKey)) return;
+        if (e.key === "b") insert("**", "**");
+        else if (e.key === "i") insert("_", "_");
+        else return;
+        e.preventDefault();
+      });
+
+      $("#image").onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file || !current) return;
+        const form = new FormData();
+        form.append("file", file);
+        const res = await fetch("/api/upload", { method: "POST", body: form });
+        if (!res.ok) return alert(await res.text());
+        const { path } = await res.json();
+        addBlock(`!image(${path},${file.name.replace(/\.\w+$/, "")})`);
+        e.target.value = "";
+      };
+
+      $("#add").onclick = async () => {
+        await flush();
+        const { file, n } = current;
+        load(await api("slides", { action: "add", file, n }));
+        select(slides.find((s) => s.file === file && s.n === n + 1));
+      };
+
+      $("#remove").onclick = async () => {
+        if (!confirm(`Remove "${current.title}"?`)) return;
+        clearTimeout(timer);
+        timer = undefined;
+        const at = slides.findIndex((s) => same(s, current));
+        const { file, n } = current;
+        load(await api("slides", { action: "remove", file, n }));
+        select(slides[Math.min(at, slides.length - 1)]);
+      };
+
+      // reordering: drop on the top half of a slide to go before it
+      let dragged;
+      const target = (e) => e.target.closest("li");
+      const after = (e, li) =>
+        e.clientY > li.getBoundingClientRect().top + li.offsetHeight / 2;
+      const clear = () => {
+        for (const li of $list.querySelectorAll("li"))
+          li.classList.remove("drop-before", "drop-after");
+      };
+      $list.ondragstart = (e) => {
+        dragged = Number(target(e).dataset.i);
+      };
+      $list.ondragover = (e) => {
+        const li = target(e);
+        if (!li || dragged === undefined) return;
+        e.preventDefault();
+        clear();
+        li.classList.add(after(e, li) ? "drop-after" : "drop-before");
+      };
+      $list.ondragend = clear;
+      $list.ondrop = async (e) => {
+        e.preventDefault();
+        clear();
+        const li = target(e);
+        if (!li || dragged === undefined) return;
+        await flush();
+        const moved = dragged;
+        const from = slides[moved];
+        const i = Number(li.dataset.i);
+        const below = after(e, li);
+        const to = slides[i];
+        dragged = undefined;
+        load(
+          await api("slides", {
+            action: "move",
+            file: from.file,
+            n: from.n,
+            to: to.file,
+            at: to.n,
+            after: below,
+          }),
+        );
+        // where it was dropped, the slides before it having moved up
+        const at = i + (below ? 1 : 0);
+        select(slides[at > moved ? at - 1 : at] ?? slides[0]);
+      };
+
+      // only what is set from the studio is written to its stylesheet
+      const fillTheme = (vars) => {
+        for (const input of $theme.elements)
+          if (input.type === "color")
+            input.dataset.set = input.name in vars ? "1" : "";
+          else if (input.name) input.value = vars[input.name] ?? "";
+      };
+      const saveTheme = async () => {
+        const vars = {};
+        for (const input of $theme.elements)
+          if (input.dataset.set || (input.type === "text" && input.value))
+            vars[input.name] = input.value.trim();
+        themeVersion++;
+        // a Google font is downloaded into the talk first
+        $status.textContent = "Saving the theme…";
+        fillTheme(await api("theme", vars));
+        $status.textContent = "Saved";
+      };
+      $theme.oninput = (e) => {
+        if (e.target.type !== "color") return;
+        e.target.dataset.set = "1";
+        saveTheme();
+      };
+      $theme.onchange = (e) => {
+        if (e.target.type === "text") saveTheme();
+      };
+
+      // the fonts of this computer, where the browser lists them (Chrome,
+      // Edge; it asks first), then some Google Fonts, downloaded when chosen
+      const GOOGLE_FONTS = [
+        "Inter",
+        "Roboto",
+        "Open Sans",
+        "Lato",
+        "Montserrat",
+        "Poppins",
+        "Raleway",
+        "Nunito",
+        "Source Sans 3",
+        "Work Sans",
+        "Merriweather",
+        "Playfair Display",
+        "Lora",
+        "Oswald",
+        "Bebas Neue",
+        "Fira Code",
+        "JetBrains Mono",
+      ];
+      const listFonts = async () => {
+        $theme.onpointerdown = undefined;
+        const local = await window.queryLocalFonts?.().catch(() => []);
+        const families = new Set((local ?? []).map((f) => f.family));
+        $("#fonts").replaceChildren(
+          ...[...families, ...GOOGLE_FONTS.filter((f) => !families.has(f))].map(
+            (family) => new Option(family),
+          ),
+        );
+      };
+      $("#fonts").replaceChildren(...GOOGLE_FONTS.map((f) => new Option(f)));
+      // reading the local fonts needs a click
+      $theme.onpointerdown = (e) => {
+        if (e.target.type === "text") listFonts();
+      };
+      $theme.onreset = async (e) => {
+        e.preventDefault();
+        themeVersion++;
+        fillTheme(await api("theme", {}));
+      };
+
+      // templates: "#name" in the classes of the title, its blocks in the slide
+      const $template = $("#template");
+      let templates = [];
+      const CLASSES = /^(.*?)(?:\s*\.\[([^\]]*)\])?\s*$/;
+      const showTemplate = () => {
+        const title = $source.value.split("\n")[0];
+        const used = (CLASSES.exec(title)[2] ?? "")
+          .split(" ")
+          .find((c) => c.startsWith("#"));
+        $template.value = used?.slice(1).replace(/\.sdt$/, "") ?? "";
+        // what precedes the first title of a file has no title to carry it
+        $template.disabled = current.n === 0;
+      };
+      const listTemplates = async () => {
+        templates = await api("templates");
+        $template.replaceChildren(
+          new Option("No template", ""),
+          ...templates.map((t) => new Option(t.name)),
+        );
+        if (current) showTemplate();
+      };
+      $template.onfocus = listTemplates;
+      $template.onchange = () => {
+        const [title, ...rest] = $source.value.split("\n");
+        const [, heading, classes = ""] = CLASSES.exec(title);
+        const kept = classes.split(" ").filter((c) => c && !c.startsWith("#"));
+        if ($template.value) kept.push(`#${$template.value}`);
+        let text = [
+          kept.length ? `${heading} .[${kept.join(" ")}]` : heading,
+          ...rest,
+        ].join("\n");
+        // each block between empty lines, its name as a text to replace
+        const blocks =
+          templates.find((t) => t.name === $template.value)?.blocks ?? [];
+        for (const b of blocks)
+          if (!text.includes(`[[${b}]]`))
+            text = `${text.trimEnd()}\n\n[[${b}]]\n\n${b}\n\n[[/${b}]]\n`;
+        $source.value = text;
+        $source.dispatchEvent(new Event("input"));
+      };
+      $source.addEventListener("input", showTemplate);
+
+      // addons of slidesk.link, installed into the talk
+      const $addons = $("#addons");
+      const showAddons = async () => {
+        const kind = $("#addon-kind").value;
+        const q = $("#addon-search").value.trim();
+        const { found, installed, offline } = await api(
+          `addons?kind=${kind}&q=${encodeURIComponent(q)}`,
+        );
+        const row = (name, label, remove) => {
+          const li = document.createElement("li");
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = label;
+          button.onclick = () => changeAddon(kind, name, remove, button);
+          li.append(name.replace("__", "/"), button);
+          return li;
+        };
+        const none = (text) => {
+          const li = document.createElement("li");
+          li.textContent = text;
+          return li;
+        };
+        $("#addon-installed").replaceChildren(
+          ...(installed.length
+            ? installed.map((n) => row(n, "Remove", true))
+            : [none("None")]),
+        );
+        // an installed addon is named user__addon
+        const more = found.filter((n) => !installed.includes(n.replace("/", "__")));
+        $("#addon-found").replaceChildren(
+          ...(more.length
+            ? more.map((n) => row(n, "Install", false))
+            : [none(offline ? "slidesk.link cannot be reached" : "None")]),
+        );
+      };
+      const changeAddon = async (kind, name, remove, button) => {
+        button.disabled = true;
+        $status.textContent = remove ? "Removing…" : "Installing…";
+        try {
+          $status.textContent = await api("addons", { kind, name, remove });
+        } catch (e) {
+          $status.textContent = e.message;
+        }
+        showAddons();
+        listTemplates();
+      };
+      $("#open-addons").onclick = () => {
+        $addons.showModal();
+        showAddons();
+      };
+      $("#close-addons").onclick = () => $addons.close();
+      $("#addon-kind").onchange = showAddons;
+      let searching;
+      $("#addon-search").oninput = () => {
+        clearTimeout(searching);
+        searching = setTimeout(showAddons, 300);
+      };
+
+      // the colours the theme of the talk gives, read from an empty page
+      // styled like the presentation: a colour picker only takes #rrggbb
+      const hex = (rgb) =>
+        `#${rgb
+          .match(/[\d.]+/g)
+          .slice(0, 3)
+          .map((n) => Math.round(n).toString(16).padStart(2, "0"))
+          .join("")}`;
+      $probe.onload = () => {
+        const body = $probe.contentDocument.body;
+        const style = (el) => $probe.contentWindow.getComputedStyle(el);
+        const family = (el) => style(el).fontFamily.split(",")[0].replaceAll('"', "");
+        for (const input of $theme.elements)
+          if (input.type === "color" && input !== document.activeElement) {
+            body.style.color = `var(${input.name})`;
+            input.value = hex(style(body).color);
+          }
+        // the fonts of the theme, until one is chosen
+        $theme.elements.font.placeholder = family(body);
+        $theme.elements["heading-font"].placeholder = family(body.querySelector("h2"));
+      };
+
+      // edits made in another editor show when coming back
+      window.addEventListener("focus", async () => {
+        if (!timer && !editing) load(await api("slides"));
+      });
+
+      load(await api("slides"));
+      fillTheme(await api("theme"));
+      listTemplates();
+      drawThumbs();
+      // the presentation tells when it has been rebuilt
+      new WebSocket(`${preview.replace(/^http/, "ws")}/ws`).onmessage = (e) => {
+        if (e.data === JSON.stringify({ action: "reload" })) drawThumbs();
+      };
+    </script>
+  </body>
+</html>
