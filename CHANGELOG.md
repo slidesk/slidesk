@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.22.2
+
+### 🔒 Security
+
+- **The `PASSPHRASE` of the TLS key no longer reaches the pages**: `slidesk.js` carries the configuration of the talk to every viewer of `present`, and into the site `save` exports, and the passphrase went with it, as did the paths of `KEY` and `CERT`. Only the server reads them now. A talk exported before keeps its passphrase: export it again, and change the passphrase if the site was public.
+
 ## 2.22.1
 
 ### 🔒 Security
