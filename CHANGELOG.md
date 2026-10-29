@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.22.1
+
+### 🔒 Security
+
+- **A plugin's `addWS` handler can tell the speaker's messages apart**: any viewer can write to the websocket, and a message for a plugin reached its handler whoever sent it. The handler now gets `{ canSend }` as its third argument, `true` only for the speaker ([create plugins](https://slidesk.github.io/slidesk/how-to/create-plugins/)). A handler that acts on the speaker's behalf, such as one running a command, checks it.
+
 ## 2.22.0
 
 ### ✨ Features
