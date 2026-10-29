@@ -23,6 +23,20 @@ describe("getJS function", () => {
     expect(result).toContain('"CUSTOM_VAR":"test"');
   });
 
+  it("keeps the TLS passphrase and key files to the server", () => {
+    const result = getJS(defaultPlugins, {
+      slidesk: {
+        PASSPHRASE: "secret",
+        KEY: "key.pem",
+        CERT: "cert.pem",
+        WIDTH: 1920,
+      },
+    });
+    expect(result).not.toContain("secret");
+    expect(result).not.toContain(".pem");
+    expect(result).toContain('"WIDTH":1920');
+  });
+
   it("should include plugin onSlideChange", () => {
     const plugins: SliDeskPlugin[] = [
       {
