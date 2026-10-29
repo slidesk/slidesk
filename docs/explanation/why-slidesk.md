@@ -18,6 +18,7 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 | Output | HTML, PDF, PPTX | web app, PDF, PPTX | web page (PDF via print) | PDF (HTML experimental) | web page, PDF, PPTX |
 | Multi-language from one source | ✗ | ✗ | ✗ | ✗ (scriptable with `sys.inputs`) | ✅ `.lang.json` + `--lang` |
 | Slide includes | ✗ (plugin / preprocessor) | per file, via `src:` frontmatter | external Markdown per section | per file, `#include` | ✅ file **or** directory, one line |
+| Audience follows on their own device | ✗ | on the network (`--remote`) | via a plugin and a socket server (multiplex) | ✗ (PDF) | ✅ on the network, or hosted on slidesk.link |
 | Speaker view (next slide, timers, notes) | limited | ✅ | ✅ | via an external viewer (pdfpc) | ✅ |
 | Live reload while editing | ✅ | ✅ | via tooling | ✅ `typst watch` | ✅ |
 | Present from a terminal | ✗ | ✗ | ✗ | ✗ | ✅ telnet |
@@ -34,6 +35,7 @@ That is the gap SliDesk fills. Markdown-first tools stay minimal and leave i18n 
 
 To be precise about where SliDesk actually differs:
 
+- **The talk is live, for the audience too.** A Marp or Typst deck is a file; SliDesk serves the talk while you present, so the room follows it on their phone, and only the speaker drives it. Slidev does it on the local network with `--remote`, reveal.js with a plugin and a server to run; SliDesk does it out of the box, and from anywhere with `slidesk link host` ([how](../how-to/share-with-audience.md)).
 - **Multi-language from one source is the outlier.** Marp, Slidev, Reveal.js and Typst have no built-in equivalent — the usual answer is "duplicate the deck", "write a preprocessor" or, with Typst, script it yourself from `sys.inputs`.
 - **Typst is the closest on the install side**: it is a single binary too, and a superb typesetter. But you write Typst markup rather than Markdown, slides come from a package, the result is a PDF, and the speaker view needs an external viewer such as pdfpc.
 - **Includes exist elsewhere, but they cost you the project.** Slidev imports one file per `src:` frontmatter block, and you get that only inside a Vue/Vite app. SliDesk includes a file *or a whole directory* with a single `!include()` line, from a plain Markdown file and a single binary.

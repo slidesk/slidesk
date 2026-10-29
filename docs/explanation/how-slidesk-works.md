@@ -32,7 +32,7 @@ The builder reads `main.sdf` or `main.md`, parses it with bun, processes compone
 
 The HTTP server serves the presentation and speaker view. A WebSocket connection provides live reload when files change and communication between the presentation and speaker view.
 
-Only the speaker drives the talk over the WebSocket: pages opened on the speaker's machine, or carrying the token of the speaker view URL printed in the terminal. Every other viewer only follows. Messages addressed to a server plugin stay open to everyone.
+Only the speaker drives the talk over the WebSocket: pages opened on the speaker's machine, or carrying the token of the speaker view URL printed in the terminal. Every other viewer only follows. Messages addressed to a server plugin stay open to everyone: the plugin is told whether they come from the speaker (`canSend`).
 
 ## File watcher
 

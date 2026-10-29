@@ -13,5 +13,6 @@ Solve specific problems with SliDesk step by step.
 - [Export to PDF or PPTX](export-pdf-pptx) — hand out or upload your deck
 - [Import an existing deck](import-existing-deck) — from pptx, Google Slides, slidev or reveal.js
 - [Use speaker notes](use-speaker-notes) — present with notes and timers
+- [Let the audience follow](share-with-audience) — your slides on their phone, as you present
 - [Use the hub](use-hub-slidesk-link) — slidesk.link login, host, push
 - [Manage addons](manage-addons) — install, update, remove, search
