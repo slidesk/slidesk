@@ -88,7 +88,7 @@ export default async (req, env) => {
 
 ## Back-end WebSocket plugin
 
-Use the `addWS` hook for WebSocket handlers:
+Use the `addWS` hook for WebSocket handlers. Any viewer can send them a message: `canSend`, in the third argument, tells the speaker's messages apart.
 
 ```json
 {
@@ -97,7 +97,8 @@ Use the `addWS` hook for WebSocket handlers:
 ```
 
 ```js
-export default async (message) => {
+export default async (message, server, { canSend }) => {
+  if (!canSend) return { error: "only the speaker can run a command" };
   const { cwd, command, key } = JSON.parse(message);
   const proc = Bun.spawn(command.split(" "), { cwd: cwd ?? process.env.HOME });
   return {

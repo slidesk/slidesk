@@ -69,6 +69,8 @@ export type SliDeskSocketData = { canSend: boolean };
 export type SliDeskPluginAddWS = (
   _message: string,
   _server: Server<SliDeskSocketData>,
+  /** canSend: the message comes from the speaker, who may drive the talk */
+  _socket: SliDeskSocketData,
 ) => Promise<object>;
 
 /** A plugin.json as read from disk, plus the name of its folder. */

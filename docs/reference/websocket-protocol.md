@@ -89,7 +89,7 @@ When a plugin defines an `addWS` handler in its `plugin.json`, the server routes
 }
 ```
 
-The server calls the plugin's WebSocket handler with the raw JSON string and broadcasts the response as:
+The server calls the plugin's WebSocket handler with the raw JSON string, the server and `{ canSend }`, and broadcasts the response as:
 
 ```json
 {
@@ -99,6 +99,8 @@ The server calls the plugin's WebSocket handler with the raw JSON string and bro
 ```
 
 All clients subscribed to `"slidesk"` receive the response.
+
+Any viewer can send these messages. `canSend` is `true` only for the speaker (a page opened on the speaker's machine, or carrying the token of the speaker view): a handler that acts on the speaker's behalf checks it.
 
 ### Unrecognised messages
 
