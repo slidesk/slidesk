@@ -224,7 +224,7 @@ const svgOpen =
 
 const viewOpen = (screen) => {
   window.open(
-    `//${window.slidesk.getPresentationPath()}`,
+    window.slidesk.getPresentationPath(),
     "_blank",
     `left=${screen.availLeft},
       top=${screen.availTop},
