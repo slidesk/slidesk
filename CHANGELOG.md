@@ -2,6 +2,16 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.22.3
+
+### 🐛 Fixes
+
+- **The speaker view opens the presentation again**: its button opened `http://index.html/`, taking the page for a domain, since 2.16.0. It opens the presentation next to the speaker view, with `present`, on slidesk.link and from a saved site.
+
+### 📝 Documentation
+
+- [Share with the audience](https://slidesk.github.io/slidesk/how-to/share-with-audience/): the room follows the talk on their own phone, over the network or on slidesk.link, and only the speaker drives it.
+
 ## 2.22.2
 
 ### 🔒 Security
