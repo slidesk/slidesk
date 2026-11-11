@@ -28,6 +28,19 @@ Plugins, templates and themes land in their own directory, for instance `plugins
 
 Installing an addon that is already there replaces it, files of the previous version included.
 
+## Install from a git repository
+
+An addon that is not on the hub installs from its git repository:
+
+```sh
+slidesk theme install https://github.com/someone/my-theme.git
+slidesk plugin install git@github.com:someone/my-plugin.git
+```
+
+SliDesk clones it with your `git`, so a private repository works with your credentials. The repository is the addon itself: `theme.json`, `plugin.json` or `template.json` at its root, a `.mjs` anywhere for a component. It is installed under the name of the repository, `themes/my-theme/`, or for a plugin under the name its `plugin.json` gives its files (`plugins/<name>/…`).
+
+Run the same command with `update` to get its latest version. [`slidesk update`](../reference/commands/update.md) only updates the addons from the hub.
+
 ## Update
 
 ```sh
