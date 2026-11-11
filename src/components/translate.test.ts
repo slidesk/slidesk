@@ -41,4 +41,16 @@ describe("translate function", () => {
       translate("$$price$$", { translations: { price: "$5, $$key$$ and $&" } }),
     ).toBe("$5, $$key$$ and $&");
   });
+
+  it("translates the speaker notes", () => {
+    const notes = (html: string) =>
+      `<aside class="sd-notes">${Buffer.from(html).toString("base64")}</aside>`;
+    const result = translate(
+      `<p>$$title$$</p>${notes("<p>Dites $$hello$$ — $$unknown$$</p>")}`,
+      { translations: { title: "Été", hello: "bonjour 😀" } },
+    );
+    expect(result).toBe(
+      `<p>Été</p>${notes("<p>Dites bonjour 😀 — $$unknown$$</p>")}`,
+    );
+  });
 });
