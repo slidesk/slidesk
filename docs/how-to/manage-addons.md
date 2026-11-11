@@ -39,7 +39,16 @@ slidesk plugin install git@github.com:someone/my-plugin.git
 
 SliDesk clones it with your `git`, so a private repository works with your credentials. The repository is the addon itself: `theme.json`, `plugin.json` or `template.json` at its root, a `.mjs` anywhere for a component. It is installed under the name of the repository, `themes/my-theme/`, or for a plugin under the name its `plugin.json` gives its files (`plugins/<name>/…`).
 
-Run the same command with `update` to get its latest version. [`slidesk update`](../reference/commands/update.md) only updates the addons from the hub.
+The clone keeps its `.git`: updating the addon force-pulls its repository, and drops the changes you made to it.
+
+```sh
+slidesk theme update my-theme
+slidesk update            # the addons from the hub and from git
+```
+
+A component is a single `.mjs`, without its `.git`: update it with its URL, `slidesk component update https://github.com/someone/my-component.git`.
+
+`present` does not serve the `.git` of an addon, `save` does not export it, and `push` does not send it.
 
 ## Update
 

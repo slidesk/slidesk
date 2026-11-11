@@ -11,7 +11,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { useTempCwd } from "../__testing__/addons";
-import { addonInstall, isGitUrl } from "./addon";
+import { addonInstall, installedAddons, isGitUrl } from "./addon";
 
 const realSpawn = Bun.spawn;
 let cwd: ReturnType<typeof useTempCwd>;
@@ -25,20 +25,25 @@ const repo = (name: string, files: Record<string, string>) => {
     mkdirSync(dirname(join(dir, file)), { recursive: true });
     writeFileSync(join(dir, file), content);
   }
-  const git = (...args: string[]) =>
-    Bun.spawnSync(["git", "-C", dir, ...args], {
-      env: {
-        ...process.env,
-        GIT_AUTHOR_NAME: "t",
-        GIT_AUTHOR_EMAIL: "t@t",
-        GIT_COMMITTER_NAME: "t",
-        GIT_COMMITTER_EMAIL: "t@t",
-      },
-    });
-  git("init", "-q");
-  git("add", ".");
-  git("commit", "-qm", "init");
+  gitIn(dir, "init", "-q");
+  commit(dir);
   return `https://git.test/${name}.git`;
+};
+
+const gitIn = (dir: string, ...args: string[]) =>
+  Bun.spawnSync(["git", "-C", dir, ...args], {
+    env: {
+      ...process.env,
+      GIT_AUTHOR_NAME: "t",
+      GIT_AUTHOR_EMAIL: "t@t",
+      GIT_COMMITTER_NAME: "t",
+      GIT_COMMITTER_EMAIL: "t@t",
+    },
+  });
+
+const commit = (dir: string) => {
+  gitIn(dir, "add", ".");
+  gitIn(dir, "commit", "-qm", "change");
 };
 
 const install = (kind: Parameters<typeof addonInstall>[0], url: string) =>
@@ -86,7 +91,8 @@ describe("install from git", () => {
     );
     const dir = join(cwd.dir, "themes/my-theme");
     expect(readFileSync(join(dir, "assets/style.css"), "utf8")).toBe("body{}");
-    expect(existsSync(join(dir, ".git"))).toBe(false);
+    // kept, so that an update pulls it
+    expect(existsSync(join(dir, ".git"))).toBe(true);
     expect(readdirSync(join(cwd.dir, "themes"))).toEqual(["my-theme"]);
   });
 
@@ -95,7 +101,8 @@ describe("install from git", () => {
     mkdirSync(join(cwd.dir, "themes/my-theme"), { recursive: true });
     writeFileSync(join(cwd.dir, "themes/my-theme/old.css"), "");
     await addonInstall("theme", url, undefined, true, cwd.dir);
-    expect(readdirSync(join(cwd.dir, "themes/my-theme"))).toEqual([
+    expect(readdirSync(join(cwd.dir, "themes/my-theme")).sort()).toEqual([
+      ".git",
       "theme.json",
     ]);
   });
@@ -113,6 +120,27 @@ describe("install from git", () => {
     const url = repo("qrcode", { "README.md": "", "src/qrcode.mjs": "x" });
     await install("component", url);
     expect(readdirSync(join(cwd.dir, "components"))).toEqual(["qrcode.mjs"]);
+  });
+
+  it("force-pulls an addon installed from git, by its name", async () => {
+    await install("theme", repo("my-theme", { "theme.json": "{}" }));
+    const installed = join(cwd.dir, "themes/my-theme");
+    expect(installedAddons("theme", cwd.dir)).toEqual(["my-theme"]);
+    writeFileSync(join(installed, "theme.json"), "local change");
+    writeFileSync(join(repos, "my-theme/theme.json"), '{"v":2}');
+    commit(join(repos, "my-theme"));
+    expect(
+      await addonInstall("theme", "my-theme", undefined, true, cwd.dir),
+    ).toBe("theme my-theme updated");
+    expect(readFileSync(join(installed, "theme.json"), "utf8")).toBe('{"v":2}');
+  });
+
+  it("reports an addon whose repository cannot be pulled", async () => {
+    await install("theme", repo("gone", { "theme.json": "{}" }));
+    rmSync(join(repos, "gone"), { recursive: true });
+    await expect(
+      addonInstall("theme", "gone", undefined, true, cwd.dir),
+    ).rejects.toThrow("theme gone could not be updated:");
   });
 
   it("refuses a repository without the manifest of the kind", async () => {

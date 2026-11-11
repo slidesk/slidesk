@@ -40,6 +40,8 @@ export const withTarball = <T>(
 ) =>
   withTempDir(async (dir) => {
     const file = join(dir, "link.tgz");
-    await create({ gzip: true, file, cwd }, entries);
+    // the history of an addon kept in git, and its remote, stay local
+    const filter = (path: string) => !/(?:^|\/)\.git(?:\/|$)/.test(path);
+    await create({ gzip: true, file, cwd, filter }, entries);
     return use(Bun.file(file));
   });

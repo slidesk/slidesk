@@ -50,6 +50,27 @@ const placeAddon = async (
 const GIT_URL = /^(https:\/\/|ssh:\/\/|git@)[\w.@:/~+-]+$/;
 export const isGitUrl = (name: string) => GIT_URL.test(name);
 
+/** Runs git, and turns its failure into a CliError starting with `failure`. */
+const git = async (args: string[], failure: string) => {
+  const proc = Bun.spawn(["git", ...args], {
+    stdin: "inherit",
+    stdout: "ignore",
+    stderr: "pipe",
+  });
+  if (await proc.exited)
+    throw new CliError(
+      `${failure}: ${(await new Response(proc.stderr).text()).trim()}`,
+    );
+};
+
+/** Force-pulls an addon installed from git: its local changes are dropped. */
+const gitPull = async (kind: AddonKind, name: string, dir: string) => {
+  const failure = `${kind} ${name} could not be updated`;
+  await git(["-C", dir, "fetch", "--quiet", "--depth", "1"], failure);
+  await git(["-C", dir, "reset", "--quiet", "--hard", "FETCH_HEAD"], failure);
+  return `${kind} ${name} updated`;
+};
+
 /** Clones the git repository at `url` and installs the addon it holds. */
 const gitInstall = async (
   kind: AddonKind,
@@ -63,16 +84,14 @@ const gitInstall = async (
   await rm(tmp, { recursive: true, force: true });
   await mkdir(`${target}/${kind}s`, { recursive: true });
   try {
-    const git = Bun.spawn(
-      ["git", "clone", "--depth", "1", "--quiet", "--", url, tmp],
-      { stdin: "inherit", stdout: "ignore", stderr: "pipe" },
+    await git(
+      ["clone", "--depth", "1", "--quiet", "--", url, tmp],
+      `${url} could not be cloned`,
     );
-    if (await git.exited)
-      throw new CliError(
-        `${url} could not be cloned: ${(await new Response(git.stderr).text()).trim()}`,
-      );
-    await rm(`${tmp}/.git`, { recursive: true, force: true });
-    if (kind !== "component") {
+    // kept so that an update force-pulls it, except in a single-file component
+    if (kind === "component")
+      await rm(`${tmp}/.git`, { recursive: true, force: true });
+    else {
       const manifest = Bun.file(`${tmp}/${kind}.json`);
       if (!(await manifest.exists()))
         throw new CliError(`${url} holds no ${kind}.json: it is not a ${kind}`);
@@ -99,6 +118,9 @@ export const addonInstall = async (
   target = process.cwd(),
 ) => {
   if (isGitUrl(name)) return gitInstall(kind, name, update, target);
+  const gitDir = `${target}/${kind}s/${name}`;
+  if (SEGMENT.test(name) && existsSync(`${gitDir}/.git`))
+    return gitPull(kind, name, gitDir);
   const addonName = name.replace("/", "__").replaceAll(/\\u[\da-fA-F]{4}/g, "");
   if (!isHubName(addonName))
     throw new CliError(`Please provide a ${kind} name like user/${kind}`);
@@ -166,7 +188,7 @@ export const addonRemove = async (kind: AddonKind, name: string) => {
   return `${kind} ${name} removed`;
 };
 
-/** The addons of `kind` installed from slidesk.link: those named `user__addon`. */
+/** The addons of `kind` installed from slidesk.link, named `user__addon`, or from git. */
 export const installedAddons = (kind: AddonKind, target = process.cwd()) => {
   const dir = `${target}/${kind}s`;
   if (!existsSync(dir)) return [];
@@ -177,7 +199,7 @@ export const installedAddons = (kind: AddonKind, target = process.cwd()) => {
         : d.isDirectory(),
     )
     .map((d) => d.name.replace(/\.mjs$/, ""))
-    .filter(isHubName);
+    .filter((name) => isHubName(name) || existsSync(`${dir}/${name}/.git`));
 };
 
 const searchCmd = (kind: AddonKind) =>
