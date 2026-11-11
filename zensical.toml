@@ -33,6 +33,7 @@ nav = [
         "how-to/deploy-gitlab-pages.md",
         "how-to/manage-addons.md",
         "how-to/use-hub-slidesk-link.md",
+        "how-to/self-host-slidesk-link.md",
         "how-to/use-speaker-notes.md",
         "how-to/share-with-audience.md",
         "how-to/use-templates.md"

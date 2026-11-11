@@ -15,4 +15,5 @@ Solve specific problems with SliDesk step by step.
 - [Use speaker notes](use-speaker-notes) — present with notes and timers
 - [Let the audience follow](share-with-audience) — your slides on their phone, as you present
 - [Use the hub](use-hub-slidesk-link) — slidesk.link login, host, push
+- [Host your own slidesk.link](self-host-slidesk-link) — run the hub inside your company
 - [Manage addons](manage-addons) — install, update, remove, search

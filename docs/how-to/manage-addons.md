@@ -2,7 +2,7 @@
 
 Search, install, update, remove, and push addons (plugins, components, templates, themes) from the hub.
 
-All addon commands accept `--slidesk-link-url <url>` to point to a custom hub instance (default: `https://slidesk.link`).
+All addon commands accept `--slidesk-link-url <url>` to point to a custom hub instance (default: `https://slidesk.link`), see [Host your own slidesk.link](self-host-slidesk-link.md).
 
 Addons are named `@author/name`. `@author__name` is accepted too: it is the name of the installed directory.
 
