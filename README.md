@@ -85,6 +85,8 @@ brew install gouz/tools/slidesk   # macOS / Linux
 bunx slidesk                      # anywhere Bun runs
 ```
 
+`slidesk upgrade` then gets the latest release.
+
 Windows (`slidesk_windows.zip`), Linux and macOS binaries and a `.deb` package are attached to every [release](https://github.com/slidesk/slidesk/releases), and a Docker image is on Docker Hub as [`gouz/slidesk`](https://hub.docker.com/r/gouz/slidesk). See the [installation guide](https://slidesk.github.io/slidesk/tutorials/01-installation/).
 
 ## Get started

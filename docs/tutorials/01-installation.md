@@ -52,3 +52,13 @@ docker run -it -v "$(pwd)"/:/slidesk/ gouz/slidesk:latest slidesk save my-talk
 ```
 
 SliDesk is now accessible at http://localhost:1337.
+
+## Upgrade
+
+SliDesk warns you when a newer release is out. To get it:
+
+```sh
+slidesk upgrade
+```
+
+It runs `brew upgrade` for Homebrew, and replaces the binary for Linux, macOS and the `.deb` one (`sudo slidesk upgrade` when it is in `/usr/bin`). With Bun, `bunx slidesk@latest` runs the latest release; with Docker, pull `gouz/slidesk:latest`; on Windows, download the new `slidesk_windows.zip`. See [`upgrade`](../reference/commands/upgrade.md).
