@@ -2,6 +2,35 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.23.0
+
+### ✨ Features
+
+- **[`slidesk upgrade`](https://slidesk.github.io/slidesk/reference/commands/upgrade/)** upgrades SliDesk to its latest release, the way it was installed: `brew upgrade` for Homebrew, or it replaces the Linux or macOS binary (`.deb` included, with `sudo` when it is not writable). The out-of-date warning points to it. On Windows and with `bunx`, it says what to do instead.
+- **Install an addon from its git repository**: `slidesk theme install https://github.com/someone/my-theme.git`, for plugins, components, templates and themes, with your own `git` (private repositories work). The clone keeps its `.git`: `slidesk theme update my-theme` and `slidesk update` force-pull it, dropping local changes ([manage addons](https://slidesk.github.io/slidesk/how-to/manage-addons/#install-from-a-git-repository)).
+- **A theme translates its own templates**: its `XX.lang.json` files, in `themes/<theme>/`, are used in the language of the talk, or else in the theme's default one. The talk overrides a key of its theme, and `--lang` accepts the languages of the talk and of its themes ([translations of a theme](https://slidesk.github.io/slidesk/reference/syntax/internationalisation/#translations-of-a-theme)).
+- **The speaker notes are translated**: a `$$key$$` in the notes follows the language of the slides.
+- **Formatting in a translation**: a sentence is translated as a whole, its bold, italic, inline code and links written in Markdown in the value ([formatting in a translation](https://slidesk.github.io/slidesk/reference/syntax/internationalisation/#formatting-in-a-translation)).
+
+### ⚠️ Behaviour changes
+
+- A translation is rendered as inline Markdown: its `*`, `_`, `` ` `` and `[…](…)` become formatting, and `&` and `<` are escaped. A value that would become a list, a heading or several paragraphs (`1. Introduction`, `# Title`) is inserted as written, and HTML in a value is kept.
+
+### 🔒 Security
+
+- `slidesk <kind> push` leaves the `.git` of an addon out of what it sends to slidesk.link: its `.git/config` may hold a token.
+
+### 🐛 Fixes
+
+- **An unknown option** (`slidesk --foo`) printed a stack trace: it prints `unknown option --foo, see "slidesk present --help"` and exits with 1.
+- **`slidesk generate-completion`** failed with `writeFileSync is not a function`: it writes the completion script and sources it from `.zshrc` or `.bashrc` again.
+- The tab title is the text of the first heading: a formatted one showed its tags, `Mon <em>talk</em>`.
+
+### 📝 Documentation
+
+- [Host your own slidesk.link](https://slidesk.github.io/slidesk/how-to/self-host-slidesk-link/): the GitHub OAuth app, the environment, the Docker image or Bun, and `--slidesk-link-url`.
+- The installation guide says how to upgrade, for each way SliDesk is installed.
+
 ## 2.22.3
 
 ### 🐛 Fixes
