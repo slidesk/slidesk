@@ -1,6 +1,6 @@
 # Use the hub (slidesk.link)
 
-The hub at https://slidesk.link lets you share and discover addons, host presentations, and manage your talks.
+The hub at https://slidesk.link lets you share and discover addons, host presentations, and manage your talks. You can also [host your own](self-host-slidesk-link.md).
 
 ## Login
 
