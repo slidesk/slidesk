@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, spyOn } from "bun:test";
-import { existsSync } from "node:fs";
-import { hubFetch, withTempDir } from "./hub";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { list } from "tar";
+import { hubFetch, withTarball, withTempDir } from "./hub";
 
 let fetchSpy: ReturnType<typeof spyOn> | undefined;
 
@@ -65,4 +67,26 @@ describe("withTempDir", () => {
     expect(used).not.toBe("");
     expect(existsSync(used)).toBe(false);
   });
+});
+
+describe("withTarball", () => {
+  it("leaves the git history of an addon out", async () =>
+    withTempDir(async (dir) => {
+      mkdirSync(join(dir, "my-theme/.git"), { recursive: true });
+      writeFileSync(join(dir, "my-theme/.git/config"), "token");
+      writeFileSync(join(dir, "my-theme/.gitignore"), "");
+      writeFileSync(join(dir, "my-theme/theme.json"), "{}");
+      const entries: string[] = [];
+      await withTarball(dir, ["my-theme"], async (tarball) => {
+        await list({
+          file: tarball.name ?? "",
+          onReadEntry: (e) => entries.push(e.path),
+        });
+      });
+      expect(entries.sort()).toEqual([
+        "my-theme/",
+        "my-theme/.gitignore",
+        "my-theme/theme.json",
+      ]);
+    }));
 });

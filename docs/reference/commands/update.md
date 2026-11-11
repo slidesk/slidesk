@@ -10,7 +10,7 @@ slidesk update themes
 slidesk update templates
 ```
 
-Run it from the directory of your talk. An addon comes from the hub when its name is `user__addon`: a directory in `plugins/`, `themes/` or `templates/`, or a `components/user__addon.mjs` file. The addons you wrote yourself are left as they are.
+Run it from the directory of your talk. An addon comes from the hub when its name is `user__addon`: a directory in `plugins/`, `themes/` or `templates/`, or a `components/user__addon.mjs` file. An addon [installed from git](../../how-to/manage-addons.md#install-from-a-git-repository) is force-pulled. The addons you wrote yourself are left as they are.
 
 An addon that cannot be updated is reported, the others are updated anyway, and the command then exits with an error.
 

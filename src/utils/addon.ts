@@ -1,5 +1,6 @@
 import { existsSync, readdirSync } from "node:fs";
 import { mkdir, rename, rm } from "node:fs/promises";
+import { basename } from "node:path";
 import { multiselect } from "@clack/prompts";
 import { Clipse } from "clipse";
 import { extract } from "tar";
@@ -24,33 +25,91 @@ export const isHubName = (name: string) => {
 };
 
 /**
- * A component is kept as `components/user__name.mjs`, so `slidesk update`
- * knows where it comes from; the `.mjs` may sit anywhere in the tarball.
+ * Moves the addon unpacked in `src` to its place in the talk, replacing any
+ * installed version: `components/<name>.mjs` for a component, whose `.mjs`
+ * may sit anywhere in `src`, and `<kind>s/<name>/` for the others.
  */
-const installComponent = async (
-  tarball: Blob,
+const placeAddon = async (
+  kind: AddonKind,
+  src: string,
   target: string,
-  addonName: string,
-  addon: string,
+  name: string,
 ) => {
-  const dir = `${target}/components`;
-  const tmp = `${dir}/.${addonName}`;
+  if (kind !== "component") {
+    const dir = `${target}/${kind}s/${name}`;
+    await rm(dir, { recursive: true, force: true });
+    await rename(src, dir);
+    return;
+  }
+  const [file] = await Array.fromAsync(new Bun.Glob("**/*.mjs").scan(src));
+  if (!file) throw new CliError(`component ${name} holds no .mjs file`);
+  await rename(`${src}/${file}`, `${target}/components/${name}.mjs`);
+};
+
+// https://, ssh:// or scp-like git@host:path; never an option or a local path
+const GIT_URL = /^(https:\/\/|ssh:\/\/|git@)[\w.@:/~+-]+$/;
+export const isGitUrl = (name: string) => GIT_URL.test(name);
+
+/** Runs git, and turns its failure into a CliError starting with `failure`. */
+const git = async (args: string[], failure: string) => {
+  const proc = Bun.spawn(["git", ...args], {
+    stdin: "inherit",
+    stdout: "ignore",
+    stderr: "pipe",
+  });
+  if (await proc.exited)
+    throw new CliError(
+      `${failure}: ${(await new Response(proc.stderr).text()).trim()}`,
+    );
+};
+
+/** Force-pulls an addon installed from git: its local changes are dropped. */
+const gitPull = async (kind: AddonKind, name: string, dir: string) => {
+  const failure = `${kind} ${name} could not be updated`;
+  await git(["-C", dir, "fetch", "--quiet", "--depth", "1"], failure);
+  await git(["-C", dir, "reset", "--quiet", "--hard", "FETCH_HEAD"], failure);
+  return `${kind} ${name} updated`;
+};
+
+/** Clones the git repository at `url` and installs the addon it holds. */
+const gitInstall = async (
+  kind: AddonKind,
+  url: string,
+  update: boolean,
+  target: string,
+) => {
+  let name = basename(url).replace(/\.git$/, "");
+  if (!SEGMENT.test(name)) throw new CliError(`${url} is not an addon name`);
+  const tmp = `${target}/${kind}s/.${name}.git`;
   await rm(tmp, { recursive: true, force: true });
-  await mkdir(tmp, { recursive: true });
+  await mkdir(`${target}/${kind}s`, { recursive: true });
   try {
-    await Bun.write(`${tmp}/link.tgz`, tarball);
-    await extract({ file: `${tmp}/link.tgz`, C: tmp });
-    const [file] = await Array.fromAsync(new Bun.Glob("**/*.mjs").scan(tmp));
-    if (!file) throw new CliError(`component ${addonName} holds no .mjs file`);
-    await rename(`${tmp}/${file}`, `${dir}/${addonName}.mjs`);
-    // the same component installed before its author was kept would run twice
-    await rm(`${dir}/${addon}.mjs`, { force: true });
+    await git(
+      ["clone", "--depth", "1", "--quiet", "--", url, tmp],
+      `${url} could not be cloned`,
+    );
+    // kept so that an update force-pulls it, except in a single-file component
+    if (kind === "component")
+      await rm(`${tmp}/.git`, { recursive: true, force: true });
+    else {
+      const manifest = Bun.file(`${tmp}/${kind}.json`);
+      if (!(await manifest.exists()))
+        throw new CliError(`${url} holds no ${kind}.json: it is not a ${kind}`);
+      // its files are listed as plugins/<name>/…: it is installed under that name
+      if (kind === "plugin")
+        name = /plugins\/([\w.-]+)\//.exec(await manifest.text())?.[1] ?? name;
+    }
+    await placeAddon(kind, tmp, target, name);
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
+  return `${kind} ${name} ${update ? "updated" : "installed"} from ${url}`;
 };
 
-/** Downloads `user/addon` (or `user__addon`) from slidesk.link, replacing any installed version. */
+/**
+ * Downloads `user/addon` (or `user__addon`) from slidesk.link, or clones a git
+ * repository, replacing any installed version.
+ */
 export const addonInstall = async (
   kind: AddonKind,
   name: string,
@@ -58,6 +117,10 @@ export const addonInstall = async (
   update = false,
   target = process.cwd(),
 ) => {
+  if (isGitUrl(name)) return gitInstall(kind, name, update, target);
+  const gitDir = `${target}/${kind}s/${name}`;
+  if (SEGMENT.test(name) && existsSync(`${gitDir}/.git`))
+    return gitPull(kind, name, gitDir);
   const addonName = name.replace("/", "__").replaceAll(/\\u[\da-fA-F]{4}/g, "");
   if (!isHubName(addonName))
     throw new CliError(`Please provide a ${kind} name like user/${kind}`);
@@ -72,21 +135,20 @@ export const addonInstall = async (
     throw new CliError(
       `${kind} ${label} could not be downloaded (${response.status})`,
     );
-  const tarball = await response.blob();
-  if (kind === "component") {
-    await installComponent(tarball, target, addonName, addon);
-    return `${kind} ${label} ${update ? "updated" : "installed"}`;
-  }
   // unpacked aside first: the installed version is only replaced by a
   // complete new one
-  const dir = `${target}/${kind}s/${addonName}`;
   const tmp = `${target}/${kind}s/.${addonName}`;
   await rm(tmp, { recursive: true, force: true });
   await mkdir(`${tmp}/addon`, { recursive: true });
   try {
-    await Bun.write(`${tmp}/link.tgz`, tarball);
-    // plugins, themes and templates are packed inside a directory named after them
-    await extract({ file: `${tmp}/link.tgz`, C: `${tmp}/addon`, strip: 1 });
+    await Bun.write(`${tmp}/link.tgz`, await response.blob());
+    // plugins, themes and templates are packed inside a directory named after
+    // them, a component's .mjs anywhere
+    await extract({
+      file: `${tmp}/link.tgz`,
+      C: `${tmp}/addon`,
+      strip: kind === "component" ? 0 : 1,
+    });
     if (kind === "plugin") {
       const manifest = Bun.file(`${tmp}/addon/plugin.json`);
       await Bun.write(
@@ -97,8 +159,10 @@ export const addonInstall = async (
         ),
       );
     }
-    await rm(dir, { recursive: true, force: true });
-    await rename(`${tmp}/addon`, dir);
+    await placeAddon(kind, `${tmp}/addon`, target, addonName);
+    // the same component installed before its author was kept would run twice
+    if (kind === "component")
+      await rm(`${target}/components/${addon}.mjs`, { force: true });
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
@@ -124,7 +188,7 @@ export const addonRemove = async (kind: AddonKind, name: string) => {
   return `${kind} ${name} removed`;
 };
 
-/** The addons of `kind` installed from slidesk.link: those named `user__addon`. */
+/** The addons of `kind` installed from slidesk.link, named `user__addon`, or from git. */
 export const installedAddons = (kind: AddonKind, target = process.cwd()) => {
   const dir = `${target}/${kind}s`;
   if (!existsSync(dir)) return [];
@@ -135,7 +199,7 @@ export const installedAddons = (kind: AddonKind, target = process.cwd()) => {
         : d.isDirectory(),
     )
     .map((d) => d.name.replace(/\.mjs$/, ""))
-    .filter(isHubName);
+    .filter((name) => isHubName(name) || existsSync(`${dir}/${name}/.git`));
 };
 
 const searchCmd = (kind: AddonKind) =>
@@ -218,7 +282,9 @@ const pushCmd = (kind: AddonKind) =>
 
 /** The `slidesk <kind>` command: install, remove, update, search and push on slidesk.link. */
 export const addonCmd = (kind: AddonKind) => {
-  const nameArg = [{ name: "name", description: `name of the ${kind}` }];
+  const nameArg = [
+    { name: "name", description: `name of the ${kind}, or its git repository` },
+  ];
   const install =
     (update: boolean) => async (args: { name?: string }, opts: LinkOpts) =>
       log(
