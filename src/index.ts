@@ -15,6 +15,7 @@ import skillsCmd from "./commands/skills";
 import templateCmd from "./commands/template";
 import themeCmd from "./commands/theme";
 import updateCmd from "./commands/update";
+import upgradeCmd from "./commands/upgrade";
 import checkVersion from "./utils/checkLastVersion";
 import { runCommand } from "./utils/cliError";
 
@@ -49,6 +50,7 @@ slidesk
     importCmd,
     presentCmd,
     skillsCmd,
+    upgradeCmd,
   ])
   .defineDefaultCommand(presentCmd);
 
