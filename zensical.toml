@@ -68,7 +68,8 @@ nav = [
             "reference/commands/save.md",
             "reference/commands/template.md",
             "reference/commands/theme.md",
-            "reference/commands/update.md"
+            "reference/commands/update.md",
+            "reference/commands/upgrade.md"
         ]},
 
         { Options = [
