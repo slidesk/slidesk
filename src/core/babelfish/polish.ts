@@ -14,7 +14,8 @@ const polish = async (
   if (configuredTitle) tpl = tpl.replace("#TITLE#", () => configuredTitle);
   else
     [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
-      tpl = tpl.replace("#TITLE#", () => title[1]);
+      // the tab shows the text of the heading, not its formatting
+      tpl = tpl.replace("#TITLE#", () => title[1].replaceAll(/<[^>]*>/g, ""));
     });
   tpl = tpl.replace("#TITLE#", "SliDesk");
   tpl = tpl.replace("#SECTIONS#", () => presentation);

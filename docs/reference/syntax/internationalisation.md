@@ -19,6 +19,32 @@ slidesk -l fr my-talk
 
 Speaker notes are translated too: a `$$myVar$$` between `/*` and `*/` follows the language of the slides.
 
+## Formatting in a translation
+
+A sentence is translated as a whole, since the order of the words changes from one language to another. Its formatting is part of the translation: bold, italic, inline code and links are written in Markdown in the value.
+
+`en.lang.json`:
+
+```json
+{
+  "translations": {
+    "intro": "Install it with `brew`, it takes **one minute**: see [the guide](https://slidesk.github.io/slidesk/)"
+  }
+}
+```
+
+`fr.lang.json`:
+
+```json
+{
+  "translations": {
+    "intro": "Une **minute** suffit pour l'installer avec `brew` : voir [le guide](https://slidesk.github.io/slidesk/)"
+  }
+}
+```
+
+Only inline Markdown is rendered: a value that would become a list, a heading or several paragraphs (`1. Introduction`, `# Title`) is inserted as written. HTML in a value is kept.
+
 ## Translations of a theme
 
 A theme translates its own elements with its own `XX.lang.json` files, in its directory:

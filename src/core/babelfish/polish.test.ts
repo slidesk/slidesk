@@ -25,6 +25,16 @@ describe("polish function", () => {
     expect(result).toContain("Extracted Title");
   });
 
+  it("keeps the text of a formatted h1 as the title", async () => {
+    const result = await polish(
+      "<h1>Mon <em>talk</em></h1>",
+      "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>",
+      {},
+      [],
+    );
+    expect(result).toContain("<title>Mon talk</title>");
+  });
+
   it("should use default title SliDesk if no title found", async () => {
     const template =
       "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>";
