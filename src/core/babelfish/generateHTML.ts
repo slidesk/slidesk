@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import translate from "../../components/translate";
 import type {
   SliDeskEnv,
@@ -8,6 +8,27 @@ import type {
 import { CliError } from "../../utils/cliError";
 import polish from "./polish";
 
+const LANG_FILE = /\.lang\.json$/i;
+
+type LangFile = { default?: boolean; translations?: Record<string, string> };
+
+/** The `<lang>.lang.json` files of `dir`, read, sorted by language. */
+const readLangs = async (dir: string) => {
+  const files = readdirSync(dir)
+    .filter((f) => LANG_FILE.test(f))
+    .sort((a, b) => a.localeCompare(b));
+  return Promise.all(
+    files.map(async (f) => ({
+      lang: f.replace(LANG_FILE, ""),
+      json: (await Bun.file(`${dir}/${f}`).json()) as LangFile,
+    })),
+  );
+};
+
+/** The file in `lang`, or else the default one. */
+const pick = (langs: Awaited<ReturnType<typeof readLangs>>, lang?: string) =>
+  langs.find((l) => l.lang === lang) ?? langs.find((l) => l.json.default);
+
 const generateHTML = async (
   presentation: string,
   template: string,
@@ -16,40 +37,39 @@ const generateHTML = async (
   env: SliDeskEnv,
   plugins: SliDeskPlugin[],
 ) => {
-  const langFiles = readdirSync(sdfPath)
-    .filter((item) => /\.lang\.json$/i.test(item))
-    .sort((a, b) => a.localeCompare(b));
-  if (options.lang && !langFiles.includes(`${options.lang}.lang.json`))
+  const talk = await readLangs(sdfPath);
+  // a theme translates its own templates, in the language of the talk
+  const themesDir = `${sdfPath}/themes`;
+  const themes = existsSync(themesDir)
+    ? await Promise.all(
+        readdirSync(themesDir, { withFileTypes: true })
+          .filter((d) => d.isDirectory())
+          .map((d) => d.name)
+          .sort((a, b) => a.localeCompare(b))
+          .map((t) => readLangs(`${themesDir}/${t}`)),
+      )
+    : [];
+  const available = [
+    ...new Set([...talk, ...themes.flat()].map((l) => l.lang)),
+  ].sort((a, b) => a.localeCompare(b));
+  if (options.lang && !available.includes(options.lang))
     throw new CliError(
       `${options.lang}.lang.json not found${
-        langFiles.length
-          ? ` (available: ${langFiles.map((f) => f.replace(/\.lang\.json$/i, "")).join(", ")})`
-          : ""
+        available.length ? ` (available: ${available.join(", ")})` : ""
       }`,
     );
-  let content = "";
-  if (langFiles.length) {
-    let translations: object | null = null;
-    await Promise.all(
-      langFiles.map(async (lang) => {
-        const langSlug = lang.replace(".lang.json", "");
-        const translationJSON = await Bun.file(`${sdfPath}/${lang}`).json();
-        if (
-          options.lang === langSlug ||
-          (translationJSON.default && translations === null)
-        )
-          translations = translationJSON;
-      }),
-    );
-    content = await polish(
-      translate(presentation, translations),
-      template,
-      env,
-      plugins,
-    );
-  } else {
-    content = await polish(presentation, template, env, plugins);
-  }
+  const lang = options.lang ?? pick(talk)?.lang;
+  // the talk has the last word over its themes
+  const translations = Object.assign(
+    {},
+    ...[...themes, talk].map((langs) => pick(langs, lang)?.json.translations),
+  );
+  const content = await polish(
+    available.length ? translate(presentation, { translations }) : presentation,
+    template,
+    env,
+    plugins,
+  );
   return {
     "index.html": {
       content,
