@@ -16,3 +16,5 @@ In your slides, use `$$myVar$$` to reference a translation. Switch language with
 ```sh
 slidesk -l fr my-talk
 ```
+
+Speaker notes are translated too: a `$$myVar$$` between `/*` and `*/` follows the language of the slides.
