@@ -12,10 +12,12 @@ themes/
     ├── theme.css
     ├── script.js
     ├── templates/
-    └── plugins/
+    ├── plugins/
+    ├── en.lang.json
+    └── fr.lang.json
 ```
 
-A theme can contain templates and plugins — they are loaded automatically when the theme is applied.
+A theme can contain templates and plugins — they are loaded automatically when the theme is applied. Its `XX.lang.json` files translate the `$$key$$` of its templates in the language of the talk, see [translations of a theme](../reference/syntax/internationalisation.md#translations-of-a-theme).
 
 ## CSS variables
 
