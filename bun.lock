@@ -6,7 +6,7 @@
       "name": "slidesk",
       "dependencies": {
         "@clack/prompts": "^1.8.1",
-        "clipse": "^0.2.2",
+        "clipse": "^0.2.3",
         "html-minifier-terser": "^7.2.0",
         "qrcode": "^1.5.4",
         "tar": "^7.5.22",
@@ -127,7 +127,7 @@
 
     "clean-css": ["clean-css@5.3.3", "", { "dependencies": { "source-map": "~0.6.0" } }, "sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg=="],
 
-    "clipse": ["clipse@0.2.2", "", { "peerDependencies": { "typescript": "^5.8.3" } }, "sha512-txrbfUSr4erMPw4Wn1+5BciPvR2CY5gGAzS33Xv+lJSebGryVFbO1b9hxFH/pIVIQmfJMjMXBK8Bt73PRttA+g=="],
+    "clipse": ["clipse@0.2.3", "", { "peerDependencies": { "typescript": "^5.8.3" } }, "sha512-kH92ms3FJl+VvNJCGMDe7YIaafeMOQFPFxoTRxM5aABqe3F4aNjhzgoO2dXLEbsH/J7c96LEFzVVrspxjupLrQ=="],
 
     "cliui": ["cliui@6.0.0", "", { "dependencies": { "string-width": "^4.2.0", "strip-ansi": "^6.0.0", "wrap-ansi": "^6.2.0" } }, "sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ=="],
 
