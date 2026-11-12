@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.23.1
+
+### 🐛 Fixes
+
+- **`slidesk --help`** lists the options and the `talk` argument of `present`, the command run when no other is given: it only showed `--help` and `--version`.
+
 ## 2.23.0
 
 ### ✨ Features
