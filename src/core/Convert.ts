@@ -54,7 +54,7 @@ const commonContent = (
       headers: { "Content-Type": "application/json" },
     },
     [`${options.notes ?? "notes.html"}`]: {
-      content: getNotesView(config, plugins, sdfPath),
+      content: getNotesView(config, plugins, sdfPath, lang),
       headers: { "Content-Type": "text/html" },
     },
   };
