@@ -15,12 +15,17 @@ const publicEnv = (env: SliDeskEnv) =>
       }
     : env;
 
-const getJS = (plugins: SliDeskPlugin[], env: SliDeskEnv) => `window.slidesk = {
+const getJS = (
+  plugins: SliDeskPlugin[],
+  env: SliDeskEnv,
+  lang?: string,
+) => `window.slidesk = {
   currentSlide: 0,
   slides: [],
   animationTimer: ${Number(env.slidesk?.TRANSITION ?? 300)},
   onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
   env: ${JSON.stringify(publicEnv(env))},
+  lang: ${JSON.stringify(lang ?? null)},
   lastAction: "",
   domain: "${env.slidesk?.DOMAIN ?? "localhost"}",
   deployed: ${env.slidesk?.deployed ? "true" : "false"}

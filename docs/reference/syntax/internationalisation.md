@@ -17,6 +17,8 @@ In your slides, use `$$myVar$$` to reference a translation. Switch language with
 slidesk -l fr my-talk
 ```
 
+The language of the talk is set on `<html lang>`, given to the [components](../component-api.md) and to the plugins (`window.slidesk.lang`).
+
 Speaker notes are translated too: a `$$myVar$$` between `/*` and `*/` follows the language of the slides.
 
 ## Formatting in a translation

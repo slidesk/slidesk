@@ -29,6 +29,10 @@ const readLangs = async (dir: string) => {
 const pick = (langs: Awaited<ReturnType<typeof readLangs>>, lang?: string) =>
   langs.find((l) => l.lang === lang) ?? langs.find((l) => l.json.default);
 
+/** The language of the talk: --lang, or else its default translation file. */
+export const talkLang = async (sdfPath: string, lang?: string) =>
+  lang ?? pick(await readLangs(sdfPath))?.lang;
+
 const generateHTML = async (
   presentation: string,
   template: string,
@@ -65,9 +69,14 @@ const generateHTML = async (
     ...[...themes, talk].map((langs) => pick(langs, lang)?.json.translations),
   );
   const title = env.slidesk?.TITLE;
+  // the language of the page, for screen readers and hyphenation
+  const page =
+    lang && /^[\w-]+$/.test(lang)
+      ? template.replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
+      : template;
   const content = await polish(
     available.length ? translate(presentation, { translations }) : presentation,
-    template,
+    page,
     // the tab is named in the language of the talk
     title && available.length
       ? {

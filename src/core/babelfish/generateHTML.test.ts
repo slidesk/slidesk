@@ -78,6 +78,21 @@ describe("generateHTML function", () => {
     rmSync(tempDir, { recursive: true });
   });
 
+  it("sets the language of the page", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(`${tempDir}fr.lang.json`, '{"default": true}');
+    const result = await generateHTML(
+      "<p>x</p>",
+      '<html lang="en">#SECTIONS#</html>',
+      tempDir,
+      {},
+      {},
+      [],
+    );
+    expect(result["index.html"].content).toContain("<html lang=fr>");
+    rmSync(tempDir, { recursive: true });
+  });
+
   it("should use specified language", async () => {
     const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     writeFileSync(

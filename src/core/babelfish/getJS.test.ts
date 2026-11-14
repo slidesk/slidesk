@@ -13,6 +13,11 @@ describe("getJS function", () => {
     expect(result).toContain('domain: "localhost"');
   });
 
+  it("tells the plugins the language of the talk", () => {
+    expect(getJS(defaultPlugins, {}, "fr")).toContain('lang: "fr"');
+    expect(getJS(defaultPlugins, {})).toContain("lang: null");
+  });
+
   it("should include animation timer from env", () => {
     const result = getJS(defaultPlugins, { slidesk: { TRANSITION: 500 } });
     expect(result).toContain("animationTimer: 500");
