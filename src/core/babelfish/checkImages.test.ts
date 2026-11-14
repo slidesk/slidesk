@@ -26,6 +26,11 @@ describe("checkImages", () => {
     expect(warnings()).toContain("image not found: assets/gone.png");
   });
 
+  it("does not check a path that depends on the language", () => {
+    checkImages("!image(assets/map-$$lang$$.png)", talk, {});
+    expect(warnings()).not.toContain("image not found");
+  });
+
   it("stays quiet for existing images, urls and data", () => {
     checkImages(
       [
