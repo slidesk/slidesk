@@ -59,7 +59,7 @@ const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
       loadExternalPlugins(
         `${sdfPath}/themes/${t}/plugins`,
         sdfPath,
-        `/themes/${t}/`,
+        `themes/${t}/`,
       ),
     ),
   ];

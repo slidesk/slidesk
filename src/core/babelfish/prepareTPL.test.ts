@@ -73,6 +73,18 @@ describe("prepareTPL function", () => {
     expect(result).toContain("style.css");
   });
 
+  it("links the files of a theme plugin relatively: an export opens in file:// or a sub-folder", () => {
+    const plugin = {
+      name: "footer",
+      addStyles: ["plugins/footer/footer.css"],
+      addScripts: ["plugins/footer/footer.js"],
+      theme: "themes/t/",
+    } as SliDeskPlugin;
+    const result = prepareTPL(defaultConfig, [plugin], defaultFavicon, "/tmp");
+    expect(result).toContain('href="themes/t/plugins/footer/footer.css"');
+    expect(result).toContain('src="themes/t/plugins/footer/footer.js"');
+  });
+
   it("should include plugin scripts", () => {
     const plugins: SliDeskPlugin[] = [
       {
