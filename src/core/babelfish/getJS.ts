@@ -2,7 +2,7 @@ import { script } from "../../templates/present";
 import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 
 // what only the server reads: slidesk.js is served to every viewer, and exported
-const PRIVATE = ["PASSPHRASE", "KEY", "CERT"];
+export const PRIVATE = ["PASSPHRASE", "KEY", "CERT"];
 
 /** The configuration of the talk as the pages see it, without what the server keeps. */
 const publicEnv = (env: SliDeskEnv) =>

@@ -25,6 +25,19 @@ describe("envVariables function", () => {
     expect(result).toBe("Hello World");
   });
 
+  it("reads a key of [slidesk], the root first", () => {
+    expect(envVariables("++MY_KEY++", { slidesk: { MY_KEY: "x" } })).toBe("x");
+    expect(
+      envVariables("++MY_KEY++", { MY_KEY: "root", slidesk: { MY_KEY: "x" } }),
+    ).toBe("root");
+  });
+
+  it("never writes the TLS settings of [slidesk] in the slides", () => {
+    expect(
+      envVariables("++PASSPHRASE++", { slidesk: { PASSPHRASE: "s" } }),
+    ).toBe("++PASSPHRASE++");
+  });
+
   it("leaves a key missing from the configuration visible, with a warning", () => {
     expect(envVariables("Hello ++NAME++", {})).toBe("Hello ++NAME++");
     expect(String(captured.warns)).toContain("++NAME++ is not set");

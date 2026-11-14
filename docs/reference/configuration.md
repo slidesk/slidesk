@@ -140,4 +140,8 @@ MY_CUSTOM_KEY="hello-world"
 ```
 
 In slide content: `++MY_CUSTOM_KEY++` renders as `hello-world`.
-In plugins: `window.slidesk.env.MY_CUSTOM_KEY` returns `"hello-world"`.
+In plugins: `window.slidesk.env.slidesk.MY_CUSTOM_KEY` returns `"hello-world"`.
+
+A key at the root of `slidesk.toml` (above `[slidesk]`) is read the same way, and wins
+over a key of the same name under `[slidesk]`. A key of another section is read with
+its section: `++section.KEY++`.
