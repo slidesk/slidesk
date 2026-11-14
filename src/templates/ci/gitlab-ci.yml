@@ -1,5 +1,29 @@
 stages:
   - deploy
 
-include:
-  - component: $CI_SERVER_FQDN/fun_with/fun-with-gitlab/components/slidesk/slidesk@1.1.0
+pages:
+  stage: deploy
+  image: oven/bun:1
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - bun install --global slidesk
+    # The addons installed from git and not committed with the talk are
+    # installed here. For a private repository, put a token that can read it
+    # in the ADDONS_TOKEN CI/CD variable of this project (masked).
+    # - apt-get update -qq && apt-get install -qq -y git
+    # - git config --global url."https://oauth2:${ADDONS_TOKEN}@gitlab.com/".insteadOf "https://gitlab.com/"
+    # - slidesk theme install https://gitlab.com/someone/my-theme.git#v1.2.0
+    - |
+      slidesk save -t /tmp/site
+      # a talk in several languages: one export per language, in its sub-folder
+      for file in *.lang.json; do
+        [ -e "$file" ] || continue
+        lang="${file%.lang.json}"
+        slidesk save -l "$lang" -t "/tmp/lang-$lang"
+        mv "/tmp/lang-$lang" "/tmp/site/$lang"
+      done
+      mv /tmp/site public
+  artifacts:
+    paths:
+      - public

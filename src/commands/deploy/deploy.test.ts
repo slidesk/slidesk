@@ -45,7 +45,10 @@ describe("deploy command", () => {
 
   it("writes a gitlab pipeline", async () => {
     expect(await run(["--target", "gitlab"])).toBe(0);
-    expect(existsSync(join(cwd.dir, ".gitlab-ci.yml"))).toBe(true);
+    const pipeline = await Bun.file(join(cwd.dir, ".gitlab-ci.yml")).text();
+    // one export per language, and the addons installed from git
+    expect(pipeline).toContain('slidesk save -l "$lang"');
+    expect(pipeline).toContain("ADDONS_TOKEN");
   });
 
   it("writes a slidesk.link manifest", async () => {
