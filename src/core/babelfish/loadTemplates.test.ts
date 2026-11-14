@@ -24,6 +24,21 @@ describe("loadTemplates function", () => {
     rmSync(tempDir, { recursive: true });
   });
 
+  it("loads the templates of COMMON_DIR, the talk overriding them", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    mkdirSync(`${tempDir}common/templates`, { recursive: true });
+    mkdirSync(`${tempDir}talk/templates`, { recursive: true });
+    writeFileSync(`${tempDir}common/templates/shared.sdt`, "shared");
+    writeFileSync(`${tempDir}common/templates/mine.sdt`, "common");
+    writeFileSync(`${tempDir}talk/templates/mine.sdt`, "talk");
+    const result = await loadTemplates(`${tempDir}talk`, {
+      slidesk: { COMMON_DIR: "../common" },
+    });
+    expect(result.shared).toBe("shared");
+    expect(result.mine).toBe("talk");
+    rmSync(tempDir, { recursive: true });
+  });
+
   it("should handle errors gracefully", async () => {
     const result = await loadTemplates("/nonexistent/path");
     expect(result).toEqual({});

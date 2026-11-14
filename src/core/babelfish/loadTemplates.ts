@@ -1,25 +1,26 @@
 import { existsSync } from "node:fs";
-import type { SliDeskTemplate } from "../../types";
+import type { SliDeskEnv, SliDeskTemplate } from "../../types";
+import commonDir from "../../utils/commonDir";
 
-const loadTemplates = async (sdfPath: string) => {
+const loadTemplates = async (sdfPath: string, env: SliDeskEnv = {}) => {
   const templates: SliDeskTemplate = {};
   const glob = new Bun.Glob("**/*.sdt");
-  if (existsSync(`${sdfPath}/templates`))
-    for await (const file of glob.scan(`${sdfPath}/templates`)) {
-      templates[file.replace(".sdt", "")] = await Bun.file(
-        `${sdfPath}/templates/${file}`,
-      ).text();
+  const common = commonDir(sdfPath, env);
+  // COMMON_DIR first: the talk, then its themes, override a template of the same name
+  const dirs = [
+    ...(common ? [`${common}/templates`] : []),
+    `${sdfPath}/templates`,
+    `${sdfPath}/themes`,
+  ];
+  for (const dir of dirs) {
+    if (!existsSync(dir)) continue;
+    for await (const file of glob.scan(dir)) {
+      const text = await Bun.file(`${dir}/${file}`).text();
+      templates[file.replace(".sdt", "")] = text;
       templates[file.substring(file.lastIndexOf("/") + 1).replace(".sdt", "")] =
-        await Bun.file(`${sdfPath}/templates/${file}`).text();
+        text;
     }
-  if (existsSync(`${sdfPath}/themes`))
-    for await (const file of glob.scan(`${sdfPath}/themes`)) {
-      templates[file.replace(".sdt", "")] = await Bun.file(
-        `${sdfPath}/themes/${file}`,
-      ).text();
-      templates[file.substring(file.lastIndexOf("/") + 1).replace(".sdt", "")] =
-        await Bun.file(`${sdfPath}/themes/${file}`).text();
-    }
+  }
   return templates;
 };
 

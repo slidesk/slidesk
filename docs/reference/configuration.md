@@ -111,6 +111,8 @@ TELNET_PORT=2323
 
 Path to a shared directory for reusing themes, plugins, templates, components, and assets across multiple presentations. It can be absolute, or relative to the talk.
 
+Templates placed in `COMMON_DIR/templates/` (`.sdt`) are available to the talk; a template of the same name in the talk or one of its themes wins.
+
 Plugins placed in `COMMON_DIR/plugins/` are automatically loaded alongside local plugins. The paths in their `plugin.json` (`plugins/<name>/…`) are looked up in `COMMON_DIR`, then in the talk.
 
 `slidesk save` copies the files of `COMMON_DIR` into the export, under `-=[COMMON]=-/`, and its plugins under `plugins/`.
