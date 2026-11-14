@@ -59,6 +59,9 @@ Content of the HTML `<title>` tag.
 TITLE="My Conference Talk"
 ```
 
+A `$$key$$` is translated in the language of the talk (`TITLE="$$cover_title$$"`).
+Without `TITLE`, the tab is named after the first `#` heading, or else the first `##`.
+
 ## DOMAIN
 
 Override the domain used in server URLs. Default: `localhost`.

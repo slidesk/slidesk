@@ -9,15 +9,15 @@ const polish = async (
 ) => {
   let tpl = template;
   const slideskEnv = env.slidesk ?? {};
+  const heading = (level: number) =>
+    new RegExp(`<h${level}[^>]*>(.*?)</h${level}>`).exec(presentation)?.[1];
+  // a talk without "#" (its cover in "##") is named after its first slide
+  const title = slideskEnv.TITLE || heading(1) || heading(2);
   // replacements are functions: a "$$" or "$&" in the talk is kept as written
-  const configuredTitle = slideskEnv.TITLE;
-  if (configuredTitle) tpl = tpl.replace("#TITLE#", () => configuredTitle);
-  else
-    [...presentation.matchAll(/<h1>(.*)<\/h1>/g)].forEach((title, _) => {
-      // the tab shows the text of the heading, not its formatting
-      tpl = tpl.replace("#TITLE#", () => title[1].replaceAll(/<[^>]*>/g, ""));
-    });
-  tpl = tpl.replace("#TITLE#", "SliDesk");
+  tpl = tpl.replace("#TITLE#", () =>
+    // the tab shows the text of the heading, not its formatting
+    title ? title.replaceAll(/<[^>]*>/g, "") : "SliDesk",
+  );
   tpl = tpl.replace("#SECTIONS#", () => presentation);
 
   tpl = await minify(tpl, {

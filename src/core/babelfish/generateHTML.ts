@@ -64,10 +64,20 @@ const generateHTML = async (
     {},
     ...[...themes, talk].map((langs) => pick(langs, lang)?.json.translations),
   );
+  const title = env.slidesk?.TITLE;
   const content = await polish(
     available.length ? translate(presentation, { translations }) : presentation,
     template,
-    env,
+    // the tab is named in the language of the talk
+    title && available.length
+      ? {
+          ...env,
+          slidesk: {
+            ...env.slidesk,
+            TITLE: translate(title, { translations }),
+          },
+        }
+      : env,
     plugins,
   );
   return {
