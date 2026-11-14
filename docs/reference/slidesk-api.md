@@ -9,6 +9,7 @@ Plugins and scripts interact with the presentation at runtime through the global
 | `slides` | NodeList | All `.sd-slide` elements |
 | `currentSlide` | number | Index of the current slide |
 | `env` | object | Full configuration from `slidesk.toml` |
+| `lang` | string \| null | Language of the talk (`--lang`, or else its default `XX.lang.json`), `null` without translations; also set on `<html lang>` |
 | `domain` | string | Current domain (from `slidesk.DOMAIN` or `"localhost"`) |
 | `deployed` | boolean | `true` when exported via `slidesk save` |
 | `lastAction` | string | Last navigation action (`"next"` / `"previous"`) |

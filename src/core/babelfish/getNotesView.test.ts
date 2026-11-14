@@ -11,6 +11,12 @@ describe("getNotesView function", () => {
     expect(result).toContain("slidesk-notes.css");
   });
 
+  it("sets the language of the speaker view", () => {
+    expect(getNotesView(defaultConfig, [], "", "fr")).toContain(
+      '<html lang="fr"',
+    );
+  });
+
   it("should include default JS", () => {
     const result = getNotesView(defaultConfig, [], "");
     expect(result).toContain("slidesk-notes.js");

@@ -87,7 +87,7 @@ describe("loadPlugins function", () => {
     const env: Record<string, unknown> = { slidesk: { COMMON_DIR: "" } };
     const result = await loadPlugins(tempDir, env);
     expect(result).toHaveLength(1);
-    expect(result[0].theme).toBe("/themes/dark/");
+    expect(result[0].theme).toBe("themes/dark/");
     rmSync(tempDir, { recursive: true });
   });
 

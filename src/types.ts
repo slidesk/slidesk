@@ -49,6 +49,8 @@ export type SliDeskSettings = {
   WATCH?: boolean;
   WIDTH?: number;
   deployed?: boolean;
+  /** any other key is read in the slides as ++KEY++ */
+  [key: string]: unknown;
 };
 
 /** Content of slidesk.toml; any other section is exposed to the talk as is. */

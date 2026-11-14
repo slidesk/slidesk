@@ -59,6 +59,9 @@ Content of the HTML `<title>` tag.
 TITLE="My Conference Talk"
 ```
 
+A `$$key$$` is translated in the language of the talk (`TITLE="$$cover_title$$"`).
+Without `TITLE`, the tab is named after the first `#` heading, or else the first `##`.
+
 ## DOMAIN
 
 Override the domain used in server URLs. Default: `localhost`.
@@ -108,6 +111,8 @@ TELNET_PORT=2323
 
 Path to a shared directory for reusing themes, plugins, templates, components, and assets across multiple presentations. It can be absolute, or relative to the talk.
 
+Templates placed in `COMMON_DIR/templates/` (`.sdt`) are available to the talk; a template of the same name in the talk or one of its themes wins.
+
 Plugins placed in `COMMON_DIR/plugins/` are automatically loaded alongside local plugins. The paths in their `plugin.json` (`plugins/<name>/…`) are looked up in `COMMON_DIR`, then in the talk.
 
 `slidesk save` copies the files of `COMMON_DIR` into the export, under `-=[COMMON]=-/`, and its plugins under `plugins/`.
@@ -137,4 +142,8 @@ MY_CUSTOM_KEY="hello-world"
 ```
 
 In slide content: `++MY_CUSTOM_KEY++` renders as `hello-world`.
-In plugins: `window.slidesk.env.MY_CUSTOM_KEY` returns `"hello-world"`.
+In plugins: `window.slidesk.env.slidesk.MY_CUSTOM_KEY` returns `"hello-world"`.
+
+A key at the root of `slidesk.toml` (above `[slidesk]`) is read the same way, and wins
+over a key of the same name under `[slidesk]`. A key of another section is read with
+its section: `++section.KEY++`.
