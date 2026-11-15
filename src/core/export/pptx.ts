@@ -25,6 +25,7 @@ import walk from "./walk";
 
 const SLIDE_CX = 12192000;
 
+/** One capture per state of the talk: a slide, then each step it reveals. */
 const shots = async (
   page: Page,
   total: number,
@@ -32,11 +33,13 @@ const shots = async (
   onSlide: (num: number) => void,
 ) => {
   const images: Uint8Array[] = [];
-  await walk(page, total, transition, async (num) => {
+  const slides: number[] = [];
+  await walk(page, total, transition, async (slide) => {
     images.push(await page.screenshot());
-    onSlide(num);
+    slides.push(slide);
+    onSlide(slide + 1);
   });
-  return images;
+  return { images, slides };
 };
 
 const pptx = async (
@@ -48,8 +51,11 @@ const pptx = async (
   transition: number,
   onSlide: (num: number) => void,
 ) => {
-  const notes = await getNotes(page);
-  const images = await shots(page, total, transition, onSlide);
+  const notesOfSlides = await getNotes(page);
+  const { images, slides } = await shots(page, total, transition, onSlide);
+  // each step of a slide carries the notes of its slide
+  const notes = slides.map((s) => notesOfSlides[s] ?? "");
+  const count = images.length;
   const noted = notes
     .map((note, i) => (note === "" ? 0 : i + 1))
     .filter((num) => num !== 0);
@@ -57,17 +63,17 @@ const pptx = async (
   const date = new Date().toISOString().replace(/\.\d+Z$/, "Z");
 
   const entries: ZipEntry[] = [
-    { name: "[Content_Types].xml", data: contentTypes(total, noted) },
+    { name: "[Content_Types].xml", data: contentTypes(count, noted) },
     { name: "_rels/.rels", data: rootRels },
     { name: "docProps/core.xml", data: coreProps(title, date) },
-    { name: "docProps/app.xml", data: appProps(total, packagejson.version) },
+    { name: "docProps/app.xml", data: appProps(count, packagejson.version) },
     {
       name: "ppt/presentation.xml",
-      data: presentation(total, SLIDE_CX, cy, noted.length > 0),
+      data: presentation(count, SLIDE_CX, cy, noted.length > 0),
     },
     {
       name: "ppt/_rels/presentation.xml.rels",
-      data: presentationRels(total, noted.length > 0),
+      data: presentationRels(count, noted.length > 0),
     },
     { name: "ppt/slideMasters/slideMaster1.xml", data: slideMaster },
     {

@@ -1,5 +1,6 @@
 import type { Page } from "../browser";
 import { freeze, thaw } from "./freeze";
+import { addNotesPages } from "./notes";
 import walk from "./walk";
 
 const DPI = 96;
@@ -11,12 +12,14 @@ const pdf = async (
   height: number,
   transition: number,
   onSlide: (num: number) => void,
+  withNotes = false,
 ) => {
-  await walk(page, total, transition, async (num) => {
-    await freeze(page, num - 1);
-    onSlide(num);
+  await walk(page, total, transition, async (slide, step) => {
+    await freeze(page, slide, step);
+    onSlide(slide + 1);
   });
   await thaw(page);
+  if (withNotes) await addNotesPages(page);
   return page.printToPDF({
     printBackground: true,
     preferCSSPageSize: true,
@@ -28,6 +31,7 @@ const pdf = async (
     marginRight: 0,
     scale: 1,
     transferMode: "ReturnAsBase64",
+    generateDocumentOutline: true,
   });
 };
 

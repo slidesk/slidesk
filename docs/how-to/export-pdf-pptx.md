@@ -41,7 +41,8 @@ In a GitHub Actions job:
 |---|---|---|
 | Slide rendering | vectorial | 1920x1080 image |
 | Selectable text | yes | no |
-| Speaker notes | no | yes |
+| Speaker notes | with `--notes`, as pages | yes, in the notes pane |
+| Bookmarks | one per slide | no |
 | File size | small | a few MB |
 | Editable afterwards | no | slide order and notes |
 
@@ -59,12 +60,12 @@ slidesk export -l en my-talk -o deck-en.pdf
 
 ## What does not survive the export
 
-Both formats walk the deck slide by slide, so plugin `onSlideChange` hooks run
-for every slide and whatever they render ends up in the export. What gets lost:
+Both formats walk the deck like a speaker pressing "next", so plugin
+`onSlideChange` hooks run for every slide and whatever they render ends up in
+the export. Step-by-step reveals (`@gouz/steps`, `@gouz/sbs`) are unrolled: one
+page per revealed item. What gets lost:
 
 - transitions between slides are dropped,
-- step-by-step reveals (`@gouz/steps`) are captured at their first step, not
-  unrolled into one page per step,
 - anything driven by interaction is frozen in its initial state.
 
 One case the PDF cannot cover: a slide holding an `<iframe>` keeps the frame it
@@ -76,9 +77,14 @@ PPTX, which captures every slide while it is on screen.
 ## Speaker notes
 
 Your `/* ... */` notes land in the notes pane of the PPTX, one PowerPoint note
-per slide — slides without notes get none. Notes are exported as plain text:
+per slide, repeated on each of its steps — slides without notes get none. Notes are exported as plain text:
 formatting is dropped, list items keep a `•` marker, and blank lines are
 preserved.
 
-The PDF carries no notes: use the speaker view (`slidesk -n`) to present with
-them.
+The PDF carries them with `--notes`: after the last step of each slide comes a
+page with its notes, formatting kept, on as many pages as they need. Slides
+without notes get no extra page.
+
+```sh
+slidesk export -n my-talk
+```

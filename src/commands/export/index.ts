@@ -43,6 +43,13 @@ exportCmd
       default: "",
       optional: true,
     },
+    notes: {
+      short: "n",
+      type: "boolean",
+      description: "add a page with the speaker notes after each slide (pdf)",
+      default: false,
+      optional: true,
+    },
     theme: {
       short: "T",
       type: "string",

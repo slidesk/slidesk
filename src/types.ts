@@ -20,6 +20,8 @@ export type SliDeskSaveOptions = {
 
 export type SliDeskExportOptions = {
   conf?: string;
+  /** a page with the speaker notes after each slide (pdf) */
+  notes?: boolean;
   lang?: string;
   theme?: string;
   type?: string;

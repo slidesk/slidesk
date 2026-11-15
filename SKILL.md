@@ -56,6 +56,7 @@ Flags combine: `slidesk -tn my-talk` = telnet + speaker notes.
 |------|---------|
 | `-t, --type <pdf\|pptx>` | output format (default `pdf`) |
 | `-o, --output <file>` | output file (default: slugified `TITLE`) |
+| `-n, --notes` | pdf: a page with the speaker notes after each slide |
 | `-c, --conf <file>`, `-l, --lang <code>`, `-T, --theme <name>` | same as `present` |
 
 ### import options
@@ -79,8 +80,9 @@ Rendering runs in a headless Chromium already installed on the machine (Chrome,
 Chromium, Edge, Brave, Vivaldi), started by `Bun.WebView` and driven over the
 DevTools Protocol — no extra dependency, nothing downloaded. Override detection
 with `SLIDESK_CHROME`.
-Slides are rendered at 1920x1080: `pdf` keeps text vectorial and selectable,
-`pptx` embeds one full-bleed capture per slide plus the `/* ... */` speaker
+Slides are rendered at 1920x1080, one page per slide and per step revealed by
+a step plugin (`steps`, `sbs`): `pdf` keeps text vectorial and selectable,
+`pptx` embeds one full-bleed capture per page plus the `/* ... */` speaker
 notes as plain text in the notes pane.
 
 ## Terminal navigation

@@ -24,6 +24,21 @@ const EXPORT_CSS = (width: number, height: number) => `
     break-after: auto;
     page-break-after: auto;
   }
+  /* the speaker notes of a slide: as many pages as they need */
+  .sd-slide.sd-export-notes {
+    display: block !important;
+    height: auto !important;
+    min-height: ${height}px;
+    box-sizing: border-box;
+    padding: 80px 120px;
+    text-align: left;
+    font-size: 32px;
+    line-height: 1.5;
+    break-inside: auto;
+  }
+  .sd-slide.sd-export-notes * {
+    text-align: left !important;
+  }
   /* what plugins add after the slides would be printed on extra pages */
   body > :not(.sd-slide) {
     display: none !important;

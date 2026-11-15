@@ -1,15 +1,17 @@
 import { describe, expect, it } from "bun:test";
+import { fakeDeck } from "../../__testing__/deck";
 import unzip from "../../utils/unzip";
 import type { Page } from "../browser";
 import pptx from "./pptx";
 
-const fakePage = (notes: string[]) => {
+const fakePage = (notes: string[], steps = notes.map(() => 0)) => {
+  const deck = fakeDeck(steps);
   const evaluated: string[] = [];
   let shot = 0;
   const page = {
     evaluate: async (expression: string) => {
       evaluated.push(expression);
-      return expression.includes("aside.sd-notes") ? notes : undefined;
+      return expression.includes("aside.sd-notes") ? notes : deck(expression);
     },
     screenshot: async () => new Uint8Array([137, 80, 78, 71, shot++]),
   } as unknown as Page;
@@ -102,5 +104,20 @@ describe("pptx", () => {
     );
     expect([...archive["ppt/media/image1.png"]]).toEqual([137, 80, 78, 71, 0]);
     expect([...archive["ppt/media/image2.png"]]).toEqual([137, 80, 78, 71, 1]);
+  });
+
+  it("packs one slide per revealed step, each with the notes of its slide", async () => {
+    const { page } = fakePage(["", "note"], [0, 2]);
+    const files = await unzip(
+      Buffer.from(await pptx(page, 2, 1920, 1080, "My talk", 0, () => {})),
+    );
+    const names = Object.keys(files);
+    expect(names).toContain("ppt/media/image4.png");
+    expect(names).not.toContain("ppt/media/image5.png");
+    expect(names).not.toContain("ppt/notesSlides/notesSlide1.xml");
+    for (const num of [2, 3, 4])
+      expect(decode(files[`ppt/notesSlides/notesSlide${num}.xml`])).toContain(
+        "note",
+      );
   });
 });
