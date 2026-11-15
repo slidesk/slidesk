@@ -99,4 +99,4 @@ slidesk theme push my-theme
 
 Run it from the directory that holds the addon: `my-plugin/`, `my-template/` and `my-theme/` are directories, while `my-component` stands for `my-component.mjs`.
 
-A plugin directory holds a `plugin.json`, a template one a `template.json`, a theme one a `theme.json` (`{}` is enough for the last two): without it, the addon cannot be removed with `remove` nor installed from git.
+A plugin directory holds a `plugin.json`, a template one a `template.json`, a theme one a `theme.json` (`{}` is enough for the last two): without it, the addon cannot be installed from git, and a plugin cannot be removed with `remove`.

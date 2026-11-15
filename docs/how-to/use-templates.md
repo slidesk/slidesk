@@ -73,7 +73,7 @@ Each named block (`[[block]]`, `[[foo]]`) matches a `<sd-block />`, `<sd-foo />`
 
 ## Share a template
 
-To push it to the hub or install it from git, put the template in its own directory, `templates/my-template/`, with its `.sdt`, its `.css` and `.js` if any, a `README.md` and a `template.json` (`{}` is enough), which `slidesk template remove` and an install from git look for. Every `.css` and `.js` under `templates/` is loaded.
+To push it to the hub or install it from git, put the template in its own directory, `templates/my-template/`, with its `.sdt`, its `.css` and `.js` if any, a `README.md` and a `template.json` (`{}` is enough), which an install from git looks for. Every `.css` and `.js` under `templates/` is loaded.
 
 ## Manage templates via CLI
 

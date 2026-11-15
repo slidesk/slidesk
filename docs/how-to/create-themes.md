@@ -19,7 +19,7 @@ themes/
     └── fr.lang.json
 ```
 
-`theme.json` marks the directory as a theme: `slidesk theme remove` and an install from git look for it, and `{}` is enough. A theme can contain templates, plugins and components — they are loaded automatically when the theme is applied. Every `.css` and `.js` file of the theme is loaded, except those of its plugins. Its `XX.lang.json` files translate the `$$key$$` of its templates in the language of the talk, see [translations of a theme](../reference/syntax/internationalisation.md#translations-of-a-theme).
+`theme.json` marks the directory as a theme for an install from git, and `{}` is enough. A theme can contain templates, plugins and components — they are loaded automatically when the theme is applied. Every `.css` and `.js` file of the theme is loaded, except those of its plugins. Its `XX.lang.json` files translate the `$$key$$` of its templates in the language of the talk, see [translations of a theme](../reference/syntax/internationalisation.md#translations-of-a-theme).
 
 ## CSS variables
 
