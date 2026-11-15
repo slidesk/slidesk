@@ -46,6 +46,13 @@ slidesk theme update my-theme
 slidesk update            # the addons from the hub and from git
 ```
 
+To freeze an addon before a conference, add a branch, a tag or a commit after `#`. Updates keep it: a tag or a commit stays where it is, a branch follows its last commit.
+
+```sh
+slidesk theme install https://github.com/someone/my-theme.git#v1.2.0
+slidesk theme update https://github.com/someone/my-theme.git   # back to the default branch
+```
+
 A component is a single `.mjs`, without its `.git`: update it with its URL, `slidesk component update https://github.com/someone/my-component.git`.
 
 `present` does not serve the `.git` of an addon, `save` does not export it, and `push` does not send it.

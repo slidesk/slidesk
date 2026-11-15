@@ -75,6 +75,25 @@ describe("getPresentation", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
+  it("gives the language of the talk to the components", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "slidesk-lang-"));
+    const component = join(dir, "lang.mjs");
+    writeFileSync(
+      component,
+      'export default (d, { lang }) => d.replace("X", lang);',
+    );
+    const html = await getPresentation(
+      "## X\n",
+      {},
+      [component],
+      {},
+      dir,
+      "fr",
+    );
+    expect(html).toContain("fr");
+    rmSync(dir, { recursive: true, force: true });
+  });
+
   it("runs the components from the talk directory", async () => {
     const dir = mkdtempSync(join(tmpdir(), "slidesk-cwd-"));
     const component = join(dir, "cwd.mjs");

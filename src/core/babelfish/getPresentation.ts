@@ -13,6 +13,7 @@ const getPresentation = async (
   components: string[],
   templates: SliDeskTemplate,
   dir = process.cwd(),
+  lang?: string,
 ) => {
   let fusion = sdf;
   // notes and images; a code block shows them as written
@@ -29,7 +30,7 @@ const getPresentation = async (
       // a fresh query defeats the module cache, so an edited component is picked up while watching
       // sequential on purpose: each component transforms the previous output
       const { default: comp } = await import(`${c}?v=${++importCount}`); // NOSONAR
-      fusion = await comp(fusion); // NOSONAR
+      fusion = await comp(fusion, { lang }); // NOSONAR
     }
   } finally {
     process.chdir(cwd);

@@ -18,7 +18,8 @@ const checkImages = (content: string, sdfPath: string, env: SliDeskEnv) => {
     // urls and data are not checked
     if (/^([a-z][a-z\d+.-]*:|\/\/)/i.test(src.trim())) continue;
     const file = src.trim().replace(/^\.?\//, "");
-    if (file === "") continue;
+    // a $$key$$ is only known once translated: the path depends on the language
+    if (file === "" || /\$\$\w+\$\$/.test(file)) continue;
     const path =
       common && file.startsWith(COMMON)
         ? join(common, file.slice(COMMON.length))

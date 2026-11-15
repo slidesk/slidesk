@@ -28,10 +28,11 @@ const includes = async (
   const blocks = fencedBlocks(data);
   return replaceAsync(
     data,
-    /\n!include\(([^()]+)\)/g,
-    async (match, p1, at) => {
+    // the first line of a file holds a directive too
+    /(^|\n)!include\(([^()]+)\)/g,
+    async (match, newline, p1, at) => {
       // a directive shown in a code block is text, not an include
-      const line = Number(at) + 1;
+      const line = Number(at) + newline.length;
       if (blocks.some(([start, end]) => line > start && line < end))
         return match;
       let [dirOrFile, ...exts] = `${p1}`.split(",");

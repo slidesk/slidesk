@@ -20,6 +20,13 @@ const talk = (files: Record<string, string>) => {
 const fixture = join(import.meta.dir, "../../__fixtures__/talk");
 
 describe("includes function", () => {
+  it("reads a directive on the first line of a file", async () => {
+    talk({ "main.md": "!include(01.md)\n", "01.md": "## Included\n" });
+    const result = await includes(join(scratch, "main.md"));
+    expect(result).toContain("## Included");
+    expect(result).not.toContain("!include");
+  });
+
   it("reads a talk outside the working directory", async () => {
     const outside = mkdtempSync(join(tmpdir(), "slidesk-outside-"));
     mkdirSync(join(outside, "slides"));

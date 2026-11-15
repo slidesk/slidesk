@@ -5,8 +5,9 @@ Components are `.mjs` files placed in the `components/` directory of your talk.
 ## Signature
 
 ```js
-export default (data) => {
+export default (data, { lang }) => {
   // data: the full HTML generated so far
+  // lang: the language of the talk (--lang, or else its default XX.lang.json), or undefined
   // return: the modified HTML string
   return newData;
 };

@@ -52,7 +52,7 @@ describe("content", () => {
       .content as string;
     // the theme glob skips anything under /plugins/, the plugin loader adds it
     // back prefixed with the theme it belongs to
-    expect(html).toContain("href=/themes/dark/plugins/skipped/skipped.css");
+    expect(html).toContain("href=themes/dark/plugins/skipped/skipped.css");
   });
 
   it("registers the plugin styles, scripts and modules", async () => {

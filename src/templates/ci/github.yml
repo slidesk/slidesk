@@ -1,7 +1,8 @@
-name: Deploy with Slidesk
+name: Deploy with SliDesk
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 ## Very important
 permissions:
@@ -9,11 +10,46 @@ permissions:
   pages: write # required by deploy-pages
   id-token: write # required by deploy-pages
 
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   slidesk:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build & Deploy
-        uses: yodamad-actions/slidesk@1.1.0
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install SliDesk
+        run: bun install --global slidesk
+
+      # The addons installed from git and not committed with the talk are
+      # installed here. For a private repository, put a token that can read it
+      # in the ADDONS_TOKEN secret of this repository.
+      # - name: Install the addons
+      #   run: |
+      #     git config --global url."https://x-access-token:${{ secrets.ADDONS_TOKEN }}@github.com/".insteadOf "https://github.com/"
+      #     slidesk theme install https://github.com/someone/my-theme.git#v1.2.0
+
+      - name: Build
+        run: |
+          slidesk save -t "$RUNNER_TEMP/site"
+          # a talk in several languages: one export per language, in its sub-folder
+          for file in *.lang.json; do
+            [ -e "$file" ] || continue
+            lang="${file%.lang.json}"
+            slidesk save -l "$lang" -t "$RUNNER_TEMP/lang-$lang"
+            mv "$RUNNER_TEMP/lang-$lang" "$RUNNER_TEMP/site/$lang"
+          done
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

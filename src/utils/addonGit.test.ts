@@ -79,6 +79,7 @@ describe("install from git", () => {
     expect(isGitUrl("--upload-pack=touch /tmp/x")).toBe(false);
     expect(isGitUrl("ext::sh -c touch")).toBe(false);
     expect(isGitUrl("/tmp/my-theme")).toBe(false);
+    expect(isGitUrl("https://h/x.git#-upload-pack=x")).toBe(false);
   });
 
   it("installs a theme under the name of its repository", async () => {
@@ -133,6 +134,42 @@ describe("install from git", () => {
       await addonInstall("theme", "my-theme", undefined, true, cwd.dir),
     ).toBe("theme my-theme updated");
     expect(readFileSync(join(installed, "theme.json"), "utf8")).toBe('{"v":2}');
+  });
+
+  it("installs and keeps updating the ref given after #", async () => {
+    const url = repo("my-theme", { "theme.json": '{"v":1}' });
+    gitIn(join(repos, "my-theme"), "tag", "v1");
+    writeFileSync(join(repos, "my-theme/theme.json"), '{"v":2}');
+    commit(join(repos, "my-theme"));
+    expect(isGitUrl(`${url}#v1`)).toBe(true);
+    expect(await install("theme", `${url}#v1`)).toBe(
+      `theme my-theme installed from ${url}#v1`,
+    );
+    const manifest = join(cwd.dir, "themes/my-theme/theme.json");
+    expect(readFileSync(manifest, "utf8")).toBe('{"v":1}');
+    expect(
+      await addonInstall("theme", "my-theme", undefined, true, cwd.dir),
+    ).toBe("theme my-theme updated at v1");
+    expect(readFileSync(manifest, "utf8")).toBe('{"v":1}');
+  });
+
+  it("installs a commit", async () => {
+    const url = repo("my-theme", { "theme.json": '{"v":1}' });
+    const sha = gitIn(join(repos, "my-theme"), "rev-parse", "HEAD")
+      .stdout.toString()
+      .trim();
+    writeFileSync(join(repos, "my-theme/theme.json"), '{"v":2}');
+    commit(join(repos, "my-theme"));
+    await install("theme", `${url}#${sha}`);
+    const manifest = join(cwd.dir, "themes/my-theme/theme.json");
+    expect(readFileSync(manifest, "utf8")).toBe('{"v":1}');
+  });
+
+  it("reports a ref the repository does not have", async () => {
+    const url = repo("my-theme", { "theme.json": "{}" });
+    await expect(install("theme", `${url}#nope`)).rejects.toThrow(
+      `${url}#nope could not be checked out:`,
+    );
   });
 
   it("reports an addon whose repository cannot be pulled", async () => {

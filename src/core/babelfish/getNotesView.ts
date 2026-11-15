@@ -1,11 +1,13 @@
 import { existsSync } from "node:fs";
 import { view } from "../../templates/notes";
 import type { SliDeskConfig, SliDeskPlugin } from "../../types";
+import { withLang } from "./generateHTML";
 
 const getNotesView = (
   config: SliDeskConfig,
   plugins: SliDeskPlugin[],
   sdfPath: string,
+  lang?: string,
 ) => {
   let template = view;
   const globCSS = new Bun.Glob("**/*.css");
@@ -41,7 +43,7 @@ const getNotesView = (
   });
   template = template.replace("#STYLES#", () => css.join(""));
   template = template.replace("#SCRIPTS#", () => js.join(""));
-  return template;
+  return withLang(template, lang);
 };
 
 export default getNotesView;

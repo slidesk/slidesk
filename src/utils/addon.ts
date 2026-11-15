@@ -46,8 +46,9 @@ const placeAddon = async (
   await rename(`${src}/${file}`, `${target}/components/${name}.mjs`);
 };
 
-// https://, ssh:// or scp-like git@host:path; never an option or a local path
-const GIT_URL = /^(https:\/\/|ssh:\/\/|git@)[\w.@:/~+-]+$/;
+// https://, ssh:// or scp-like git@host:path, then an optional #ref (branch,
+// tag or commit); never an option or a local path
+const GIT_URL = /^(https:\/\/|ssh:\/\/|git@)[\w.@:/~+-]+(#\w[\w./-]*)?$/;
 export const isGitUrl = (name: string) => GIT_URL.test(name);
 
 /** Runs git, and turns its failure into a CliError starting with `failure`. */
@@ -63,21 +64,32 @@ const git = async (args: string[], failure: string) => {
     );
 };
 
-/** Force-pulls an addon installed from git: its local changes are dropped. */
-const gitPull = async (kind: AddonKind, name: string, dir: string) => {
-  const failure = `${kind} ${name} could not be updated`;
-  await git(["-C", dir, "fetch", "--quiet", "--depth", "1"], failure);
+// the ref an addon was installed at, kept in its clone for the updates
+const REF_FILE = ".git/SLIDESK_REF";
+
+/** Checks out the last commit of `ref`, or of the default branch: local changes are dropped. */
+const gitCheckout = async (dir: string, ref: string, failure: string) => {
+  const at = ref ? ["origin", ref] : [];
+  await git(["-C", dir, "fetch", "--quiet", "--depth", "1", ...at], failure);
   await git(["-C", dir, "reset", "--quiet", "--hard", "FETCH_HEAD"], failure);
-  return `${kind} ${name} updated`;
+};
+
+/** Force-pulls an addon installed from git, at the ref it was installed at. */
+const gitPull = async (kind: AddonKind, name: string, dir: string) => {
+  const ref = Bun.file(`${dir}/${REF_FILE}`);
+  const at = (await ref.exists()) ? (await ref.text()).trim() : "";
+  await gitCheckout(dir, at, `${kind} ${name} could not be updated`);
+  return `${kind} ${name} updated${at ? ` at ${at}` : ""}`;
 };
 
 /** Clones the git repository at `url` and installs the addon it holds. */
 const gitInstall = async (
   kind: AddonKind,
-  url: string,
+  source: string,
   update: boolean,
   target: string,
 ) => {
+  const [url, ref = ""] = source.split("#");
   let name = basename(url).replace(/\.git$/, "");
   if (!SEGMENT.test(name)) throw new CliError(`${url} is not an addon name`);
   const tmp = `${target}/${kind}s/.${name}.git`;
@@ -88,6 +100,10 @@ const gitInstall = async (
       ["clone", "--depth", "1", "--quiet", "--", url, tmp],
       `${url} could not be cloned`,
     );
+    if (ref) {
+      await gitCheckout(tmp, ref, `${source} could not be checked out`);
+      await Bun.write(`${tmp}/${REF_FILE}`, ref);
+    }
     // kept so that an update force-pulls it, except in a single-file component
     if (kind === "component")
       await rm(`${tmp}/.git`, { recursive: true, force: true });
@@ -103,7 +119,7 @@ const gitInstall = async (
   } finally {
     await rm(tmp, { recursive: true, force: true });
   }
-  return `${kind} ${name} ${update ? "updated" : "installed"} from ${url}`;
+  return `${kind} ${name} ${update ? "updated" : "installed"} from ${source}`;
 };
 
 /**

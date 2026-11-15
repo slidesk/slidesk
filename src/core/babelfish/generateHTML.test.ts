@@ -56,6 +56,43 @@ describe("generateHTML function", () => {
     rmSync(tempDir, { recursive: true });
   });
 
+  it("names the tab in the language of the talk", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(
+      `${tempDir}en.lang.json`,
+      JSON.stringify({ translations: { t: "*My* talk" } }),
+    );
+    writeFileSync(
+      `${tempDir}fr.lang.json`,
+      JSON.stringify({ default: true, translations: { t: "Mon talk" } }),
+    );
+    const result = await generateHTML(
+      "<p>x</p>",
+      "<title>#TITLE#</title>#SECTIONS#",
+      tempDir,
+      { lang: "en" },
+      { slidesk: { TITLE: "$$t$$" } },
+      [],
+    );
+    expect(result["index.html"].content).toContain("<title>My talk</title>");
+    rmSync(tempDir, { recursive: true });
+  });
+
+  it("sets the language of the page", async () => {
+    const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
+    writeFileSync(`${tempDir}fr.lang.json`, '{"default": true}');
+    const result = await generateHTML(
+      "<p>x</p>",
+      '<html lang="en">#SECTIONS#</html>',
+      tempDir,
+      {},
+      {},
+      [],
+    );
+    expect(result["index.html"].content).toContain("<html lang=fr>");
+    rmSync(tempDir, { recursive: true });
+  });
+
   it("should use specified language", async () => {
     const tempDir = `${mkdtempSync(join(tmpdir(), "slidesk-test-"))}/`;
     writeFileSync(

@@ -7,7 +7,7 @@ import loadTemplates from "./loadTemplates";
 const preload = async (sdfPath: string, env: SliDeskEnv) => {
   return {
     plugins: await loadPlugins(sdfPath, env),
-    templates: await loadTemplates(sdfPath),
+    templates: await loadTemplates(sdfPath, env),
     favicon: await loadFavicon(sdfPath),
     components: loadComponents(sdfPath),
   };

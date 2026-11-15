@@ -35,6 +35,16 @@ describe("polish function", () => {
     expect(result).toContain("<title>Mon talk</title>");
   });
 
+  it("names a talk without h1 after its first h2", async () => {
+    const result = await polish(
+      '<h2 id="cover">Dev <em>containers</em></h2><h2>Next</h2>',
+      "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>",
+      {},
+      [],
+    );
+    expect(result).toContain("<title>Dev containers</title>");
+  });
+
   it("should use default title SliDesk if no title found", async () => {
     const template =
       "<html><head><title>#TITLE#</title></head><body>#SECTIONS#</body></html>";

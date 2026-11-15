@@ -9,7 +9,7 @@ import type {
   SliDeskPresentOptions,
 } from "../types";
 import checkImages from "./babelfish/checkImages";
-import generateHTML from "./babelfish/generateHTML";
+import generateHTML, { talkLang } from "./babelfish/generateHTML";
 import getCSS from "./babelfish/getCSS";
 import getJS from "./babelfish/getJS";
 import getNotesJS from "./babelfish/getNotesJS";
@@ -26,6 +26,7 @@ const commonContent = (
   options: SliDeskPresentOptions,
   config: SliDeskConfig,
   sdfPath: string,
+  lang?: string,
 ): SliDeskFile => {
   return {
     "slidesk.css": {
@@ -37,7 +38,7 @@ const commonContent = (
       headers: { "Content-type": "text/css" },
     },
     "slidesk.js": {
-      content: getJS(plugins, env),
+      content: getJS(plugins, env, lang),
       headers: { "Content-type": "application/javascript" },
     },
     "slidesk-notes.js": {
@@ -53,7 +54,7 @@ const commonContent = (
       headers: { "Content-Type": "application/json" },
     },
     [`${options.notes ?? "notes.html"}`]: {
-      content: getNotesView(config, plugins, sdfPath),
+      content: getNotesView(config, plugins, sdfPath, lang),
       headers: { "Content-Type": "text/html" },
     },
   };
@@ -70,16 +71,17 @@ export const errorContent = async (
   );
   const config: SliDeskConfig = { css: [], js: [] };
   const content = "ERROR";
+  const lang = await talkLang(sdfPath, options.lang);
   return {
     ...(await generateHTML(
-      await getPresentation(content, env, components, templates, sdfPath),
+      await getPresentation(content, env, components, templates, sdfPath, lang),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
       env,
       plugins,
     )),
-    ...commonContent(env, plugins, favicon, options, config, sdfPath),
+    ...commonContent(env, plugins, favicon, options, config, sdfPath, lang),
   };
 };
 
@@ -95,15 +97,16 @@ export const content = async (
   );
   const { config, content } = await prepareSDF(mainFile);
   checkImages(content, sdfPath, env);
+  const lang = await talkLang(sdfPath, options.lang);
   return {
     ...(await generateHTML(
-      await getPresentation(content, env, components, templates, sdfPath),
+      await getPresentation(content, env, components, templates, sdfPath, lang),
       prepareTPL(config, plugins, favicon, sdfPath),
       sdfPath,
       options,
       env,
       plugins,
     )),
-    ...commonContent(env, plugins, favicon, options, config, sdfPath),
+    ...commonContent(env, plugins, favicon, options, config, sdfPath, lang),
   };
 };
