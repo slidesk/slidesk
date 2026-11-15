@@ -39,15 +39,24 @@ const fallback = () => {
   );
 };
 
+const INSTALL = "bunx playwright install chromium-headless-shell";
+
 export const NOT_FOUND_MESSAGE = `🤔 No Chromium-based browser found.
-   Exporting needs Chrome, Chromium, Edge, Brave or Vivaldi installed.
-   Set SLIDESK_CHROME=/path/to/browser to point at a specific one.`;
+   Exporting needs one, the lightest is chrome-headless-shell:
+   ${INSTALL}
+   Chrome, Chromium, Edge, Brave or Vivaldi work too,
+   set SLIDESK_CHROME=/path/to/browser to point at a specific one.`;
+
+export const WEBKIT_MESSAGE = `ℹ️  No Chromium-based browser found, exporting with the WebKit of macOS:
+   a pdf is made of images, without selectable text, links or bookmarks.
+   For a real pdf, install chrome-headless-shell: ${INSTALL}`;
 
 export type Page = {
   goto: (url: string) => Promise<void>;
   evaluate: <T>(expression: string) => Promise<T>;
-  printToPDF: (params: Record<string, unknown>) => Promise<Uint8Array>;
-  screenshot: () => Promise<Uint8Array>;
+  /** chrome only: webkit has no way to print a pdf */
+  printToPDF?: (params: Record<string, unknown>) => Promise<Uint8Array>;
+  screenshot: (format?: "png" | "jpeg") => Promise<Uint8Array>;
   close: () => Promise<void>;
 };
 
@@ -73,36 +82,46 @@ const spawn = (width: number, height: number, path?: string) => {
   });
 };
 
+const toPage = (
+  view: InstanceType<typeof Bun.WebView>,
+  chrome: boolean,
+): Page => ({
+  goto: (url) => view.navigate(url),
+  evaluate: <T>(expression: string) => view.evaluate(expression) as Promise<T>,
+  printToPDF: chrome
+    ? async (params) => {
+        const { data } = (await view.cdp("Page.printToPDF", params)) as {
+          data: string;
+        };
+        return new Uint8Array(Buffer.from(data, "base64"));
+      }
+    : undefined,
+  screenshot: (format = "png") =>
+    view.screenshot({ encoding: "buffer", format }),
+  close: () => Promise.resolve(view.close()),
+});
+
+/** the system WebKit of macOS: nothing to install, but no pdf printing */
+export const webkit = (width: number, height: number) =>
+  toPage(new Bun.WebView({ width, height, backend: "webkit" }), false);
+
 const open = (width: number, height: number) => {
   const fromEnv = chromePath();
   try {
-    return spawn(width, height, fromEnv);
+    return toPage(spawn(width, height, fromEnv), true);
   } catch (e) {
     if (!(e instanceof Error && e.message.includes("Failed to spawn Chrome")))
       throw e;
     const other = fromEnv ? undefined : fallback();
-    if (!other) throw new Error(NOT_FOUND_MESSAGE);
-    return spawn(width, height, other);
+    if (other) return toPage(spawn(width, height, other), true);
+    if (fromEnv || platform() !== "darwin") throw new Error(NOT_FOUND_MESSAGE);
+    console.warn(WEBKIT_MESSAGE);
+    return webkit(width, height);
   }
 };
 
 // a missing browser throws inside the executor, so it comes out as a rejection
 const launch = (width: number, height: number) =>
-  new Promise<Page>((resolve) => {
-    const view = open(width, height);
-    resolve({
-      goto: (url) => view.navigate(url),
-      evaluate: <T>(expression: string) =>
-        view.evaluate(expression) as Promise<T>,
-      printToPDF: async (params) => {
-        const { data } = (await view.cdp("Page.printToPDF", params)) as {
-          data: string;
-        };
-        return new Uint8Array(Buffer.from(data, "base64"));
-      },
-      screenshot: () => view.screenshot({ encoding: "buffer" }),
-      close: () => Promise.resolve(view.close()),
-    });
-  });
+  new Promise<Page>((resolve) => resolve(open(width, height)));
 
 export default launch;

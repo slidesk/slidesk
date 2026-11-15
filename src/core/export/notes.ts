@@ -44,8 +44,39 @@ const pages = `(() => {
   });
 })()`;
 
+// the notes of each slide, as html
+const html = `(() => {
+  const decode = ${DECODE};
+  return [...document.querySelectorAll(".sd-slide")].map((slide) =>
+    [...slide.querySelectorAll("aside.sd-notes")].map(decode).join(""),
+  );
+})()`;
+
+// webkit cannot print: the notes are laid over the slide and captured
+const overlay = (notes: string) => `(() => {
+  const box = document.createElement("div");
+  box.id = "sd-export-notes";
+  box.setAttribute(
+    "style",
+    "position:fixed;inset:0;z-index:2147483647;overflow:hidden;box-sizing:border-box;padding:80px 120px;font-size:32px;line-height:1.5;text-align:left;background:var(--sd-background-color);color:var(--sd-text-color)",
+  );
+  box.innerHTML = ${JSON.stringify(notes)};
+  box.querySelectorAll("*").forEach((e) => (e.style.textAlign = "left"));
+  document.body.append(box);
+})()`;
+
 const notes = async (page: Page) => page.evaluate<string[]>(extract);
 
 export const addNotesPages = (page: Page) => page.evaluate(pages);
+
+export const notesHtml = (page: Page) => page.evaluate<string[]>(html);
+
+// ponytail: notes longer than one screen are cut, as on a slide
+export const notesShot = async (page: Page, notes: string) => {
+  await page.evaluate(overlay(notes));
+  const image = await page.screenshot("jpeg");
+  await page.evaluate(`document.getElementById("sd-export-notes").remove()`);
+  return image;
+};
 
 export default notes;

@@ -59,4 +59,22 @@ const walk = async (
   }
 };
 
+/** One capture per state of the talk: a slide, then each step it reveals. */
+export const shots = async (
+  page: Page,
+  total: number,
+  transition: number,
+  onSlide: (num: number) => void,
+  format: "png" | "jpeg" = "png",
+) => {
+  const images: Uint8Array[] = [];
+  const slides: number[] = [];
+  await walk(page, total, transition, async (slide) => {
+    images.push(await page.screenshot(format));
+    slides.push(slide);
+    onSlide(slide + 1);
+  });
+  return { images, slides };
+};
+
 export default walk;
