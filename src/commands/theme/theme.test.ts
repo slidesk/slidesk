@@ -132,6 +132,12 @@ describe("themeRemove", () => {
     expect(await themeRemove("dark")).toBe("theme dark removed");
     expect(existsSync(join(cwd.dir, "themes/dark"))).toBe(false);
   });
+
+  it("deletes a theme pushed without its theme.json", async () => {
+    mkdirSync(join(cwd.dir, "themes/@bob__bare"), { recursive: true });
+    expect(await themeRemove("@bob__bare")).toBe("theme @bob__bare removed");
+    expect(existsSync(join(cwd.dir, "themes/@bob__bare"))).toBe(false);
+  });
 });
 
 describe("theme command", () => {

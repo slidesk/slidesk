@@ -146,6 +146,14 @@ describe("templateRemove", () => {
     expect(await templateRemove("cover")).toBe("template cover removed");
     expect(existsSync(join(cwd.dir, "templates/cover"))).toBe(false);
   });
+
+  it("deletes a template pushed without its template.json", async () => {
+    mkdirSync(join(cwd.dir, "templates/@bob__bare"), { recursive: true });
+    expect(await templateRemove("@bob__bare")).toBe(
+      "template @bob__bare removed",
+    );
+    expect(existsSync(join(cwd.dir, "templates/@bob__bare"))).toBe(false);
+  });
 });
 
 describe("template command", () => {
