@@ -3,6 +3,7 @@ import { view } from "../../templates/notes";
 import type { SliDeskConfig, SliDeskPlugin } from "../../types";
 import { inTheme } from "../../utils/themes";
 import { withLang } from "./generateHTML";
+import { pluginUrl } from "./prepareTPL";
 
 const getNotesView = (
   config: SliDeskConfig,
@@ -33,13 +34,13 @@ const getNotesView = (
   plugins.forEach((p, _) => {
     if (p.addSpeakerStyles) {
       p.addSpeakerStyles.forEach((k) => {
-        css.push(`<link href="${k}" rel="stylesheet" />`);
+        css.push(`<link href="${pluginUrl(p, k)}" rel="stylesheet" />`);
       });
     }
 
     if (p.addSpeakerScripts) {
       p.addSpeakerScripts.forEach((k) => {
-        js.push(`<script src="${k}"></script>`);
+        js.push(`<script src="${pluginUrl(p, k)}"></script>`);
       });
     }
   });

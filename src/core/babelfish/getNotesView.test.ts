@@ -72,4 +72,25 @@ describe("getNotesView function", () => {
     const result = getNotesView(defaultConfig, plugins, "");
     expect(result).toContain("speaker-script.js");
   });
+
+  it("serves the speaker files of a theme plugin from its theme", () => {
+    const result = getNotesView(
+      defaultConfig,
+      [
+        {
+          name: "@bob__steps",
+          theme: "themes/dark/",
+          addSpeakerScripts: ["plugins/steps/notes.js"],
+          addSpeakerStyles: ["plugins/steps/notes.css"],
+        },
+      ],
+      "",
+    );
+    expect(result).toContain(
+      '<script src="themes/dark/plugins/@bob__steps/notes.js"></script>',
+    );
+    expect(result).toContain(
+      'href="themes/dark/plugins/@bob__steps/notes.css"',
+    );
+  });
 });
