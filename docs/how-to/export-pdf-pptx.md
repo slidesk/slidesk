@@ -22,6 +22,17 @@ Exporting needs a Chromium-based browser: SliDesk starts it headless through
 Brave and Vivaldi are found automatically. Nothing is downloaded and no extra
 dependency is installed.
 
+Without one, the lightest to install is `chrome-headless-shell`, found
+automatically too:
+
+```sh
+bunx playwright install chromium-headless-shell
+```
+
+On macOS, nothing is needed: without a Chromium, SliDesk exports with the WebKit
+of the system. The PPTX is the same, but each page of the PDF is then an image,
+without selectable text, links or bookmarks.
+
 If your browser lives somewhere unusual — or in CI:
 
 ```sh
@@ -31,7 +42,7 @@ SLIDESK_CHROME=/usr/bin/chromium slidesk export my-talk
 In a GitHub Actions job:
 
 ```yaml
-- run: sudo apt-get install -y chromium-browser
+- run: bunx playwright install chromium-headless-shell
 - run: bunx slidesk export -t pdf my-talk
 ```
 

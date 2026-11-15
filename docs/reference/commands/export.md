@@ -25,12 +25,22 @@ slidesk export -n mytalk            # with the speaker notes
 Exporting renders your slides in a headless Chromium, driven by `Bun.WebView`
 over the DevTools Protocol — an already installed browser is used, nothing is
 downloaded. Chrome, Chromium, Edge, Brave and Vivaldi are detected
-automatically, as is Playwright's `chrome-headless-shell` when it happens to be
-cached; set `SLIDESK_CHROME` (or `CHROME_PATH`) to point at a specific binary:
+automatically, as is Playwright's `chrome-headless-shell` when it is
+installed; set `SLIDESK_CHROME` (or `CHROME_PATH`) to point at a specific binary:
 
 ```sh
 SLIDESK_CHROME=/usr/bin/chromium slidesk export mytalk
 ```
+
+Without any of them, the lightest to install is `chrome-headless-shell`:
+
+```sh
+bunx playwright install chromium-headless-shell
+```
+
+On macOS, a Chromium is not needed: without one, the export uses the WebKit of
+the system. The pptx is the same, but the pdf is made of one image per page,
+without selectable text, links or bookmarks.
 
 ## What you get
 

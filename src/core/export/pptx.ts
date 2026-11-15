@@ -21,26 +21,9 @@ import {
   slideRels,
   theme,
 } from "./ooxml";
-import walk from "./walk";
+import { shots } from "./walk";
 
 const SLIDE_CX = 12192000;
-
-/** One capture per state of the talk: a slide, then each step it reveals. */
-const shots = async (
-  page: Page,
-  total: number,
-  transition: number,
-  onSlide: (num: number) => void,
-) => {
-  const images: Uint8Array[] = [];
-  const slides: number[] = [];
-  await walk(page, total, transition, async (slide) => {
-    images.push(await page.screenshot());
-    slides.push(slide);
-    onSlide(slide + 1);
-  });
-  return { images, slides };
-};
 
 const pptx = async (
   page: Page,

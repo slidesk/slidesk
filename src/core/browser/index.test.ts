@@ -2,9 +2,11 @@ import { afterEach, describe, expect, it } from "bun:test";
 
 // other test files replace this module with a stub for the whole process, so
 // the real one is pulled in under a distinct specifier
-const { default: launch, NOT_FOUND_MESSAGE } = await import(
-  `./index.ts?real=${Date.now()}`
-);
+const {
+  default: launch,
+  NOT_FOUND_MESSAGE,
+  WEBKIT_MESSAGE,
+} = await import(`./index.ts?real=${Date.now()}`);
 
 const previous = {
   slidesk: Bun.env.SLIDESK_CHROME,
@@ -22,6 +24,19 @@ describe("NOT_FOUND_MESSAGE", () => {
     expect(NOT_FOUND_MESSAGE).toContain("Chromium");
     expect(NOT_FOUND_MESSAGE).toContain("Vivaldi");
     expect(NOT_FOUND_MESSAGE).toContain("SLIDESK_CHROME");
+  });
+
+  it("gives the lightest browser to install", () => {
+    expect(NOT_FOUND_MESSAGE).toContain(
+      "bunx playwright install chromium-headless-shell",
+    );
+  });
+});
+
+describe("WEBKIT_MESSAGE", () => {
+  it("says what a pdf loses and how to get a real one", () => {
+    expect(WEBKIT_MESSAGE).toContain("images");
+    expect(WEBKIT_MESSAGE).toContain("chromium-headless-shell");
   });
 });
 

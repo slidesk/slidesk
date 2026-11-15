@@ -79,7 +79,10 @@ Content only — layout, shapes, charts and animations are dropped.
 Rendering runs in a headless Chromium already installed on the machine (Chrome,
 Chromium, Edge, Brave, Vivaldi), started by `Bun.WebView` and driven over the
 DevTools Protocol — no extra dependency, nothing downloaded. Override detection
-with `SLIDESK_CHROME`.
+with `SLIDESK_CHROME`. Lightest install: `bunx playwright install
+chromium-headless-shell`. On macOS without Chromium, the system WebKit is used:
+same pptx, but a pdf of one image per page (no selectable text, links or
+bookmarks).
 Slides are rendered at 1920x1080, one page per slide and per step revealed by
 a step plugin (`steps`, `sbs`): `pdf` keeps text vectorial and selectable,
 `pptx` embeds one full-bleed capture per page plus the `/* ... */` speaker

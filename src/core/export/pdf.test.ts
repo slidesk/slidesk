@@ -20,6 +20,60 @@ const fakePage = (steps: number[] = [0, 0, 0]) => {
   return { page, evaluated, printed: () => printParams };
 };
 
+// what webkit gives: no printToPDF, captures only
+const webkitPage = (steps: number[], notes: string[] = []) => {
+  const deck = fakeDeck(steps);
+  const formats: (string | undefined)[] = [];
+  let shot = 0;
+  const page = {
+    evaluate: async (expression: string) =>
+      expression.includes("aside.sd-notes") ? notes : deck(expression),
+    screenshot: async (format?: string) => {
+      formats.push(format);
+      shot += 1;
+      return new Uint8Array([
+        0xff,
+        0xd8,
+        0xff,
+        0xc0,
+        0x00,
+        0x11,
+        0x08,
+        0,
+        9,
+        0,
+        shot,
+        3,
+      ]);
+    },
+  } as unknown as Page;
+  return { page, formats };
+};
+
+describe("pdf without printing (webkit)", () => {
+  it("makes a page of each capture, in jpeg", async () => {
+    const { page, formats } = webkitPage([0, 2]);
+    const data = Buffer.from(
+      await pdf(page, 2, 1920, 1080, 0, () => {}),
+    ).toString("latin1");
+    expect(data.startsWith("%PDF")).toBe(true);
+    expect(data).toContain("/Count 4");
+    expect(formats.every((f) => f === "jpeg")).toBe(true);
+  });
+
+  it("adds the notes of a slide after its last step", async () => {
+    const { page } = webkitPage([1, 0], ["<p>hello</p>", ""]);
+    const data = Buffer.from(
+      await pdf(page, 2, 1920, 1080, 0, () => {}, true),
+    ).toString("latin1");
+    // the captures are numbered in order: the notes are taken after the
+    // walk (4th), and placed after the last step of slide 1, before slide 2
+    const widths = [...data.matchAll(/\/Width (\d+)/g)].map((m) => m[1]);
+    expect(widths).toEqual(["1", "2", "4", "3"]);
+    expect(data).toContain("/Count 4");
+  });
+});
+
 describe("pdf", () => {
   it("returns the rendered document", async () => {
     const { page } = fakePage();
