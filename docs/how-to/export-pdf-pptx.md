@@ -59,12 +59,12 @@ slidesk export -l en my-talk -o deck-en.pdf
 
 ## What does not survive the export
 
-Both formats walk the deck slide by slide, so plugin `onSlideChange` hooks run
-for every slide and whatever they render ends up in the export. What gets lost:
+Both formats walk the deck like a speaker pressing "next", so plugin
+`onSlideChange` hooks run for every slide and whatever they render ends up in
+the export. Step-by-step reveals (`@gouz/steps`, `@gouz/sbs`) are unrolled: one
+page per revealed item. What gets lost:
 
 - transitions between slides are dropped,
-- step-by-step reveals (`@gouz/steps`) are captured at their first step, not
-  unrolled into one page per step,
 - anything driven by interaction is frozen in its initial state.
 
 One case the PDF cannot cover: a slide holding an `<iframe>` keeps the frame it

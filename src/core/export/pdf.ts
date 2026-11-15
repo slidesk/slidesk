@@ -12,9 +12,9 @@ const pdf = async (
   transition: number,
   onSlide: (num: number) => void,
 ) => {
-  await walk(page, total, transition, async (num) => {
-    await freeze(page, num - 1);
-    onSlide(num);
+  await walk(page, total, transition, async (slide, step) => {
+    await freeze(page, slide, step);
+    onSlide(slide + 1);
   });
   await thaw(page);
   return page.printToPDF({

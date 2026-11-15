@@ -2,6 +2,16 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### ✨ Features
+
+- **[Exports unroll the steps](https://slidesk.github.io/slidesk/reference/commands/export/#what-you-get)**: `slidesk export` goes through the talk like a speaker pressing "next", so a slide using a step-by-step plugin (`@gouz/steps`, `@gouz/sbs`) gives one page per revealed item, in the PDF as in the PPTX, instead of a single page. In the PPTX, the notes of a slide go with each of its steps.
+
+### 🐛 Fixes
+
+- An exported PPTX showed none of the items of a step-by-step slide: they were captured before being revealed.
+
 ## 2.24.0
 
 ### ✨ Features

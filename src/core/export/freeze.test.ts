@@ -21,7 +21,23 @@ describe("freeze function", () => {
   it("should store the snapshot under its own index", async () => {
     const calls: string[] = [];
     await freeze(fakePage(calls), 5);
-    expect(calls[0]).toContain("window.__slideskFrozen[5] = clone.innerHTML");
+    expect(calls[0]).toContain(
+      "window.__slideskFrozen[5][0] = clone.innerHTML",
+    );
+  });
+
+  it("should store each step of a slide apart", async () => {
+    const calls: string[] = [];
+    await freeze(fakePage(calls), 1, 2);
+    expect(calls[0]).toContain(
+      "window.__slideskFrozen[1][2] = clone.innerHTML",
+    );
+  });
+
+  it("should keep an item not revealed yet hidden on paper", async () => {
+    const calls: string[] = [];
+    await freeze(fakePage(calls), 0);
+    expect(calls[0]).toContain('el.style.setProperty("opacity", "0")');
   });
 
   it("should turn canvases into images", async () => {
@@ -37,13 +53,14 @@ describe("thaw function", () => {
     const calls: string[] = [];
     await thaw(fakePage(calls));
     expect(calls).toHaveLength(1);
-    expect(calls[0]).toContain("slide.innerHTML = html");
+    expect(calls[0]).toContain("slide.innerHTML = first");
+    expect(calls[0]).toContain("last.after(page)");
   });
 
   it("should leave untouched slides and iframes alone", async () => {
     const calls: string[] = [];
     await thaw(fakePage(calls));
-    expect(calls[0]).toContain("slide.innerHTML === html");
+    expect(calls[0]).toContain("slide.innerHTML !== first");
     expect(calls[0]).toContain('slide.querySelector("iframe")');
   });
 
