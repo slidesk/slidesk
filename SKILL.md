@@ -45,6 +45,7 @@ Subcommands `plugin`, `theme`, `template`, `component` each support `search | in
 | `-g, --hidden` | hide terminal help, show only the URL |
 | `-c, --conf <file>` | use a custom config file (e.g. `-c tnt.slidesk.toml`) |
 | `-l, --lang <code>` | present a language version (needs `.lang.json` files) |
+| `-T, --theme <name>` | use only `themes/<name>/` when the talk has several themes (also on `save`, `export`, `deploy`, `link host`) |
 | `-h --help`, `-v --version` | help / version |
 
 Flags combine: `slidesk -tn my-talk` = telnet + speaker notes.
@@ -55,7 +56,7 @@ Flags combine: `slidesk -tn my-talk` = telnet + speaker notes.
 |------|---------|
 | `-t, --type <pdf\|pptx>` | output format (default `pdf`) |
 | `-o, --output <file>` | output file (default: slugified `TITLE`) |
-| `-c, --conf <file>`, `-l, --lang <code>` | same as `present` |
+| `-c, --conf <file>`, `-l, --lang <code>`, `-T, --theme <name>` | same as `present` |
 
 ### import options
 

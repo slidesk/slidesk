@@ -35,6 +35,7 @@ export type SliDeskServerOptions = {
 export type SliDeskPublishOptions = {
   notes?: string;
   lang?: string;
+  theme?: string;
   "slidesk-link-url"?: string;
 };
 

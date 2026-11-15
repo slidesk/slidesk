@@ -81,6 +81,7 @@ nav = [
             "reference/options/notes.md",
             "reference/options/open.md",
             "reference/options/telnet.md",
+            "reference/options/theme.md",
             "reference/options/version.md"
         ]},
 

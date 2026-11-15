@@ -2,6 +2,12 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## Unreleased
+
+### ✨ Features
+
+- **[`--theme`](https://slidesk.github.io/slidesk/reference/options/theme/)** picks the theme to use when a talk has several in `themes/`: `slidesk -T dark my-talk`. Only `themes/dark/` is then loaded (styles, scripts, templates, components, plugins and translations), on `present`, `export`, `save` and `link host`; `save` copies no other theme, and `deploy -T dark` writes a GitHub or GitLab file that builds with it. An unknown theme stops the command and lists the available ones. Without `--theme`, every theme is loaded, as before.
+
 ## 2.23.1
 
 ### 🐛 Fixes
