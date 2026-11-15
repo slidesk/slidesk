@@ -4,7 +4,7 @@
   -T, --theme <param>      use only this theme, when the talk has several
 ```
 
-Available on `present`, `export` and `save`.
+Available on `present`, `export` and `save`, and on `deploy` for the generated CI file.
 
 By default, every theme in `themes/` is loaded. With several themes, pick the one to present with:
 

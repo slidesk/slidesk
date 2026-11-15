@@ -5,6 +5,7 @@ import githubYML from "../../templates/ci/github.yml" with { type: "text" };
 import gitlabYML from "../../templates/ci/gitlab-ci.yml" with { type: "text" };
 import linkYML from "../../templates/ci/link.yml" with { type: "text" };
 import { CliError } from "../../utils/cliError";
+import { themeNames } from "../../utils/themes";
 
 const deployCmd = new Clipse(
   "deploy",
@@ -30,6 +31,13 @@ deployCmd
       default: false,
       optional: true,
     },
+    theme: {
+      short: "T",
+      type: "string",
+      description: "build with only this theme, when the talk has several",
+      default: "",
+      optional: true,
+    },
   })
   .action(async (args, options) => {
     const talkdir = resolve(args.talk ?? "");
@@ -42,7 +50,18 @@ deployCmd
       throw new CliError(
         `${options.target} is not a valid deploy option (${Object.keys(files).join(", ")})`,
       );
-    const [path, content] = files[options.target];
+    const [path, template] = files[options.target];
+    let content = template;
+    if (options.theme) {
+      // the name ends up in a shell command of the CI
+      if (!/^[\w.-]+$/.test(options.theme))
+        throw new CliError(`${options.theme} is not a valid theme name`);
+      themeNames(talkdir, options.theme);
+      content = content.replaceAll(
+        "slidesk save ",
+        `slidesk save -T ${options.theme} `,
+      );
+    }
     // a .gitlab-ci.yml often drives the whole repository
     if (existsSync(`${talkdir}/${path}`) && !options.force)
       throw new CliError(`${path} already exists, use --force to replace it`);

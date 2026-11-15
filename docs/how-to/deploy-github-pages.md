@@ -12,6 +12,16 @@ It writes `.github/workflows/slidesk.yml`, which installs SliDesk, saves the tal
 
 The talk is published in its default language at the root of the site, and once per `XX.lang.json` in a sub-folder: `https://<user>.github.io/<repo>/en/`, `…/fr/`.
 
+## A talk with several themes
+
+Pick the theme to publish when generating the workflow:
+
+```sh
+slidesk deploy -t github -T dark my-talk
+```
+
+Each `slidesk save` of the workflow then uses only `themes/dark/`, see [`--theme`](../reference/options/theme.md).
+
 ## Addons installed from git
 
 An addon [installed from git](manage-addons.md#install-from-a-git-repository) and not committed with the talk is installed by the workflow before the build: uncomment the **Install the addons** step and list them, with their version.
