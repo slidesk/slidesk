@@ -107,6 +107,20 @@ describe("save", () => {
     expect(existsSync(join(target, "themes/dark/theme.css"))).toBe(true);
   });
 
+  it("with --theme, leaves the other themes out", async () => {
+    const talk = join(scratch, "talk");
+    cpSync(fixture, talk, { recursive: true });
+    mkdirSync(join(talk, "themes/light"));
+    writeFileSync(join(talk, "themes/light/theme.css"), ".light{}");
+    const target = join(scratch, "public");
+    await save(talk, { target, theme: "light" });
+    expect(existsSync(join(target, "themes/light/theme.css"))).toBe(true);
+    expect(existsSync(join(target, "themes/dark"))).toBe(false);
+    const html = await Bun.file(join(target, "index.html")).text();
+    expect(html).toContain("themes/light/theme.css");
+    expect(html).not.toContain("themes/dark/");
+  });
+
   it("leaves the components out of the export", async () => {
     const target = join(scratch, "nocomponents");
     await save(fixture, { target });

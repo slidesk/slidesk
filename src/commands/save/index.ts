@@ -31,6 +31,13 @@ saveCmd
       default: "",
       optional: true,
     },
+    theme: {
+      short: "T",
+      type: "string",
+      description: "use only this theme, when the talk has several",
+      default: "",
+      optional: true,
+    },
   })
   .action(async (args, options) => {
     await save(args.talk ?? process.cwd(), options, {

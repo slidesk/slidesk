@@ -14,12 +14,14 @@ export type SliDeskPresentOptions = {
 export type SliDeskSaveOptions = {
   conf?: string;
   lang?: string;
+  theme?: string;
   target?: string;
 };
 
 export type SliDeskExportOptions = {
   conf?: string;
   lang?: string;
+  theme?: string;
   type?: string;
   output?: string;
 };

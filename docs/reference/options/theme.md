@@ -4,13 +4,17 @@
   -T, --theme <param>      use only this theme, when the talk has several
 ```
 
+Available on `present`, `export` and `save`.
+
 By default, every theme in `themes/` is loaded. With several themes, pick the one to present with:
 
 ```sh
 slidesk -T dark my-talk
+slidesk export -T dark my-talk
+slidesk save -T dark my-talk
 ```
 
-Only `themes/dark/` is then used: its styles, scripts, templates, components, plugins and translations. Files placed directly in `themes/`, outside a theme directory, are left out too. When `themes/dark/` does not exist, the command stops and lists the themes it found.
+Only `themes/dark/` is then used: its styles, scripts, templates, components, plugins and translations. Files placed directly in `themes/`, outside a theme directory, are left out too. With `save`, the other themes are not copied to the target directory either. When `themes/dark/` does not exist, the command stops and lists the themes it found.
 
 ## Without `--theme`
 
