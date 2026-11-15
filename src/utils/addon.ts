@@ -197,9 +197,10 @@ export const addonRemove = async (kind: AddonKind, name: string) => {
           `components/${name.split("__").at(-1)}.mjs`,
         ].find(existsSync) ?? `components/${name}.mjs`)
       : `${kind}s/${name}`;
-  const marker = kind === "component" ? path : `${path}/${kind}.json`;
-  if (!(await Bun.file(marker).exists()))
-    throw new CliError(`${kind} ${name} not found`);
+  // push requires plugin.json, not theme.json nor template.json: a theme or a
+  // template from the hub may have none, its directory is enough
+  const marker = kind === "plugin" ? `${path}/plugin.json` : path;
+  if (!existsSync(marker)) throw new CliError(`${kind} ${name} not found`);
   await rm(path, { recursive: true, force: true });
   return `${kind} ${name} removed`;
 };
