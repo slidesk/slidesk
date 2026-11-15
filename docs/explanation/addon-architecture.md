@@ -23,7 +23,7 @@ Templates are `.sdt` files that define the HTML structure of a slide. They use `
 
 ## Components
 
-Components are `.mjs` files that transform the full slide HTML at build time. They receive the generated HTML and return modified HTML. This is useful for custom syntax like `!component()`.
+Components are `.mjs` files that transform the talk at build time. They receive its Markdown source, before it is split into slides and rendered to HTML, and return it modified. This is useful for custom syntax like `!component()`.
 
 ## Plugins
 
