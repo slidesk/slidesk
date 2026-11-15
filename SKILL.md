@@ -56,6 +56,7 @@ Flags combine: `slidesk -tn my-talk` = telnet + speaker notes.
 |------|---------|
 | `-t, --type <pdf\|pptx>` | output format (default `pdf`) |
 | `-o, --output <file>` | output file (default: slugified `TITLE`) |
+| `-n, --notes` | pdf: a page with the speaker notes after each slide |
 | `-c, --conf <file>`, `-l, --lang <code>`, `-T, --theme <name>` | same as `present` |
 
 ### import options

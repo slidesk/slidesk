@@ -64,6 +64,12 @@ describe("thaw function", () => {
     expect(calls[0]).toContain('slide.querySelector("iframe")');
   });
 
+  it("should keep the headings of a step out of the bookmarks", async () => {
+    const calls: string[] = [];
+    await thaw(fakePage(calls));
+    expect(calls[0]).toContain('h.setAttribute("role", "none")');
+  });
+
   it("should wait for the restored images", async () => {
     const calls: string[] = [];
     await thaw(fakePage(calls));

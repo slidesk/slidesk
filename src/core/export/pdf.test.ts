@@ -48,6 +48,23 @@ describe("pdf", () => {
     ).toEqual(["0", "1", "2"]);
   });
 
+  it("adds the notes pages only when asked", async () => {
+    const without = fakePage([0]);
+    await pdf(without.page, 1, 1920, 1080, 0, () => {});
+    expect(without.evaluated.some((e) => e.includes("sd-export-notes"))).toBe(
+      false,
+    );
+    const asked = fakePage([0]);
+    await pdf(asked.page, 1, 1920, 1080, 0, () => {}, true);
+    expect(asked.evaluated.at(-1)).toContain("sd-export-notes");
+  });
+
+  it("prints one bookmark per heading", async () => {
+    const { page, printed } = fakePage([0]);
+    await pdf(page, 1, 1920, 1080, 0, () => {});
+    expect(printed().generateDocumentOutline).toBe(true);
+  });
+
   it("converts the viewport to inches for the page size", async () => {
     const { page, printed } = fakePage();
     await pdf(page, 1, 1920, 1080, 0, () => {});

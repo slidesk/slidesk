@@ -6,6 +6,7 @@ Export your presentation as a PDF or a PPTX file.
 slidesk export mytalk               # mytalk.pdf
 slidesk export -t pptx mytalk       # mytalk.pptx
 slidesk export -o slides.pdf mytalk
+slidesk export -n mytalk            # with the speaker notes
 ```
 
 ## Options
@@ -15,6 +16,7 @@ slidesk export -o slides.pdf mytalk
   -o, --output <file>        output file (default: the slugified title of your talk)
   -c, --conf <file>          custom slidesk.toml path
   -l, --lang <code>          language version
+  -n, --notes                add a page with the speaker notes after each slide (pdf)
   -T, --theme <name>         use only this theme, when the talk has several
 ```
 
@@ -35,7 +37,11 @@ SLIDESK_CHROME=/usr/bin/chromium slidesk export mytalk
 Slides are rendered at **1920x1080**.
 
 - **pdf** — one page per slide, and per step it reveals, printed vectorially: text stays selectable and
-  searchable, and the file stays small.
+  searchable, and the file stays small. Each slide title is a bookmark, to jump
+  to a slide from the side panel of the reader, and the document is named after
+  the `TITLE` of the talk. With `--notes`, the `/* ... */` speaker notes of a
+  slide follow its last step, on as many pages as they need; slides without
+  notes get no extra page.
 - **pptx** — one PowerPoint slide per slide, and per step it reveals, each holding a full-bleed 1920x1080
   capture of the rendered slide. Your `/* ... */` speaker notes are exported as
   plain text into the PowerPoint notes pane.

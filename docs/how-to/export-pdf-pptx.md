@@ -41,7 +41,8 @@ In a GitHub Actions job:
 |---|---|---|
 | Slide rendering | vectorial | 1920x1080 image |
 | Selectable text | yes | no |
-| Speaker notes | no | yes |
+| Speaker notes | with `--notes`, as pages | yes, in the notes pane |
+| Bookmarks | one per slide | no |
 | File size | small | a few MB |
 | Editable afterwards | no | slide order and notes |
 
@@ -76,9 +77,14 @@ PPTX, which captures every slide while it is on screen.
 ## Speaker notes
 
 Your `/* ... */` notes land in the notes pane of the PPTX, one PowerPoint note
-per slide — slides without notes get none. Notes are exported as plain text:
+per slide, repeated on each of its steps — slides without notes get none. Notes are exported as plain text:
 formatting is dropped, list items keep a `•` marker, and blank lines are
 preserved.
 
-The PDF carries no notes: use the speaker view (`slidesk -n`) to present with
-them.
+The PDF carries them with `--notes`: after the last step of each slide comes a
+page with its notes, formatting kept, on as many pages as they need. Slides
+without notes get no extra page.
+
+```sh
+slidesk export -n my-talk
+```

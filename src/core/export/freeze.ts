@@ -48,6 +48,10 @@ const restore = `(async () => {
     for (const html of steps) {
       const page = slide.cloneNode(false);
       page.innerHTML = html;
+      // one bookmark per slide: the headings of its steps stay out of the outline
+      page.dataset.sdStep = "";
+      for (const h of page.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+        h.setAttribute("role", "none");
       last.after(page);
       last = page;
     }

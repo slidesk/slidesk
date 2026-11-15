@@ -7,6 +7,8 @@ All notable changes to SliDesk. Each release on GitHub takes its notes from the 
 ### ✨ Features
 
 - **[Exports unroll the steps](https://slidesk.github.io/slidesk/reference/commands/export/#what-you-get)**: `slidesk export` goes through the talk like a speaker pressing "next", so a slide using a step-by-step plugin (`@gouz/steps`, `@gouz/sbs`) gives one page per revealed item, in the PDF as in the PPTX, instead of a single page. In the PPTX, the notes of a slide go with each of its steps.
+- **[Speaker notes in the PDF](https://slidesk.github.io/slidesk/how-to/export-pdf-pptx/#speaker-notes)**: `slidesk export -n` adds, after the last step of each slide, a page with its `/* ... */` notes, formatting kept.
+- **Bookmarks in the PDF**: each slide title is a bookmark, to jump to a slide from the side panel of the reader.
 
 ### 🐛 Fixes
 

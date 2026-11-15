@@ -23,9 +23,11 @@ const defaultOutput = (talkdir: string, env: SliDeskEnv) => {
 
 const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
   const type = options.type ?? "pdf";
-  const env = await loadEnv(talkdir, options);
+  // --notes adds pages to the pdf, it does not name a speaker view
+  const { notes, ...talkOptions } = options;
+  const env = await loadEnv(talkdir, talkOptions);
   const slideskEnv = env.slidesk ?? {};
-  const files = await convert(talkdir, options, env);
+  const files = await convert(talkdir, talkOptions, env);
   const target =
     options.output && options.output !== ""
       ? options.output
@@ -52,7 +54,7 @@ const exportTalk = async (talkdir: string, options: SliDeskExportOptions) => {
             transition,
             onSlide,
           )
-        : await pdf(page, total, WIDTH, HEIGHT, transition, onSlide);
+        : await pdf(page, total, WIDTH, HEIGHT, transition, onSlide, notes);
     bar.stop();
     await Bun.write(target, data);
     log(`✅ ${target}`);
