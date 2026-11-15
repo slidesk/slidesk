@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import type { SliDeskPlugin } from "../../types";
-import getJS from "./getJS";
+import getJS, { pluginHooks } from "./getJS";
 
 describe("getJS function", () => {
   const defaultPlugins: SliDeskPlugin[] = [];
@@ -61,5 +61,24 @@ describe("getJS function", () => {
     ];
     const result = getJS(plugins, {});
     expect(result).toContain("console.log('slide changed')");
+  });
+
+  it("runs the next hooks when a plugin hook throws", () => {
+    const logged: unknown[][] = [];
+    const ran: string[] = [];
+    const body = pluginHooks(
+      [
+        { name: "broken", onSlideChange: "throw new Error('boom')" },
+        { name: "ok", onSlideChange: "ran.push('ok')" },
+      ],
+      "onSlideChange",
+    );
+    // a console of its own: the real one is captured by other suites
+    new Function("console", "ran", body)(
+      { error: (...a: unknown[]) => logged.push(a) },
+      ran,
+    );
+    expect(ran).toEqual(["ok"]);
+    expect(logged[0][0]).toBe("plugin broken:");
   });
 });
