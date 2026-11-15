@@ -153,6 +153,8 @@ Start from the look of a website with `slidesk design https://example.com`, whic
 
 Place the theme in your talk's `themes/` directory. SliDesk loads it automatically. Theme CSS is loaded after `slidesk.css`, so it overrides the defaults.
 
+A talk can hold several themes: all of them are loaded, unless `--theme` picks one when presenting, exporting, saving or deploying (`slidesk -T dark my-talk`), see [`--theme`](../reference/options/theme.md).
+
 ## Share a theme
 
 1. Add a `README.md` for a description.

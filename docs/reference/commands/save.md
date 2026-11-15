@@ -12,6 +12,7 @@ slidesk save -t public mytalk
   -t, --target <path>        output directory (default: "public")
   -c, --conf <file>          custom slidesk.toml path
   -l, --lang <code>          language version
+  -T, --theme <name>         use only this theme, when the talk has several
 ```
 
 The target directory is emptied before the export. To protect your files, `save` refuses a target that is your talk or one of its parent directories, and an existing directory that is not empty and holds no `index.html` (i.e. is not a previous export).

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
-import { existsSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ExitError, useTempCwd } from "../../__testing__/addons";
 import { captured } from "../../__testing__/console";
@@ -49,6 +49,18 @@ describe("deploy command", () => {
     // one export per language, and the addons installed from git
     expect(pipeline).toContain('slidesk save -l "$lang"');
     expect(pipeline).toContain("ADDONS_TOKEN");
+  });
+
+  it("builds with the chosen theme, which must exist", async () => {
+    mkdirSync(join(cwd.dir, "themes/dark"), { recursive: true });
+    expect(await run(["--target", "gitlab", "--theme", "dark"])).toBe(0);
+    const pipeline = await Bun.file(join(cwd.dir, ".gitlab-ci.yml")).text();
+    expect(pipeline).toContain("slidesk save -T dark -t /tmp/site");
+    expect(pipeline).toContain('slidesk save -T dark -l "$lang"');
+    expect(await run(["--target", "github", "--theme", "light"])).toBe(1);
+    expect(existsSync(join(cwd.dir, ".github/workflows/slidesk.yml"))).toBe(
+      false,
+    );
   });
 
   it("writes a slidesk.link manifest", async () => {

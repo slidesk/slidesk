@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import type { SliDeskEnv, SliDeskPlugin } from "../../types";
 import commonDir from "../../utils/commonDir";
 import { pluginFilePath, skipBrokenPlugin } from "../../utils/pluginFiles";
+import { themeNames } from "../../utils/themes";
 
 const loadExternalPlugins = async (
   pluginsDir: string,
@@ -42,13 +43,13 @@ const loadExternalPlugins = async (
   return loaded.filter((p): p is SliDeskPlugin => p !== undefined);
 };
 
-const loadPlugins = async (sdfPath: string, env: SliDeskEnv) => {
+const loadPlugins = async (
+  sdfPath: string,
+  env: SliDeskEnv,
+  theme?: string,
+) => {
   const common = commonDir(sdfPath, env);
-  const themes = existsSync(`${sdfPath}/themes`)
-    ? readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
-        .map((d) => d.name)
-    : [];
+  const themes = themeNames(sdfPath, theme);
   // the talk, then its COMMON_DIR, then each theme: the order is kept
   const sources = [
     loadExternalPlugins(`${sdfPath}/plugins`, sdfPath),

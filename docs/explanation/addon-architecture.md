@@ -15,7 +15,7 @@ Presentation (main.md)
 
 ## Themes
 
-Themes bundle CSS, JS, templates, and plugins. They are the highest-level addon and can include any of the other types. Themes are placed in `themes/` and auto-load.
+Themes bundle CSS, JS, templates, and plugins. They are the highest-level addon and can include any of the other types. Themes are placed in `themes/` and auto-load; with several themes, [`--theme`](../reference/options/theme.md) picks the one to use.
 
 ## Templates
 

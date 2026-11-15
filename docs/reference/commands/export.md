@@ -15,6 +15,7 @@ slidesk export -o slides.pdf mytalk
   -o, --output <file>        output file (default: the slugified title of your talk)
   -c, --conf <file>          custom slidesk.toml path
   -l, --lang <code>          language version
+  -T, --theme <name>         use only this theme, when the talk has several
 ```
 
 ## Requirements

@@ -70,6 +70,9 @@ const save = async (
     rmSync(target, { recursive: true, force: true });
   }
   readAllFiles(dir, env).forEach((file, _) => {
+    // with --theme, the other themes are left out
+    const [top, theme] = path.relative(dir, file).split(path.sep);
+    if (top === "themes" && options.theme && theme !== options.theme) return;
     const nfile = file.replace(dir, "");
     promises.push(Bun.write(`${target}/${nfile}`, Bun.file(file)));
   });

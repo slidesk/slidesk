@@ -8,17 +8,20 @@ export type SliDeskPresentOptions = {
   lang?: string;
   telnet?: boolean;
   ip?: string;
+  theme?: string;
 };
 
 export type SliDeskSaveOptions = {
   conf?: string;
   lang?: string;
+  theme?: string;
   target?: string;
 };
 
 export type SliDeskExportOptions = {
   conf?: string;
   lang?: string;
+  theme?: string;
   type?: string;
   output?: string;
 };
@@ -32,6 +35,7 @@ export type SliDeskServerOptions = {
 export type SliDeskPublishOptions = {
   notes?: string;
   lang?: string;
+  theme?: string;
   "slidesk-link-url"?: string;
 };
 

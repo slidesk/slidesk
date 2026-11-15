@@ -54,16 +54,18 @@ const commonContent = (
       headers: { "Content-Type": "application/json" },
     },
     [`${options.notes ?? "notes.html"}`]: {
-      content: getNotesView(config, plugins, sdfPath, lang),
+      content: getNotesView(config, plugins, sdfPath, lang, options.theme),
       headers: { "Content-Type": "text/html" },
     },
   };
 };
 
 export const errorContent = async (
-  options: SliDeskPresentOptions,
+  talkOptions: SliDeskPresentOptions,
   env: SliDeskEnv,
 ): Promise<SliDeskFile> => {
+  // the error may be an unknown --theme: the error page goes without one
+  const options = { ...talkOptions, theme: undefined };
   const sdfPath = `${process.cwd()}`;
   const { plugins, templates, favicon, components } = await preload(
     sdfPath,
@@ -94,6 +96,7 @@ export const content = async (
   const { plugins, templates, favicon, components } = await preload(
     sdfPath,
     env,
+    options.theme,
   );
   const { config, content } = await prepareSDF(mainFile);
   checkImages(content, sdfPath, env);
@@ -101,7 +104,7 @@ export const content = async (
   return {
     ...(await generateHTML(
       await getPresentation(content, env, components, templates, sdfPath, lang),
-      prepareTPL(config, plugins, favicon, sdfPath),
+      prepareTPL(config, plugins, favicon, sdfPath, options.theme),
       sdfPath,
       options,
       env,

@@ -19,6 +19,7 @@ slidesk -tn my-talk         # telnet + speaker notes
 slidesk -g my-talk          # hide terminal help info
 slidesk -c custom.toml      # use custom config file
 slidesk -l fr my-talk       # present in French
+slidesk -T dark my-talk     # use only themes/dark/
 ```
 
 ## Terminal navigation

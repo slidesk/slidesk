@@ -4,12 +4,12 @@ import loadFavicon from "./loadFavicon";
 import loadPlugins from "./loadPlugins";
 import loadTemplates from "./loadTemplates";
 
-const preload = async (sdfPath: string, env: SliDeskEnv) => {
+const preload = async (sdfPath: string, env: SliDeskEnv, theme?: string) => {
   return {
-    plugins: await loadPlugins(sdfPath, env),
-    templates: await loadTemplates(sdfPath, env),
+    plugins: await loadPlugins(sdfPath, env, theme),
+    templates: await loadTemplates(sdfPath, env, theme),
     favicon: await loadFavicon(sdfPath),
-    components: loadComponents(sdfPath),
+    components: loadComponents(sdfPath, theme),
   };
 };
 

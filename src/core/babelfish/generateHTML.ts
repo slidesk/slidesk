@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import translate from "../../components/translate";
 import type {
   SliDeskEnv,
@@ -6,6 +6,7 @@ import type {
   SliDeskPresentOptions,
 } from "../../types";
 import { CliError } from "../../utils/cliError";
+import { themeNames } from "../../utils/themes";
 import polish from "./polish";
 
 const LANG_FILE = /\.lang\.json$/i;
@@ -49,16 +50,11 @@ const generateHTML = async (
 ) => {
   const talk = await readLangs(sdfPath);
   // a theme translates its own templates, in the language of the talk
-  const themesDir = `${sdfPath}/themes`;
-  const themes = existsSync(themesDir)
-    ? await Promise.all(
-        readdirSync(themesDir, { withFileTypes: true })
-          .filter((d) => d.isDirectory())
-          .map((d) => d.name)
-          .sort((a, b) => a.localeCompare(b))
-          .map((t) => readLangs(`${themesDir}/${t}`)),
-      )
-    : [];
+  const themes = await Promise.all(
+    themeNames(sdfPath, options.theme).map((t) =>
+      readLangs(`${sdfPath}/themes/${t}`),
+    ),
+  );
   const available = [
     ...new Set([...talk, ...themes.flat()].map((l) => l.lang)),
   ].sort((a, b) => a.localeCompare(b));

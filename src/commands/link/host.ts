@@ -76,6 +76,12 @@ linkHostCmd
         "specify the language version (per default, it will use the .lang.json file with default information)",
       default: "",
     },
+    theme: {
+      short: "T",
+      type: "string",
+      description: "use only this theme, when the talk has several",
+      default: "",
+    },
   })
   .action(async (a, o) => {
     await sendToSlideskLink(a.talk ?? "", o);

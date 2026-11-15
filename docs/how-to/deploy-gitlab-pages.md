@@ -12,6 +12,16 @@ It writes `.gitlab-ci.yml`, whose `pages` job installs SliDesk, saves the talk a
 
 The talk is published in its default language at the root of the site, and once per `XX.lang.json` in a sub-folder: `…/en/`, `…/fr/`.
 
+## A talk with several themes
+
+Pick the theme to publish when generating the pipeline:
+
+```sh
+slidesk deploy -t gitlab -T dark my-talk
+```
+
+Each `slidesk save` of the pipeline then uses only `themes/dark/`, see [`--theme`](../reference/options/theme.md).
+
 ## Addons installed from git
 
 An addon [installed from git](manage-addons.md#install-from-a-git-repository) and not committed with the talk is installed by the job before the build: uncomment the lines and list the addons, with their version.
