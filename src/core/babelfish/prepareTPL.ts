@@ -1,8 +1,9 @@
 import { existsSync } from "node:fs";
 import { view } from "../../templates/present";
 import type { SliDeskConfig, SliDeskFavicon, SliDeskPlugin } from "../../types";
+import { inTheme } from "../../utils/themes";
 
-const getCSS = (config: SliDeskConfig, sdfPath: string) => {
+const getCSS = (config: SliDeskConfig, sdfPath: string, theme?: string) => {
   const css = ['<link rel="stylesheet" href="slidesk.css" />', ...config.css];
   const globCSS = new Bun.Glob("**/*.css");
   if (existsSync(`${sdfPath}/templates`)) {
@@ -12,14 +13,14 @@ const getCSS = (config: SliDeskConfig, sdfPath: string) => {
   }
   if (existsSync(`${sdfPath}/themes`)) {
     for (const file of globCSS.scanSync(`${sdfPath}/themes`)) {
-      if (!file.includes("/plugins/"))
+      if (!file.includes("/plugins/") && inTheme(file, theme))
         css.push(`<link href="themes/${file}" rel="stylesheet"/>`);
     }
   }
   return css;
 };
 
-const getJS = (config: SliDeskConfig, sdfPath: string) => {
+const getJS = (config: SliDeskConfig, sdfPath: string, theme?: string) => {
   const js = [...config.js, '<script src="slidesk.js"></script>'];
   const globJS = new Bun.Glob("**/*.js");
   if (existsSync(`${sdfPath}/templates`)) {
@@ -29,7 +30,7 @@ const getJS = (config: SliDeskConfig, sdfPath: string) => {
   }
   if (existsSync(`${sdfPath}/themes`)) {
     for (const file of globJS.scanSync(`${sdfPath}/themes`)) {
-      if (!file.includes("/plugins/"))
+      if (!file.includes("/plugins/") && inTheme(file, theme))
         js.push(`<script src="themes/${file}"></script>`);
     }
   }
@@ -41,10 +42,11 @@ const prepareTPL = (
   plugins: SliDeskPlugin[],
   favicon: SliDeskFavicon,
   sdfPath: string,
+  theme?: string,
 ) => {
   let template = view;
-  const css = getCSS(config, sdfPath);
-  const js = getJS(config, sdfPath);
+  const css = getCSS(config, sdfPath, theme);
+  const js = getJS(config, sdfPath, theme);
   plugins.forEach((p, _) => {
     const pname = `plugins/${p.name}/`;
     if (p.addStyles) {

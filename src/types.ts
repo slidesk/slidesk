@@ -8,6 +8,7 @@ export type SliDeskPresentOptions = {
   lang?: string;
   telnet?: boolean;
   ip?: string;
+  theme?: string;
 };
 
 export type SliDeskSaveOptions = {

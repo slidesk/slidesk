@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { view } from "../../templates/notes";
 import type { SliDeskConfig, SliDeskPlugin } from "../../types";
+import { inTheme } from "../../utils/themes";
 import { withLang } from "./generateHTML";
 
 const getNotesView = (
@@ -8,6 +9,7 @@ const getNotesView = (
   plugins: SliDeskPlugin[],
   sdfPath: string,
   lang?: string,
+  theme?: string,
 ) => {
   let template = view;
   const globCSS = new Bun.Glob("**/*.css");
@@ -23,7 +25,7 @@ const getNotesView = (
   }
   if (existsSync(`${sdfPath}/themes`)) {
     for (const file of globCSS.scanSync(`${sdfPath}/themes`)) {
-      if (!file.includes("/plugins/"))
+      if (!file.includes("/plugins/") && inTheme(file, theme))
         css.push(`<link href="themes/${file}" rel="stylesheet"/>`);
     }
   }

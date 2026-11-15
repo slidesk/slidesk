@@ -1,6 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
+import { themeNames } from "../../utils/themes";
 
-const loadComponents = (sdfPath: string) => {
+const loadComponents = (sdfPath: string, theme?: string) => {
   const componentsDir = `${sdfPath}/components`;
   const components: string[] = [];
   if (existsSync(componentsDir)) {
@@ -10,18 +11,13 @@ const loadComponents = (sdfPath: string) => {
         .map((c) => `${componentsDir}/${c}`),
     );
   }
-  if (existsSync(`${sdfPath}/themes`)) {
-    const themes = readdirSync(`${sdfPath}/themes`, { withFileTypes: true })
-      .filter((d) => d.isDirectory())
-      .map((d) => d.name);
-    for (const t of themes) {
-      if (existsSync(`${sdfPath}/themes/${t}/components`))
-        components.push(
-          ...readdirSync(`${sdfPath}/themes/${t}/components`)
-            .filter((item) => /.mjs$/gi.test(item))
-            .map((c) => `${sdfPath}/themes/${t}/components/${c}`),
-        );
-    }
+  for (const t of themeNames(sdfPath, theme)) {
+    if (existsSync(`${sdfPath}/themes/${t}/components`))
+      components.push(
+        ...readdirSync(`${sdfPath}/themes/${t}/components`)
+          .filter((item) => /.mjs$/gi.test(item))
+          .map((c) => `${sdfPath}/themes/${t}/components/${c}`),
+      );
   }
   return components;
 };
