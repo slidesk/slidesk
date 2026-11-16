@@ -15,6 +15,22 @@ const publicEnv = (env: SliDeskEnv) =>
       }
     : env;
 
+/**
+ * The plugins' code for one hook, each in its own try: a plugin that throws
+ * does not stop the next ones, nor the page load that runs the first change.
+ */
+export const pluginHooks = (
+  plugins: SliDeskPlugin[],
+  hook: "onSlideChange" | "onSpeakerViewSlideChange",
+) =>
+  plugins
+    .filter((p) => p[hook])
+    .map(
+      (p) =>
+        `try { ${p[hook]} } catch (e) { console.error(${JSON.stringify(`plugin ${p.name}:`)}, e); }`,
+    )
+    .join("\n");
+
 const getJS = (
   plugins: SliDeskPlugin[],
   env: SliDeskEnv,
@@ -23,7 +39,9 @@ const getJS = (
   currentSlide: 0,
   slides: [],
   animationTimer: ${Number(env.slidesk?.TRANSITION ?? 300)},
-  onSlideChange: () => {${plugins.map((p) => p.onSlideChange ?? "").join(";")}},
+  onSlideChange: () => {
+${pluginHooks(plugins, "onSlideChange")}
+  },
   env: ${JSON.stringify(publicEnv(env))},
   lang: ${JSON.stringify(lang ?? null)},
   lastAction: "",
