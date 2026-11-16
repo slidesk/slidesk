@@ -10,7 +10,7 @@ Reference a template with `.[#template-name]` after the heading:
 ## My Slide .[#split]
 ```
 
-This applies `templates/split.sdt`.
+This applies `templates/split.sdt`, or a `split.sdt` in any subdirectory of `templates/` or of a theme.
 
 ## Create a template
 
@@ -70,6 +70,10 @@ A text
 ```
 
 Each named block (`[[block]]`, `[[foo]]`) matches a `<sd-block />`, `<sd-foo />` placeholder in the template. Content outside named blocks goes into `<sd-content />`.
+
+## Share a template
+
+To push it to the hub or install it from git, put the template in its own directory, `templates/my-template/`, with its `.sdt`, its `.css` and `.js` if any, a `README.md` and a `template.json` (`{}` is enough), which an install from git looks for. Every `.css` and `.js` under `templates/` is loaded.
 
 ## Manage templates via CLI
 

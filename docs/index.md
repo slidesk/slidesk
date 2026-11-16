@@ -126,7 +126,7 @@ Read the full rationale in [Why SliDesk?](explanation/why-slidesk).
 - **Plugin system** — extend with front-end scripts, back-end routes, WebSocket handlers
 - **Templates & themes** — reusable layouts and visual styles
 - **Theme from a website** — `slidesk design <url>` takes the colours, fonts and logo of a site
-- **Components** — custom `.mjs` modules that transform your slide HTML
+- **Components** — custom `.mjs` modules that transform the source of your talk
 - **Hub integration** — share and discover addons at [slidesk.link](https://slidesk.link)
 - **Deploy** — export static HTML, or CI/CD for GitHub/GitLab Pages
 

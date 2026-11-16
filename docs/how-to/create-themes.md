@@ -9,15 +9,17 @@ Create a directory inside `themes/`:
 ```
 themes/
 └── my-theme/
+    ├── theme.json
     ├── theme.css
     ├── script.js
     ├── templates/
     ├── plugins/
+    ├── components/
     ├── en.lang.json
     └── fr.lang.json
 ```
 
-A theme can contain templates and plugins — they are loaded automatically when the theme is applied. Its `XX.lang.json` files translate the `$$key$$` of its templates in the language of the talk, see [translations of a theme](../reference/syntax/internationalisation.md#translations-of-a-theme).
+`theme.json` marks the directory as a theme for an install from git, and `{}` is enough. A theme can contain templates, plugins and components — they are loaded automatically when the theme is applied. Every `.css` and `.js` file of the theme is loaded, except those of its plugins. Its `XX.lang.json` files translate the `$$key$$` of its templates in the language of the talk, see [translations of a theme](../reference/syntax/internationalisation.md#translations-of-a-theme).
 
 ## CSS variables
 
@@ -145,7 +147,7 @@ The default theme includes `.speaker` and `.chapter` helper classes:
 }
 ```
 
-Use them in your slides with the add class syntax: `## Chapter title {.chapter}`.
+Use them in your slides with the add class syntax: `## Chapter title .[chapter]`.
 
 Start from the look of a website with `slidesk design https://example.com`, which writes `themes/example-com/theme.css`.
 
@@ -157,7 +159,7 @@ A talk can hold several themes: all of them are loaded, unless `--theme` picks o
 
 ## Share a theme
 
-1. Add a `README.md` for a description.
+1. Add a `theme.json` (`{}` is enough) and a `README.md` for a description.
 2. Optionally add `preview/` subfolder with `.webp` images at 320px width.
 3. Log in and push:
 
