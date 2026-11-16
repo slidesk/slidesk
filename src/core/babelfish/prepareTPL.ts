@@ -37,6 +37,13 @@ const getJS = (config: SliDeskConfig, sdfPath: string, theme?: string) => {
   return js;
 };
 
+/**
+ * The URL of a plugin file: `plugins/<name>/` as the plugin is installed,
+ * under its theme when it comes from one.
+ */
+export const pluginUrl = (p: SliDeskPlugin, file: string) =>
+  `${p.theme ?? ""}${file.replaceAll(/plugins\/([^/]+)\//g, `plugins/${p.name}/`)}`;
+
 const prepareTPL = (
   config: SliDeskConfig,
   plugins: SliDeskPlugin[],
@@ -48,26 +55,19 @@ const prepareTPL = (
   const css = getCSS(config, sdfPath, theme);
   const js = getJS(config, sdfPath, theme);
   plugins.forEach((p, _) => {
-    const pname = `plugins/${p.name}/`;
     if (p.addStyles) {
       p.addStyles.forEach((k) => {
-        css.push(
-          `<link href="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}" rel="stylesheet"/>`,
-        );
+        css.push(`<link href="${pluginUrl(p, k)}" rel="stylesheet"/>`);
       });
     }
     if (p.addScripts) {
       p.addScripts.forEach((k) => {
-        js.push(
-          `<script src="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}"></script>`,
-        );
+        js.push(`<script src="${pluginUrl(p, k)}"></script>`);
       });
     }
     if (p.addScriptModules) {
       p.addScriptModules.forEach((k) => {
-        js.push(
-          `<script src="${p.theme}${k.replaceAll(/plugins\/([^/]+)\//g, pname)}" type="module"></script>`,
-        );
+        js.push(`<script src="${pluginUrl(p, k)}" type="module"></script>`);
       });
     }
   });
