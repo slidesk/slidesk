@@ -2,6 +2,15 @@
 
 All notable changes to SliDesk. Each release on GitHub takes its notes from the matching section below.
 
+## 2.25.1
+
+### 🐛 Fixes
+
+- A plugin hook that throws (`onSlideChange`, `onSpeakerViewSlideChange`) no longer stops the hooks of the other plugins, nor the touch and resize listeners: each hook runs on its own and logs its error with the plugin name.
+- The speaker view loads the `addSpeakerScripts` / `addSpeakerStyles` of a plugin installed from the hub or bundled in a theme: they were requested at the wrong path (404).
+- `slidesk theme remove` and `slidesk template remove` delete a theme or a template pushed without its `theme.json` / `template.json`, instead of answering "not found".
+- The npm package only ships the built CLI, without the development files.
+
 ## 2.25.0
 
 ### ✨ Features
